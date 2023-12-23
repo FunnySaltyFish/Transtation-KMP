@@ -1,4 +1,6 @@
 [versions]
+project-versionCode = "1"
+project-versionName = "1.0.0"
 agp = "8.1.4"
 android-compileSdk = "34"
 android-minSdk = "24"
@@ -16,11 +18,36 @@ compose-compiler = "1.5.6"
 compose-plugin = "1.5.11"
 junit = "4.13.2"
 kotlin = "1.9.21"
+kotlinxSerialization = "1.5.1"
+kotlinCoroutines = "1.7.3"
+sqlDelight = "1.5.3"
+sqliteJdbcDriver = "3.36.0"
+androidxLifecycle = "2.7.0-rc02"
+
 
 [libraries]
+# Kotlin
+kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-compose-gradle = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-plugin" }
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlin-kotlinTestCommon = { group = "org.jetbrains.kotlin", name = "kotlin-test-common", version.ref = "kotlin" }
+kotlin-kotlinTestJs = { group = "org.jetbrains.kotlin", name = "kotlin-test-js", version.ref = "kotlin" }
+kotlin-kotlinTestJunit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
+kotlin-kotlinTestAnnotationsCommon = { group = "org.jetbrains.kotlin", name = "kotlin-test-annotations-common", version.ref = "kotlin" }
+
+kotlin-serialization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+# Android X
+androidx-r8 = { group = "com.android.tools", name = "r8", version = "8.2.33" }
+androidx-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-junit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
@@ -28,6 +55,10 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "androidxLifecycle" }
+androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+
+# Compose
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
@@ -35,8 +66,27 @@ compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material = { module = "androidx.compose.material:material" }
 
+# SQLDelight
+sqldelight-runtime = { group = "com.squareup.sqldelight", name = "runtime", version.ref = "sqlDelight" }
+sqldelight-coroutines-extension = { group = "com.squareup.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-gradle-plugin = { group = "com.squareup.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
+sqldelight-driver = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
+sqldelight-android-driver = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqlDelight" }
+sqldelight-native-driver = { group = "com.squareup.sqldelight", name = "native-driver", version.ref = "sqlDelight" }
+sqlite-jdbc-driver = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqliteJdbcDriver" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+
+[bundles]
+#stately = ["stately-common","stately-concurrency","stately-isolate","stately-iso-collections"]
+androidx-lifecycle = ["androidx-lifecycle-common","androidx-lifecycle-runtime"]
+androidx-common = ["androidx-activity-compose","androidx-core-ktx"]
+kotlin-test = ["kotlin-kotlinTestCommon","kotlin-kotlinTestAnnotationsCommon"]
+sqldelight = ["sqldelight-runtime","sqldelight-coroutines-extension","sqldelight-driver"]
+#mviKotlin = ["mviKotlin-dep","mviKotlin-main","mviKotlin-coroutines","mviKotlin-logging","mviKotlin-timetravel"]
+kotlinCommon = ["kotlin-coroutines", "kotlin-serialization", "kotlinx-serialization-json"]
+kotlinCoroutines = ["kotlin-coroutines"]

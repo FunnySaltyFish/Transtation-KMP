@@ -41,7 +41,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.funny.translation"
+    namespace = "com.funny.translation.kmp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -49,7 +49,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "com.funny.translation"
+        applicationId = "com.funny.translation.kmp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -76,10 +76,10 @@ android {
 
 repositories {
     mavenLocal()
-    maven { url = uri("https://repo1.maven.org/maven2/") }
     maven { url = uri("https://maven.aliyun.com/repository/public/") }
     maven { url = uri("https://maven.aliyun.com/repository/google/") }
     maven { url = uri("https://maven.aliyun.com/repository/jcenter/") }
+    maven { url = uri("https://repo1.maven.org/maven2/") }
     maven { url = uri("https://jitpack.io") }
     google()
 }
@@ -90,7 +90,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.funny.translation"
+            packageName = "com.funny.translation.kmp"
             packageVersion = "1.0.0"
         }
     }
