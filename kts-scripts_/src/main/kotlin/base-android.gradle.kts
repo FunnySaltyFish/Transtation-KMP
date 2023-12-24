@@ -1,11 +1,13 @@
+import java.util.Properties
+
 plugins {
-    `kotlin-dsl`
-    alias(libs.plugins.androidLibrary)
+    id("com.android.library")
+    id("kotlin-android")
 }
 
 android {
-    compileSdk = Versions.compileSdkVersion
-    buildToolsVersion = Versions.buildToolsVersion
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    buildToolsVersion = libs.versions.android.buildTools.get()
 
     defaultConfig {
         minSdk = Versions.minSdkVersion
@@ -88,6 +90,6 @@ android {
         jvmTarget = "17"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompilerVersion
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }

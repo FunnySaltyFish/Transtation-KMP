@@ -26,8 +26,10 @@ dependencyResolutionManagement {
 
 }
 
+// 添加自定义脚本
+//include("kts-scripts")
+
 include(":composeApp")
 include(":base-kmp")
 
-// 添加自定义脚本
-//includeBuild("kts-scripts")
+
