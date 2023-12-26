@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
 
-buildscript {
+allprojects {
     repositories {
         mavenLocal()
         maven { url = uri("https://mirrors.cloud.tencent.com/repository/maven/") }

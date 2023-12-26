@@ -75,6 +75,11 @@ sqldelight-android-driver = { group = "com.squareup.sqldelight", name = "android
 sqldelight-native-driver = { group = "com.squareup.sqldelight", name = "native-driver", version.ref = "sqlDelight" }
 sqlite-jdbc-driver = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqliteJdbcDriver" }
 
+# Thirld-party
+rhino = { group = "org.mozilla", name = "rhino", version = "1.7.13" }
+# com.github.gedoor:rhino-android:1.8
+rhino-android = { group = "com.github.gedoor", name = "rhino-android", version = "1.8" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

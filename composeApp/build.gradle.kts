@@ -74,6 +74,10 @@ android {
     }
 }
 
+dependencies {
+    implementation(project(mapOf("path" to ":base-kmp")))
+}
+
 repositories {
     mavenLocal()
     maven { url = uri("https://maven.aliyun.com/repository/public/") }
