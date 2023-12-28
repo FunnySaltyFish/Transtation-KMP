@@ -1,4 +1,4 @@
-import com.funny.translation.helper.OkHttpUtils
+import com.funny.translation.network.OkHttpUtils
 import kotlin.test.Test
 
 class TestOkHttp {

@@ -1,5 +1,9 @@
-package com.funny.translation.helper
+package com.funny.translation.network
 
+import androidx.annotation.Keep
+import com.funny.translation.helper.CacheManager
+import com.funny.translation.helper.DataSaverUtils
+import com.funny.translation.helper.Log
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -7,6 +11,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+@Keep
 object OkHttpUtils {
     private const val SET_COOKIE_KEY = "set-cookie"
     private const val COOKIE_NAME = "Cookie"

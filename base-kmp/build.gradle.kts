@@ -48,6 +48,11 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
+                // androidx-jvm
+                implementation(libs.androidx.annotation.jvm)
+
+                implementation(libs.kotlin.reflect)
+
             }
         }
 
@@ -55,6 +60,9 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.rhino.android)
+            implementation(libs.compose.ui.android)
+
+            implementation("com.github.getActivity:ToastUtils:12.0")
         }
 
         val desktopMain by getting {
@@ -114,8 +122,4 @@ tasks.withType(JavaExec::class) {
         set("sun.arch.data.model", System.getProperty("sun.arch.data.model"))
     }
     jvmArgs("--add-exports", "java.base/sun.security.action=ALL-UNNAMED")
-}
-dependencies {
-    implementation(libs.androidx.annotation.jvm)
-    implementation(libs.cronet.embedded)
 }

@@ -1,5 +1,6 @@
 package com.funny.translation.helper
 
+import com.funny.translation.network.OkHttpUtils
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody

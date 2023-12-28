@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.funny.translation.helper.Log
-import com.funny.translation.helper.OkHttpUtils
+import com.funny.translation.network.OkHttpUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
