@@ -24,7 +24,6 @@ sqlDelight = "1.5.3"
 sqliteJdbcDriver = "3.36.0"
 androidxLifecycle = "2.7.0-rc02"
 
-
 [libraries]
 # Kotlin
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -79,12 +78,14 @@ sqlite-jdbc-driver = { group = "org.xerial", name = "sqlite-jdbc", version.ref =
 rhino = { group = "org.mozilla", name = "rhino", version = "1.7.13" }
 # com.github.gedoor:rhino-android:1.8
 rhino-android = { group = "com.github.gedoor", name = "rhino-android", version = "1.8" }
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version = "1.7.1" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]
 #stately = ["stately-common","stately-concurrency","stately-isolate","stately-iso-collections"]

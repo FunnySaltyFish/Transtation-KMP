@@ -2,31 +2,25 @@ package com.funny.translation.kmp
 
 import App
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.funny.translation.base.ScriptEngine
+import androidx.lifecycle.lifecycleScope
+import com.funny.translation.helper.Log
+import com.funny.translation.helper.OkHttpUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val code = """
-            function helloWorld() {
-                return "Hello World!";
-            }
-            console.log(helloWorld());
-        """.trimIndent()
-
-        val engine = ScriptEngine
-        engine.put("console", object {
-            fun log(msg: String) {
-                Log.d("MainActivity", "log: $msg")
-            }
-        })
-        engine.eval(script = code)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val url = "https://www.baidu.com/"
+            val content = OkHttpUtils.get(url)
+            Log.d("MainActivity", "content: $content")
+        }
 
         setContent {
             App()

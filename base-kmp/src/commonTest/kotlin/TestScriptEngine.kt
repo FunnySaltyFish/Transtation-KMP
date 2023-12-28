@@ -1,4 +1,4 @@
-import com.funny.translation.base.ScriptEngine
+import com.funny.translation.helper.ScriptEngine
 import kotlin.test.Test
 
 class TestScriptEngine {

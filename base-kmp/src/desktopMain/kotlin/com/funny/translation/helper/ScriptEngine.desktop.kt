@@ -1,4 +1,4 @@
-package com.funny.translation.base
+package com.funny.translation.helper
 
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
@@ -24,9 +24,9 @@ actual object ScriptEngine {
     }
 
     actual fun eval(script: String, scriptId: String): Any? {
-        return getContext(scriptId).use { cx ->
+        return getContext(scriptId).let { cx ->
             getScope(scriptId).let { scope ->
-                cx.evaluateString(scope, script, "<cmd>", 1, null)
+                cx.evaluateString(scope, script, scriptId, 1, null)
             }
         }
     }

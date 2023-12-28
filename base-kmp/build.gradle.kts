@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -26,28 +27,44 @@ kotlin {
     }
     
     sourceSets {
-        val desktopMain by getting {
-            kotlin.srcDir("src/desktopMain/java")
+
+        val commonMain by getting {
+            dependencies {
+                implementation(project.dependencies.platform(libs.compose.bom))
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.ui)
+                @OptIn(ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
+
+                // JVM-specific dependencies like OkHttp and Retrofit
+                implementation("com.squareup.okhttp3:okhttp:4.11.0")
+                implementation("com.squareup.retrofit2:retrofit:2.9.0")
+                implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
+
+                // kotlinx.serialization
+                implementation(libs.kotlin.serialization)
+                implementation(libs.kotlinx.serialization.json)
+                implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+
+            }
         }
-//        val jvmMain by getting
 
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.rhino.android)
         }
-        commonMain.dependencies {
-            implementation(project.dependencies.platform(libs.compose.bom))
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
-            implementation(compose.components.resources)
-        }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.rhino)
+
+        val desktopMain by getting {
+            kotlin.srcDir("src/desktopMain/java")
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.rhino)
+//                org.slf4j:slf4j-simple:2.0.3
+                implementation("org.slf4j:slf4j-simple:2.0.3")
+            }
         }
 
         commonTest.dependencies {
@@ -97,4 +114,8 @@ tasks.withType(JavaExec::class) {
         set("sun.arch.data.model", System.getProperty("sun.arch.data.model"))
     }
     jvmArgs("--add-exports", "java.base/sun.security.action=ALL-UNNAMED")
+}
+dependencies {
+    implementation(libs.androidx.annotation.jvm)
+    implementation(libs.cronet.embedded)
 }

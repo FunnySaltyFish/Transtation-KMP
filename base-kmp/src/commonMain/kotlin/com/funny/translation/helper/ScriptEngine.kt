@@ -1,4 +1,4 @@
-package com.funny.translation.base
+package com.funny.translation.helper
 
 private const val DefaultID = "default"
 
