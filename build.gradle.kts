@@ -6,8 +6,8 @@ plugins {
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
 
-//    alias(libs.plugins.libres) apply false
-//    id("io.github.skeptick.libres") apply false
+    alias(libs.plugins.libres) apply false
+    alias(libs.plugins.buildKonfig) apply false
 }
 
 allprojects {
@@ -21,6 +21,5 @@ allprojects {
         maven { url = uri("https://maven.aliyun.com/repository/google/") }
         maven { url = uri("https://maven.aliyun.com/repository/jcenter/") }
         maven { url = uri("https://jitpack.io") }
-
     }
 }

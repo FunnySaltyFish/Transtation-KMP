@@ -1,6 +1,6 @@
 package com.funny.translation.bean
 
-import com.funny.translation.core.BuildConfig
+import com.funny.translation.BuildConfig
 import java.math.BigDecimal
 import java.math.RoundingMode
 

@@ -1,6 +1,7 @@
 package com.funny.translation.network
 
 import androidx.annotation.Keep
+import com.funny.translation.kmp.base.strings.ResStrings
 
 @Keep
 @kotlinx.serialization.Serializable

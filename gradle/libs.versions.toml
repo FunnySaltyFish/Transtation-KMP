@@ -23,6 +23,8 @@ kotlinCoroutines = "1.7.3"
 sqlDelight = "1.5.3"
 sqliteJdbcDriver = "3.36.0"
 androidxLifecycle = "2.7.0-rc02"
+libres = "1.2.2"
+buildKonfig = "0.15.1"
 
 [libraries]
 # Kotlin
@@ -66,6 +68,7 @@ compose-material = { module = "androidx.compose.material:material3" }
 compose-ui-android = { module = "androidx.compose.ui:ui-android" }
 
 # SQLDelight
+libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
 sqldelight-runtime = { group = "com.squareup.sqldelight", name = "runtime", version.ref = "sqlDelight" }
 sqldelight-coroutines-extension = { group = "com.squareup.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
 sqldelight-gradle-plugin = { group = "com.squareup.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
@@ -87,8 +90,10 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 mokoResourcesGenerator = { id = "dev.icerock.mobile.multiplatform-resources", version = "0.23.0" }
-# io.github.skeptick.libres:gradle-plugin:1.2.1
-#libres = { group = "io.github.skeptick.libres", name = "gradle-plugin", version = "1.2.1" }
+# io.github.skeptick.libres:gradle-plugin:1.2.2
+libres = { id = "io.github.skeptick.libres", version.ref = "libres" }
+# 'com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version'
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 
 [bundles]
 #stately = ["stately-common","stately-concurrency","stately-isolate","stately-iso-collections"]

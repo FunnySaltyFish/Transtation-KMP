@@ -1,16 +1,21 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.ExperimentalComposeLibrary
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
-//    alias(libs.plugins.mokoResourcesGenerator)
-//    alias(libs.plugins.libres)
-    id("io.github.skeptick.libres") version "1.2.2"
+    alias(libs.plugins.libres)
+    alias(libs.plugins.buildKonfig)
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xmulti-platform")
+    }
+
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -39,7 +44,6 @@ kotlin {
                 // JVM-specific dependencies like OkHttp and Retrofit
                 implementation("com.squareup.okhttp3:okhttp:4.11.0")
                 implementation("com.squareup.retrofit2:retrofit:2.9.0")
-                implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
                 // kotlinx.serialization
                 implementation(libs.kotlinx.serialization.json)
@@ -57,7 +61,7 @@ kotlin {
 //                implementation("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
 
                 // libres
-                implementation("io.github.skeptick.libres:libres-compose:1.2.1")
+                implementation(libs.libres.compose)
 
             }
         }
@@ -79,6 +83,8 @@ kotlin {
                 implementation(libs.rhino)
 //                org.slf4j:slf4j-simple:2.0.3
                 implementation("org.slf4j:slf4j-simple:2.0.3")
+                implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
+
             }
         }
 
@@ -133,6 +139,24 @@ libres {
     generateNamedArguments = true // false by default
     baseLocaleLanguageCode = "zh" // "en" by default
     camelCaseNamesForAppleFramework = false // false by default
+}
+
+buildkonfig {
+    packageName = "com.funny.translation"
+    objectName = "BuildConfig"
+    // exposeObjectWithName = 'YourAwesomePublicConfig'
+
+    defaultConfigs {
+        buildConfigField(STRING, "FLAVOR", "common")
+    }
+
+    defaultConfigs("common") {
+        buildConfigField(STRING, "FLAVOR", "common")
+    }
+
+    defaultConfigs("google") {
+        buildConfigField(STRING, "FLAVOR", "google")
+    }
 }
 
 tasks.withType(JavaExec::class) {
