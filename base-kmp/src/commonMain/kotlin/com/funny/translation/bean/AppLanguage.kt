@@ -1,16 +1,12 @@
 package com.funny.translation.bean
 
-import com.funny.translation.core.R
-import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.base.strings.ResStrings
-import java.util.*
+import java.util.Locale
 
-enum class AppLanguage(private val descriptionId: Int) {
-    FOLLOW_SYSTEM(R.string.follow_system),
-    ENGLISH(R.string.language_english),
-    CHINESE(R.string.language_chinese);
-
-    val description = appCtx.getString(descriptionId)
+enum class AppLanguage(private val description: String) {
+    FOLLOW_SYSTEM(ResStrings.follow_system),
+    ENGLISH(ResStrings.language_english),
+    CHINESE(ResStrings.language_chinese);
 
     fun toLocale(): Locale = when (this) {
         FOLLOW_SYSTEM -> Locale.getDefault()
@@ -19,7 +15,6 @@ enum class AppLanguage(private val descriptionId: Int) {
     }
 
     override fun toString(): String {
-        ResStrings.my_string
         return description
     }
 

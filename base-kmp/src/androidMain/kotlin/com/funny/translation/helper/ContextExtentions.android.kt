@@ -37,7 +37,7 @@ fun Context.openUrl(uri: Uri) {
         startActivity(intent)
     } catch (e: Exception) {
         try {
-            startActivity(Intent.createChooser(intent, ResStrings.my_string))
+            startActivity(Intent.createChooser(intent, ResStrings.please_choose_browser))
         } catch (e: Exception) {
             toastOnUi(e.localizedMessage ?: "open url error")
         }

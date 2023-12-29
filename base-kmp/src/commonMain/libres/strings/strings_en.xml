@@ -1,4 +1,43 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="my_string">My default localization string</string>
+    <string name="language_auto">Auto</string>
+    <string name="language_chinese">Chinese</string>
+    <string name="language_english">English</string>
+    <string name="language_japanese">Japanese</string>
+    <string name="language_korean">Korean</string>
+    <string name="language_french">French</string>
+    <string name="language_russian">Russian</string>
+    <string name="language_germany">German</string>
+    <string name="language_wenyanwen">Literary Chinese</string>
+    <string name="language_thai">Thai</string>
+    <string name="language_portuguese">Portuguess</string>
+    <string name="language_italian">Italian</string>
+    <string name="language_vietnamese">Vietnamese</string>
+    <string name="language_chinese_yue">Cantonese</string>
+    <string name="request_permission">Request Permissions</string>
+    <string name="confirm">Confirm</string>
+    <string name="language_spanish">Spanish</string>
+    <string name="follow_system">Follow System</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="failed_unknown_err"> failed, unknown error!</string>
+    <string name="retry">Retry</string>
+    <string name="err_no_fingerprint_device">No fingerprint recognition device detected</string>
+    <string name="err_fingerprint_not_enabled">Fingerprint recognition device not enabled</string>
+    <string name="err_no_fingerprint">No fingerprint registered on the device</string>
+    <string name="err_io">IO stream error!</string>
+    <string name="err_parse_json">JSON data parsing error!</string>
+    <string name="err_translate_unknown">Unknown error! Translation failed!</string>
+    <string name="please_choose_browser">Please choose a browser</string>
+    <string name="validate_fingerprint">Validate Fingerprint</string>
+    <string name="please_touch_fingerprint">Please touch the fingerprint sensor with your finger</string>
+    <string name="use_password">Use Password</string>
+    <string name="validate_fingerprint_failed">Fingerprint validation failed</string>
+    <string name="hint">Hint</string>
+    <string name="tip_reset_fingerprint">The fingerprint information saved for the current account ${username} on this device seems to have been cleared. Would you like to re-add the fingerprint and send a verification code to verify your email ${email}?</string>
+    <string name="cancel">Cancel</string>
+    <string name="unsupported_language">This language is currently not supported</string>
+    <string name="not_registered">It appears that you haven\'t registered before. Please register an account first~</string>
+    <string name="err_write_text">An error occurred while writing the file</string>
+    <string name="always_light">Always Light</string>
+    <string name="always_dark">Always Dark</string>
 </resources>
