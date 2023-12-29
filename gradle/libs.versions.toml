@@ -36,7 +36,6 @@ kotlin-kotlinTestJs = { group = "org.jetbrains.kotlin", name = "kotlin-test-js",
 kotlin-kotlinTestJunit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
 kotlin-kotlinTestAnnotationsCommon = { group = "org.jetbrains.kotlin", name = "kotlin-test-annotations-common", version.ref = "kotlin" }
 
-kotlin-serialization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
@@ -87,6 +86,9 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+mokoResourcesGenerator = { id = "dev.icerock.mobile.multiplatform-resources", version = "0.23.0" }
+# io.github.skeptick.libres:gradle-plugin:1.2.1
+#libres = { group = "io.github.skeptick.libres", name = "gradle-plugin", version = "1.2.1" }
 
 [bundles]
 #stately = ["stately-common","stately-concurrency","stately-isolate","stately-iso-collections"]
@@ -95,5 +97,5 @@ androidx-common = ["androidx-activity-compose","androidx-core-ktx"]
 kotlin-test = ["kotlin-kotlinTestCommon","kotlin-kotlinTestAnnotationsCommon"]
 sqldelight = ["sqldelight-runtime","sqldelight-coroutines-extension","sqldelight-driver"]
 #mviKotlin = ["mviKotlin-dep","mviKotlin-main","mviKotlin-coroutines","mviKotlin-logging","mviKotlin-timetravel"]
-kotlinCommon = ["kotlin-coroutines", "kotlin-serialization", "kotlinx-serialization-json"]
+kotlinCommon = ["kotlin-coroutines", "kotlinx-serialization-json"]
 kotlinCoroutines = ["kotlin-coroutines"]

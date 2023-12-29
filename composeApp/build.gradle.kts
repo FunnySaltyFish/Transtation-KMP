@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    id("io.github.skeptick.libres") version "1.2.2"
 }
 
 kotlin {
@@ -82,16 +83,6 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":base-kmp")))
-}
-
-repositories {
-    mavenLocal()
-    maven { url = uri("https://maven.aliyun.com/repository/public/") }
-    maven { url = uri("https://maven.aliyun.com/repository/google/") }
-    maven { url = uri("https://maven.aliyun.com/repository/jcenter/") }
-    maven { url = uri("https://repo1.maven.org/maven2/") }
-    maven { url = uri("https://jitpack.io") }
-    google()
 }
 
 compose.desktop {

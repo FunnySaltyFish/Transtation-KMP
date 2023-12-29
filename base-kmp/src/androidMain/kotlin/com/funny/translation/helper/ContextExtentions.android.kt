@@ -5,11 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import com.funny.translation.helper.handler.runOnUI
-import com.funny.translation.kmp.base.R
+import com.funny.translation.kmp.base.strings.ResStrings
 import com.hjq.toast.Toaster
 import java.io.InputStream
 
-fun Context.readAssets(fileName: String): String {
+actual fun Context.readAssets(fileName: String): String {
     var ins: InputStream? = null
     return try {
         ins = assets.open(fileName)
@@ -37,7 +37,7 @@ fun Context.openUrl(uri: Uri) {
         startActivity(intent)
     } catch (e: Exception) {
         try {
-            startActivity(Intent.createChooser(intent, getString(R.string.please_choose_browser)))
+            startActivity(Intent.createChooser(intent, ResStrings.my_string))
         } catch (e: Exception) {
             toastOnUi(e.localizedMessage ?: "open url error")
         }

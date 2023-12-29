@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
+//    alias(libs.plugins.mokoResourcesGenerator)
+//    alias(libs.plugins.libres)
+    id("io.github.skeptick.libres") version "1.2.2"
 }
 
 kotlin {
@@ -15,12 +18,7 @@ kotlin {
             }
         }
     }
-    
-//    jvm() {
-//        attributes {
-//            attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
-//        }
-//    }
+
 
     jvm("desktop") {
 
@@ -44,14 +42,22 @@ kotlin {
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
                 // kotlinx.serialization
-                implementation(libs.kotlin.serialization)
                 implementation(libs.kotlinx.serialization.json)
-                implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+                implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0") {
+                    // exclude org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.0.0
+                    exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core-jvm")
+                }
 
                 // androidx-jvm
                 implementation(libs.androidx.annotation.jvm)
 
                 implementation(libs.kotlin.reflect)
+
+                // moko
+//                implementation("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
+
+                // libres
+                implementation("io.github.skeptick.libres:libres-compose:1.2.1")
 
             }
         }
@@ -63,6 +69,7 @@ kotlin {
             implementation(libs.compose.ui.android)
 
             implementation("com.github.getActivity:ToastUtils:12.0")
+
         }
 
         val desktopMain by getting {
@@ -79,6 +86,9 @@ kotlin {
             // depends on commonMain
             implementation(libs.kotlin.test)
             implementation(libs.kotlin.test.junit)
+
+            // moko
+//            implementation("dev.icerock.moko:resources-test:0.23.0")
         }
     }
 }
@@ -112,6 +122,17 @@ android {
 
 compose.desktop {
 
+}
+
+//multiplatformResources {
+//    multiplatformResourcesPackage = "com.funny.translation" // required
+//}
+
+libres {
+    generatedClassName = "Res" // "Res" by default
+    generateNamedArguments = true // false by default
+    baseLocaleLanguageCode = "zh" // "en" by default
+    camelCaseNamesForAppleFramework = false // false by default
 }
 
 tasks.withType(JavaExec::class) {
