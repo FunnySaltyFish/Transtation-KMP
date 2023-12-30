@@ -10,7 +10,7 @@ PLEASE DO NOT USE THE CODE UNLESS CONTACTING ME FIRST.
 
 **正在进行**
 
-该项目是 [transstation](https://github.com/FunnySaltyFish/FunnyTranslation) 的 KMP 版本，它仍在开发中。
+该项目是 [译站](https://github.com/FunnySaltyFish/FunnyTranslation) 的 KMP 版本，预计跨 Android/Desktop 两端，它仍在开发中。
 
 我不能保证代码可以成功运行，它还处于非常早期的阶段。
 
