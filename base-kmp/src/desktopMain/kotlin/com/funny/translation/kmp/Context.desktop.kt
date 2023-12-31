@@ -1,6 +1,7 @@
 package com.funny.translation.kmp
 
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.staticCompositionLocalOf
 
 actual abstract class KMPContext {
     actual fun getString(id: Int): String {
@@ -12,8 +13,8 @@ actual abstract class KMPContext {
     }
 }
 
-actual val LocalKMPContext: ProvidableCompositionLocal<KMPContext>
-    get() = TODO("Not yet implemented")
+actual val LocalKMPContext: ProvidableCompositionLocal<KMPContext> =
+    staticCompositionLocalOf { appCtx }
 
 actual val appCtx = object : KMPContext() {
 

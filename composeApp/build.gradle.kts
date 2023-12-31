@@ -5,10 +5,14 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
-    id("io.github.skeptick.libres") version "1.2.2"
+    alias(libs.plugins.libres)
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xmulti-platform")
+    }
+
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -21,7 +25,6 @@ kotlin {
     }
     
     sourceSets {
-
         val commonMain by getting {
             dependencies {
                 implementation(project.dependencies.platform(libs.compose.bom))
@@ -31,6 +34,8 @@ kotlin {
                 implementation(compose.ui)
                 @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
+                implementation(project(":base-kmp"))
             }
         }
 
@@ -79,10 +84,6 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
-}
-
-dependencies {
-    implementation(project(mapOf("path" to ":base-kmp")))
 }
 
 compose.desktop {
