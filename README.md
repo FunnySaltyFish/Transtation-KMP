@@ -1,11 +1,17 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop.
+**Work In Progress**
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+The project is the KMP version of [Transtation](https://github.com/FunnySaltyFish/FunnyTranslation), it is still under development. 
 
+I do not guarantee the code can be run successfully, it's at a very early stage.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com.cn/en-us/help/kotlin-multiplatform-dev/get-started.html)…
+PLEASE DO NOT USE THE CODE UNLESS CONTACTING ME FIRST. 
+
+---
+
+**正在进行**
+
+该项目是 [译站](https://github.com/FunnySaltyFish/FunnyTranslation) 的 KMP 版本，预计跨 Android/Desktop 两端，它仍在开发中。
+
+我不能保证代码可以成功运行，它还处于非常早期的阶段。
+
+请不要使用任何代码，除非先联系我。
