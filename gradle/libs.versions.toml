@@ -20,7 +20,7 @@ junit = "4.13.2"
 kotlin = "1.9.21"
 kotlinxSerialization = "1.5.1"
 kotlinCoroutines = "1.7.3"
-sqlDelight = "1.5.3"
+sqlDelight = "2.0.1"
 sqliteJdbcDriver = "3.36.0"
 androidxLifecycle = "2.7.0-rc02"
 libres = "1.2.2"
@@ -69,13 +69,14 @@ compose-ui-android = { module = "androidx.compose.ui:ui-android" }
 
 # SQLDelight
 libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
-sqldelight-runtime = { group = "com.squareup.sqldelight", name = "runtime", version.ref = "sqlDelight" }
-sqldelight-coroutines-extension = { group = "com.squareup.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
-sqldelight-gradle-plugin = { group = "com.squareup.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
-sqldelight-driver = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
-sqldelight-android-driver = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqlDelight" }
-sqldelight-native-driver = { group = "com.squareup.sqldelight", name = "native-driver", version.ref = "sqlDelight" }
-sqlite-jdbc-driver = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqliteJdbcDriver" }
+sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqlDelight" }
+sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqlDelight" }
+sqldelight-coroutines-extension = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-gradle-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
+sqldelight-driver = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
+sqldelight-android-driver = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqlDelight" }
+sqldelight-native-driver = { group = "app.cash.sqldelight", name = "native-driver", version.ref = "sqlDelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 
 # Thirld-party
 rhino = { group = "org.mozilla", name = "rhino", version = "1.7.13" }
@@ -94,6 +95,7 @@ mokoResourcesGenerator = { id = "dev.icerock.mobile.multiplatform-resources", ve
 libres = { id = "io.github.skeptick.libres", version.ref = "libres" }
 # 'com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version'
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
+sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 
 [bundles]
 #stately = ["stately-common","stately-concurrency","stately-isolate","stately-iso-collections"]

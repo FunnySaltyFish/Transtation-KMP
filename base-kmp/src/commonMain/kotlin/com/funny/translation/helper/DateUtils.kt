@@ -1,8 +1,7 @@
 package com.funny.translation.helper
 
-import android.os.Build
-import java.time.ZoneId
-import java.util.*
+import java.util.Calendar
+import java.util.TimeZone
 
 data class FunnyDate(var year: Int = 0, var month: Int = 0, var day: Int = 0)
 object DateUtils {
@@ -38,16 +37,9 @@ object DateUtils {
     }
 
     private val today = FunnyDate().apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val localDate = Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-            day = localDate.dayOfMonth
-            month = localDate.monthValue
-            year = localDate.year
-        } else {
-            val date = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"))
-            day = date.get(Calendar.DATE)
-            month = date.get(Calendar.MONTH) + 1
-            year = date.get(Calendar.YEAR)
-        }
+        val date = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"))
+        day = date.get(Calendar.DATE)
+        month = date.get(Calendar.MONTH) + 1
+        year = date.get(Calendar.YEAR)
     }
 }

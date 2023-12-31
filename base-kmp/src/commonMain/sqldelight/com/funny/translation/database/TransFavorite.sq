@@ -1,0 +1,11 @@
+import kotlin.Int;
+
+CREATE TABLE IF NOT EXISTS transFavorite (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    sourceString TEXT NOT NULL,
+    resultText TEXT NOT NULL,
+    sourceLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    targetLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    engineName TEXT NOT NULL DEFAULT '未知引擎',
+    time INTEGER NOT NULL
+);

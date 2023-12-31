@@ -8,6 +8,7 @@ plugins {
 
     alias(libs.plugins.libres) apply false
     alias(libs.plugins.buildKonfig) apply false
+    alias(libs.plugins.sqlDelight) apply false
 }
 
 allprojects {

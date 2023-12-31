@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.libres)
     alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -63,6 +64,9 @@ kotlin {
                 // libres
                 implementation(libs.libres.compose)
 
+                // sqlDelight
+                implementation(libs.sqldelight.primitive.adapters)
+                implementation(libs.sqldelight.coroutines.extensions)
             }
         }
 
@@ -73,6 +77,9 @@ kotlin {
             implementation(libs.compose.ui.android)
 
             implementation("com.github.getActivity:ToastUtils:12.0")
+
+            // sqldelight
+            implementation(libs.sqldelight.android.driver)
 
         }
 
@@ -85,6 +92,8 @@ kotlin {
                 implementation("org.slf4j:slf4j-simple:2.0.3")
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
+                // sqldelight
+                implementation(libs.sqldelight.driver)
             }
         }
 
@@ -159,12 +168,10 @@ buildkonfig {
     }
 }
 
-tasks.withType(JavaExec::class) {
-//    systemProperty.s'java.awt.headless', true
-//    systemProperty 'sun.arch.data.model', System.getProperty('sun.arch.data.model')
-    systemProperties.apply {
-        set("java.awt.headless", true)
-        set("sun.arch.data.model", System.getProperty("sun.arch.data.model"))
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.funny.translation.database")
+        }
     }
-    jvmArgs("--add-exports", "java.base/sun.security.action=ALL-UNNAMED")
 }

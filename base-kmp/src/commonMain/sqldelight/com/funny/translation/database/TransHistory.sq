@@ -1,0 +1,39 @@
+import kotlin.Int;
+import kotlin.collections.List;
+import kotlin.String;
+
+CREATE TABLE IF NOT EXISTS transHistory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    sourceString TEXT NOT NULL,
+    sourceLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    targetLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    engineNames TEXT AS List<String> NOT NULL DEFAULT '[]',
+    time INTEGER NOT NULL
+);
+
+-- Query to get the latest entries for each unique sourceString
+selectAllPaging:
+SELECT * FROM transHistory
+WHERE id IN (SELECT max(id) AS id FROM transHistory GROUP BY sourceString)
+ORDER BY id DESC;
+
+-- Query to delete a TransHistory entry by id
+deleteTransHistory:
+DELETE FROM transHistory WHERE id = ?;
+
+-- Query to delete a TransHistory entry by sourceString
+deleteTransHistoryByContent:
+DELETE FROM transHistory WHERE sourceString = ?;
+
+-- Query to insert a TransHistory entry
+insertTransHistory:
+INSERT INTO transHistory (sourceString, sourceLanguageId, targetLanguageId, engineNames, time)
+VALUES ?;
+
+-- Query to get all TransHistory entries between startTime and endTime
+queryAllBetween:
+SELECT * FROM transHistory WHERE time BETWEEN ? AND ?;
+
+-- Query to clear all TransHistory entries
+clearAll:
+DELETE FROM transHistory;

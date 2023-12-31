@@ -1,6 +1,7 @@
 package com.funny.translation.helper
 
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 object TimeUtils {
     fun formatTime(
@@ -31,3 +32,5 @@ object TimeUtils {
         return formatTime(System.currentTimeMillis(), "%4d_%02d_%02d_%02d_%02d_%02d")
     }
 }
+
+fun now() = System.currentTimeMillis()

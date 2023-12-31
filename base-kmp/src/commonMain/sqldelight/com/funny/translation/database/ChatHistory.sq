@@ -1,0 +1,12 @@
+import kotlin.Int;
+
+CREATE TABLE IF NOT EXISTS chatHistory (
+    id TEXT PRIMARY KEY NOT NULL,
+    botId INTEGER AS Int NOT NULL,
+    conversationId TEXT NOT NULL,
+    sender TEXT NOT NULL,
+    content TEXT NOT NULL,
+    type INTEGER AS Int NOT NULL,
+    error TEXT,
+    timestamp INTEGER NOT NULL
+);

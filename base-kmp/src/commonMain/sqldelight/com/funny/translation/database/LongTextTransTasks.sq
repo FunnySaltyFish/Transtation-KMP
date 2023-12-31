@@ -1,0 +1,19 @@
+import kotlin.Int;
+import kotlin.String;
+import kotlin.Pair;
+import kotlin.collections.List;
+
+CREATE TABLE IF NOT EXISTS longTextTransTasks (
+    id TEXT PRIMARY KEY NOT NULL,
+    chatBotId INTEGER AS Int NOT NULL,
+    sourceText TEXT NOT NULL,
+    resultText TEXT NOT NULL,
+    prompt TEXT NOT NULL,
+    allCorpus TEXT AS List<Pair<String, String>> NOT NULL,
+    sourceTextSegments TEXT AS List<Int> NOT NULL,
+    resultTextSegments TEXT AS List<Int> NOT NULL,
+    translatedLength INTEGER AS Int NOT NULL,
+    createTime INTEGER NOT NULL DEFAULT 0,
+    updateTime INTEGER NOT NULL DEFAULT 0,
+    remark TEXT NOT NULL DEFAULT ''
+);
