@@ -52,11 +52,12 @@ kotlin {
                     // exclude org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.0.0
                     exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core-jvm")
                 }
+                implementation(libs.kotlin.reflect)
+                implementation(libs.kotlinx.collections.immutable)
 
                 // androidx-jvm
                 implementation(libs.androidx.annotation.jvm)
 
-                implementation(libs.kotlin.reflect)
 
                 // moko
 //                implementation("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
