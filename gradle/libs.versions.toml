@@ -56,6 +56,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "androidxLifecycle" }
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version = "1.7.1" }
 
 # Compose
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
@@ -68,7 +69,6 @@ compose-material = { module = "androidx.compose.material:material3" }
 compose-ui-android = { module = "androidx.compose.ui:ui-android" }
 
 # SQLDelight
-libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqlDelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqlDelight" }
 sqldelight-coroutines-extension = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
@@ -82,7 +82,10 @@ sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-ex
 rhino = { group = "org.mozilla", name = "rhino", version = "1.7.13" }
 # com.github.gedoor:rhino-android:1.8
 rhino-android = { group = "com.github.gedoor", name = "rhino-android", version = "1.8" }
-androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version = "1.7.1" }
+libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
+mmkv = { group = "com.tencent", name = "mmkv", version = "1.3.2" }
+kstore-file = { module = "io.github.xxfast:kstore-file", version = "0.7.1" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -67,6 +67,10 @@ kotlin {
                 // sqlDelight
                 implementation(libs.sqldelight.primitive.adapters)
                 implementation(libs.sqldelight.coroutines.extensions)
+
+
+                implementation(libs.kstore.file)
+
             }
         }
 
@@ -80,7 +84,8 @@ kotlin {
 
             // sqldelight
             implementation(libs.sqldelight.android.driver)
-
+            // mmkv
+            implementation(libs.mmkv)
         }
 
         val desktopMain by getting {
