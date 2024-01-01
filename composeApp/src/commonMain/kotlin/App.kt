@@ -22,6 +22,7 @@ import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
+import moe.tlaster.precompose.PreComposeApp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -32,39 +33,41 @@ fun App() {
     CompositionLocalProvider(
         LocalDataSaver provides DataSaverUtils
     ) {
-        MaterialTheme {
-            Box(Modifier.fillMaxSize()) {
-                var greetingText by remember { mutableStateOf("Hello World!") }
-                var showImage by remember { mutableStateOf(false) }
-                val context = LocalKMPContext.current
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Button(onClick = {
-                        greetingText = "Compose: ${Greeting().greet()}"
-                        showImage = !showImage
-                        context.toastOnUi("测试toast")
-                    }) {
-                        Text(greetingText)
-                    }
-                    AnimatedVisibility(showImage) {
-                        Image(
-                            painterResource("compose-multiplatform.xml"),
-                            null
+        PreComposeApp {
+            MaterialTheme {
+                Box(Modifier.fillMaxSize()) {
+                    var greetingText by remember { mutableStateOf("Hello World!") }
+                    var showImage by remember { mutableStateOf(false) }
+                    val context = LocalKMPContext.current
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Button(onClick = {
+                            greetingText = "Compose: ${Greeting().greet()}"
+                            showImage = !showImage
+                            context.toastOnUi("测试toast")
+                        }) {
+                            Text(greetingText)
+                        }
+                        AnimatedVisibility(showImage) {
+                            Image(
+                                painterResource("compose-multiplatform.xml"),
+                                null
+                            )
+                        }
+
+                        var switch by rememberDataSaverState<Boolean>(
+                            key = "switch",
+                            initialValue = false
                         )
+                        Switch(checked = switch, onCheckedChange = { switch = it })
                     }
 
-                    var switch by rememberDataSaverState<Boolean>(
-                        key = "switch",
-                        initialValue = false
+                    Toast(
+                        modifier = Modifier.align(Alignment.BottomEnd)
                     )
-                    Switch(checked = switch, onCheckedChange = { switch = it })
                 }
-
-                Toast(
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                )
             }
         }
     }

@@ -69,8 +69,9 @@ kotlin {
                 implementation(libs.sqldelight.primitive.adapters)
                 implementation(libs.sqldelight.coroutines.extensions)
 
+                api(libs.precompose)
+                api(libs.precompose.viewmodel) // For ViewModel intergration
 
-                implementation(libs.kstore.file)
 
             }
         }

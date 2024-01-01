@@ -1,4 +1,5 @@
 [versions]
+precompose = "1.5.10"
 project-versionCode = "1"
 project-versionName = "1.0.0"
 agp = "8.1.4"
@@ -86,7 +87,8 @@ rhino = { group = "org.mozilla", name = "rhino", version = "1.7.13" }
 rhino-android = { group = "com.github.gedoor", name = "rhino-android", version = "1.8" }
 libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
 mmkv = { group = "com.tencent", name = "mmkv", version = "1.3.2" }
-kstore-file = { module = "io.github.xxfast:kstore-file", version = "0.7.1" }
+precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
+precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
 
 
 [plugins]
