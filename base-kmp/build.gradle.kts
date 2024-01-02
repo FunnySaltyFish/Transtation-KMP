@@ -36,39 +36,36 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation(project.dependencies.platform(libs.compose.bom))
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
+                api(project.dependencies.platform(libs.compose.bom))
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material3)
+                api(compose.ui)
                 @OptIn(ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
+                api(compose.components.resources)
 
                 // JVM-specific dependencies like OkHttp and Retrofit
-                implementation("com.squareup.okhttp3:okhttp:4.11.0")
-                implementation("com.squareup.retrofit2:retrofit:2.9.0")
+                api("com.squareup.okhttp3:okhttp:4.11.0")
+                api("com.squareup.retrofit2:retrofit:2.9.0")
 
                 // kotlinx.serialization
-                implementation(libs.kotlinx.serialization.json)
+                api(libs.kotlinx.serialization.json)
                 implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0") {
                     // exclude org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.0.0
                     exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core-jvm")
                 }
-                implementation(libs.kotlin.reflect)
-                implementation(libs.kotlinx.collections.immutable)
+                api(libs.kotlin.reflect)
+                api(libs.kotlinx.collections.immutable)
 
                 // androidx-jvm
-                implementation(libs.androidx.annotation.jvm)
-
-                // moko
-//                implementation("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
+                api(libs.androidx.annotation.jvm)
 
                 // libres
-                implementation(libs.libres.compose)
+                api(libs.libres.compose)
 
                 // sqlDelight
-                implementation(libs.sqldelight.primitive.adapters)
-                implementation(libs.sqldelight.coroutines.extensions)
+                api(libs.sqldelight.primitive.adapters)
+                api(libs.sqldelight.coroutines.extensions)
 
                 api(libs.precompose)
                 api(libs.precompose.viewmodel) // For ViewModel intergration
@@ -82,17 +79,17 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.rhino.android)
-            implementation(libs.compose.ui.android)
+            api(libs.compose.ui.tooling.preview)
+            api(libs.androidx.activity.compose)
+            api(libs.compose.ui.android)
 
+            implementation(libs.rhino.android)
             implementation("com.github.getActivity:ToastUtils:12.0")
 
             // sqldelight
             implementation(libs.sqldelight.android.driver)
             // mmkv
-            implementation(libs.mmkv)
+            api(libs.mmkv)
 
             // libs/monet.aar
             implementation(files("libs/monet.aar"))
@@ -116,7 +113,7 @@ kotlin {
         val desktopMain by getting {
             kotlin.srcDir("src/desktopMain/java")
             dependencies {
-                implementation(compose.desktop.currentOs)
+                api(compose.desktop.currentOs)
                 implementation(libs.rhino)
 //                org.slf4j:slf4j-simple:2.0.3
                 implementation("org.slf4j:slf4j-simple:2.0.3")
@@ -129,11 +126,8 @@ kotlin {
 
         commonTest.dependencies {
             // depends on commonMain
-            implementation(libs.kotlin.test)
-            implementation(libs.kotlin.test.junit)
-
-            // moko
-//            implementation("dev.icerock.moko:resources-test:0.23.0")
+            api(libs.kotlin.test)
+            api(libs.kotlin.test.junit)
         }
     }
 }
@@ -158,7 +152,7 @@ android {
     }
 
     dependencies {
-        debugImplementation(libs.compose.ui.tooling)
+        debugApi(libs.compose.ui.tooling)
 
         androidTestImplementation("androidx.test.ext:junit:1.1.3")
         androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")

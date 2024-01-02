@@ -1,4 +1,3 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -27,26 +26,16 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project.dependencies.platform(libs.compose.bom))
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.ui)
-                @OptIn(ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
-
                 implementation(project(":base-kmp"))
             }
         }
 
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
+
         }
 
         val desktopMain by getting {
             dependencies {
-                implementation(compose.desktop.currentOs)
             }
         }
     }
