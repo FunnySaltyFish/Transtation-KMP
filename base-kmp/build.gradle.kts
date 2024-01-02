@@ -1,3 +1,5 @@
+
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
@@ -58,7 +60,6 @@ kotlin {
                 // androidx-jvm
                 implementation(libs.androidx.annotation.jvm)
 
-
                 // moko
 //                implementation("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
 
@@ -72,7 +73,7 @@ kotlin {
                 api(libs.precompose)
                 api(libs.precompose.viewmodel) // For ViewModel intergration
 
-
+                api("io.github.kevinnzou:compose-webview-multiplatform:1.8.0")
             }
         }
 
@@ -88,6 +89,24 @@ kotlin {
             implementation(libs.sqldelight.android.driver)
             // mmkv
             implementation(libs.mmkv)
+
+            // libs/monet.aar
+            implementation(files("libs/monet.aar"))
+
+            // Markwon
+            val markwon_version = "4.6.2"
+            implementation("io.noties.markwon:core:$markwon_version")
+            implementation("io.noties.markwon:ext-strikethrough:$markwon_version")
+            implementation("io.noties.markwon:ext-tables:$markwon_version")
+            implementation("io.noties.markwon:html:$markwon_version")
+            implementation("io.noties.markwon:image-coil:$markwon_version")
+            implementation("io.noties.markwon:linkify:$markwon_version")
+            implementation("me.saket:better-link-movement-method:2.2.0")
+
+            val accompanist_version = "0.32.0"
+            api("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
+            api("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
+            api("com.google.accompanist:accompanist-permissions:$accompanist_version")
         }
 
         val desktopMain by getting {
@@ -164,6 +183,8 @@ buildkonfig {
 
     defaultConfigs {
         buildConfigField(STRING, "FLAVOR", "common")
+        buildConfigField(STRING, "VERSION_NAME", libs.versions.project.versionName.get())
+        buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
     }
 
     defaultConfigs("common") {

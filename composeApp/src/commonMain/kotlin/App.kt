@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +21,7 @@ import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
+import com.funny.translation.ui.theme.TransTheme
 import moe.tlaster.precompose.PreComposeApp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -34,7 +34,7 @@ fun App() {
         LocalDataSaver provides DataSaverUtils
     ) {
         PreComposeApp {
-            MaterialTheme {
+            TransTheme {
                 Box(Modifier.fillMaxSize()) {
                     var greetingText by remember { mutableStateOf("Hello World!") }
                     var showImage by remember { mutableStateOf(false) }
