@@ -22,6 +22,8 @@ import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.ui.theme.TransTheme
+import com.seiko.imageloader.ImageLoader
+import com.seiko.imageloader.LocalImageLoader
 import moe.tlaster.precompose.PreComposeApp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -31,7 +33,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun App() {
     CompositionLocalProvider(
-        LocalDataSaver provides DataSaverUtils
+        LocalDataSaver provides DataSaverUtils,
+        LocalImageLoader provides remember { generateImageLoader() },
     ) {
         PreComposeApp {
             TransTheme {
@@ -75,3 +78,5 @@ fun App() {
 
 @Composable
 expect fun Toast(modifier: Modifier = Modifier)
+
+expect fun generateImageLoader(): ImageLoader

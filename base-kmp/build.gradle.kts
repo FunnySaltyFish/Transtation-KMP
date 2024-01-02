@@ -74,6 +74,7 @@ kotlin {
                 api(libs.precompose.viewmodel) // For ViewModel intergration
 
                 api("io.github.kevinnzou:compose-webview-multiplatform:1.8.0")
+                api("io.github.qdsfdhvh:image-loader:1.7.1")
             }
         }
 
