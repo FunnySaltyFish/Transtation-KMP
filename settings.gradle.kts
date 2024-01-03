@@ -31,5 +31,6 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":base-kmp")
+include(":ai")
 
 
