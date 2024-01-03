@@ -9,9 +9,11 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.JsonTransformingSerializer
+import org.json.JSONObject
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * 时间格式化，样式：2022-01-01 10:10:10
@@ -108,3 +110,17 @@ object LenientBigDecimalSerializer : JsonTransformingSerializer<BigDecimal>(BigD
 //    }
 //}
 typealias PriceSerializer = LenientBigDecimalSerializer
+
+// JSONObject
+object JSONObjectSerializer: KSerializer<JSONObject> {
+    override val descriptor: SerialDescriptor
+            = PrimitiveSerialDescriptor("JSONObject", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): JSONObject {
+        return JSONObject(decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: JSONObject) {
+        return encoder.encodeString(value.toString())
+    }
+}

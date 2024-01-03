@@ -75,6 +75,8 @@ kotlin {
 
                 implementation("com.mikepenz:multiplatform-markdown-renderer:0.10.0")
 
+                // import org.json.JSONObject
+                api("org.json:json:20210307")
             }
         }
 
