@@ -7,7 +7,10 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
-import com.funny.translation.helper.Log
+import com.funny.translation.helper.LocaleUtils
+import com.funny.translation.kmp.ActivityManager
+import com.funny.translation.kmp.KMPActivity
+import com.tencent.mmkv.MMKV
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -15,11 +18,10 @@ import kotlin.properties.Delegates
 open class BaseApplication : Application() {
     override fun attachBaseContext(base: Context?) {
         val context = base?.let {
-//            LocaleUtils.init(it)
-//            MMKV.initialize(base)
-//            val locale = LocaleUtils.getLocaleDirectly()
-//            LocaleUtils.getWarpedContext(it, locale)
-            base
+            LocaleUtils.init(it)
+            MMKV.initialize(base)
+            val locale = LocaleUtils.getLocaleDirectly()
+            LocaleUtils.getWarpedContext(it, locale)
         }
         super.attachBaseContext(context)
     }
@@ -32,15 +34,17 @@ open class BaseApplication : Application() {
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                activityStack.push(activity)
-                Log.d(TAG, "【${activity::class.java.simpleName}】 Created! currentStackSize:${activityStack.size}")
+                if (activity is KMPActivity) {
+                    ActivityManager.addActivity(activity)
+                }
             }
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityPaused(activity: Activity) {}
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
             override fun onActivityDestroyed(activity: Activity) {
-                if (activityStack.isNotEmpty()) activityStack.pop()
-                Log.d(TAG, "【${activity::class.java.simpleName}】 Destroyed! currentStackSize:${activityStack.size}")
+                if (activity is KMPActivity) {
+                    ActivityManager.removeActivity(activity)
+                }
             }
 
             override fun onActivityResumed(activity: Activity) {
@@ -62,9 +66,8 @@ open class BaseApplication : Application() {
             return ctx.packageManager.getPackageInfo(ctx.packageName, PackageManager.GET_CONFIGURATIONS)
         }
 
-        fun getCurrentActivity() = if (activityStack.isNotEmpty()) activityStack.peek() else null
+        fun getCurrentActivity() = ActivityManager.currentActivity()
 
-        private val activityStack = Stack<Activity>()
         private const val TAG = "BaseApplication"
     }
 }

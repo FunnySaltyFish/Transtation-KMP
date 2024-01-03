@@ -108,6 +108,9 @@ kotlin {
             api("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
             api("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
             api("com.google.accompanist:accompanist-permissions:$accompanist_version")
+
+            // 刘海屏适配
+            api("com.github.smarxpan:NotchScreenTool:0.0.1")
         }
 
         val desktopMain by getting {

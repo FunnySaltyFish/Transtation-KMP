@@ -177,14 +177,16 @@ internal actual fun DialogFullScreen(
  */
 @Immutable
 actual class AnyPopDialogProperties(
+    val direction: DirectionState,
     val dismissOnBackPress: Boolean = true,
     val dismissOnClickOutside: Boolean = true,
     val isAppearanceLightNavigationBars: Boolean = true,
-    val direction: DirectionState,
     val backgroundDimEnabled: Boolean = true,
     val durationMillis: Int = DefaultDurationMillis,
     val securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit
 ) {
+    actual constructor(direction: DirectionState): this(direction = direction, securePolicy = SecureFlagPolicy.Inherit)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is AnyPopDialogProperties) return false
