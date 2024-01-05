@@ -112,7 +112,7 @@ object OkHttpUtils {
 //            if (response.code in intArrayOf(401, 422) && requestUrl.startsWith(ServiceCreator.BASE_URL)){
 //                val clazz = Class.forName("com.funny.trans.login.LoginActivity")
 //                val intent = Intent().apply {
-//                    setClass(BaseApplication.ctx, clazz)
+//                    setClass(appCtx, clazz)
 //                }
 //                val activity = BaseApplication.getCurrentActivity()
 //                activity?.let {

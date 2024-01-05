@@ -29,7 +29,7 @@ object ServiceCreator {
 //            if (!AppConfig.developerMode.value) return
 //            field = value
 //            DataSaverUtils.saveData("BASE_URL", value)
-//            ApplicationUtil.restartApp(BaseApplication.ctx)
+//            ApplicationUtil.restartApp(appCtx)
         }
 
     private val retrofit by lazy {

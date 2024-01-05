@@ -22,7 +22,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "11"
             }
         }
     }
@@ -113,6 +113,8 @@ kotlin {
 
             // 刘海屏适配
             api("com.github.smarxpan:NotchScreenTool:0.0.1")
+
+            implementation("androidx.biometric:biometric:1.2.0-alpha05")
         }
 
         val desktopMain by getting {
@@ -151,8 +153,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     dependencies {

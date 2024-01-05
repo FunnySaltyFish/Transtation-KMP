@@ -7,7 +7,7 @@ import com.funny.compose.ai.service.aiService
 import com.funny.compose.ai.service.asFlow
 import com.funny.compose.ai.token.TokenCounter
 import com.funny.compose.ai.token.TokenCounters
-import com.funny.translation.BuildConfig
+import com.funny.translation.ai.BuildConfig
 import com.funny.translation.helper.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

@@ -90,6 +90,9 @@ mmkv = { group = "com.tencent", name = "mmkv", version = "1.3.2" }
 precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
 precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
 
+gradle-plugin-sqldelight = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
+gradle-plugin-libres = { group = "io.github.skeptick.libres", name = "gradle-plugin", version.ref = "libres" }
+gradle-plugin-buildKonfig = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

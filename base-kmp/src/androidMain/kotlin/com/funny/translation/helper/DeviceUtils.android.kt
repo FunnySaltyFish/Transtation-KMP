@@ -3,7 +3,7 @@ package com.funny.translation.helper
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
-import com.funny.translation.BaseApplication
+import com.funny.translation.kmp.appCtx
 
 actual object DeviceUtils {
 
@@ -13,7 +13,7 @@ actual object DeviceUtils {
 
     // 获取系统当前音量
     actual fun getSystemVolume(): Int {
-        val audioManager = BaseApplication.ctx.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val audioManager = appCtx.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
     }
 

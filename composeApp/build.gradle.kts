@@ -15,7 +15,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "11"
             }
         }
     }
@@ -27,6 +27,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":base-kmp"))
+                implementation(project(":ai"))
+                implementation(project(":login"))
             }
         }
 
@@ -67,8 +69,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
