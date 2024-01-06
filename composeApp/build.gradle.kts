@@ -1,10 +1,15 @@
+
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.libres)
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -24,6 +29,7 @@ kotlin {
     }
     
     sourceSets {
+
         val commonMain by getting {
             dependencies {
                 implementation(project(":base-kmp"))
@@ -85,6 +91,41 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.funny.translation.kmp"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+libres {
+    generatedClassName = "Res" // "Res" by default
+    generateNamedArguments = true // false by default
+    baseLocaleLanguageCode = "zh" // "en" by default
+    camelCaseNamesForAppleFramework = false // false by default
+}
+
+buildkonfig {
+    packageName = "com.funny.translation.login"
+    objectName = "BuildConfig"
+    // exposeObjectWithName = 'YourAwesomePublicConfig'
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "FLAVOR", "common")
+        buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.versions.project.versionName.get())
+        buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
+    }
+
+    defaultConfigs("common") {
+        buildConfigField(FieldSpec.Type.STRING, "FLAVOR", "common")
+    }
+
+    defaultConfigs("google") {
+        buildConfigField(FieldSpec.Type.STRING, "FLAVOR", "google")
+    }
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.funny.translation.database")
         }
     }
 }
