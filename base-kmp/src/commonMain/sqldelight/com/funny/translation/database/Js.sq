@@ -1,16 +1,20 @@
--- Define tables
+import com.funny.translation.translate.Language;
+import kotlin.Boolean;
+import kotlin.Int;
+import kotlin.collections.List;
+
 CREATE TABLE IF NOT EXISTS plugin (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT NOT NULL,
     fileName TEXT NOT NULL,
     code TEXT NOT NULL,
     author TEXT NOT NULL,
-    version INTEGER NOT NULL,
+    version INTEGER AS Int NOT NULL,
     description TEXT NOT NULL,
-    enabled INTEGER NOT NULL,
-    minSupportVersion INTEGER NOT NULL,
-    maxSupportVersion INTEGER NOT NULL,
-    targetSupportVersion INTEGER NOT NULL,
-    isOffline INTEGER NOT NULL,
-    debugMode INTEGER NOT NULL,
-    supportLanguages TEXT NOT NULL
+    enabled INTEGER AS Int NOT NULL,
+    minSupportVersion INTEGER AS Int NOT NULL DEFAULT 2,
+    maxSupportVersion INTEGER AS Int NOT NULL DEFAULT 999,
+    targetSupportVersion INTEGER AS Int NOT NULL,
+    isOffline INTEGER AS Boolean NOT NULL,
+    debugMode INTEGER AS Boolean NOT NULL,
+    supportLanguages TEXT AS List<Language> NOT NULL
 );

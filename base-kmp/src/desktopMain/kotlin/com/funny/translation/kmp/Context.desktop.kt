@@ -30,12 +30,12 @@ actual val appCtx = object : KMPContext() {
 
 actual fun KMPContext.openAssetsFile(fileName: String): InputStream {
     return runBlocking {
-        ByteArrayInputStream(resource(fileName).readBytes())
+        ByteArrayInputStream(resource("assets/$fileName").readBytes())
     }
 }
 
 actual fun KMPContext.readAssetsFile(fileName: String): String {
     return runBlocking {
-        resource(fileName).readBytes().toString()
+        resource("assets/$fileName").readBytes().toString()
     }
 }

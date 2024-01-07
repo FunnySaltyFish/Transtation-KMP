@@ -78,6 +78,8 @@ kotlin {
 
                 // import org.json.JSONObject
                 api("org.json:json:20210307")
+
+                implementation(libs.rhino)
             }
         }
 
@@ -86,7 +88,7 @@ kotlin {
             api(libs.androidx.activity.compose)
             api(libs.compose.ui.android)
 
-            implementation(libs.rhino.android)
+//            implementation(libs.rhino.android)
             implementation("com.github.getActivity:ToastUtils:12.0")
 
             // mmkv
@@ -120,7 +122,6 @@ kotlin {
             kotlin.srcDir("src/desktopMain/java")
             dependencies {
                 api(compose.desktop.currentOs)
-                implementation(libs.rhino)
 //                org.slf4j:slf4j-simple:2.0.3
                 implementation("org.slf4j:slf4j-simple:2.0.3")
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
