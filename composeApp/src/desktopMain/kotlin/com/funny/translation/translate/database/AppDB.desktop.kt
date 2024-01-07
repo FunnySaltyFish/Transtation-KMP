@@ -1,7 +1,8 @@
-package com.funny.translation.database
+package com.funny.translation.translate.database
 
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import com.funny.translation.database.Database
 
 actual class DriverFactory {
     actual fun createDriver(): SqlDriver {

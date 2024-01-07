@@ -39,11 +39,14 @@ kotlin {
         }
 
         androidMain.dependencies {
-
+            // sqldelight
+            implementation(libs.sqldelight.android.driver)
         }
 
         val desktopMain by getting {
             dependencies {
+                // sqldelight
+                implementation(libs.sqldelight.driver)
             }
         }
     }
@@ -103,7 +106,7 @@ libres {
 }
 
 buildkonfig {
-    packageName = "com.funny.translation.login"
+    packageName = "com.funny.translation.translate"
     objectName = "BuildConfig"
     // exposeObjectWithName = 'YourAwesomePublicConfig'
 

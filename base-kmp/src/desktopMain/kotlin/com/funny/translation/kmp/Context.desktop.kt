@@ -1,7 +1,15 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.funny.translation.kmp
 
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.resource
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+
 
 actual abstract class KMPContext {
     actual fun getString(id: Int): String {
@@ -18,4 +26,16 @@ actual val LocalKMPContext: ProvidableCompositionLocal<KMPContext> =
 
 actual val appCtx = object : KMPContext() {
 
+}
+
+actual fun KMPContext.openAssetsFile(fileName: String): InputStream {
+    return runBlocking {
+        ByteArrayInputStream(resource(fileName).readBytes())
+    }
+}
+
+actual fun KMPContext.readAssetsFile(fileName: String): String {
+    return runBlocking {
+        resource(fileName).readBytes().toString()
+    }
 }

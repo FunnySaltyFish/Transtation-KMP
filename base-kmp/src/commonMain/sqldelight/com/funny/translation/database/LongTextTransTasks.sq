@@ -2,13 +2,14 @@ import kotlin.Int;
 import kotlin.String;
 import kotlin.Pair;
 import kotlin.collections.List;
+import com.funny.translation.bean.EditablePrompt;
 
 CREATE TABLE IF NOT EXISTS longTextTransTasks (
     id TEXT PRIMARY KEY NOT NULL,
     chatBotId INTEGER AS Int NOT NULL,
     sourceText TEXT NOT NULL,
     resultText TEXT NOT NULL,
-    prompt TEXT NOT NULL,
+    prompt TEXT AS EditablePrompt NOT NULL,
     allCorpus TEXT AS List<Pair<String, String>> NOT NULL,
     sourceTextSegments TEXT AS List<Int> NOT NULL,
     resultTextSegments TEXT AS List<Int> NOT NULL,

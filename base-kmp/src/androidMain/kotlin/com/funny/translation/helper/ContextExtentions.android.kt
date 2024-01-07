@@ -6,24 +6,10 @@ import android.net.Uri
 import android.widget.Toast
 import com.funny.translation.helper.handler.runOnUI
 import com.funny.translation.kmp.base.strings.ResStrings
+import com.funny.translation.kmp.readAssetsFile
 import com.hjq.toast.Toaster
-import java.io.InputStream
 
-actual fun Context.readAssets(fileName: String): String {
-    var ins: InputStream? = null
-    return try {
-        ins = assets.open(fileName)
-        String(ins.readBytes())
-    } catch (e: Exception) {
-        ""
-    } finally {
-        try {
-            ins?.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-}
+actual fun Context.readAssets(fileName: String): String = readAssetsFile(fileName)
 
 fun Context.openUrl(url: String) {
     openUrl(Uri.parse(url))

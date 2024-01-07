@@ -1,4 +1,5 @@
 [versions]
+androidxPaging3Extensions = "2.0.1"
 precompose = "1.5.10"
 project-versionCode = "1"
 project-versionName = "1.0.0"
@@ -26,6 +27,7 @@ sqliteJdbcDriver = "3.36.0"
 androidxLifecycle = "2.7.0-rc02"
 libres = "1.2.2"
 buildKonfig = "0.15.1"
+roomCommon = "2.6.1"
 
 [libraries]
 # Kotlin
@@ -74,12 +76,12 @@ compose-ui-android = { module = "androidx.compose.ui:ui-android" }
 # SQLDelight
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqlDelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqlDelight" }
-sqldelight-coroutines-extension = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
 sqldelight-gradle-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
 sqldelight-driver = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
 sqldelight-android-driver = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqlDelight" }
 sqldelight-native-driver = { group = "app.cash.sqldelight", name = "native-driver", version.ref = "sqlDelight" }
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-androidx-paging3-extensions = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "androidxPaging3Extensions" }
 
 # Thirld-party
 rhino = { group = "org.mozilla", name = "rhino", version = "1.7.13" }
@@ -93,6 +95,7 @@ precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.re
 gradle-plugin-sqldelight = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
 gradle-plugin-libres = { group = "io.github.skeptick.libres", name = "gradle-plugin", version.ref = "libres" }
 gradle-plugin-buildKonfig = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -112,7 +115,7 @@ sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 androidx-lifecycle = ["androidx-lifecycle-common","androidx-lifecycle-runtime"]
 androidx-common = ["androidx-activity-compose","androidx-core-ktx"]
 kotlin-test = ["kotlin-kotlinTestCommon","kotlin-kotlinTestAnnotationsCommon"]
-sqldelight = ["sqldelight-runtime","sqldelight-coroutines-extension","sqldelight-driver"]
+sqldelight = ["sqldelight-runtime","sqldelight-coroutines-extensions","sqldelight-driver"]
 #mviKotlin = ["mviKotlin-dep","mviKotlin-main","mviKotlin-coroutines","mviKotlin-logging","mviKotlin-timetravel"]
 kotlinCommon = ["kotlin-coroutines", "kotlinx-serialization-json"]
 kotlinCoroutines = ["kotlin-coroutines"]

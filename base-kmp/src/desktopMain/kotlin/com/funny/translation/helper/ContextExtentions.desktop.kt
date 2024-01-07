@@ -1,14 +1,13 @@
 package com.funny.translation.helper
 
+import com.funny.translation.kmp.readAssetsFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext
 
 val scope = CoroutineScope(EmptyCoroutineContext)
 
-actual fun Context.readAssets(fileName: String): String  {
-    return ""
-}
+actual fun Context.readAssets(fileName: String): String  = readAssetsFile(fileName)
 
 // 0 -> Toast.LENGTH_SHORT
 actual inline fun Context.toastOnUi(message: Int, length: Int) {

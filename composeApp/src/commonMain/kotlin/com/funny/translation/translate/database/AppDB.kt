@@ -1,7 +1,11 @@
-package com.funny.translation.database
+package com.funny.translation.translate.database
 
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
+import com.funny.translation.database.Database
+import com.funny.translation.database.StringListAdapter
+import com.funny.translation.database.TransHistory
+import com.funny.translation.helper.now
 
 expect class DriverFactory {
     fun createDriver(): SqlDriver
@@ -23,3 +27,8 @@ fun createDatabase(driverFactory: DriverFactory): Database {
 }
 
 expect val appDB: Database
+
+
+private fun test() {
+    appDB.transHistoryQueries.queryAllBetween(0, now()).executeAsList()
+}

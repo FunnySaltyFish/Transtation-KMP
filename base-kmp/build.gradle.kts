@@ -66,6 +66,7 @@ kotlin {
                 // sqlDelight
                 api(libs.sqldelight.primitive.adapters)
                 api(libs.sqldelight.coroutines.extensions)
+                api(libs.sqldelight.androidx.paging3.extensions)
 
                 api(libs.precompose)
                 api(libs.precompose.viewmodel) // For ViewModel intergration
@@ -88,8 +89,6 @@ kotlin {
             implementation(libs.rhino.android)
             implementation("com.github.getActivity:ToastUtils:12.0")
 
-            // sqldelight
-            implementation(libs.sqldelight.android.driver)
             // mmkv
             api(libs.mmkv)
 
@@ -126,8 +125,6 @@ kotlin {
                 implementation("org.slf4j:slf4j-simple:2.0.3")
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
-                // sqldelight
-                implementation(libs.sqldelight.driver)
             }
         }
 
