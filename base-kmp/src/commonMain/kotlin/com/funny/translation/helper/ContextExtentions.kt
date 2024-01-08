@@ -1,10 +1,12 @@
 package com.funny.translation.helper
 
 import com.funny.translation.kmp.KMPContext
+import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.ui.toast.ToastUIState
 import java.io.File
 
 typealias Context = KMPContext
+val LocalContext = LocalKMPContext
 
 private const val TAG = "ContextExtensions"
 

@@ -13,5 +13,5 @@ expect object ActivityManager {
     fun removeActivity(activity: KMPActivity)
     fun currentActivity(): KMPActivity?
 
-    fun <Result> start(activity: KMPActivity, data: Map<String, Any?>, options: NavOptions = NavOptions(), onBack: (result: Map<String, Any?>?) -> Unit = {})
+    fun start(activityClass: Class<out KMPActivity>, data: Map<String, Any?> = emptyMap(), options: NavOptions = NavOptions(), onBack: (result: Map<String, Any?>?) -> Unit = {})
 }

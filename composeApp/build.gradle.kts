@@ -1,6 +1,7 @@
 
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -32,19 +33,35 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation(project(":base-kmp"))
-                implementation(project(":ai"))
-                implementation(project(":login"))
+                addProjectDependencies()
             }
         }
 
         androidMain.dependencies {
+            addProjectDependencies()
+
             // sqldelight
             implementation(libs.sqldelight.android.driver)
+
+            // 图片选择器
+            implementation(platform("cn.qhplus.emo:bom:2023.08.00"))
+            implementation("cn.qhplus.emo:photo-coil")
+            // 图片裁剪
+            implementation("com.github.yalantis:ucrop:2.2.6")
+
+            // CameraX core library using the camera2 implementation
+            val camerax_version = "1.3.1"
+            // If you want to additionally use the CameraX View class
+            implementation("androidx.camera:camera-view:${camerax_version}")
+            implementation("androidx.camera:camera-camera2:${camerax_version}")
+            // If you want to additionally use the CameraX Lifecycle library
+            implementation("androidx.camera:camera-lifecycle:${camerax_version}")
         }
 
         val desktopMain by getting {
             dependencies {
+                addProjectDependencies()
+                
                 // sqldelight
                 implementation(libs.sqldelight.driver)
             }
@@ -84,6 +101,12 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
+}
+
+fun KotlinDependencyHandler.addProjectDependencies() {
+    implementation(project(":base-kmp"))
+    implementation(project(":ai"))
+    implementation(project(":login"))
 }
 
 compose.desktop {

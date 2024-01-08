@@ -34,6 +34,15 @@ kotlin {
     
     sourceSets {
 
+        // 指定 androidx.paging 的版本为 3.2.0
+        val pagingVersion = "3.2.0"
+        configurations.all {
+            resolutionStrategy {
+                force("androidx.paging:paging-runtime:$pagingVersion")
+                force("androidx.paging:paging-common:$pagingVersion")
+            }
+        }
+
         val commonMain by getting {
             dependencies {
                 api(project.dependencies.platform(libs.compose.bom))
@@ -43,6 +52,7 @@ kotlin {
                 api(compose.ui)
                 @OptIn(ExperimentalComposeLibrary::class)
                 api(compose.components.resources)
+                api(compose.materialIconsExtended)
 
                 // JVM-specific dependencies like OkHttp and Retrofit
                 api("com.squareup.okhttp3:okhttp:4.11.0")
@@ -67,6 +77,10 @@ kotlin {
                 api(libs.sqldelight.primitive.adapters)
                 api(libs.sqldelight.coroutines.extensions)
                 api(libs.sqldelight.androidx.paging3.extensions)
+
+                // androidx.paging
+                implementation("androidx.paging:paging-runtime:$pagingVersion")
+                implementation("androidx.paging:paging-common:$pagingVersion")
 
                 api(libs.precompose)
                 api(libs.precompose.viewmodel) // For ViewModel intergration

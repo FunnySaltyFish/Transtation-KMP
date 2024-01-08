@@ -40,4 +40,6 @@
     <string name="err_write_text">写入文件时发生错误</string>
     <string name="always_light">始终浅色</string>
     <string name="always_dark">始终深色</string>
+    <string name="loading_error">糟糕，加载失败了</string>
+    <string name="loading_empty">内容为空</string>
 </resources>

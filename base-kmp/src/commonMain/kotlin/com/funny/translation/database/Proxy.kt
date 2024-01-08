@@ -13,7 +13,7 @@ import java.lang.reflect.Proxy
 private const val TAG = "DaoProxy"
 
 // 转换 Dao 的调用为 SqlDelight 的调用
-class DaoProxy<T>(private val sqlDelightQueries: Any, private val beanClazz: Class<T>) : InvocationHandler {
+class DaoProxy(private val sqlDelightQueries: Any) : InvocationHandler {
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         return callAppropriateMethod(method, args)
 //            ?: callMethod(roomDao, method, args, beanClazz, beanClazz)
@@ -35,9 +35,7 @@ class DaoProxy<T>(private val sqlDelightQueries: Any, private val beanClazz: Cla
         return when (returnType) {
             List::class.java -> query.executeAsList()
             Flow::class.java -> query.executeAsFlowList()
-            beanClazz -> query.executeAsOneOrNull()
-            Unit::class.java -> query.executeAsOneOrNull()
-            else -> throw UnsupportedOperationException("Method ${method.name} not supported")
+            else -> query.executeAsOneOrNull()
         }
     }
 
@@ -66,8 +64,8 @@ class DaoProxy<T>(private val sqlDelightQueries: Any, private val beanClazz: Cla
 }
 
 // 工厂函数创建代理
-inline fun <reified T : Any> createDaoProxy(sqlDelightQueries: Any, beanClazz: Class<*>): T {
-    val handler = DaoProxy(sqlDelightQueries, beanClazz)
+inline fun <reified T : Any> createDaoProxy(sqlDelightQueries: Any): T {
+    val handler = DaoProxy(sqlDelightQueries)
     return Proxy.newProxyInstance(
         T::class.java.classLoader,
         arrayOf(T::class.java),

@@ -1,31 +1,19 @@
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.funny.data_saver.core.LocalDataSaver
-import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.DataSaverUtils
-import com.funny.translation.helper.toastOnUi
-import com.funny.translation.kmp.LocalKMPContext
-import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.theme.TransTheme
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import moe.tlaster.precompose.PreComposeApp
 import org.intellij.lang.annotations.Language
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Language("Markdown")
 const val markdown =  """
@@ -94,40 +82,24 @@ $$
 $$
 """
 
-@OptIn(ExperimentalResourceApi::class)
+/**
+ * Wraps the content, include
+ * - CompositionLocalProvider: [LocalDataSaver], [LocalImageLoader]
+ * - [PreComposeApp]
+ * - [TransTheme]
+ * - [Toast]
+ * @param content [@androidx.compose.runtime.Composable] [@kotlin.ExtensionFunctionType] Function1<BoxWithConstraintsScope, Unit>
+ */
 @Composable
-fun App() {
+fun App(content: @Composable BoxWithConstraintsScope.() -> Unit = {}) {
     CompositionLocalProvider(
         LocalDataSaver provides DataSaverUtils,
         LocalImageLoader provides remember { generateImageLoader() },
     ) {
         PreComposeApp {
             TransTheme {
-                Box(Modifier.fillMaxSize()) {
-                    var greetingText by remember { mutableStateOf("Hello World!") }
-                    var showImage by remember { mutableStateOf(false) }
-                    val context = LocalKMPContext.current
-                    Column(
-                        Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Button(onClick = {
-                            greetingText = "Compose: ${Greeting().greet()}"
-                            showImage = !showImage
-                            context.toastOnUi("测试toast")
-                        }) {
-                            Text(greetingText)
-                        }
-
-                        var switch by rememberDataSaverState<Boolean>(
-                            key = "switch",
-                            initialValue = false
-                        )
-                        Switch(checked = switch, onCheckedChange = { switch = it })
-
-                        MarkdownText(markdown)
-                    }
-
+                BoxWithConstraints(Modifier.fillMaxSize()) {
+                    content()
                     Toast(
                         modifier = Modifier.align(Alignment.BottomEnd)
                     )

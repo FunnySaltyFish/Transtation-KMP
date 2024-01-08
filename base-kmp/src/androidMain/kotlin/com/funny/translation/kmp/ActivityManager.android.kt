@@ -27,12 +27,13 @@ actual object ActivityManager {
         return activityStack.lastOrNull()
     }
 
-    actual fun <Result> start(
-        activity: KMPActivity,
+    actual fun start(
+        activityClass: Class<out KMPActivity>,
         data: Map<String, Any?>,
         options: NavOptions,
         onBack: (result: Map<String, Any?>?) -> Unit
     ) {
+        val activity = activityStack.find { it::class.java == activityClass } ?: return
         if (activity !is ComponentActivity) return
         val launcher = activityResultLaunchers[activity] ?: activity.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()

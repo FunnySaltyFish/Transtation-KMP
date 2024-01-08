@@ -11,7 +11,12 @@ import com.funny.translation.translate.TranslationResult
 
 typealias TransFavoriteBean = TransFavorite
 
-fun TransFavoriteBean.fromTransResult(transResult: TranslationResult, sourceString: String, sourceLanguageId: Int) =
+
+fun fromTransResult(
+    transResult: TranslationResult,
+    sourceString: String,
+    sourceLanguageId: Int
+) =
     TransFavoriteBean(
         id = 0,
         sourceString = sourceString,
@@ -21,6 +26,7 @@ fun TransFavoriteBean.fromTransResult(transResult: TranslationResult, sourceStri
         engineName = transResult.engineName,
         time = System.currentTimeMillis(),
     )
+
 
 @Dao
 interface TransFavoriteDao {

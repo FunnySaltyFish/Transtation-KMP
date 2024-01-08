@@ -9,3 +9,23 @@ CREATE TABLE IF NOT EXISTS transFavorite (
     engineName TEXT NOT NULL DEFAULT '未知引擎',
     time INTEGER NOT NULL
 );
+
+-- Queries for TransFavoriteDao
+
+-- Query to select all TransFavoriteBeans with paging
+queryAllPaging:
+SELECT * FROM transFavorite ORDER BY id DESC;
+
+-- Insert a TransFavoriteBean
+insertTransFavorite:
+INSERT INTO transFavorite (sourceString, resultText, sourceLanguageId, targetLanguageId, engineName, time)
+VALUES ?;
+
+-- Delete a TransFavoriteBean
+deleteTransFavorite:
+DELETE FROM transFavorite WHERE id = ?;
+
+-- Query to count TransFavoriteBeans based on criteria
+count:
+SELECT COUNT(1) FROM transFavorite
+WHERE sourceString = ? AND resultText = ? AND sourceLanguageId = ? AND targetLanguageId = ? AND engineName = ?;

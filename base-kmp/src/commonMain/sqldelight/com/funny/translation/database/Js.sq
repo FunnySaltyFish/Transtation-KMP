@@ -18,3 +18,45 @@ CREATE TABLE IF NOT EXISTS plugin (
     debugMode INTEGER AS Boolean NOT NULL,
     supportLanguages TEXT AS List<Language> NOT NULL
 );
+
+-- Queries for JsDao
+
+-- Query to select all JsBeans
+getAllJs:
+SELECT * FROM plugin;
+
+-- Query to select all JsBeans as Flow
+getAllJsFlow:
+SELECT * FROM plugin;
+
+-- Query to select all enabled JsBeans as Flow
+getEnabledJs:
+SELECT * FROM plugin WHERE enabled > 0;
+
+-- Query to get the count of JsBeans
+getJsCount:
+SELECT COUNT(*) FROM plugin;
+
+-- Query to select a JsBean by name
+queryJsByName:
+SELECT * FROM plugin WHERE fileName = ?;
+
+-- Insert a JsBean
+insertJs:
+INSERT INTO plugin (fileName, code, author, version, description, enabled, minSupportVersion, maxSupportVersion, targetSupportVersion, isOffline, debugMode, supportLanguages)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Insert a list of JsBeans
+insertJsList:
+INSERT INTO plugin (fileName, code, author, version, description, enabled, minSupportVersion, maxSupportVersion, targetSupportVersion, isOffline, debugMode, supportLanguages)
+VALUES ?;
+
+-- Delete a JsBean by name
+deleteJsByName:
+DELETE FROM plugin WHERE fileName = ?;
+
+-- Update a JsBean
+updateJs:
+UPDATE plugin
+SET fileName = ?, code = ?, author = ?, version = ?, description = ?, enabled = ?, minSupportVersion = ?, maxSupportVersion = ?, targetSupportVersion = ?, isOffline = ?, debugMode = ?, supportLanguages = ?
+WHERE fileName = ?;

@@ -1,6 +1,7 @@
 package com.funny.translation.helper
 
 import androidx.core.net.toUri
+import com.eygraber.uri.toUri
 import com.funny.translation.kmp.KMPContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -14,7 +15,7 @@ actual suspend fun UserUtils.uploadUserAvatar(
     uid: Int
 ): String {
     try {
-        val data = BitmapUtil.getBitmapFormUri(context, TARGET_AVATAR_SIZE, TARGET_AVATAR_SIZE, 1024 * 100, imgUri.toUri())
+        val data = BitmapUtil.getBitmapFromUri(context, TARGET_AVATAR_SIZE, TARGET_AVATAR_SIZE, 1024 * 100, imgUri.toUri().toUri())
             ?: return ""
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)

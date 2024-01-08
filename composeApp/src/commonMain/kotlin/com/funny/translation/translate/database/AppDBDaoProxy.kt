@@ -2,6 +2,7 @@ package com.funny.translation.translate.database
 
 import com.funny.translation.database.Database
 import com.funny.translation.database.createDaoProxy
+import com.funny.translation.js.JsDao
 
 
 /*
@@ -14,5 +15,13 @@ import com.funny.translation.database.createDaoProxy
  */
 
 val Database.transHistoryDao by lazy {
-    createDaoProxy<TransHistoryDao>(appDB.transHistoryQueries, TransHistoryBean::class.java)
+    createDaoProxy<TransHistoryDao>(appDB.transHistoryQueries)
+}
+
+val Database.jsDao by lazy {
+    createDaoProxy<JsDao>(appDB.jsQueries)
+}
+
+val Database.transFavoriteDao by lazy {
+    createDaoProxy<TransFavoriteDao>(appDB.transFavoriteQueries)
 }
