@@ -35,31 +35,28 @@ class DaoProxy(private val sqlDelightQueries: Any) : InvocationHandler {
         return when (returnType) {
             List::class.java -> query.executeAsList()
             Flow::class.java -> query.executeAsFlowList()
-            else -> query.executeAsOneOrNull()
+            else ->  callAndConvert(returnType, query)
         }
     }
 
-    private fun callMethod(
-        target: Any,
-        method: Method,
-        args: Array<out Any>?,
-        expectedReturnType: Class<*>? = null,
-        expectedGenericType: Class<*>? = null
+    /**
+     * 调用方法并进行适当的类型转换，目前做的有
+     * 1. 如果返回值是 Query<Long> 而 Dao 的返回值是 Int（count方法），那么就转为 Int
+     */
+    private fun callAndConvert(
+        daoReturnType: Class<*>,
+        query: Query<*>
     ): Any? {
-        val result = method.invoke(target, *args.orEmpty())
+        val executedQuery = query.executeAsOneOrNull() ?: return null
+        return when {
+            daoReturnType == Int::class.java && executedQuery is Long -> {
+                executedQuery.toInt()
+            }
 
-        if (expectedReturnType != null && !expectedReturnType.isAssignableFrom(method.returnType)) {
-            throw UnsupportedOperationException("Method ${method.name} does not return expected type.")
-        }
-
-        if (expectedGenericType != null && result is List<*> && result.isNotEmpty() && result[0] != null) {
-            val actualGenericType = result[0]!!.javaClass
-            if (!expectedGenericType.isAssignableFrom(actualGenericType)) {
-                throw UnsupportedOperationException("Method ${method.name} does not return expected generic type.")
+            else -> {
+                executedQuery
             }
         }
-
-        return result
     }
 }
 

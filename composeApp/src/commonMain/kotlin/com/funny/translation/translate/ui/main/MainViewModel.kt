@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import app.cash.sqldelight.paging3.QueryPagingSource
 import com.funny.compose.ai.utils.ModelManager
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.AppConfig
@@ -114,7 +115,13 @@ class MainViewModel : ViewModel() {
 
     val transHistories by lazy {
         Pager(PagingConfig(pageSize = 10)) {
-            appDB.transHistoryDao.queryAllPaging()
+            val queries = appDB.transHistoryQueries
+            QueryPagingSource(
+                countQuery = queries.countHistory(),
+                transacter = queries,
+                context = Dispatchers.IO,
+                queryProvider = queries::queryAllPaging,
+            )
         }.flow.cachedIn(viewModelScope)
     }
 

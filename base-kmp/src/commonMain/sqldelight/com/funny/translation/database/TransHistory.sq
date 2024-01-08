@@ -11,11 +11,15 @@ CREATE TABLE IF NOT EXISTS transHistory (
     time INTEGER NOT NULL
 );
 
+countHistory:
+SELECT COUNT(*) FROM transHistory;
+
 -- Query to get the latest entries for each unique sourceString
-selectAllPaging:
+queryAllPaging:
 SELECT * FROM transHistory
 WHERE id IN (SELECT max(id) AS id FROM transHistory GROUP BY sourceString)
-ORDER BY id DESC;
+ORDER BY id DESC
+LIMIT :limit OFFSET :offset;
 
 -- Query to delete a TransHistory entry by id
 deleteTransHistory:

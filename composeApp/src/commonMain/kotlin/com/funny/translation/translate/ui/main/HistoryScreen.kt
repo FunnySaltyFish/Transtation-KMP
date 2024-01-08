@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -111,7 +112,7 @@ private fun TransFavoriteList(
                             ClipBoardUtil.copy(transHistory.sourceString)
                         }) {
                             FixedSizeIcon(
-                                org.jetbrains.compose.resources.painterResource("drawable/ic_copy_content.png"),
+                                Icons.Default.CopyAll,
                                 ResStrings.copy_content
                             )
                         }

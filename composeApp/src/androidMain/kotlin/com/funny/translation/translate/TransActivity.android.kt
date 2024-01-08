@@ -18,11 +18,17 @@ actual class TransActivity : BaseActivity(), KMPActivity {
     actual var navController: NavController by Delegates.notNull()
     private lateinit var activityViewModel: ActivityViewModel
 
+    private var initialized = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activityViewModel = ActivityViewModel()
+        if (!initialized) {
+            activityViewModel = ActivityViewModel()
+            initLanguageDisplay()
+            initialized = true
+        }
 
         setContent {
             App {
