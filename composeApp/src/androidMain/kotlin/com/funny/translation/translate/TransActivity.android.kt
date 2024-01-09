@@ -2,7 +2,6 @@
 
 package com.funny.translation.translate
 
-import App
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -14,6 +13,7 @@ import com.funny.translation.kmp.KMPActivity
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.rememberNavController
 import com.funny.translation.sign.SignUtils
+import com.funny.translation.translate.ui.App
 import com.funny.translation.translate.utils.SortResultUtils
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates

@@ -1,3 +1,5 @@
+package com.funny.translation.kmp
+
 import android.os.Build
 
 class AndroidPlatform : Platform {

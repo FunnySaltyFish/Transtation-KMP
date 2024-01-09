@@ -58,7 +58,7 @@ fun FavoriteScreen(
     ) {
         val navController = LocalNavController.current
         val vm: FavoriteViewModel = viewModel()
-        TransFavoriteList(
+        TransHistoryList(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -78,7 +78,7 @@ fun FavoriteScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun TransFavoriteList(
+private fun TransHistoryList(
     modifier: Modifier,
     transFavorites: LazyPagingItems<TransFavoriteBean>,
     onClickItem: (TransFavoriteBean) -> Unit,

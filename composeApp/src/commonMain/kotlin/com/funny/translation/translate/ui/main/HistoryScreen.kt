@@ -53,7 +53,7 @@ fun HistoryScreen(
                 CommonNavBackIcon(navigateBackAction = navigateBackAction)
             }
         )
-        TransFavoriteList(
+        TransHistoryList(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -73,7 +73,7 @@ fun HistoryScreen(
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalResourceApi::class)
 @Composable
-private fun TransFavoriteList(
+private fun TransHistoryList(
     modifier: Modifier,
     transHistories: LazyPagingItems<TransHistoryBean>,
     onClickHistory: (TransHistoryBean) -> Unit,

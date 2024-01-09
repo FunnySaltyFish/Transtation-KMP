@@ -4,7 +4,6 @@
 
 package com.funny.translation.kmp
 
-import App
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -14,6 +13,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.tooling.preview.Preview
 import com.funny.translation.BaseActivity
 import com.funny.translation.translate.AppNavigation
+import com.funny.translation.translate.ui.App
 
 
 class MainActivity : BaseActivity() {

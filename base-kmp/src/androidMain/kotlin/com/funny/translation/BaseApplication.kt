@@ -7,9 +7,11 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
+import android.view.Gravity
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.KMPActivity
+import com.hjq.toast.Toaster
 import com.tencent.mmkv.MMKV
 import java.util.*
 import kotlin.properties.Delegates
@@ -29,8 +31,9 @@ open class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-//        MMKV.initialize(this)
         ctx = this
+        Toaster.init(this)
+        Toaster.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 260)
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
