@@ -1,14 +1,20 @@
 package com.funny.translation.network
 
 import androidx.annotation.Keep
+import com.funny.translation.AppConfig
+import com.funny.translation.BuildConfig
+import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.DataSaverUtils
+import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.helper.Log
+import com.funny.translation.sign.SignUtils
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 @Keep
@@ -36,69 +42,69 @@ object OkHttpUtils {
         connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
         readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
         cache(cache)
-//        addInterceptor(HttpCacheInterceptor())
-//        // set request cookie
-//        // 添加自定义请求头
-//        addInterceptor {
-//            val request = it.request()
-//            val builder = request.newBuilder()
-//            var newUrl = URL(removeExtraSlashOfUrl(request.url.toString()))
-//            val domain = request.url.host
-//            // get domain cookie
-//            if (domain.isNotEmpty()) {
-//                val spDomain: String = DataSaverUtils.readData(domain, "")
-//                val cookie: String = spDomain.ifEmpty { "" }
-//                if (cookie.isNotEmpty()) {
-//                    builder.addHeader(COOKIE_NAME, cookie)
+        addInterceptor(HttpCacheInterceptor())
+        // set request cookie
+        // 添加自定义请求头
+        addInterceptor {
+            val request = it.request()
+            val builder = request.newBuilder()
+            var newUrl = URL(removeExtraSlashOfUrl(request.url.toString()))
+            val domain = request.url.host
+            // get domain cookie
+            if (domain.isNotEmpty()) {
+                val spDomain: String = DataSaverUtils.readData(domain, "")
+                val cookie: String = spDomain.ifEmpty { "" }
+                if (cookie.isNotEmpty()) {
+                    builder.addHeader(COOKIE_NAME, cookie)
+                }
+            }
+            // 对所有向本项目请求的域名均加上应用名称
+            if (newUrl.toString().startsWith(ServiceCreator.BASE_URL)){
+                builder.addHeader("Referer", "FunnyTranslation")
+                builder.addHeader("User-Agent", "FunnyTranslation/${AppConfig.versionCode}")
+                builder.addHeader("App-Build-Type", BuildConfig.BUILD_TYPE)
+                builder.addHeader("App-Flavor", BuildConfig.FLAVOR)
+                builder.addHeader("Accept-Language", LocaleUtils.getAppLanguage().toLocale().language)
+            }
+
+//            val invocation = request.tag(Invocation::class.java)
+//            if (invocation != null) {
+//                // 对 JwtTokenRequired 的注解加上请求头
+//                val shouldAddToken = invocation.method().getAnnotation(JwtTokenRequired::class.java) != null
+//                if (shouldAddToken) {
+//                    val jwt = AppConfig.jwtToken
+//                    if (jwt != "") builder.addHeader("Authorization", "Bearer $jwt")
 //                }
 //            }
-//            // 对所有向本项目请求的域名均加上应用名称
-//            if (newUrl.toString().startsWith(ServiceCreator.BASE_URL)){
-//                builder.addHeader("Referer", "FunnyTranslation")
-//                builder.addHeader("User-Agent", "FunnyTranslation/${AppConfig.versionCode}")
-//                builder.addHeader("App-Build-Type", BuildConfig.BUILD_TYPE)
-//                builder.addHeader("App-Flavor", BuildConfig.FLAVOR)
-//                builder.addHeader("Accept-Language", LocaleUtils.getAppLanguage().toLocale().language)
-//            }
-//
-////            val invocation = request.tag(Invocation::class.java)
-////            if (invocation != null) {
-////                // 对 JwtTokenRequired 的注解加上请求头
-////                val shouldAddToken = invocation.method().getAnnotation(JwtTokenRequired::class.java) != null
-////                if (shouldAddToken) {
-////                    val jwt = AppConfig.jwtToken
-////                    if (jwt != "") builder.addHeader("Authorization", "Bearer $jwt")
-////                }
-////            }
-//
-//            // 访问 trans/v1下的所有api均带上请求头-jwt
-//            if (newUrl.path.startsWith(ServiceCreator.TRANS_PATH)){
-//                val jwt = AppConfig.jwtToken
-//                if (jwt != "") builder.addHeader("Authorization", "Bearer $jwt")
-//            }
-//
-//            if (newUrl.path.startsWith(ServiceCreator.TRANS_PATH + "api/translate")){
-//                if (GlobalTranslationConfig.isValid()) {
-//                    builder.addHeader("sign", SignUtils.encodeSign(
-//                        uid = AppConfig.uid.toLong(), appVersionCode = AppConfig.versionCode,
-//                        sourceLanguageCode = GlobalTranslationConfig.sourceLanguage!!.id,
-//                        targetLanguageCode = GlobalTranslationConfig.targetLanguage!!.id,
-//                        text = GlobalTranslationConfig.sourceString!!,
-//                        extra = ""
-//                    ).also {
-//                        Log.d(TAG, "createBaseClient: add sign: $it")
-//                    })
-//
-//                    // 对于文本翻译，如果是 vip 且开启了显示详细结果，那么加上 show_detail=true
-//                    if (!newUrl.path.endsWith("translate_image") && AppConfig.isVip() && AppConfig.sShowDetailResult.value) {
-//                        newUrl = URL("$newUrl&show_detail=true")
-//                    }
-//                }
-//            }
-//
-//            builder.url(newUrl)
-//            it.proceed(builder.build())
-//        }
+
+            // 访问 trans/v1下的所有api均带上请求头-jwt
+            if (newUrl.path.startsWith(ServiceCreator.TRANS_PATH)){
+                val jwt = AppConfig.jwtToken
+                if (jwt != "") builder.addHeader("Authorization", "Bearer $jwt")
+            }
+
+            if (newUrl.path.startsWith(ServiceCreator.TRANS_PATH + "api/translate")){
+                if (GlobalTranslationConfig.isValid()) {
+                    builder.addHeader("sign", SignUtils.encodeSign(
+                        uid = AppConfig.uid.toLong(), appVersionCode = AppConfig.versionCode,
+                        sourceLanguageCode = GlobalTranslationConfig.sourceLanguage!!.id,
+                        targetLanguageCode = GlobalTranslationConfig.targetLanguage!!.id,
+                        text = GlobalTranslationConfig.sourceString!!,
+                        extra = ""
+                    ).also {
+                        Log.d(TAG, "createBaseClient: add sign: $it")
+                    })
+
+                    // 对于文本翻译，如果是 vip 且开启了显示详细结果，那么加上 show_detail=true
+                    if (!newUrl.path.endsWith("translate_image") && AppConfig.isVip() && AppConfig.sShowDetailResult.value) {
+                        newUrl = URL("$newUrl&show_detail=true")
+                    }
+                }
+            }
+
+            builder.url(newUrl)
+            it.proceed(builder.build())
+        }
 
         // get response cookie
 //        addInterceptor { chain ->

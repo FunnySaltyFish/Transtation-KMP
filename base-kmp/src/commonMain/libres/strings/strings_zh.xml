@@ -42,4 +42,5 @@
     <string name="always_dark">始终深色</string>
     <string name="loading_error">糟糕，加载失败了</string>
     <string name="loading_empty">内容为空</string>
+    <string name="no_network">"当前似乎没有联网哦~"</string>
 </resources>

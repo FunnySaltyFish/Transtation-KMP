@@ -1,10 +1,14 @@
 package com.funny.translation.helper
 
 import org.mozilla.javascript.Context
+import org.mozilla.javascript.ContextFactory
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.ScriptableObject
+import org.mozilla.javascript.WrapFactory
+import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
+
 
 private const val DefaultID = "default"
 
@@ -12,13 +16,32 @@ object ScriptEngine {
     private val contexts = ConcurrentHashMap<String, Context>()
     private val scopes = ConcurrentHashMap<String, ScriptableObject>()
 
+    private val contextFactory = ContextFactory()
+
     private fun getContext(scriptId: String = DefaultID): Context {
-        return contexts.computeIfAbsent(scriptId) {
-            val cx = Context.enter()
-            cx.optimizationLevel = -1 // 关闭优化以兼容所有 Android 设备
-            cx
+        return contextFactory.enterContext().apply {
+            optimizationLevel = -1
+            languageVersion = Context.VERSION_ES6
+            setLocale(Locale.getDefault())
+            wrapFactory = WrapFactory()
+        }.also {
+            contexts[scriptId] = it
         }
     }
+
+//    private fun getContext(scriptId: String = DefaultID): Context {
+//        return contexts.computeIfAbsent(scriptId) {
+//            val cx = Context.enter()
+//            cx.optimizationLevel = -1 // 关闭优化以兼容所有 Android 设备
+//            cx.languageVersion = Context.VERSION_ES6
+//            cx.setLocale(Locale.getDefault())
+//            cx.wrapFactory = WrapFactory()
+//            val scope = ImporterTopLevel()
+//            scope.initStandardObjects(Context.getCurrentContext(), false)
+//            scopes[scriptId] = scope
+//            cx
+//        }
+//    }
 
     private fun getScope(scriptId: String = DefaultID): ScriptableObject {
         return scopes.computeIfAbsent(scriptId) {
@@ -31,7 +54,7 @@ object ScriptEngine {
     }
 
     fun eval(script: String, scriptId: String = DefaultID): Any? {
-        return getContext(scriptId).use { cx ->
+        return getContext(scriptId).let { cx ->
             getScope(scriptId).let { scope ->
                 cx.evaluateString(scope, script, scriptId, 1, null)
             }
@@ -43,7 +66,7 @@ object ScriptEngine {
         val function = scope.get(functionName, scope) as? Function
             ?: throw IllegalArgumentException("Function $functionName not found in script $scriptId")
 
-        return getContext(scriptId).use { cx ->
+        return getContext(scriptId).let { cx ->
             function.call(cx, scope, scope, args)
         }
     }
@@ -53,7 +76,7 @@ object ScriptEngine {
         val function = obj.get(methodName, scope) as? Function
             ?: throw IllegalArgumentException("Function $methodName not found in script $scriptId")
 
-        return getContext(scriptId).use { cx ->
+        return getContext(scriptId).let { cx ->
             function.call(cx, scope, obj, args)
         }
     }

@@ -12,11 +12,15 @@ import java.lang.reflect.Proxy
 
 private const val TAG = "DaoProxy"
 
-// 转换 Dao 的调用为 SqlDelight 的调用
+/**
+ * 转换 Dao 的调用为 SqlDelight 的调用
+ * @author [FunnySaltyFish](https://github.com/FunnySaltyFish)
+ *
+  */
+
 class DaoProxy(private val sqlDelightQueries: Any) : InvocationHandler {
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         return callAppropriateMethod(method, args)
-//            ?: callMethod(roomDao, method, args, beanClazz, beanClazz)
     }
 
     private fun callAppropriateMethod(
@@ -41,7 +45,7 @@ class DaoProxy(private val sqlDelightQueries: Any) : InvocationHandler {
 
     /**
      * 调用方法并进行适当的类型转换，目前做的有
-     * 1. 如果返回值是 Query<Long> 而 Dao 的返回值是 Int（count方法），那么就转为 Int
+     * 1. 如果返回值是 Long 而 Dao 的返回值是 Int（count方法），那么就转为 Int
      */
     private fun callAndConvert(
         daoReturnType: Class<*>,

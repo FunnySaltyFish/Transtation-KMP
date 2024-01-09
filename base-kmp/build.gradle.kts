@@ -130,6 +130,7 @@ kotlin {
             api("com.github.smarxpan:NotchScreenTool:0.0.1")
 
             implementation("androidx.biometric:biometric:1.2.0-alpha05")
+
         }
 
         val desktopMain by getting {
@@ -201,6 +202,7 @@ buildkonfig {
         buildConfigField(STRING, "FLAVOR", "common")
         buildConfigField(STRING, "VERSION_NAME", libs.versions.project.versionName.get())
         buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
+        buildConfigField(STRING, "BUILD_TYPE", "debug")
     }
 
     defaultConfigs("common") {

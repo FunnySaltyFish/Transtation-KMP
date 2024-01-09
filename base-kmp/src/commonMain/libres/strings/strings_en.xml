@@ -42,4 +42,6 @@
     <string name="always_dark">Always Dark</string>
     <string name="loading_error">Loading error</string>
     <string name="loading_empty">No content</string>
+    <string name="no_network">Please connect to the Internet</string>
+
 </resources>
