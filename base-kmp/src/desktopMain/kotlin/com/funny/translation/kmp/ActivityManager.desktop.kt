@@ -2,6 +2,7 @@ package com.funny.translation.kmp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import com.funny.translation.helper.SimpleAction
@@ -55,13 +56,15 @@ inline fun <reified T: KMPActivity> WindowHolderScope.addWindow(
     noinline onCloseRequest: SimpleAction,
     crossinline content: @Composable () -> Unit
 ) {
-    val activityClass = T::class.java
-    val activity = ActivityManager.findActivity<T>() ?:
-        KMPActivity().also {
+    val activity = remember {
+        val activityClass = T::class.java
+        ActivityManager.findActivity<T>() ?: KMPActivity().also {
             it.windowShowState.value = show
             it.windowState = windowState
-            ActivityManager.allActivities[activityClass] = activityClass.getConstructor().newInstance()
+            ActivityManager.allActivities[activityClass] =
+                activityClass.getConstructor().newInstance()
         }
+    }
     if (activity.windowShowState.value) {
         CompositionLocalProvider(LocalKMPContext provides activity) {
             Window(state = activity.windowState, onCloseRequest = onCloseRequest) {

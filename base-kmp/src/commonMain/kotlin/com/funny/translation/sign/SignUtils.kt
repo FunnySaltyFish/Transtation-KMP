@@ -1,6 +1,5 @@
 package com.funny.translation.sign
 
-import com.funny.translation.helper.Log
 import com.funny.translation.helper.ScriptEngine
 import com.funny.translation.helper.readAssets
 import com.funny.translation.kmp.appCtx
@@ -33,7 +32,7 @@ object SignUtils {
             val jsText = tryReadAssets("funny_sign_v1_release.js").ifEmpty {
                 tryReadAssets("funny_sign_v1_open_source.js")
             }
-            Log.d("loaded jsText: \n$jsText")
+//            Log.d("loaded jsText: \n$jsText")
             if (jsText != ""){
                 ScriptEngine.eval(jsText, scriptId = SCRIPT_ID)
             }
