@@ -1,7 +1,6 @@
 package com.funny.translation.translate.ui.widget
 
 import androidx.annotation.FloatRange
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -80,7 +79,6 @@ private fun DrawScope.drawLinearIndicator(
 }
 
 @Composable
-@Preview
 fun PreviewTwoProgressIndicator() {
     TwoProgressIndicator(startedProgress = 0.8f, finishedProgress = 0.6f)
 }

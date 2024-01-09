@@ -8,13 +8,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.funny.translation.BaseActivity
-import com.funny.translation.kmp.KMPActivity
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.rememberNavController
 import com.funny.translation.translate.ui.App
 import kotlin.properties.Delegates
 
-actual class TransActivity : BaseActivity(), KMPActivity {
+actual class TransActivity : BaseActivity() {
     actual var navController: NavController by Delegates.notNull()
     private lateinit var activityViewModel: ActivityViewModel
 

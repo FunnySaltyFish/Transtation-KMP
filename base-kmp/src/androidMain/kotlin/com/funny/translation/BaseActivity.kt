@@ -3,12 +3,11 @@ package com.funny.translation
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.kmp.KMPActivity
 import com.smarx.notchlib.NotchScreenManager
 
-open class BaseActivity : AppCompatActivity(), KMPActivity {
+actual open class BaseActivity : KMPActivity() {
     private lateinit var callback: OnBackPressedCallback
 
     companion object {

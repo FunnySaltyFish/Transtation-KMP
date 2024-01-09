@@ -3,6 +3,10 @@ package com.funny.translation.helper
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 actual object Log {
+    init {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "TRACE")
+    }
+
     private val logger = KotlinLogging.logger {}
 
     actual fun d(msg: String) = logger.debug { msg }

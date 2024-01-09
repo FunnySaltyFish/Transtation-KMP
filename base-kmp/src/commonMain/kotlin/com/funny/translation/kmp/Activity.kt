@@ -1,3 +1,3 @@
 package com.funny.translation.kmp
 
-expect interface KMPActivity
+expect open class KMPActivity()

@@ -10,7 +10,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -23,7 +22,6 @@ import com.funny.translation.Consts
 import com.funny.translation.NeedToTransConfig
 import com.funny.translation.bean.TranslationConfig
 import com.funny.translation.helper.Log
-import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.NavGraphBuilder
 import com.funny.translation.kmp.NavHost
 import com.funny.translation.kmp.NavHostController
@@ -58,12 +56,6 @@ fun AppNavigation(
     navController: NavHostController,
     exitAppAction: () -> Unit
 ) {
-    val context = LocalKMPContext.current
-
-    LaunchedEffect(key1 = navController) {
-        (context as TransActivity).navController = navController
-    }
-
     val activityVM: ActivityViewModel = viewModel()
 
     val scope = rememberCoroutineScope()

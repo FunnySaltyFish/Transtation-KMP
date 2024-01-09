@@ -27,7 +27,9 @@ class DaoProxy(private val sqlDelightQueries: Any) : InvocationHandler {
         method: Method,
         args: Array<out Any>?
     ): Any? {
-        val sqldelightMethod = sqlDelightQueries.javaClass.methods.find { it.name == method.name }
+        val sqldelightMethod = sqlDelightQueries.javaClass.methods.find {
+            it.name == method.name && it.parameterCount == method.parameterCount
+        }
         sqldelightMethod ?: throw UnsupportedOperationException("Method ${method.name} not found")
         Log.d(TAG, "find sqldelightMethod: $sqldelightMethod")
 

@@ -31,6 +31,7 @@ import androidx.paging.LoadStates
 import androidx.paging.NullPaddedList
 import androidx.paging.PagingData
 import androidx.paging.PagingDataDiffer
+import com.funny.translation.kmp.KMPMain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
@@ -60,7 +61,7 @@ public class LazyPagingItems<T : Any> internal constructor(
      */
     private val flow: Flow<PagingData<T>>
 ) {
-    private val mainDispatcher = Dispatchers.Main
+    private val mainDispatcher = Dispatchers.KMPMain
 
     private val differCallback: DifferCallback = object : DifferCallback {
         override fun onChanged(position: Int, count: Int) {

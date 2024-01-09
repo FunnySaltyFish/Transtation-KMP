@@ -1,5 +1,5 @@
 package com.funny.translation.translate.activity
 
-import com.funny.translation.kmp.KMPActivity
+import com.funny.translation.BaseActivity
 
-class LoginActivity : KMPActivity
+class LoginActivity : BaseActivity()

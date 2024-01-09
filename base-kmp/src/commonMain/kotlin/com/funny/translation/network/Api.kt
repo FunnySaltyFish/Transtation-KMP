@@ -1,6 +1,7 @@
 package com.funny.translation.network
 
 import com.funny.translation.helper.toastOnUi
+import com.funny.translation.kmp.KMPMain
 import com.funny.translation.kmp.appCtx
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -81,23 +82,23 @@ class Api<T>(
         try {
             val resp = if (func.isSuspend) func.callSuspend(*args) else func.call(*args)
             if (resp == null) {
-                withContext(Dispatchers.Main) {
+                withContext(Dispatchers.KMPMain) {
                     respNullFunc()
                 }
                 return@withContext null
             }
             if (resp.code == CODE_SUCCESS) {
-                withContext(Dispatchers.Main) {
+                withContext(Dispatchers.KMPMain) {
                     successFunc(resp)
                 }
             } else {
-                withContext(Dispatchers.Main) {
+                withContext(Dispatchers.KMPMain) {
                     failFunc(resp)
                 }
             }
             resp.data
         } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
+            withContext(Dispatchers.KMPMain) {
                 errorFunc(e)
             }
             e.printStackTrace()
