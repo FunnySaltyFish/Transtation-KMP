@@ -4,7 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 
 actual object Log {
     init {
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "TRACE")
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG")
     }
 
     private val logger = KotlinLogging.logger {}

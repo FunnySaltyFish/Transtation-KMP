@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.Gravity
+import com.funny.translation.helper.DeviceUtils
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.KMPActivity
@@ -32,6 +33,12 @@ open class BaseApplication : Application() {
         super.onCreate()
 
         ctx = this
+
+        if (DeviceUtils.is64Bit()) {
+            // 仅在 64 位时加载
+            System.loadLibrary("monet")
+        }
+
         Toaster.init(this)
         Toaster.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 260)
 

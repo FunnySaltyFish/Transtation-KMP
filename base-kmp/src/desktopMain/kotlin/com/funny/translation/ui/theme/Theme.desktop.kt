@@ -5,16 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.ReadOnlyComposable
 import com.funny.data_saver.core.mutableDataSaverStateOf
-import com.funny.translation.AppConfig
 import com.funny.translation.helper.DataSaverUtils
-import com.funny.translation.helper.DateUtils
 import com.funny.translation.helper.DeviceUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.jthemedetecor.OsThemeDetector
-
-
 
 
 actual object ThemeConfig {
@@ -58,9 +54,7 @@ actual fun TransTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme =
-        if (AppConfig.sSpringFestivalTheme.value && DateUtils.isSpringFestival)
-            SpringFestivalColorPalette
-        else when (ThemeConfig.sThemeType.value) {
+        when (ThemeConfig.sThemeType.value) {
             ThemeType.StaticDefault -> if (dark) DarkColors else LightColors
             ThemeType.DynamicNative -> run {
                 // Desktop 不支持

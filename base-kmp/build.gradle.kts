@@ -66,6 +66,7 @@ kotlin {
                 }
                 api(libs.kotlin.reflect)
                 api(libs.kotlinx.collections.immutable)
+                api(libs.kotlin.coroutines)
 
                 // androidx-jvm
                 api(libs.androidx.annotation.jvm)
@@ -142,6 +143,10 @@ kotlin {
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
                 implementation("com.github.Dansoftowner:jSystemThemeDetector:3.6")
+            }
+
+            configurations.commonMainApi {
+                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
             }
         }
 

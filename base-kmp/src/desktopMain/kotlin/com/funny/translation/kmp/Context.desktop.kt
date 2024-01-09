@@ -36,6 +36,6 @@ actual fun KMPContext.openAssetsFile(fileName: String): InputStream {
 
 actual fun KMPContext.readAssetsFile(fileName: String): String {
     return runBlocking {
-        resource("assets/$fileName").readBytes().toString()
+        resource("assets/$fileName").readBytes().decodeToString()
     }
 }
