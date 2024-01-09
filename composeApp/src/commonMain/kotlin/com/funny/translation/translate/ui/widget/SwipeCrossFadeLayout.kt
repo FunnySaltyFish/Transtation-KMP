@@ -1,11 +1,19 @@
 package com.funny.translation.translate.ui.widget
 
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.SwipeableState
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
-import androidx.compose.ui.util.lerp
+import com.funny.translation.helper.lerp
 
 private const val TAG = "SwipeCrossFadeLayout"
 enum class SwipeShowType {

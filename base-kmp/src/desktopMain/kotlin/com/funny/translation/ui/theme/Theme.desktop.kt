@@ -3,6 +3,7 @@ package com.funny.translation.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.ReadOnlyComposable
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.DataSaverUtils
@@ -11,6 +12,10 @@ import com.funny.translation.helper.DeviceUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
+import com.jthemedetecor.OsThemeDetector
+
+
+
 
 actual object ThemeConfig {
     actual const val TAG = "ThemeConfig"
@@ -69,3 +74,9 @@ actual fun TransTheme(
         content = content
     )
 }
+
+private val detector = OsThemeDetector.getDetector()
+
+@Composable
+@ReadOnlyComposable
+actual fun isSystemInDarkTheme(): Boolean = detector.isDark

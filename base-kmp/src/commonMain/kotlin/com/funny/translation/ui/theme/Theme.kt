@@ -1,6 +1,5 @@
 package com.funny.translation.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -151,6 +150,13 @@ internal fun calcDark(): Boolean {
         LightDarkMode.System -> isSystemInDarkTheme()
     }
 }
+
+// 由于系统的 isSystemInDarkTheme 在 Desktop 报错 java.lang.UnsatisfiedLinkError: 'int org.jetbrains.skiko.SystemTheme_awtKt.getCurrentSystemTheme()
+// 自己实现一个
+
+@ReadOnlyComposable
+@Composable
+expect fun isSystemInDarkTheme(): Boolean
 
 @Composable
 expect fun TransTheme(

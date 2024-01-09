@@ -1,7 +1,5 @@
 package com.funny.translation.translate.ui.widget
 
-import android.graphics.Path
-import android.graphics.PathMeasure
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +15,8 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -35,22 +35,22 @@ data class Particle(var x: Float, var y: Float, var targetX: Float, var targetY:
         // 在起点和终点的中点附近随机选择点作为控制点
         val controlX = (x + targetX) / 2 + (Math.random() * 1080 - 540).toFloat()
         val controlY = (y + targetY) / 2 + (Math.random() * 2160 - 1080).toFloat()
-        quadTo(controlX, controlY, targetX, targetY)
+        quadraticBezierTo(controlX, controlY, targetX, targetY)
     }
 
-    private var pathMeasure = PathMeasure(path, false)
+    private var pathMeasure = PathMeasure().apply {
+        setPath(path, false)
+    }
     private var length = pathMeasure.length
-    private val pos = FloatArray(2)
-    private val tan = FloatArray(2)
 
     /**
      * 从 path 的起点移动到指定的百分比
      * @param percent Float [0, 1.0]
      */
     fun moveTo(percent: Float){
-        pathMeasure.getPosTan(length * percent, pos, tan)
-        x = pos[0]
-        y = pos[1]
+        val offset = pathMeasure.getPosition(length * percent)
+        x = offset.x
+        y = offset.y
     }
 
     fun resetExitTarget(canvasSize: Size){
@@ -68,7 +68,9 @@ data class Particle(var x: Float, var y: Float, var targetX: Float, var targetY:
             moveTo(x, y)
             lineTo(targetX, targetY)
         }
-        pathMeasure = PathMeasure(path, false)
+        pathMeasure = PathMeasure().apply {
+            setPath(path, false)
+        }
         length = pathMeasure.length
     }
 }

@@ -7,15 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.lifecycle.lifecycleScope
 import com.funny.translation.BaseActivity
 import com.funny.translation.kmp.KMPActivity
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.rememberNavController
-import com.funny.translation.sign.SignUtils
 import com.funny.translation.translate.ui.App
-import com.funny.translation.translate.utils.SortResultUtils
-import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 actual class TransActivity : BaseActivity(), KMPActivity {
@@ -30,13 +26,6 @@ actual class TransActivity : BaseActivity(), KMPActivity {
 
         if (!initialized) {
             activityViewModel = ActivityViewModel()
-            initLanguageDisplay()
-
-            lifecycleScope.launch {
-                SignUtils.loadJs()
-                SortResultUtils.init()
-            }
-
             initialized = true
         }
 

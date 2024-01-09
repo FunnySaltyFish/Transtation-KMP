@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import com.funny.data_saver.core.mutableDataSaverStateOf
@@ -156,3 +157,7 @@ private val transparent = android.graphics.Color.argb(0x00, 0x00, 0x00, 0x00)
  * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:activity/activity/src/main/java/androidx/activity/EdgeToEdge.kt;l=40-44;drc=27e7d52e8604a080133e8b842db10c89b4482598
  */
 private val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
+
+@Composable
+@ReadOnlyComposable
+actual fun isSystemInDarkTheme() = androidx.compose.foundation.isSystemInDarkTheme()

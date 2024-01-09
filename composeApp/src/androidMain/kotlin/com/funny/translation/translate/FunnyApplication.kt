@@ -6,14 +6,10 @@ import android.content.res.Resources
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.funny.translation.BaseApplication
-import com.funny.translation.helper.DeviceUtils
-import com.funny.translation.sign.SignUtils
 import com.funny.translation.translate.utils.FunnyUncaughtExceptionHandler
-import com.funny.translation.translate.utils.SortResultUtils
-import com.funny.translation.translate.utils.initTypeConverters
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.funny.translation.translate.utils.InitUtil
+import com.funny.translation.translate.utils.initCommon
+import kotlinx.coroutines.runBlocking
 import kotlin.properties.Delegates
 
 class FunnyApplication : BaseApplication() {
@@ -21,23 +17,14 @@ class FunnyApplication : BaseApplication() {
         super.onCreate()
         ctx = this
 
-        if (DeviceUtils.is64Bit()) {
-            // 仅在 64 位时加载
-            System.loadLibrary("monet")
-        }
-
         FunnyUncaughtExceptionHandler.init(ctx)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createScreenCaptureNotificationChannel()
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            SignUtils.loadJs()
-            SortResultUtils.init()
+        runBlocking {
+            InitUtil.initCommon()
         }
-
-        initTypeConverters()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

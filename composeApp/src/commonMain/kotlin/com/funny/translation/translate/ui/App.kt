@@ -1,7 +1,6 @@
 package com.funny.translation.translate.ui
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -23,19 +22,17 @@ import moe.tlaster.precompose.PreComposeApp
  * @param content [@androidx.compose.runtime.Composable] [@kotlin.ExtensionFunctionType] Function1<BoxWithConstraintsScope, Unit>
  */
 @Composable
-fun App(content: @Composable BoxWithConstraintsScope.() -> Unit = {}) {
+fun App(content: @Composable () -> Unit = {}) {
     CompositionLocalProvider(
         LocalDataSaver provides DataSaverUtils,
         LocalImageLoader provides remember { generateImageLoader() },
     ) {
         PreComposeApp {
             TransTheme {
-                BoxWithConstraints(Modifier.fillMaxSize()) {
-                    content()
-                    Toast(
-                        modifier = Modifier.align(Alignment.BottomEnd)
-                    )
-                }
+                content()
+                Toast(
+                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.BottomEnd)
+                )
             }
         }
     }

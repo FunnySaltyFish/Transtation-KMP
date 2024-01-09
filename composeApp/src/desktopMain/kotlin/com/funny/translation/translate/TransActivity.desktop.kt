@@ -6,4 +6,8 @@ import kotlin.properties.Delegates
 
 actual class TransActivity : KMPActivity {
     actual var navController: NavController by Delegates.notNull()
+
+    init {
+
+    }
 }
