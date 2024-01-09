@@ -1,6 +1,8 @@
 package com.funny.translation.translate
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -22,6 +24,7 @@ import com.funny.translation.Consts
 import com.funny.translation.NeedToTransConfig
 import com.funny.translation.bean.TranslationConfig
 import com.funny.translation.helper.Log
+import com.funny.translation.kmp.NAV_ANIM_DURATION
 import com.funny.translation.kmp.NavGraphBuilder
 import com.funny.translation.kmp.NavHost
 import com.funny.translation.kmp.NavHostController
@@ -29,9 +32,12 @@ import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.composable
 import com.funny.translation.kmp.navOptions
 import com.funny.translation.kmp.navigation
+import com.funny.translation.kmp.slideIntoContainer
+import com.funny.translation.kmp.slideOutOfContainer
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.ui.ai.ChatScreen
 import com.funny.translation.translate.ui.main.FavoriteScreen
 import com.funny.translation.translate.ui.main.MainScreen
 import com.funny.translation.ui.MarkdownText
@@ -153,36 +159,36 @@ fun AppNavigation(
 //                    animateComposable(TranslateScreen.AppRecommendationScreen.route) {
 //                        AppRecommendationScreen()
 //                    }
-//                    val animDuration = NAV_ANIM_DURATION
-//                    composable(
-//                        TranslateScreen.ChatScreen.route,
-//                        enterTransition = {
-//                            slideIntoContainer(
-//                                AnimatedContentTransitionScope.SlideDirection.Up,
-//                                animationSpec = tween(animDuration)
-//                            )
-//                        },
-//                        exitTransition = {
-//                            slideOutOfContainer(
-//                                AnimatedContentTransitionScope.SlideDirection.Up,
-//                                animationSpec = tween(animDuration)
-//                            )
-//                        },
-//                        popEnterTransition = {
-//                            slideIntoContainer(
-//                                AnimatedContentTransitionScope.SlideDirection.Down,
-//                                animationSpec = tween(animDuration)
-//                            )
-//                        },
-//                        popExitTransition = {
-//                            slideOutOfContainer(
-//                                AnimatedContentTransitionScope.SlideDirection.Down,
-//                                animationSpec = tween(animDuration)
-//                            )
-//                        }
-//                    ) {
-//                        ChatScreen()
-//                    }
+                    val animDuration = NAV_ANIM_DURATION
+                    composable(
+                        TranslateScreen.ChatScreen.route,
+                        enterTransition = {
+                            slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Up,
+                                animationSpec = tween(animDuration)
+                            )
+                        },
+                        exitTransition = {
+                            slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Up,
+                                animationSpec = tween(animDuration)
+                            )
+                        },
+                        popEnterTransition = {
+                            slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Down,
+                                animationSpec = tween(animDuration)
+                            )
+                        },
+                        popExitTransition = {
+                            slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Down,
+                                animationSpec = tween(animDuration)
+                            )
+                        }
+                    ) {
+                        ChatScreen()
+                    }
 //                    animateComposable(
 //                        TranslateScreen.BuyAIPointScreen.route,
 //                        arguments = listOf(

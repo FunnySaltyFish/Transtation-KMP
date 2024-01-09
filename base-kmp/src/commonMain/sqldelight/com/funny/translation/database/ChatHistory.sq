@@ -10,3 +10,22 @@ CREATE TABLE IF NOT EXISTS chatHistory (
     error TEXT,
     timestamp INTEGER NOT NULL
 );
+
+-- Queries for ChatHistoryDao
+
+-- Query to select all ChatMessages by conversationId
+getMessagesByConversationId:
+SELECT * FROM chatHistory WHERE conversationId = ?;
+
+-- Delete all messages by conversationId
+clearMessagesByConversationId:
+DELETE FROM chatHistory WHERE conversationId = ?;
+
+-- Insert a ChatMessage
+insert:
+INSERT INTO chatHistory (id, botId, conversationId, sender, content, type, error, timestamp)
+VALUES ?;
+
+-- Delete a ChatMessage
+delete:
+DELETE FROM chatHistory WHERE id = ?;

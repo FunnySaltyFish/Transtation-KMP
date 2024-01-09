@@ -2,6 +2,7 @@ package com.funny.translation.translate.database
 
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
+import com.funny.translation.database.ChatHistory
 import com.funny.translation.database.Database
 import com.funny.translation.database.LanguageListAdapter
 import com.funny.translation.database.Plugin
@@ -35,7 +36,11 @@ fun createDatabase(driverFactory: DriverFactory): Database {
         transFavoriteAdapter = TransFavorite.Adapter(
             sourceLanguageIdAdapter = IntColumnAdapter,
             targetLanguageIdAdapter = IntColumnAdapter,
-        )
+        ),
+        chatHistoryAdapter = ChatHistory.Adapter(
+            botIdAdapter = IntColumnAdapter,
+            typeAdapter = IntColumnAdapter,
+        ),
     )
 
     // Do more work with the database (see below).

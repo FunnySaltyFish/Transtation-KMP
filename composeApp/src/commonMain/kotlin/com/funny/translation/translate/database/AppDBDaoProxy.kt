@@ -25,3 +25,7 @@ val Database.jsDao by lazy {
 val Database.transFavoriteDao by lazy {
     createDaoProxy<TransFavoriteDao>(appDB.transFavoriteQueries)
 }
+
+val Database.chatHistoryDao by lazy {
+    createDaoProxy<ChatHistoryDao>(appDB.chatHistoryQueries)
+}

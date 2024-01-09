@@ -19,5 +19,5 @@ interface ChatHistoryDao {
     fun insert(chatMessage: ChatMessage)
 
     @Delete
-    fun delete(message: ChatMessage)
+    fun delete(id: String)
 }
