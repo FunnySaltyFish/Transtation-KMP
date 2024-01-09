@@ -24,8 +24,7 @@ fun main() {
             WindowHolder {
                 addWindow<TransActivity>(rememberWindowState(), show = true, {
                     exitApplication()
-                }) {
-                    val transActivity = ActivityManager.findActivity<TransActivity>() ?: return@addWindow
+                }) { transActivity ->
                     CompositionLocalProvider(LocalActivityVM provides transActivity.activityViewModel) {
                         AppNavigation(navController = rememberNavController().also {
                             ActivityManager.findActivity<TransActivity>()?.navController = it

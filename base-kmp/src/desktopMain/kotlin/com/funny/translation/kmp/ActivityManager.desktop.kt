@@ -54,21 +54,21 @@ inline fun <reified T: KMPActivity> WindowHolderScope.addWindow(
     windowState: WindowState,
     show: Boolean,
     noinline onCloseRequest: SimpleAction,
-    crossinline content: @Composable () -> Unit
+    crossinline content: @Composable (T) -> Unit
 ) {
     val activity = remember {
         val activityClass = T::class.java
-        ActivityManager.findActivity<T>() ?: KMPActivity().also {
+        ActivityManager.findActivity<T>() ?: activityClass.getConstructor().newInstance().also {
             it.windowShowState.value = show
             it.windowState = windowState
             ActivityManager.allActivities[activityClass] =
                 activityClass.getConstructor().newInstance()
-        }
+        } as T
     }
     if (activity.windowShowState.value) {
         CompositionLocalProvider(LocalKMPContext provides activity) {
             Window(state = activity.windowState, onCloseRequest = onCloseRequest) {
-                content()
+                content(activity)
             }
         }
     }
