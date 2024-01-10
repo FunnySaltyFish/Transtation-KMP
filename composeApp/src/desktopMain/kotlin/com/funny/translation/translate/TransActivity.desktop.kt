@@ -6,9 +6,11 @@ import kotlin.properties.Delegates
 
 actual class TransActivity : BaseActivity() {
     actual var navController: NavController by Delegates.notNull()
-    var activityViewModel: ActivityViewModel
+    val activityViewModel: ActivityViewModel by lazy {
+        ActivityViewModel()
+    }
 
     init {
-        activityViewModel = ActivityViewModel()
+
     }
 }

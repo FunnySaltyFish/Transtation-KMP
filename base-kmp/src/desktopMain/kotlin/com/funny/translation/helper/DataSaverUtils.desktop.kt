@@ -32,14 +32,14 @@ class DataSaverProperties(private val filePath: String) : DataSaverInterface() {
     override fun <T> readData(key: String, default: T): T {
         val value = properties.getProperty(key) ?: return default
         return when (default) {
-            is Int -> value.toIntOrNull() as T? ?: default
-            is Long -> value.toLongOrNull() as T? ?: default
-            is Boolean -> value.toBoolean() as T ?: default
-            is Double -> value.toDoubleOrNull() as T? ?: default
-            is Float -> value.toFloatOrNull() as T? ?: default
-            is String -> value as T
-            else -> value as T
-        }
+            is Int -> value.toIntOrNull() ?: default
+            is Long -> value.toLongOrNull() ?: default
+            is Boolean -> value.toBooleanStrictOrNull() ?: default
+            is Double -> value.toDoubleOrNull() ?: default
+            is Float -> value.toFloatOrNull() ?: default
+            is String -> value
+            else -> throw IllegalArgumentException("Unable to read $default, this type(${default!!::class.java}) cannot be read from Properties, call [registerTypeConverters] to support it.")
+        } as T
     }
 
     override fun remove(key: String) {

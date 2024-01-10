@@ -207,7 +207,6 @@ private fun LoginForm(
         } else CompletableButton(
             onClick = {
                 if (supportBiometric) {
-                    if (context !is KMPActivity) return@CompletableButton
                     BiometricUtils.validateFingerPrint(
                         context as KMPActivity,
                         username = vm.username,
@@ -365,7 +364,6 @@ private fun RegisterForm(
             CompletableButton(
                 onClick = {
                     if (supportBiometric) {
-                        if (context !is KMPActivity) return@CompletableButton
                         BiometricUtils.setFingerPrint(
                             context as KMPActivity,
                             username = vm.username,

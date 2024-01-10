@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.DeviceUtils
@@ -53,7 +54,7 @@ actual fun TransTheme(
     hideStatusBar: Boolean,
     content: @Composable () -> Unit
 ) {
-    val colorScheme =
+    val colorScheme = remember(ThemeConfig.sThemeType.value) {
         when (ThemeConfig.sThemeType.value) {
             ThemeType.StaticDefault -> if (dark) DarkColors else LightColors
             ThemeType.DynamicNative -> run {
@@ -62,6 +63,7 @@ actual fun TransTheme(
             }
             else -> null
         }
+    }
 
     MaterialTheme(
         colorScheme = colorScheme ?: if (dark) DarkColors else LightColors,

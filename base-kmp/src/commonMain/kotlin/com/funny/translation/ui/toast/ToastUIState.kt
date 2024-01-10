@@ -20,7 +20,6 @@ import androidx.compose.ui.MotionDurationScale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.AccessibilityManager
 import androidx.compose.ui.platform.LocalAccessibilityManager
-import androidx.compose.ui.platform.LocalHapticFeedback
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -36,6 +35,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.math.roundToLong
+
 @Stable
 class ToastUIState {
     private val mutex = Mutex()
@@ -163,8 +163,6 @@ public fun ToastUI(
 ) {
     val accessibilityManager = LocalAccessibilityManager.current
     val currentData = hostState.currentData ?: return
-    //震动
-    val feedback = LocalHapticFeedback.current
     key(currentData) {
         var state by remember { mutableStateOf(false) }
         val transition = updateTransition(targetState = state, label = "toast")

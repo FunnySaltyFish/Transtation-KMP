@@ -1,13 +1,33 @@
 package com.funny.translation.helper
 
-import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KLoggingEventBuilder
+import io.github.oshai.kotlinlogging.Level
+import io.github.oshai.kotlinlogging.Marker
 
 actual object Log {
     init {
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG")
+        // kotlin-logging-to-jul
+//        System.setProperty("kotlin-logging-to-jul", "true")
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "TRACE")
     }
 
-    private val logger = KotlinLogging.logger {}
+
+
+    // KotlinLogging.logger {} 在控制台看不到输出啊，只好改成最朴素的 System.out.println 了
+    private val logger = object :KLogger {
+        override val name: String = "com.funny.translation.helper.Log"
+
+        override fun at(level: Level, marker: Marker?, block: KLoggingEventBuilder.() -> Unit) {
+            KLoggingEventBuilder().apply(block).run {
+                println("[$level] $message")
+            }
+        }
+
+        override fun isLoggingEnabledFor(level: Level, marker: Marker?): Boolean {
+            return true
+        }
+    }
 
     actual fun d(msg: String) = logger.debug { msg }
     actual fun d(tag: String, msg: String) = logger.debug { "$tag $msg" }
