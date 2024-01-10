@@ -43,4 +43,5 @@
     <string name="loading_error">糟糕，加载失败了</string>
     <string name="loading_empty">内容为空</string>
     <string name="no_network">"当前似乎没有联网哦~"</string>
+    <string name="login_status_expired">登录状态已过期</string>
 </resources>

@@ -65,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.compose.loading.LoadingContent
+import com.funny.trans.login.LoginActivity
 import com.funny.translation.AppConfig
 import com.funny.translation.WebViewActivity
 import com.funny.translation.helper.LocalContext
@@ -77,7 +78,6 @@ import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.LocalNavController
-import com.funny.translation.translate.activity.LoginActivity
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
@@ -500,7 +500,6 @@ fun UserInfoPanel(navHostController: NavHostController) {
         retryKey = activityVM.uid,
         updateRetryKey = { 
             ActivityManager.start(LoginActivity::class.java)
-//            startLoginLauncher.launch(Intent(context, LoginActivity::class.java))
         },
         modifier = Modifier
             .touchToScale {

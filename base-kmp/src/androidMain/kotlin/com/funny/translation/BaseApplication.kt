@@ -11,7 +11,6 @@ import android.view.Gravity
 import com.funny.translation.helper.DeviceUtils
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.kmp.ActivityManager
-import com.funny.translation.kmp.KMPActivity
 import com.hjq.toast.Toaster
 import com.tencent.mmkv.MMKV
 import java.util.*
@@ -44,7 +43,7 @@ open class BaseApplication : Application() {
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                if (activity is KMPActivity) {
+                if (activity is BaseActivity) {
                     ActivityManager.addActivity(activity)
                 }
             }
@@ -52,7 +51,7 @@ open class BaseApplication : Application() {
             override fun onActivityPaused(activity: Activity) {}
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
             override fun onActivityDestroyed(activity: Activity) {
-                if (activity is KMPActivity) {
+                if (activity is BaseActivity) {
                     ActivityManager.removeActivity(activity)
                 }
             }

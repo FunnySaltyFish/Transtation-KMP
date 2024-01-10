@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Process
 import android.text.TextUtils
 import com.funny.translation.BaseApplication.Companion.getLocalPackageInfo
+import com.funny.translation.kmp.appCtx
+import com.funny.translation.translate.activity.ErrorDialogActivity
 import kotlin.system.exitProcess
 
 object FunnyUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
@@ -37,7 +39,7 @@ object FunnyUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
             println("接管了应用的报错！")
             val intent = Intent()
             // TODO 加回来
-            // intent.setClass(applicationContext, ErrorDialogActivity.class);
+            intent.setClass(appCtx, ErrorDialogActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("CRASH_MESSAGE", getCrashReport(ex))
             applicationContext!!.startActivity(intent)

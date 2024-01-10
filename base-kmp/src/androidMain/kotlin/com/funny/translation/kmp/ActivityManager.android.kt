@@ -1,52 +1,46 @@
 package com.funny.translation.kmp
 
 import android.content.Intent
-import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import com.funny.translation.BaseActivity
 import com.funny.translation.helper.Log
 import moe.tlaster.precompose.navigation.NavOptions
 import java.util.LinkedList
 
 actual object ActivityManager {
     private const val TAG = "ActivityManager"
-    actual val activityStack: MutableList<KMPActivity> = LinkedList<KMPActivity>()
-    private val activityResultLaunchers = mutableMapOf<KMPActivity, ActivityResultLauncher<Intent>>()
+    actual val activityStack: MutableList<BaseActivity> = LinkedList<BaseActivity>()
+    private val activityResultLaunchers = mutableMapOf<BaseActivity, ActivityResultLauncher<Intent>>()
 
-    actual fun addActivity(activity: KMPActivity) {
+    actual fun addActivity(activity: BaseActivity) {
         activityStack.add(activity)
         Log.d(TAG, "【${activity::class.java.simpleName}】 Created! currentStackSize:${activityStack.size}")
     }
 
-    actual fun removeActivity(activity: KMPActivity) {
+    actual fun removeActivity(activity: BaseActivity) {
         activityStack.remove(activity)
         Log.d(TAG, "【${activity::class.java.simpleName}】 Destroyed! currentStackSize:${activityStack.size}")
     }
 
-    actual fun currentActivity(): KMPActivity? {
+    actual fun currentActivity(): BaseActivity? {
         return activityStack.lastOrNull()
     }
 
     actual fun start(
-        activityClass: Class<out KMPActivity>,
-        data: Map<String, Any?>,
+        targetClass: Class<out BaseActivity>,
+        data: MutableMap<String, Any?>,
         options: NavOptions,
         onBack: (result: Map<String, Any?>?) -> Unit
     ) {
-        val activity = activityStack.find { it::class.java == activityClass } ?: return
-        if (activity !is ComponentActivity) return
-        val launcher = activityResultLaunchers[activity] ?: activity.registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            onBack(it.data?.toMap())
-        }.also {
-            activityResultLaunchers[activity] = it
-        }
-        launcher.launch(data.toIntent())
+        val activity = currentActivity() ?: return
+        val launcher = activity.activityResultLauncher
+        launcher.launch(data.toIntent().apply {
+            setClassName(activity, targetClass.name)
+        })
     }
 }
 
-private fun Intent.toMap(): Map<String, Any?> {
+fun Intent.toMap(): Map<String, Any?> {
     return mapOf(
         "action" to action,
         "data" to data,
@@ -55,7 +49,7 @@ private fun Intent.toMap(): Map<String, Any?> {
     )
 }
 
-private fun Map<String, Any?>.toIntent(): Intent {
+fun Map<String, Any?>.toIntent(): Intent {
     return Intent().apply {
         action = this@toIntent["action"] as? String
         data = this@toIntent["data"] as? android.net.Uri

@@ -1,4 +1,4 @@
-package com.funny.translation.translate.ui
+package com.funny.translation.ui
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable

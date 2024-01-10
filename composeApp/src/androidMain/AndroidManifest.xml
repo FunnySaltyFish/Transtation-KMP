@@ -21,16 +21,87 @@
         android:localeConfig="@xml/locales_config"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme"
-        tools:targetApi="33">
+        tools:targetApi="33"
+        tools:ignore="Instantiatable"> <!-- 由于 Activity 继承的 BaseActivity 只是在 Android 上间接继承 AppCompatActivity，Activity会报这个警告，忽略掉 -->
         <activity
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
-            android:name="com.funny.translation.translate.TransActivity">
+            android:name="com.funny.translation.translate.TransActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.funny.translation.WebViewActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.funny.trans.login.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask"
+            android:exported="false" />
+
+        <activity
+            android:name="com.funny.translation.translate.activity.ErrorDialogActivity"
+            android:label="@string/crash"
+            android:theme="@style/AppTheme.Dialog" />
+<!--        <activity android:name=".activity.CustomPhotoPickerActivity" />-->
+<!--        <activity-->
+<!--            android:name=".activity.ShareActivity"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/AppTheme.Translucent">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.PROCESS_TEXT" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="text/plain" />-->
+<!--            </intent-filter>-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.SEND" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="text/plain" />-->
+<!--            </intent-filter>-->
+<!--            &lt;!&ndash; 高版本 Android 要读取别人分享过来的图片怎么那么麻烦，不做了不做了 &ndash;&gt;-->
+<!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND" />&ndash;&gt;-->
+<!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
+<!--            &lt;!&ndash;                <data android:mimeType="image/*" />&ndash;&gt;-->
+<!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+<!--        </activity>-->
+<!--        <activity-->
+<!--            android:name=".activity.AnnualReportActivity"-->
+<!--            android:exported="false">-->
+<!--        </activity>-->
+
+<!--        <service-->
+<!--            android:name=".service.OpenFloatWindowTileService"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@drawable/ic_float_window"-->
+<!--            android:label="@string/transtation_floating_window"-->
+<!--            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"-->
+<!--            >-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.service.quicksettings.action.QS_TILE" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
+
+<!--        <service-->
+<!--            android:name=".service.CaptureScreenService"-->
+<!--            android:foregroundServiceType="mediaProjection" />-->
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+<!--        <activity-->
+<!--            android:name=".activity.StartCaptureScreenActivity"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/AppTheme.Translucent"/>-->
     </application>
+
+
 
 </manifest>

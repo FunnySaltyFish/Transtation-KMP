@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">译站-KMP</string>
+    <string name="crash">糟糕，崩溃了</string>
 </resources>

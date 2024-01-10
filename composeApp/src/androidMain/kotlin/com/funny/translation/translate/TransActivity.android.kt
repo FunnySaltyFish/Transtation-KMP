@@ -10,7 +10,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import com.funny.translation.BaseActivity
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.rememberNavController
-import com.funny.translation.translate.ui.App
+import com.funny.translation.ui.App
 import kotlin.properties.Delegates
 
 actual class TransActivity : BaseActivity() {

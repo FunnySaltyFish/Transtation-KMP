@@ -2,7 +2,6 @@ package com.funny.translation.translate.ui.ai
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -171,7 +170,7 @@ fun ChatContent(
 }
 
 @Composable
-@Preview
+//@Preview
 fun ChatBottomBar(
     text: String = "",
     onTextChanged: (String) -> Unit = {},

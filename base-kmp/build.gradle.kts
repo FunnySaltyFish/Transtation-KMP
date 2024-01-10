@@ -16,7 +16,7 @@ plugins {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.add("-Xmulti-platform")
+        freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
     }
 
     androidTarget {

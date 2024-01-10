@@ -43,5 +43,5 @@
     <string name="loading_error">Loading error</string>
     <string name="loading_empty">No content</string>
     <string name="no_network">Please connect to the Internet</string>
-
+    <string name="login_status_expired">Login status expired</string>
 </resources>

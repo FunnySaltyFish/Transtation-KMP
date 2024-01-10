@@ -13,16 +13,16 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
+    }
+
     androidTarget {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "11"
             }
         }
-    }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xmulti-platform")
     }
     
     jvm("desktop")

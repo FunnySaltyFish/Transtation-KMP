@@ -5,35 +5,36 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
+import com.funny.translation.BaseActivity
 import com.funny.translation.helper.SimpleAction
 import moe.tlaster.precompose.navigation.NavOptions
 import java.util.LinkedList
 
 
 actual object ActivityManager {
-    val allActivities = hashMapOf<Class<out KMPActivity>, KMPActivity>()
+    val allActivities = hashMapOf<Class<out BaseActivity>, BaseActivity>()
 
-    actual val activityStack: MutableList<KMPActivity> = LinkedList<KMPActivity>()
+    actual val activityStack: MutableList<BaseActivity> = LinkedList<BaseActivity>()
 
-    actual fun addActivity(activity: KMPActivity) {
+    actual fun addActivity(activity: BaseActivity) {
         activityStack.add(activity)
     }
 
-    actual fun removeActivity(activity: KMPActivity) {
+    actual fun removeActivity(activity: BaseActivity) {
         activityStack.remove(activity)
     }
 
-    actual fun currentActivity(): KMPActivity? {
+    actual fun currentActivity(): BaseActivity? {
         return activityStack.lastOrNull()
     }
 
     actual fun start(
-        activityClass: Class<out KMPActivity>,
-        data: Map<String, Any?>,
+        targetClass: Class<out BaseActivity>,
+        data: MutableMap<String, Any?>,
         options: NavOptions,
         onBack: (result: Map<String, Any?>?) -> Unit
     ) {
-        val activity = allActivities[activityClass] ?: return
+        val activity = allActivities[targetClass] ?: return
         activity.windowShowState.value = true
 //        activity.onBack = { result: DataType ->
 //            activity.windowShowState.value = false
@@ -42,7 +43,7 @@ actual object ActivityManager {
     }
 
 
-    inline fun <reified T: KMPActivity> findActivity(): T? {
+    inline fun <reified T: BaseActivity> findActivity(): T? {
         return allActivities[T::class.java] as? T
     }
 }
@@ -50,7 +51,7 @@ actual object ActivityManager {
 interface WindowHolderScope
 
 @Composable
-inline fun <reified T: KMPActivity> WindowHolderScope.addWindow(
+inline fun <reified T: BaseActivity> WindowHolderScope.addWindow(
     windowState: WindowState,
     show: Boolean,
     noinline onCloseRequest: SimpleAction,

@@ -2,12 +2,17 @@ package com.funny.translation.network
 
 import androidx.annotation.Keep
 import com.funny.translation.AppConfig
+import com.funny.translation.BaseActivity
 import com.funny.translation.BuildConfig
 import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.helper.Log
+import com.funny.translation.helper.toastOnUi
+import com.funny.translation.kmp.ActivityManager
+import com.funny.translation.kmp.appCtx
+import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.sign.SignUtils
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -107,37 +112,31 @@ object OkHttpUtils {
         }
 
         // get response cookie
-//        addInterceptor { chain ->
-//            val request = chain.request()
-//            val response = chain.proceed(request)
-//            val requestUrl = request.url.toString()
-//            val domain = request.url.host
-//
-//            // token 过期了
-//            // 422: jwt 校验错误
-//            if (response.code in intArrayOf(401, 422) && requestUrl.startsWith(ServiceCreator.BASE_URL)){
-//                val clazz = Class.forName("com.funny.trans.login.LoginActivity")
-//                val intent = Intent().apply {
-//                    setClass(appCtx, clazz)
-//                }
-//                val activity = BaseApplication.getCurrentActivity()
-//                activity?.let {
-//                    AppConfig.logout()
-//                    it.startActivity(intent)
-//                    it.toastOnUi("您的登录状态已过期，请重新登陆")
-//                }
-//
-//                return@addInterceptor response
-//            }
-//
-//            // set-cookie maybe has multi, login to save cookie
-//            if (response.headers(SET_COOKIE_KEY).isNotEmpty()) {
-//                val cookies = response.headers(SET_COOKIE_KEY)
-//                val cookie = encodeCookie(cookies)
-//                saveCookie(requestUrl, domain, cookie)
-//            }
-//            response
-//        }
+        addInterceptor { chain ->
+            val request = chain.request()
+            val response = chain.proceed(request)
+            val requestUrl = request.url.toString()
+            val domain = request.url.host
+
+            // token 过期了
+            // 422: jwt 校验错误
+            if (response.code in intArrayOf(401, 422) && requestUrl.startsWith(ServiceCreator.BASE_URL)){
+                val clazz = Class.forName("com.funny.trans.login.LoginActivity")
+                ActivityManager.start(clazz as Class<BaseActivity>, )
+                AppConfig.logout()
+                appCtx.toastOnUi(ResStrings.login_status_expired)
+
+                return@addInterceptor response
+            }
+
+            // set-cookie maybe has multi, login to save cookie
+            if (response.headers(SET_COOKIE_KEY).isNotEmpty()) {
+                val cookies = response.headers(SET_COOKIE_KEY)
+                val cookie = encodeCookie(cookies)
+                saveCookie(requestUrl, domain, cookie)
+            }
+            response
+        }
 
         // 如果不是流式请求，才添加日志拦截器
 //        if (!response

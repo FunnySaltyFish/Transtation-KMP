@@ -1,5 +1,6 @@
 package com.funny.translation.kmp
 
+import com.funny.translation.BaseActivity
 import moe.tlaster.precompose.navigation.NavOptions
 
 // KMP Activity Manager, used to manage the activity stack
@@ -8,10 +9,10 @@ import moe.tlaster.precompose.navigation.NavOptions
 typealias DataType = Map<String, Any?>
 
 expect object ActivityManager {
-    val activityStack : MutableList<KMPActivity>
-    fun addActivity(activity: KMPActivity)
-    fun removeActivity(activity: KMPActivity)
-    fun currentActivity(): KMPActivity?
+    val activityStack : MutableList<BaseActivity>
+    fun addActivity(activity: BaseActivity)
+    fun removeActivity(activity: BaseActivity)
+    fun currentActivity(): BaseActivity?
 
-    fun start(activityClass: Class<out KMPActivity>, data: Map<String, Any?> = emptyMap(), options: NavOptions = NavOptions(), onBack: (result: Map<String, Any?>?) -> Unit = {})
+    fun start(targetClass: Class<out BaseActivity>, data: MutableMap<String, Any?> = hashMapOf(), options: NavOptions = NavOptions(), onBack: (result: Map<String, Any?>?) -> Unit = {})
 }
