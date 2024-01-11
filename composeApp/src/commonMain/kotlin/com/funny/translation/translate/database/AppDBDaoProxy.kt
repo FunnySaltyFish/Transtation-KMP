@@ -29,3 +29,11 @@ val Database.transFavoriteDao by lazy {
 val Database.chatHistoryDao by lazy {
     createDaoProxy<ChatHistoryDao>(appDB.chatHistoryQueries)
 }
+
+val Database.draftDao by lazy {
+    createDaoProxy<DraftDao>(appDB.draftsQueries)
+}
+
+val Database.longTextTransDao by lazy {
+    createDaoProxy<LongTextTransDao>(appDB.longTextTransTasksQueries)
+}

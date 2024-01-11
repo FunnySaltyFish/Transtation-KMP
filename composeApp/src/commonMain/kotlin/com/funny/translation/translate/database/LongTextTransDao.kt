@@ -1,5 +1,6 @@
 package com.funny.translation.translate.database
 
+import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.database.Dao
 import com.funny.translation.database.Insert
 import com.funny.translation.database.LongTextTransTasks
@@ -9,8 +10,33 @@ import kotlinx.coroutines.flow.Flow
 
 private fun now() = System.currentTimeMillis()
 
-
 typealias LongTextTransTask = LongTextTransTasks
+
+fun LongTextTransTask(
+    id: String,
+    chatBotId: Int,
+    sourceText: String,
+    resultText: String,
+    prompt: EditablePrompt,
+    allCorpus: List<Pair<String, String>>,
+    sourceTextSegments: List<Int>,
+    resultTextSegments: List<Int>,
+    translatedLength: Int,
+) = LongTextTransTask(
+    id = id,
+    chatBotId = chatBotId,
+    sourceText = sourceText,
+    resultText = resultText,
+    prompt = prompt,
+    allCorpus = allCorpus,
+    sourceTextSegments = sourceTextSegments,
+    resultTextSegments = resultTextSegments,
+    translatedLength = translatedLength,
+    createTime = now(),
+    updateTime = now(),
+    remark = "",
+)
+
 
 val LongTextTransTask.finishTranslating: Boolean
     get() = translatedLength == sourceText.length

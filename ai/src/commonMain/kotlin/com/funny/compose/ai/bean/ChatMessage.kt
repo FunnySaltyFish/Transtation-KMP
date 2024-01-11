@@ -14,7 +14,7 @@ fun ChatMessage(
     conversationId: String,
     sender: String,
     content: String,
-    type: Int,
+    type: Int = ChatMessageTypes.TEXT,
     error: String = "",
 ): ChatMessage {
     return ChatMessage(

@@ -41,7 +41,7 @@ package com.funny.translation.translate.ui.widget
 //            },
 //            text = {
 //                Image(
-//                    painter = painterResource(id = R.mipmap.sponser),
+//                    painter = painterDrawableRes(R.mipmap.sponser),
 //                    ResStrings.sponser,
 //                    modifier = Modifier.fillMaxWidth(),
 //                    alignment = Alignment.Center,

@@ -1,5 +1,6 @@
 package com.funny.translation.helper
 
+import com.eygraber.uri.Uri
 import com.funny.translation.AppConfig
 import com.funny.translation.kmp.KMPContext
 import com.funny.translation.network.ServiceCreator
@@ -109,7 +110,7 @@ object UserUtils {
     }
 }
 
-expect suspend fun UserUtils.uploadUserAvatar(context: KMPContext, imgUri: String, filename: String, width: Int, height: Int, uid: Int) : String
+expect suspend fun UserUtils.uploadUserAvatar(context: KMPContext, imgUri: Uri, filename: String, width: Int, height: Int, uid: Int) : String
 
 class SignInException(s: String) : Exception(s)
 class SignUpException(s: String) : Exception(s)

@@ -36,7 +36,7 @@ fun JetSettingSwitch(
     modifier: Modifier = Modifier,
     state: MutableState<Boolean>,
     imageVector: ImageVector? = null,
-    resourceId: Int? = null,
+    resourceName: String? = null,
     text: String,
     description: String? = null,
     interceptor: () -> Boolean = { true },
@@ -45,7 +45,7 @@ fun JetSettingSwitch(
     SettingBaseItem(
         modifier = modifier,
         icon = {
-            val icon = FunnyIcon(imageVector, resourceId)
+            val icon = FunnyIcon(imageVector, resourceName)
             IconWidget(funnyIcon = icon, tintColor = MaterialTheme.colorScheme.onSurface)
         },
         title = {
@@ -79,18 +79,18 @@ fun JetSettingSwitch(
     key: String,
     default: Boolean = false,
     imageVector: ImageVector? = null,
-    resourceId: Int? = null,
+    resourceName: String? = null,
     text: String,
     description: String? = null,
     interceptor: () -> Boolean = { true },
     onCheck: (Boolean) -> Unit
 ) {
-    val state = rememberDataSaverState(key = key, default = default)
+    val state = rememberDataSaverState<Boolean>(key = key, initialValue = default)
     JetSettingSwitch(
         modifier = modifier,
         state = state,
         imageVector = imageVector,
-        resourceId = resourceId,
+        resourceName = resourceName,
         text = text,
         description = description,
         interceptor = interceptor,
@@ -102,14 +102,14 @@ fun JetSettingSwitch(
 fun JetSettingTile(
     modifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
-    resourceId: Int? = null,
+    resourceName: String? = null,
     text: String,
     description: String? = null,
     interceptor: () -> Boolean = { true },
     onClick: () -> Unit
 ) {
     SettingBaseItem(
-        modifier = Modifier.padding(vertical = 4.dp),
+        modifier = modifier.padding(vertical = 4.dp),
         title = {
             Text(text = text)
         },
@@ -117,7 +117,7 @@ fun JetSettingTile(
            // FixedSizeIcon(Icons.Default.KeyboardArrowRight, "Goto", )
         },
         icon = {
-            val icon = FunnyIcon(imageVector, resourceId)
+            val icon = FunnyIcon(imageVector, resourceName)
             IconWidget(funnyIcon = icon, tintColor = MaterialTheme.colorScheme.onSurface)
         },
         onClick = {
@@ -138,7 +138,7 @@ fun JetSettingTile(
 fun JetSettingDialog(
     modifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
-    resourceId: Int? = null,
+    resourceName: String? = null,
     text: String,
     description: String? = null,
     dialogTitle: String = ResStrings.hint,
@@ -187,11 +187,10 @@ fun JetSettingDialog(
         text = text,
         description = description,
         imageVector = imageVector,
-        resourceId = resourceId,
-        onClick =  {
-            openDialogState = true
-        }
-    )
+        resourceName = resourceName
+    ) {
+        openDialogState = true
+    }
 }
 
 @Composable
@@ -201,7 +200,7 @@ fun <E> JetSettingListDialog(
     text: String,
     description: String? = null,
     imageVector: ImageVector? = null,
-    resourceId: Int? = null,
+    resourceName: String? = null,
     selected: E,
     updateSelected: (E) -> Unit,
     confirmButtonAction: (() -> Unit)? = EmptyAction,
@@ -213,7 +212,7 @@ fun <E> JetSettingListDialog(
         modifier = modifier,
         text = text,
         description = description,
-        resourceId = resourceId,
+        resourceName = resourceName,
         imageVector = imageVector,
         confirmButtonAction = confirmButtonAction,
         confirmButtonText = confirmButtonText,

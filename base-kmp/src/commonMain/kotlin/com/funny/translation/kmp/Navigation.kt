@@ -29,6 +29,10 @@ typealias NamedNavArgument = String
 @Composable
 fun rememberNavController() = rememberNavigator()
 
+fun NavController.navigateUp() {
+    popBackStack()
+}
+
 fun NavGraphBuilder.composable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),

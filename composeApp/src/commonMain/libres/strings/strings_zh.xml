@@ -332,4 +332,5 @@
     <string name="model_engine">大模型</string>
     <string name="llm_engine_tip">使用大模型翻译需消耗AI文字点数，具体细则请前往“长文翻译”查看</string>
     <string name="load_llm_models">加载大模型列表</string>
+    <string name="day_hour_min_sec">${day}天${hour}时${min}分${sec}秒</string>
 </resources>

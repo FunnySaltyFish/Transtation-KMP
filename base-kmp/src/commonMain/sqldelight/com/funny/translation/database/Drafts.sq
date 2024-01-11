@@ -1,6 +1,22 @@
+import kotlin.Int;
+
 CREATE TABLE IF NOT EXISTS drafts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT NOT NULL,
     content TEXT NOT NULL,
     timestamp INTEGER NOT NULL,
     remark TEXT NOT NULL DEFAULT ''
 );
+
+-- Queries for DraftDao
+
+-- Query to select all drafts
+getAll:
+SELECT * FROM drafts ORDER BY timestamp DESC;
+
+-- Insert or update a draft
+upsert:
+INSERT OR REPLACE INTO drafts (id, content, timestamp, remark) VALUES ?;
+
+-- Delete a draft
+delete:
+DELETE FROM drafts WHERE id = ?;

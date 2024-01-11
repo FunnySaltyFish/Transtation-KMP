@@ -18,3 +18,43 @@ CREATE TABLE IF NOT EXISTS longTextTransTasks (
     updateTime INTEGER NOT NULL DEFAULT 0,
     remark TEXT NOT NULL DEFAULT ''
 );
+
+-- Queries for LongTextTransDao
+
+-- Query to select a LongTextTransTask by id
+getById:
+SELECT * FROM longTextTransTasks WHERE id = ?;
+
+-- Query to select all LongTextTransTasks
+getAll:
+SELECT * FROM longTextTransTasks;
+
+-- Query to select all LongTextTransTasks with minimal data
+getAllMini:
+SELECT id, chatBotId, translatedLength, remark, createTime, updateTime, LENGTH(sourceText) AS sourceTextLength FROM longTextTransTasks;
+
+-- Delete a LongTextTransTask by id
+deleteById:
+DELETE FROM longTextTransTasks WHERE id = ?;
+
+-- Insert or update a LongTextTransTask
+upsert:
+INSERT OR REPLACE INTO longTextTransTasks (id, chatBotId, sourceText, resultText, prompt, allCorpus, sourceTextSegments, resultTextSegments, translatedLength, createTime, updateTime, remark)
+VALUES ?;
+
+-- Insert a LongTextTransTask
+insert:
+INSERT INTO longTextTransTasks (id, chatBotId, sourceText, resultText, prompt, allCorpus, sourceTextSegments, resultTextSegments, translatedLength, createTime, updateTime, remark)
+VALUES ?;
+
+-- Update allCorpus for a LongTextTransTask
+updateAllCorpus:
+UPDATE longTextTransTasks SET allCorpus = ? WHERE id = ?;
+
+-- Update sourceText for a LongTextTransTask
+updateSourceText:
+UPDATE longTextTransTasks SET sourceText = ? WHERE id = ?;
+
+-- Update remark for a LongTextTransTask
+updateRemark:
+UPDATE longTextTransTasks SET remark = ? WHERE id = ?;

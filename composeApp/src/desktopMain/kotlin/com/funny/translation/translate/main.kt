@@ -28,49 +28,49 @@ import kotlinx.coroutines.runBlocking
 fun main() {
     init()
     application {
-            WindowHolder {
-                addWindow<TransActivity>(rememberWindowState(), show = true, {
-                    exitApplication()
-                }) { transActivity ->
-                    CompositionLocalProvider(LocalActivityVM provides transActivity.activityViewModel) {
-                        AppNavigation(navController = rememberNavController().also {
-                            ActivityManager.findActivity<TransActivity>()?.navController = it
-                        }, exitAppAction = ::exitApplication)
-                    }
+        WindowHolder {
+            addWindow<TransActivity>(rememberWindowState(), show = true, {
+                exitApplication()
+            }) { transActivity ->
+                CompositionLocalProvider(LocalActivityVM provides transActivity.activityViewModel) {
+                    AppNavigation(navController = rememberNavController().also {
+                        ActivityManager.findActivity<TransActivity>()?.navController = it
+                    }, exitAppAction = ::exitApplication)
                 }
+            }
 
-                addWindow<LoginActivity>(
-                    rememberWindowState(
-                        placement = WindowPlacement.Floating,
-                        width = 360.dp,
-                        height = 700.dp,
-                    ),
-                    show = false,
-                    onCloseRequest = {},
-                ) { loginActivity ->
-                    LoginNavigation(
-                        onLoginSuccess = {
-                            Log.d("Login", "登录成功: 用户: $it")
-                            if(it.isValid()) AppConfig.login(it, updateVipFeatures = true)
-                            loginActivity.finish()
-                        }
+            addWindow<LoginActivity>(
+                rememberWindowState(
+                    placement = WindowPlacement.Floating,
+                    width = 360.dp,
+                    height = 700.dp,
+                ),
+                show = false,
+                onCloseRequest = {},
+            ) { loginActivity ->
+                LoginNavigation(
+                    onLoginSuccess = {
+                        Log.d("Login", "登录成功: 用户: $it")
+                        if (it.isValid()) AppConfig.login(it, updateVipFeatures = true)
+                        loginActivity.finish()
+                    }
+                )
+            }
+
+            addWindow<ErrorDialogActivity>(
+                rememberWindowState(),
+                show = false,
+                onCloseRequest = {},
+            ) { errorDialogActivity ->
+                errorDialogActivity.crashMessage?.let {
+                    ErrorDialog(
+                        crashMessage = it,
+                        destroy = errorDialogActivity::destroy
                     )
-                }
-
-                addWindow<ErrorDialogActivity>(
-                    rememberWindowState(),
-                    show = false,
-                    onCloseRequest = {},
-                ) { errorDialogActivity ->
-                    errorDialogActivity.crashMessage?.let {
-                        ErrorDialog(
-                            crashMessage = it,
-                            destroy = errorDialogActivity::destroy
-                        )
-                    }
                 }
             }
         }
+    }
 }
 
 private fun init() {

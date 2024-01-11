@@ -34,6 +34,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 addProjectDependencies()
+                implementation("org.burnoutcrew.composereorderable:reorderable:0.7.4")
             }
         }
 
@@ -137,6 +138,11 @@ buildkonfig {
         buildConfigField(FieldSpec.Type.STRING, "FLAVOR", "common")
         buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.versions.project.versionName.get())
         buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
+        // DEBUG
+        val debug = System.getenv("TranslationDebug")?.toBoolean() ?: false
+        buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
+        val buildType = if (debug) "Debug" else "Release"
+        buildConfigField(FieldSpec.Type.STRING, "BUILD_TYPE", buildType)
     }
 
     defaultConfigs("common") {

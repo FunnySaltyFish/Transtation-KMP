@@ -1,19 +1,18 @@
 package com.funny.jetsetting.core.ui
 
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
+import com.funny.translation.kmp.painterDrawableRes
+import com.funny.translation.ui.FixedSizeIcon
 
 class FunnyIcon(
     private val imageVector: ImageVector?= null,
-    private val resourceId : Int? = null
+    private val resourceName: String? = null
 ){
-    fun get() = imageVector ?: resourceId
+    fun get() = imageVector ?: resourceName
 }
 
 @Composable
@@ -25,8 +24,9 @@ fun IconWidget(
 ) {
     val icon = funnyIcon.get()
     if (icon is ImageVector){
-        Icon(imageVector = icon, contentDescription = contentDescription, tint = tintColor, modifier = modifier.size(24.dp))
-    }else if(icon is Int){
-        error("show icon by resource id is not supported yet in KMP")
+        FixedSizeIcon(imageVector = icon, contentDescription = contentDescription, tint = tintColor, modifier = modifier)
+    }else if(icon is String){
+//        error("show icon by resource id is not supported yet in KMP")
+        FixedSizeIcon(painter = painterDrawableRes(icon), contentDescription = contentDescription, tint = tintColor, modifier = modifier)
     }
 }

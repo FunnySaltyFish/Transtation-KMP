@@ -4,9 +4,13 @@ import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
 import com.funny.translation.database.ChatHistory
 import com.funny.translation.database.Database
+import com.funny.translation.database.Drafts
+import com.funny.translation.database.EditablePromptAdapter
+import com.funny.translation.database.IntListAdapter
 import com.funny.translation.database.LanguageListAdapter
 import com.funny.translation.database.Plugin
 import com.funny.translation.database.StringListAdapter
+import com.funny.translation.database.TermListAdapter
 import com.funny.translation.database.TransFavorite
 import com.funny.translation.database.TransHistory
 import com.funny.translation.helper.now
@@ -40,6 +44,17 @@ fun createDatabase(driverFactory: DriverFactory): Database {
         chatHistoryAdapter = ChatHistory.Adapter(
             botIdAdapter = IntColumnAdapter,
             typeAdapter = IntColumnAdapter,
+        ),
+        draftsAdapter = Drafts.Adapter(
+            idAdapter = IntColumnAdapter,
+        ),
+        longTextTransTasksAdapter = com.funny.translation.database.LongTextTransTasks.Adapter(
+            chatBotIdAdapter = IntColumnAdapter,
+            promptAdapter = EditablePromptAdapter,
+            allCorpusAdapter = TermListAdapter,
+            sourceTextSegmentsAdapter = IntListAdapter,
+            resultTextSegmentsAdapter = IntListAdapter,
+            translatedLengthAdapter = IntColumnAdapter,
         ),
     )
 

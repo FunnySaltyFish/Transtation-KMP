@@ -259,7 +259,7 @@
     <string name="task_prompt">Task Prompt</string>
     <string name="corpus">Term List</string>
     <string name="export_result">Export Result</string>
-
+    <string name="day_hour_min_sec">${day} days ${hour}:${min}:${sec}</string>
     <string name="message_remove_from_all_corpus">Remove this item from all corpus at the same time?</string>
     <string name="message_modify_all_corpus">Modify this item in all corpus at the same time?</string>
     <string name="paused_due_to_editting">Currently editing, automatically paused for you</string>
