@@ -54,25 +54,25 @@ fun slideOutOfContainer(
     return when (direction) {
         AnimatedContentTransitionScope.SlideDirection.Left, AnimatedContentTransitionScope.SlideDirection.Start -> {
             slideOutHorizontally(
-                targetOffsetX = { -it },
+                targetOffsetX = { it },
                 animationSpec = animationSpec,
             )
         }
         AnimatedContentTransitionScope.SlideDirection.Right, AnimatedContentTransitionScope.SlideDirection.End -> {
             slideOutHorizontally(
-                targetOffsetX = { it },
+                targetOffsetX = { -it },
                 animationSpec = animationSpec,
             )
         }
         AnimatedContentTransitionScope.SlideDirection.Up -> {
             slideOutVertically(
-                targetOffsetY = { -it },
+                targetOffsetY = { it },
                 animationSpec = animationSpec,
             )
         }
         AnimatedContentTransitionScope.SlideDirection.Down -> {
             slideOutVertically(
-                targetOffsetY = { it },
+                targetOffsetY = { -it },
                 animationSpec = animationSpec,
             )
         }

@@ -19,7 +19,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import com.eygraber.uri.Uri
 import com.funny.data_saver.core.rememberDataSaverState
+import com.funny.translation.AppConfig
 import com.funny.translation.Consts
 import com.funny.translation.NeedToTransConfig
 import com.funny.translation.bean.TranslationConfig
@@ -30,19 +32,44 @@ import com.funny.translation.kmp.NavHost
 import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.composable
+import com.funny.translation.kmp.getQueryBoolean
+import com.funny.translation.kmp.getQueryInt
+import com.funny.translation.kmp.getQueryString
 import com.funny.translation.kmp.navOptions
 import com.funny.translation.kmp.navigation
 import com.funny.translation.kmp.slideIntoContainer
 import com.funny.translation.kmp.slideOutOfContainer
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.ai.ChatScreen
+import com.funny.translation.translate.ui.buy.BuyAIPointScreen
+import com.funny.translation.translate.ui.buy.TransProScreen
+import com.funny.translation.translate.ui.long_text.DraftScreen
+import com.funny.translation.translate.ui.long_text.LongTextTransDetailScreen
+import com.funny.translation.translate.ui.long_text.LongTextTransListScreen
+import com.funny.translation.translate.ui.long_text.LongTextTransScreen
+import com.funny.translation.translate.ui.long_text.TextEditorAction
+import com.funny.translation.translate.ui.long_text.TextEditorScreen
 import com.funny.translation.translate.ui.main.FavoriteScreen
+import com.funny.translation.translate.ui.main.ImageTransScreen
 import com.funny.translation.translate.ui.main.MainScreen
+import com.funny.translation.translate.ui.settings.AboutScreen
+import com.funny.translation.translate.ui.settings.FloatWindowScreen
+import com.funny.translation.translate.ui.settings.OpenSourceLibScreen
+import com.funny.translation.translate.ui.settings.SelectLanguage
+import com.funny.translation.translate.ui.settings.SettingsScreen
+import com.funny.translation.translate.ui.settings.SortResult
+import com.funny.translation.translate.ui.settings.ThemeScreen
+import com.funny.translation.translate.ui.thanks.AnnualReportScreen
+import com.funny.translation.translate.ui.thanks.ThanksScreen
+import com.funny.translation.translate.ui.thanks.addUserProfileRoutes
+import com.funny.translation.translate.utils.DeepLinkManager
 import com.funny.translation.ui.MarkdownText
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler
+import java.util.UUID
 
 private const val TAG = "AppNav"
 val LocalNavController = staticCompositionLocalOf<NavHostController> {
@@ -99,22 +126,19 @@ fun AppNavigation(
             NavHost(
                 navController = navController,
                 startDestination = TranslateScreen.MainScreen.route,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 composable(
                     TranslateScreen.MainScreen.route,
                 ) {
                     MainScreen()
                 }
-//                    animateComposable(
-//                        TranslateScreen.ImageTranslateScreen.route,
-//                        deepLinks = listOf(
-//                            navDeepLink {
-//                                uriPattern =
-//                                    "${DeepLinkManager.PREFIX}${DeepLinkManager.IMAGE_TRANS_PATH}?imageUri={imageUri}&sourceId={sourceId}&targetId={targetId}&doClip={doClip}"
-//                            }
-//                        ),
-//                        arguments = listOf(
+                    animateComposable(
+                        TranslateScreen.ImageTranslateScreen.route,
+                        deepLinks = listOf(
+                            "${DeepLinkManager.PREFIX}${DeepLinkManager.IMAGE_TRANS_PATH}?imageUri={imageUri}&sourceId={sourceId}&targetId={targetId}&doClip={doClip}"
+                        ),
+                        arguments = listOf(
 //                            navArgument("imageUri") {
 //                                type = NavType.StringType; defaultValue = null; nullable = true
 //                            },
@@ -127,35 +151,35 @@ fun AppNavigation(
 //                            navArgument("doClip") {
 //                                type = NavType.BoolType; defaultValue = false
 //                            }
-//                        )
-//                    ) {
-//                        // 使用 Intent 跳转目前会导致 Activity 重建
-//                        // 不合理，相当不合理
-//                        ImageTransScreen(
-//                            imageUri = it.arguments?.getString("imageUri")?.toUri(),
-//                            sourceId = it.arguments?.getInt("sourceId"),
-//                            targetId = it.arguments?.getInt("targetId"),
-//                            doClipFirst = it.arguments?.getBoolean("doClip") ?: false
-//                        )
-//                    }
-//                    animateComposable(TranslateScreen.AboutScreen.route) {
-//                        AboutScreen()
-//                    }
+                        )
+                    ) { backStackEntry ->
+                        // 使用 Intent 跳转目前会导致 Activity 重建
+                        // 不合理，相当不合理
+                        ImageTransScreen(
+                            imageUri = backStackEntry.getQueryString("imageUri")?.let { Uri.parse(it) },
+                            sourceId = backStackEntry.getQueryInt("sourceId"),
+                            targetId = backStackEntry.getQueryInt("targetId"),
+                            doClipFirst = backStackEntry.getQueryBoolean("doClip", false)
+                        )
+                    }
+                    animateComposable(TranslateScreen.AboutScreen.route) {
+                        AboutScreen()
+                    }
 //                    animateComposable(TranslateScreen.PluginScreen.route) {
 //                        PluginScreen()
 //                    }
-//                    animateComposable(TranslateScreen.TransProScreen.route) {
-//                        TransProScreen()
-//                    }
-//                    animateComposable(TranslateScreen.ThanksScreen.route) {
-//                        ThanksScreen()
-//                    }
-//                    animateComposable(TranslateScreen.FloatWindowScreen.route) {
-//                        FloatWindowScreen()
-//                    }
-                animateComposable(TranslateScreen.FavoriteScreen.route) {
-                    FavoriteScreen()
-                }
+                    animateComposable(TranslateScreen.TransProScreen.route) {
+                        TransProScreen()
+                    }
+                    animateComposable(TranslateScreen.ThanksScreen.route) {
+                        ThanksScreen()
+                    }
+                    animateComposable(TranslateScreen.FloatWindowScreen.route) {
+                        FloatWindowScreen()
+                    }
+                    animateComposable(TranslateScreen.FavoriteScreen.route) {
+                        FavoriteScreen()
+                    }
 //                    animateComposable(TranslateScreen.AppRecommendationScreen.route) {
 //                        AppRecommendationScreen()
 //                    }
@@ -189,28 +213,28 @@ fun AppNavigation(
                     ) {
                         ChatScreen()
                     }
-//                    animateComposable(
-//                        TranslateScreen.BuyAIPointScreen.route,
+                    animateComposable(
+                        TranslateScreen.BuyAIPointScreen.route,
 //                        arguments = listOf(
 //                            navArgument("planName") {
 //                                type = NavType.StringType; defaultValue = null; nullable = true
 //                            }
 //                        )
-//                    ) {
-//                        val planName = it.arguments?.getString("planName")
-//                        BuyAIPointScreen(planName ?: AI_TEXT_POINT)
-//                    }
-//                    animateComposable(TranslateScreen.AnnualReportScreen.route) {
-//                        AnnualReportScreen()
-//                    }
-//                addLongTextTransNavigation()
-//                addSettingsNavigation()
-//                    addUserProfileRoutes(
-//                        navHostController = navController
-//                    ) { userBean ->
-//                        Log.d(TAG, "登录成功: 用户: $userBean")
-//                        if (userBean.isValid()) AppConfig.login(userBean, updateVipFeatures = true)
-//                    }
+                    ) {
+                        val planName = it.getQueryString("planName")
+                        BuyAIPointScreen(planName ?: AI_TEXT_POINT)
+                    }
+                    animateComposable(TranslateScreen.AnnualReportScreen.route) {
+                        AnnualReportScreen()
+                    }
+                addLongTextTransNavigation()
+                addSettingsNavigation()
+                    addUserProfileRoutes(
+                        navHostController = navController
+                    ) { userBean ->
+                        Log.d(TAG, "登录成功: 用户: $userBean")
+                        if (userBean.isValid()) AppConfig.login(userBean, updateVipFeatures = true)
+                    }
             }
         }
 
@@ -247,41 +271,41 @@ private fun NavGraphBuilder.addLongTextTransNavigation() {
         startDestination = TranslateScreen.LongTextTransScreen.route,
         route = "nav_1_long_text_trans"
     ) {
-//        animateComposable(TranslateScreen.LongTextTransScreen.route) {
-//            LongTextTransScreen()
-//        }
-//        animateComposable(TranslateScreen.LongTextTransListScreen.route) {
-//            LongTextTransListScreen()
-//        }
-//        animateComposable(
-//            TranslateScreen.LongTextTransDetailScreen.route,
+        animateComposable(TranslateScreen.LongTextTransScreen.route) {
+            LongTextTransScreen()
+        }
+        animateComposable(TranslateScreen.LongTextTransListScreen.route) {
+            LongTextTransListScreen()
+        }
+        animateComposable(
+            TranslateScreen.LongTextTransDetailScreen.route,
 //            arguments = listOf(
 //                navArgument("id") {
 //                    type = NavType.StringType; defaultValue = null; nullable = true
 //                }
 //            )
-//        ) {
-//            val id = it.arguments?.getString("id")
-//            LongTextTransDetailScreen(id = id ?: UUID.randomUUID().toString())
-//        }
-//        animateComposable(
-//            TranslateScreen.TextEditorScreen.route,
+        ) {
+            val id = it.getQueryString("id") ?: UUID.randomUUID().toString()
+            LongTextTransDetailScreen(id = id)
+        }
+        animateComposable(
+            TranslateScreen.TextEditorScreen.route,
 //            arguments = listOf(
 //                navArgument("action") {
 //                    type = NavType.StringType
 //                }
 //            )
-//        ) {
-//            val action = kotlin.runCatching {
-//                TextEditorAction.fromString(it.arguments?.getString("action") ?: "")
-//            }.getOrNull()
-//            TextEditorScreen(action)
-//        }
-//        animateComposable(
-//            TranslateScreen.DraftScreen.route
-//        ) {
-//            DraftScreen()
-//        }
+        ) {
+            val action = kotlin.runCatching {
+                TextEditorAction.fromString(it.getQueryString("action") ?: "")
+            }.getOrNull()
+            TextEditorScreen(action)
+        }
+        animateComposable(
+            TranslateScreen.DraftScreen.route
+        ) {
+            DraftScreen()
+        }
     }
 }
 
@@ -291,29 +315,29 @@ private fun NavGraphBuilder.addSettingsNavigation() {
         startDestination = TranslateScreen.SettingScreen.route,
         route = "nav_1_setting",
     ) {
-//        animateComposable(TranslateScreen.SettingScreen.route) {
-//            SettingsScreen()
-//        }
-//        animateComposable(
-//            TranslateScreen.OpenSourceLibScreen.route,
-//        ) {
-//            OpenSourceLibScreen()
-//        }
-//        animateComposable(
-//            TranslateScreen.ThemeScreen.route,
-//        ) {
-//            ThemeScreen()
-//        }
-//        animateComposable(
-//            TranslateScreen.SortResultScreen.route,
-//        ) {
-//            SortResult(Modifier.fillMaxSize())
-//        }
-//        animateComposable(
-//            TranslateScreen.SelectLanguageScreen.route
-//        ) {
-//            SelectLanguage(modifier = Modifier.fillMaxSize())
-//        }
+        animateComposable(TranslateScreen.SettingScreen.route) {
+            SettingsScreen()
+        }
+        animateComposable(
+            TranslateScreen.OpenSourceLibScreen.route,
+        ) {
+            OpenSourceLibScreen()
+        }
+        animateComposable(
+            TranslateScreen.ThemeScreen.route,
+        ) {
+            ThemeScreen()
+        }
+        animateComposable(
+            TranslateScreen.SortResultScreen.route,
+        ) {
+            SortResult(Modifier.fillMaxSize())
+        }
+        animateComposable(
+            TranslateScreen.SelectLanguageScreen.route
+        ) {
+            SelectLanguage(modifier = Modifier.fillMaxSize())
+        }
     }
 }
 

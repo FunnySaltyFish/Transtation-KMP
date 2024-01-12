@@ -11,7 +11,7 @@ import com.hjq.toast.Toaster
 
 actual fun Context.readAssets(fileName: String): String = readAssetsFile(fileName)
 
-fun Context.openUrl(url: String) {
+actual fun Context.openUrl(url: String) {
     openUrl(Uri.parse(url))
 }
 

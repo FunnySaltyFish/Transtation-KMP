@@ -1,6 +1,5 @@
 package com.funny.translation.translate.ui.settings
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,7 +55,7 @@ import com.funny.translation.ui.theme.isLight
 import com.funny.translation.ui.touchToScale
 
 @Composable
-@Preview
+//@Preview
 fun AboutScreen() {
     val context = LocalContext.current
     val navController = LocalNavController.current
@@ -192,7 +191,7 @@ fun OpenSourceLibScreen() {
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            loadingList(state, retry, key = { it.name }) { info ->
+            loadingList<OpenSourceLibraryInfo>(state, retry, key = { it.name }) { info ->
                 val color =
                     if (info.author == "FunnySaltyFish" && MaterialTheme.colorScheme.isLight) MaterialColors.Orange200 else MaterialTheme.colorScheme.primaryContainer
                 OpenSourceLibItem(

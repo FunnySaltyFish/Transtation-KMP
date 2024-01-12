@@ -1,6 +1,6 @@
 package com.funny.translation.ui
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import com.funny.data_saver.core.LocalDataSaver
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.ui.theme.TransTheme
+import com.funny.translation.ui.toast.Toast
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import moe.tlaster.precompose.PreComposeApp
@@ -29,10 +30,12 @@ fun App(content: @Composable () -> Unit = {}) {
     ) {
         PreComposeApp {
             TransTheme {
-                content()
-                Toast(
-                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.BottomEnd)
-                )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    content()
+                    Toast(
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                    )
+                }
             }
         }
     }

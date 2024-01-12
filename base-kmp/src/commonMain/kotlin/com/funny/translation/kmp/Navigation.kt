@@ -1,6 +1,5 @@
 package com.funny.translation.kmp
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -8,8 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.BackStackEntry
 import moe.tlaster.precompose.navigation.Navigator
@@ -31,6 +28,18 @@ fun rememberNavController() = rememberNavigator()
 
 fun NavController.navigateUp() {
     popBackStack()
+}
+
+fun NavBackStackEntry.getQueryString(key: String, default: String? = null): String? {
+    return queryString?.map?.get(key)?.firstOrNull() ?: return default
+}
+
+fun NavBackStackEntry.getQueryInt(key: String, default: Int? = null): Int? {
+    return queryString?.map?.get(key)?.firstOrNull()?.toIntOrNull() ?: return default
+}
+
+fun NavBackStackEntry.getQueryBoolean(key: String, default: Boolean = false): Boolean {
+    return queryString?.map?.get(key)?.firstOrNull()?.toBoolean() ?: return default
 }
 
 fun NavGraphBuilder.composable(
@@ -92,31 +101,28 @@ fun NavHost(
     startDestination: String,
     modifier: Modifier = Modifier,
     enterTransition: (() -> EnterTransition) =
-        { fadeIn(animationSpec = tween(700)) },
+        { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
     exitTransition: (() -> ExitTransition) =
-        { fadeOut(animationSpec = tween(700)) },
+        { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
     popEnterTransition: (() -> EnterTransition) =
-        enterTransition,
+        { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
     popExitTransition: (() -> ExitTransition) =
-        exitTransition,
+        { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
     builder: NavGraphBuilder.() -> Unit,
 ) {
-    val currentEntry by navController.currentEntry.collectAsState(null)
-    AnimatedContent(currentEntry) {
-        moe.tlaster.precompose.navigation.NavHost(
-            navigator = navController,
-            initialRoute = startDestination,
-            modifier = modifier,
-            navTransition = NavTransition(
-                createTransition = enterTransition(),
-                destroyTransition = exitTransition(),
-                pauseTransition = popExitTransition(),
-                resumeTransition = popEnterTransition(),
-            ),
-            persistNavState = true,
-            builder = builder,
-        )
-    }
+    moe.tlaster.precompose.navigation.NavHost(
+        navigator = navController,
+        initialRoute = startDestination,
+        modifier = modifier,
+        navTransition = NavTransition(
+            createTransition = enterTransition(),
+            destroyTransition = exitTransition(),
+            pauseTransition = popExitTransition(),
+            resumeTransition = popEnterTransition(),
+        ),
+        persistNavState = true,
+        builder = builder,
+    )
 }
 
 const val NAV_ANIM_DURATION = 500

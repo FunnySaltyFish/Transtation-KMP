@@ -23,7 +23,7 @@ expect fun MarkdownText(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
-    textAlign: TextAlign? = null,
+    textAlign: TextAlign? = TextAlign.Center,
     maxLines: Int = Int.MAX_VALUE,
     selectable: Boolean = false,
     style: TextStyle = LocalTextStyle.current,

@@ -97,6 +97,7 @@ fun UserProfileSettings(navHostController: NavHostController) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = CenterHorizontally
         ) {
+            UserAvatarTile()
             Tile(text = ResStrings.change_username, onClick = {
                 navHostController.navigateSingleTop(LoginRoute.ChangeUsernamePage.route)
             })
