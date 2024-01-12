@@ -19,9 +19,14 @@ import org.mozilla.javascript.RhinoException
 import javax.script.ScriptException
 
 @Keep
-class JsEngine(var jsBean: JsBean) : JsInterface {
+class JsEngine(val code: String) : JsInterface {
+    constructor(jsBean: JsBean) : this(jsBean.code) {
+        this.jsBean = jsBean
+    }
+
     private val patternResult = Regex("(\\W)result(\\W)")
     lateinit var funnyJS: NativeObject
+    lateinit var jsBean: JsBean
     internal val scriptEngine by lazy {
         ScriptEngineDelegate(jsBean.fileName)
     }
@@ -38,7 +43,6 @@ class JsEngine(var jsBean: JsBean) : JsInterface {
         }
         // 为了实现多引擎同步翻译，替换 result 为 result_${engineName.hashCode()}
 //        val code = jsBean.code.replace(patternResult,"\$1result_${jsBean.fileName.hashCode().absoluteValue}\$2")
-        val code = jsBean.code
         scriptEngine.eval(code)
         funnyJS = scriptEngine.get("FunnyJS") as NativeObject
     }

@@ -108,6 +108,7 @@ fun KotlinDependencyHandler.addProjectDependencies() {
     implementation(project(":base-kmp"))
     implementation(project(":ai"))
     implementation(project(":login"))
+    implementation(project(":code-editor"))
 }
 
 compose.desktop {

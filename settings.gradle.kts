@@ -34,4 +34,6 @@ include(":base-kmp")
 include(":ai")
 include(":login")
 
+include(":android-code-editor:editor", ":android-code-editor:language-base", ":android-code-editor:language-universal")
+include(":code-editor")
 

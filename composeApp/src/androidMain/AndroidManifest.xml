@@ -45,6 +45,22 @@
             android:launchMode="singleTask"
             android:exported="false" />
 
+        <activity android:name="com.funny.translation.codeeditor.CodeEditorActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/edit_code"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="code_editor"
+                    android:scheme="funny-trans" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.funny.translation.translate.activity.ErrorDialogActivity"
             android:label="@string/crash"

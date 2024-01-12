@@ -3,4 +3,5 @@
     <string name="app_name">译站-KMP</string>
     <string name="crash">糟糕，崩溃了</string>
     <string name="transtation_floating_window">译站悬浮球</string>
+    <string name="edit_code">编辑代码</string>
 </resources>
