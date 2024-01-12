@@ -28,7 +28,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
@@ -74,7 +76,6 @@ import com.funny.translation.helper.readText
 import com.funny.translation.helper.writeText
 import com.funny.translation.js.JsEngine
 import com.funny.translation.kmp.NavController
-import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.allLanguages
 import com.funny.translation.ui.FixedSizeIcon
@@ -369,10 +370,10 @@ fun CodeEditorTopBar(
             .background(MaterialTheme.colorScheme.primaryContainer),
         actions = {
             IconButton(onClick = debugAction) {
-                FixedSizeIcon(painterDrawableRes("ic_debug.xml"), contentDescription = "Debug")
+                FixedSizeIcon(Icons.Default.BugReport, contentDescription = "Debug")
             }
             IconButton(onClick = saveAction) {
-                FixedSizeIcon(painterDrawableRes("ic_save.xml"), contentDescription = "Save")
+                FixedSizeIcon(Icons.Default.Save, contentDescription = "Save")
             }
             IconButton(onClick = { expanded = true }) {
                 FixedSizeIcon(

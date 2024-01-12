@@ -1,127 +1,139 @@
-package com.funny.translation.codeeditor.ui.editor;
+package com.funny.translation.codeeditor.ui.editor
 
-import static io.github.rosemoe.editor.langs.universal.UniversalTokens.EOF;
+import io.github.rosemoe.editor.interfaces.AutoCompleteProvider
+import io.github.rosemoe.editor.langs.IdentifierAutoComplete
+import io.github.rosemoe.editor.langs.IdentifierAutoComplete.Identifiers
+import io.github.rosemoe.editor.langs.universal.LanguageDescription
+import io.github.rosemoe.editor.langs.universal.UniversalLanguage
+import io.github.rosemoe.editor.langs.universal.UniversalTokens
+import io.github.rosemoe.editor.struct.BlockLine
+import io.github.rosemoe.editor.text.LineNumberCalculator
+import io.github.rosemoe.editor.text.TextAnalyzeResult
+import io.github.rosemoe.editor.text.TextAnalyzer
+import io.github.rosemoe.editor.widget.EditorColorScheme
+import java.util.Stack
 
-import java.util.Stack;
+class PluginLanguage(languageDescription: LanguageDescription?) :
+    UniversalLanguage(languageDescription) {
+    var helper: LineNumberCalculator? = null
+    var autoComplete: IdentifierAutoComplete
 
-import io.github.rosemoe.editor.interfaces.AutoCompleteProvider;
-import io.github.rosemoe.editor.langs.IdentifierAutoComplete;
-import io.github.rosemoe.editor.langs.universal.LanguageDescription;
-import io.github.rosemoe.editor.langs.universal.UniversalLanguage;
-import io.github.rosemoe.editor.langs.universal.UniversalTokenizer;
-import io.github.rosemoe.editor.langs.universal.UniversalTokens;
-import io.github.rosemoe.editor.struct.BlockLine;
-import io.github.rosemoe.editor.text.LineNumberCalculator;
-import io.github.rosemoe.editor.text.TextAnalyzeResult;
-import io.github.rosemoe.editor.text.TextAnalyzer;
-import io.github.rosemoe.editor.widget.EditorColorScheme;
-
-public class PluginLanguage extends UniversalLanguage {
-    LineNumberCalculator helper;
-    IdentifierAutoComplete autoComplete;
-    UniversalTokenizer tokenizer;
-
-    public PluginLanguage(LanguageDescription languageDescription) {
-        super(languageDescription);
-        autoComplete = new IdentifierAutoComplete();
-        autoComplete.setKeywords(mLanguage.getKeywords());
-        autoComplete.setKeywordsAreLowCase(false);
-//        identifiers.begin();
+    init {
+        autoComplete = IdentifierAutoComplete()
+        autoComplete.keywords = mLanguage.keywords
+        autoComplete.setKeywordsAreLowCase(false)
+        //        identifiers.begin();
 //        for (Language language : Language.values()){
 //            identifiers.addIdentifier("LANGUAGE_"+language.name());
 //        }
     }
 
-    @Override
-    public AutoCompleteProvider getAutoCompleteProvider() {
-        return autoComplete;
+    override fun getAutoCompleteProvider(): AutoCompleteProvider {
+        return autoComplete
     }
 
-    @Override
-    public void analyze(CharSequence content, TextAnalyzeResult colors, TextAnalyzer.AnalyzeThread.Delegate delegate) {
-        StringBuilder text = content instanceof StringBuilder ? (StringBuilder) content : new StringBuilder(content);
-        tokenizer = getTokenizer();
-        tokenizer.setInput(text);
-        helper = new LineNumberCalculator(text);
-
-        IdentifierAutoComplete.Identifiers identifiers = new IdentifierAutoComplete.Identifiers();
-        identifiers.begin();
-        int maxSwitch = 0;
-        int layer = 0;
-        int currSwitch = 0;
+    override fun analyze(
+        content: CharSequence,
+        colors: TextAnalyzeResult,
+        delegate: TextAnalyzer.AnalyzeThread.Delegate
+    ) {
+        val tokenizer = getTokenizer()
+        tokenizer.setInput(content)
+        helper = LineNumberCalculator(content)
+        val identifiers = Identifiers()
+        identifiers.begin()
+        var maxSwitch = 0
+        var layer = 0
+        var currSwitch = 0
         try {
-            UniversalTokens token;
-            Stack<BlockLine> stack = new Stack<>();
-            while ((token = tokenizer.nextToken()) != EOF) {
-                int index = tokenizer.getOffset();
-                int line = helper.getLine();
-                int column = helper.getColumn();
-                switch (token) {
-                    case KEYWORD:
-                        colors.addIfNeeded(line, column, EditorColorScheme.KEYWORD);
-                        break;
-                    case IDENTIFIER:
-                        identifiers.addIdentifier(text.substring(index, index + tokenizer.getTokenLength()));
-                        colors.addIfNeeded(line, column, EditorColorScheme.TEXT_NORMAL);
-                        break;
-                    case LITERAL:
-                        colors.addIfNeeded(line, column, EditorColorScheme.LITERAL);
-                        break;
-                    case LINE_COMMENT:
-                    case LONG_COMMENT:
-                        colors.addIfNeeded(line, column, EditorColorScheme.COMMENT);
-                        break;
-                    case OPERATOR:
-                        colors.addIfNeeded(line, column, EditorColorScheme.OPERATOR);
-                        if (mLanguage.isSupportBlockLine()) {
-                            String op = text.substring(index, index + tokenizer.getTokenLength());
+            var token: UniversalTokens?
+            val stack = Stack<BlockLine>()
+            while (tokenizer.nextToken().also { token = it } != UniversalTokens.EOF) {
+                val index = tokenizer.getOffset()
+                val line = helper!!.line
+                val column = helper!!.column
+                when (token) {
+                    UniversalTokens.KEYWORD -> colors.addIfNeeded(
+                        line,
+                        column,
+                        EditorColorScheme.KEYWORD
+                    )
+
+                    UniversalTokens.IDENTIFIER -> {
+                        identifiers.addIdentifier(
+                            content.substring(
+                                index,
+                                index + tokenizer.getTokenLength()
+                            )
+                        )
+                        colors.addIfNeeded(line, column, EditorColorScheme.TEXT_NORMAL)
+                    }
+
+                    UniversalTokens.LITERAL -> colors.addIfNeeded(
+                        line,
+                        column,
+                        EditorColorScheme.LITERAL
+                    )
+
+                    UniversalTokens.LINE_COMMENT, UniversalTokens.LONG_COMMENT -> colors.addIfNeeded(
+                        line,
+                        column,
+                        EditorColorScheme.COMMENT
+                    )
+
+                    UniversalTokens.OPERATOR -> {
+                        colors.addIfNeeded(line, column, EditorColorScheme.OPERATOR)
+                        if (mLanguage.isSupportBlockLine) {
+                            val op = content.substring(index, index + tokenizer.getTokenLength())
                             if (mLanguage.isBlockStart(op)) {
-                                BlockLine blockLine = colors.obtainNewBlock();
-                                blockLine.startLine = line;
-                                blockLine.startColumn = column;
-                                stack.add(blockLine);
+                                val blockLine = colors.obtainNewBlock()
+                                blockLine.startLine = line
+                                blockLine.startColumn = column
+                                stack.add(blockLine)
                                 if (layer == 0) {
-                                    currSwitch = 1;
+                                    currSwitch = 1
                                 } else {
-                                    currSwitch++;
+                                    currSwitch++
                                 }
-                                layer++;
+                                layer++
                             } else if (mLanguage.isBlockEnd(op)) {
                                 if (!stack.isEmpty()) {
-                                    BlockLine blockLine = stack.pop();
-                                    blockLine.endLine = line;
-                                    blockLine.endColumn = column;
-                                    colors.addBlockLine(blockLine);
+                                    val blockLine = stack.pop()
+                                    blockLine.endLine = line
+                                    blockLine.endColumn = column
+                                    colors.addBlockLine(blockLine)
                                     if (layer == 1) {
                                         if (currSwitch > maxSwitch) {
-                                            maxSwitch = currSwitch;
+                                            maxSwitch = currSwitch
                                         }
                                     }
-                                    layer--;
+                                    layer--
                                 }
                             }
                         }
-                        break;
-                    case WHITESPACE:
-                    case NEWLINE:
-                        colors.addNormalIfNull();
-                        break;
-                    case UNKNOWN:
-                        colors.addIfNeeded(line, column, EditorColorScheme.ANNOTATION);
-                        break;
+                    }
+
+                    UniversalTokens.WHITESPACE, UniversalTokens.NEWLINE -> colors.addNormalIfNull()
+                    UniversalTokens.UNKNOWN -> colors.addIfNeeded(
+                        line,
+                        column,
+                        EditorColorScheme.ANNOTATION
+                    )
+
+                    else -> {}
                 }
-                helper.update(tokenizer.getTokenLength());
+                helper!!.update(tokenizer.getTokenLength())
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        colors.determine(helper.getLine());
-        identifiers.finish();
-        colors.mExtra = identifiers;
-        tokenizer.setInput(null);
+        colors.determine(helper!!.line)
+        identifiers.finish()
+        colors.mExtra = identifiers
+        tokenizer.setInput(null)
         if (currSwitch > maxSwitch) {
-            maxSwitch = currSwitch;
+            maxSwitch = currSwitch
         }
-        colors.setSuppressSwitch(maxSwitch + 50);
+        colors.suppressSwitch = maxSwitch + 50
     }
 }

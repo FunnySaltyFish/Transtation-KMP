@@ -46,7 +46,7 @@
             android:exported="false" />
 
         <activity android:name="com.funny.translation.codeeditor.CodeEditorActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.CodeActivity.NoActionBar"
             android:windowSoftInputMode="adjustResize"
             android:label="@string/edit_code"
             android:exported="true"
