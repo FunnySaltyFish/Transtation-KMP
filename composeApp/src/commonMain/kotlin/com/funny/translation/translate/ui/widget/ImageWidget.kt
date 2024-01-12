@@ -75,11 +75,18 @@ fun FunnyImage(
     contentScale: ContentScale = ContentScale.Fit,
     contentDescription: String? = null,
 ) {
-    val icon = funnyIcon.get()
-    if (icon is ImageVector){
-        Image(imageVector = icon, contentDescription = contentDescription, modifier = modifier, contentScale = contentScale)
-    }else if(icon is Int){
-        error("image id is not support in CMP")
+    when (val icon = funnyIcon.get()) {
+        is ImageVector -> {
+            Image(imageVector = icon, contentDescription = contentDescription, modifier = modifier, contentScale = contentScale)
+        }
+
+        is Int -> {
+            error("image id is not support in CMP")
 //        Image(painter = painterDrawableRes(icon), contentDescription = contentDescription, modifier = modifier, contentScale = contentScale)
+        }
+
+        is String -> {
+            Image(painter = painterDrawableRes(icon), contentDescription = contentDescription, modifier = modifier, contentScale = contentScale)
+        }
     }
 }

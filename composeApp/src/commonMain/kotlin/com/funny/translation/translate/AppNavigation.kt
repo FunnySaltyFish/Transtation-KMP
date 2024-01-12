@@ -63,6 +63,7 @@ import com.funny.translation.translate.ui.settings.SettingsScreen
 import com.funny.translation.translate.ui.settings.SortResult
 import com.funny.translation.translate.ui.settings.ThemeScreen
 import com.funny.translation.translate.ui.thanks.AnnualReportScreen
+import com.funny.translation.translate.ui.thanks.AppRecommendationScreen
 import com.funny.translation.translate.ui.thanks.ThanksScreen
 import com.funny.translation.translate.ui.thanks.addUserProfileRoutes
 import com.funny.translation.translate.utils.DeepLinkManager
@@ -180,9 +181,9 @@ fun AppNavigation(
                     animateComposable(TranslateScreen.FavoriteScreen.route) {
                         FavoriteScreen()
                     }
-//                    animateComposable(TranslateScreen.AppRecommendationScreen.route) {
-//                        AppRecommendationScreen()
-//                    }
+                    animateComposable(TranslateScreen.AppRecommendationScreen.route) {
+                        AppRecommendationScreen()
+                    }
                     val animDuration = NAV_ANIM_DURATION
                     composable(
                         TranslateScreen.ChatScreen.route,

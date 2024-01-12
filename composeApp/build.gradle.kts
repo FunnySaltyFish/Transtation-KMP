@@ -139,7 +139,7 @@ buildkonfig {
         buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.versions.project.versionName.get())
         buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
         // DEBUG
-        val debug = System.getenv("TranslationDebug")?.toBoolean() ?: false
+        val debug = System.getenv("TranslationDebug")?.toBoolean() ?: true
         buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
         val buildType = if (debug) "Debug" else "Release"
         buildConfigField(FieldSpec.Type.STRING, "BUILD_TYPE", buildType)

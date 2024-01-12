@@ -31,7 +31,8 @@ expect fun MarkdownText(
     // this option will disable all clicks on links, inside the markdown text
     // it also enable the parent view to receive the click event
     disableLinkMovementMethod: Boolean = false,
-    onLinkClicked: ((Context, String) -> Unit)? = null,
+    onLinkClicked: ((Context, String) -> Unit)? = { _, _ ->
+    },
     onTextLayout: ((numLines: Int) -> Unit)? = null
 )
 

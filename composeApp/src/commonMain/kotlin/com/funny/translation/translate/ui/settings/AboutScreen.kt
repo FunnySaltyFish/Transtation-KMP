@@ -82,7 +82,7 @@ fun AboutScreen() {
                 modifier = Modifier.clickable(onClick = fastClickHandler),
                 text = "FunnySaltyFish",
                 description = ResStrings.my_description,
-                funnyIcon = FunnyIcon(resourceName = "ic_developer_avatar")
+                funnyIcon = FunnyIcon(resourceName = "ic_developer_avatar.jpg")
             )
         }
         SettingItemCategory(title = {
