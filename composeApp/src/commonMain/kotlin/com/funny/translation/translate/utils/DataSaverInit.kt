@@ -10,6 +10,7 @@ import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.JsonX
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.ui.thanks.SponsorSortType
 import com.funny.translation.ui.theme.LightDarkMode
 import com.funny.translation.ui.theme.ThemeType
 
@@ -39,10 +40,10 @@ fun initTypeConverters() {
 //            restore = { EditorSchemes.valueOf(it) }
 //        )
 //
-//        registerTypeConverters<SponsorSortType>(
-//            save = { it.name },
-//            restore = { SponsorSortType.valueOf(it) }
-//        )
+    DataSaverConverter.registerTypeConverters<SponsorSortType>(
+        save = { it.name },
+        restore = { SponsorSortType.valueOf(it) }
+    )
 
     DataSaverConverter.registerTypeConverters<Pair<String, Int>>(
         save = { "${it.first}:${it.second}" },

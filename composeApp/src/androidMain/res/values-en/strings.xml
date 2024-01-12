@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">TranstationKMP</string>
     <string name="crash">Oh, crashed</string>
+    <string name="transtation_floating_window">Translation floating ball</string>
 </resources>

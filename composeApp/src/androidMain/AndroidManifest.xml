@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
 
     <application
         android:name="com.funny.translation.translate.FunnyApplication"
@@ -48,58 +49,55 @@
             android:name="com.funny.translation.translate.activity.ErrorDialogActivity"
             android:label="@string/crash"
             android:theme="@style/AppTheme.Dialog" />
-<!--        <activity android:name=".activity.CustomPhotoPickerActivity" />-->
-<!--        <activity-->
-<!--            android:name=".activity.ShareActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/AppTheme.Translucent">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.PROCESS_TEXT" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <data android:mimeType="text/plain" />-->
-<!--            </intent-filter>-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.SEND" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <data android:mimeType="text/plain" />-->
-<!--            </intent-filter>-->
-<!--            &lt;!&ndash; 高版本 Android 要读取别人分享过来的图片怎么那么麻烦，不做了不做了 &ndash;&gt;-->
-<!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND" />&ndash;&gt;-->
-<!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
-<!--            &lt;!&ndash;                <data android:mimeType="image/*" />&ndash;&gt;-->
-<!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
-<!--        </activity>-->
-<!--        <activity-->
-<!--            android:name=".activity.AnnualReportActivity"-->
-<!--            android:exported="false">-->
-<!--        </activity>-->
+        <activity android:name="com.funny.translation.translate.activity.CustomPhotoPickerActivity" />
 
-<!--        <service-->
-<!--            android:name=".service.OpenFloatWindowTileService"-->
-<!--            android:exported="true"-->
-<!--            android:icon="@drawable/ic_float_window"-->
-<!--            android:label="@string/transtation_floating_window"-->
-<!--            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"-->
-<!--            >-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.service.quicksettings.action.QS_TILE" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
+        <activity
+            android:name="com.funny.translation.translate.activity.ShareActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.Translucent">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <!-- 高版本 Android 要读取别人分享过来的图片怎么那么麻烦，不做了不做了 -->
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.SEND" />-->
+            <!--                <category android:name="android.intent.category.DEFAULT" />-->
+            <!--                <data android:mimeType="image/*" />-->
+            <!--            </intent-filter>-->
+        </activity>
 
-<!--        <service-->
-<!--            android:name=".service.CaptureScreenService"-->
-<!--            android:foregroundServiceType="mediaProjection" />-->
+        <service
+            android:name="com.funny.translation.translate.service.OpenFloatWindowTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_float_window"
+            android:label="@string/transtation_floating_window"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            >
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.funny.translation.translate.service.CaptureScreenService"
+            android:foregroundServiceType="mediaProjection" />
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-<!--        <activity-->
-<!--            android:name=".activity.StartCaptureScreenActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/AppTheme.Translucent"/>-->
+        <activity
+            android:name="com.funny.translation.translate.activity.StartCaptureScreenActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.Translucent"/>
     </application>
 
 
