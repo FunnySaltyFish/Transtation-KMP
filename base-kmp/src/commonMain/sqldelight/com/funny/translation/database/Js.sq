@@ -44,7 +44,7 @@ SELECT * FROM plugin WHERE fileName = ?;
 -- Insert a JsBean
 insertJs:
 INSERT INTO plugin (fileName, code, author, version, description, enabled, minSupportVersion, maxSupportVersion, targetSupportVersion, isOffline, debugMode, supportLanguages)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+VALUES ?;
 
 -- Insert a list of JsBeans
 insertJsList:

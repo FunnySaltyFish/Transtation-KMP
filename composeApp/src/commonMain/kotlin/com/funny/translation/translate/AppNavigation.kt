@@ -55,6 +55,7 @@ import com.funny.translation.translate.ui.long_text.TextEditorScreen
 import com.funny.translation.translate.ui.main.FavoriteScreen
 import com.funny.translation.translate.ui.main.ImageTransScreen
 import com.funny.translation.translate.ui.main.MainScreen
+import com.funny.translation.translate.ui.plugin.PluginScreen
 import com.funny.translation.translate.ui.settings.AboutScreen
 import com.funny.translation.translate.ui.settings.FloatWindowScreen
 import com.funny.translation.translate.ui.settings.OpenSourceLibScreen
@@ -164,9 +165,9 @@ fun AppNavigation(
                 animateComposable(TranslateScreen.AboutScreen.route) {
                     AboutScreen()
                 }
-//                    animateComposable(TranslateScreen.PluginScreen.route) {
-//                        PluginScreen()
-//                    }
+                animateComposable(TranslateScreen.PluginScreen.route) {
+                    PluginScreen()
+                }
                 animateComposable(TranslateScreen.TransProScreen.route) {
                     TransProScreen()
                 }

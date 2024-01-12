@@ -1,6 +1,7 @@
 package com.funny.translation.helper
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -31,6 +32,7 @@ object JsonX {
     inline fun <reified T : Any> fromJson(json: String, clazz: KClass<T>): T = formatter.decodeFromString(json)
     inline fun <reified T: Any> fromJson(json: String, clazz: Class<T>) = formatter.decodeFromString<T>(json)
     inline fun <reified T: Any> fromJson(json: String, type: Type) = formatter.decodeFromString<T>(json)
+    inline fun <reified T: Any> fromJson(json: String, deserializationStrategy: DeserializationStrategy<T>) = formatter.decodeFromString<T>(deserializationStrategy, json)
 
     inline fun <reified T: Any> toJson(bean: T) = formatter.encodeToString(bean)
     inline fun <reified T: Any> toJsonPretty(bean: T) = formatterPretty.encodeToString(bean)

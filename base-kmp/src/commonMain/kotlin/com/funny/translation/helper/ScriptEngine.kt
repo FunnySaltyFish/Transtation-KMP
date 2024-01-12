@@ -3,6 +3,7 @@ package com.funny.translation.helper
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ContextFactory
 import org.mozilla.javascript.Function
+import org.mozilla.javascript.NativeJavaObject
 import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.WrapFactory
@@ -56,7 +57,7 @@ object ScriptEngine {
     fun eval(script: String, scriptId: String = DefaultID): Any? {
         return getContext(scriptId).let { cx ->
             getScope(scriptId).let { scope ->
-                cx.evaluateString(scope, script, scriptId, 1, null)
+                cx.evaluateString(scope, script, scriptId, 1, null).unwrap()
             }
         }
     }
@@ -67,7 +68,7 @@ object ScriptEngine {
             ?: throw IllegalArgumentException("Function $functionName not found in script $scriptId")
 
         return getContext(scriptId).let { cx ->
-            function.call(cx, scope, scope, args)
+            function.call(cx, scope, scope, args).unwrap()
         }
     }
 
@@ -77,12 +78,12 @@ object ScriptEngine {
             ?: throw IllegalArgumentException("Function $methodName not found in script $scriptId")
 
         return getContext(scriptId).let { cx ->
-            function.call(cx, scope, obj, args)
+            function.call(cx, scope, obj, args).unwrap()
         }
     }
 
     fun get(key: String, scriptId: String = DefaultID): Any? {
-        return getScope(scriptId).get(key, getScope(scriptId))
+        return getScope(scriptId).get(key, getScope(scriptId)).unwrap()
     }
 
     fun put(key: String, value: Any?, scriptId: String = DefaultID) {
@@ -96,6 +97,12 @@ object ScriptEngine {
             contexts.remove(scriptId)
         }
         scopes.remove(scriptId)
+    }
+
+    // 将一些常见的包装类型转化为原生类型
+    fun Any?.unwrap() = when(this) {
+        is NativeJavaObject -> this.unwrap()
+        else -> this
     }
 }
 
