@@ -33,10 +33,10 @@ import com.funny.translation.translate.database.LongTextTransTaskMini
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.long_text.components.RemarkDialog
 import com.funny.translation.translate.ui.main.SwipeToDismissItem
-import com.funny.translation.translate.ui.widget.CommonPage
 import com.funny.translation.translate.ui.widget.HintText
-import com.funny.translation.translate.ui.widget.NavPaddingItem
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.NavPaddingItem
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)

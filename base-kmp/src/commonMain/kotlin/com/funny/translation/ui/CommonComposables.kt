@@ -1,4 +1,4 @@
-package com.funny.translation.translate.ui.widget
+package com.funny.translation.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -25,9 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.NavHostController
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
-import com.funny.translation.ui.FixedSizeIcon
 
 /**
  * CommonPage，有一个 TopBar 以及剩余内容，被 Column 包裹

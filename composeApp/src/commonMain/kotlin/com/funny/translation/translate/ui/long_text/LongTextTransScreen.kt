@@ -56,7 +56,7 @@ import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.ui.TranslateScreen
-import com.funny.translation.translate.ui.widget.CommonPage
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.delay
 import moe.tlaster.precompose.lifecycle.Lifecycle

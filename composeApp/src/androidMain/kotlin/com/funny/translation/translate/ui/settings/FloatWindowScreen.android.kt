@@ -21,7 +21,7 @@ import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.strings.ResStrings
-import com.funny.translation.translate.ui.widget.CommonPage
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.touchToScale
 

@@ -1,11 +1,10 @@
 package com.funny.trans.login.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,21 +26,23 @@ import com.funny.translation.helper.UserUtils
 import com.funny.translation.kmp.NavController
 import com.funny.translation.login.strings.ResStrings
 import com.funny.translation.network.api
+import com.funny.translation.ui.CommonPage
 import kotlinx.coroutines.launch
 import java.util.Date
 
 @Composable
 fun ChangeUsernamePage(navController: NavController) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    CommonPage {
         val user by AppConfig.userInfo
         var username by remember { mutableStateOf(user.username) }
         val canChangeUsername by remember { derivedStateOf { user.canChangeUsername() } }
         val nextChangeUsernameString = remember(user) { user.nextChangeUsernameTimeStr() }
         val scope = rememberCoroutineScope()
-        Column(Modifier.fillMaxWidth(WIDTH_FRACTION), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.fillMaxWidth(WIDTH_FRACTION),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
             InputUsername(
                 usernameProvider = { username },
                 updateUsername = { username = it },

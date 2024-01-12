@@ -2,7 +2,6 @@ package com.funny.trans.login.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,16 +25,13 @@ import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.login.strings.ResStrings
+import com.funny.translation.ui.CommonPage
 
 @Composable
 fun ResetPasswordPage(
     navController: NavController
 ) {
-    Column(
-        Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    CommonPage {
         val vm = viewModel<LoginViewModel>()
         val context = LocalKMPContext.current
 

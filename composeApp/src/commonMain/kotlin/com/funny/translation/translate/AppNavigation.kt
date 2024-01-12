@@ -73,9 +73,6 @@ import moe.tlaster.precompose.navigation.BackHandler
 import java.util.UUID
 
 private const val TAG = "AppNav"
-val LocalNavController = staticCompositionLocalOf<NavHostController> {
-    error("NavController has not been initialized! ")
-}
 val LocalSnackbarState = staticCompositionLocalOf<SnackbarHostState> {
     error("LocalSnackbarState has not been initialized! ")
 }
@@ -120,6 +117,7 @@ fun AppNavigation(
         LocalSnackbarState provides snackbarHostState,
     ) {
         Scaffold(
+            modifier = Modifier.fillMaxSize(),
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             }
@@ -134,12 +132,12 @@ fun AppNavigation(
                 ) {
                     MainScreen()
                 }
-                    animateComposable(
-                        TranslateScreen.ImageTranslateScreen.route,
-                        deepLinks = listOf(
-                            "${DeepLinkManager.PREFIX}${DeepLinkManager.IMAGE_TRANS_PATH}?imageUri={imageUri}&sourceId={sourceId}&targetId={targetId}&doClip={doClip}"
-                        ),
-                        arguments = listOf(
+                animateComposable(
+                    TranslateScreen.ImageTranslateScreen.route,
+                    deepLinks = listOf(
+                        "${DeepLinkManager.PREFIX}${DeepLinkManager.IMAGE_TRANS_PATH}?imageUri={imageUri}&sourceId={sourceId}&targetId={targetId}&doClip={doClip}"
+                    ),
+                    arguments = listOf(
 //                            navArgument("imageUri") {
 //                                type = NavType.StringType; defaultValue = null; nullable = true
 //                            },
@@ -152,90 +150,90 @@ fun AppNavigation(
 //                            navArgument("doClip") {
 //                                type = NavType.BoolType; defaultValue = false
 //                            }
-                        )
-                    ) { backStackEntry ->
-                        // 使用 Intent 跳转目前会导致 Activity 重建
-                        // 不合理，相当不合理
-                        ImageTransScreen(
-                            imageUri = backStackEntry.getQueryString("imageUri")?.let { Uri.parse(it) },
-                            sourceId = backStackEntry.getQueryInt("sourceId"),
-                            targetId = backStackEntry.getQueryInt("targetId"),
-                            doClipFirst = backStackEntry.getQueryBoolean("doClip", false)
-                        )
-                    }
-                    animateComposable(TranslateScreen.AboutScreen.route) {
-                        AboutScreen()
-                    }
+                    )
+                ) { backStackEntry ->
+                    // 使用 Intent 跳转目前会导致 Activity 重建
+                    // 不合理，相当不合理
+                    ImageTransScreen(
+                        imageUri = backStackEntry.getQueryString("imageUri")?.let { Uri.parse(it) },
+                        sourceId = backStackEntry.getQueryInt("sourceId"),
+                        targetId = backStackEntry.getQueryInt("targetId"),
+                        doClipFirst = backStackEntry.getQueryBoolean("doClip", false)
+                    )
+                }
+                animateComposable(TranslateScreen.AboutScreen.route) {
+                    AboutScreen()
+                }
 //                    animateComposable(TranslateScreen.PluginScreen.route) {
 //                        PluginScreen()
 //                    }
-                    animateComposable(TranslateScreen.TransProScreen.route) {
-                        TransProScreen()
+                animateComposable(TranslateScreen.TransProScreen.route) {
+                    TransProScreen()
+                }
+                animateComposable(TranslateScreen.ThanksScreen.route) {
+                    ThanksScreen()
+                }
+                animateComposable(TranslateScreen.FloatWindowScreen.route) {
+                    FloatWindowScreen()
+                }
+                animateComposable(TranslateScreen.FavoriteScreen.route) {
+                    FavoriteScreen()
+                }
+                animateComposable(TranslateScreen.AppRecommendationScreen.route) {
+                    AppRecommendationScreen()
+                }
+                val animDuration = NAV_ANIM_DURATION
+                composable(
+                    TranslateScreen.ChatScreen.route,
+                    enterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(animDuration)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(animDuration)
+                        )
+                    },
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Down,
+                            animationSpec = tween(animDuration)
+                        )
+                    },
+                    popExitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Down,
+                            animationSpec = tween(animDuration)
+                        )
                     }
-                    animateComposable(TranslateScreen.ThanksScreen.route) {
-                        ThanksScreen()
-                    }
-                    animateComposable(TranslateScreen.FloatWindowScreen.route) {
-                        FloatWindowScreen()
-                    }
-                    animateComposable(TranslateScreen.FavoriteScreen.route) {
-                        FavoriteScreen()
-                    }
-                    animateComposable(TranslateScreen.AppRecommendationScreen.route) {
-                        AppRecommendationScreen()
-                    }
-                    val animDuration = NAV_ANIM_DURATION
-                    composable(
-                        TranslateScreen.ChatScreen.route,
-                        enterTransition = {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Up,
-                                animationSpec = tween(animDuration)
-                            )
-                        },
-                        exitTransition = {
-                            slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Up,
-                                animationSpec = tween(animDuration)
-                            )
-                        },
-                        popEnterTransition = {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Down,
-                                animationSpec = tween(animDuration)
-                            )
-                        },
-                        popExitTransition = {
-                            slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Down,
-                                animationSpec = tween(animDuration)
-                            )
-                        }
-                    ) {
-                        ChatScreen()
-                    }
-                    animateComposable(
-                        TranslateScreen.BuyAIPointScreen.route,
+                ) {
+                    ChatScreen()
+                }
+                animateComposable(
+                    TranslateScreen.BuyAIPointScreen.route,
 //                        arguments = listOf(
 //                            navArgument("planName") {
 //                                type = NavType.StringType; defaultValue = null; nullable = true
 //                            }
 //                        )
-                    ) {
-                        val planName = it.getQueryString("planName")
-                        BuyAIPointScreen(planName ?: AI_TEXT_POINT)
-                    }
-                    animateComposable(TranslateScreen.AnnualReportScreen.route) {
-                        AnnualReportScreen()
-                    }
+                ) {
+                    val planName = it.getQueryString("planName")
+                    BuyAIPointScreen(planName ?: AI_TEXT_POINT)
+                }
+                animateComposable(TranslateScreen.AnnualReportScreen.route) {
+                    AnnualReportScreen()
+                }
                 addLongTextTransNavigation()
                 addSettingsNavigation()
-                    addUserProfileRoutes(
-                        navHostController = navController
-                    ) { userBean ->
-                        Log.d(TAG, "登录成功: 用户: $userBean")
-                        if (userBean.isValid()) AppConfig.login(userBean, updateVipFeatures = true)
-                    }
+                addUserProfileRoutes(
+                    navHostController = navController
+                ) { userBean ->
+                    Log.d(TAG, "登录成功: 用户: $userBean")
+                    if (userBean.isValid()) AppConfig.login(userBean, updateVipFeatures = true)
+                }
             }
         }
 

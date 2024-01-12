@@ -43,7 +43,7 @@ import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.draftDao
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.long_text.components.TokenNumRow
-import com.funny.translation.translate.ui.widget.CommonPage
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

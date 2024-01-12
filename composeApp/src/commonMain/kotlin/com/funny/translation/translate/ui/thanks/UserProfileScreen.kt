@@ -54,10 +54,9 @@ import com.funny.translation.network.api
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.bean.AI_VOICE_POINT
-import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
-import com.funny.translation.translate.ui.widget.CommonPage
 import com.funny.translation.translate.utils.QQUtils
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.launch
 
@@ -99,17 +98,17 @@ fun UserProfileSettings(navHostController: NavHostController) {
         ) {
             UserAvatarTile()
             Tile(text = ResStrings.change_username, onClick = {
-                navHostController.navigateSingleTop(LoginRoute.ChangeUsernamePage.route)
+                navHostController.navigate(LoginRoute.ChangeUsernamePage.route)
             })
             Tile(text = ResStrings.modify_password, onClick = {
-                navHostController.navigateSingleTop(LoginRoute.ResetPasswordPage.route)
+                navHostController.navigate(LoginRoute.ResetPasswordPage.route)
             })
             Tile(text = ResStrings.img_remaining_points) {
                 Text(text = userInfo.img_remain_points.toString())
             }
             // 剩余 AI 文字点数
             Tile(text = ResStrings.ai_remaining_text_points, onClick = {
-                navHostController.navigateSingleTop(
+                navHostController.navigate(
                     TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
                         "planName" to AI_TEXT_POINT
                     )
@@ -119,7 +118,7 @@ fun UserProfileSettings(navHostController: NavHostController) {
             }
             // 剩余 AI 语音点数
             Tile(text = ResStrings.ai_remaining_voice_points, onClick = {
-                navHostController.navigateSingleTop(
+                navHostController.navigate(
                     TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
                         "planName" to AI_VOICE_POINT
                     )
@@ -159,7 +158,7 @@ fun UserProfileSettings(navHostController: NavHostController) {
             }
             Divider()
             Tile(text = ResStrings.disable_account, onClick = {
-                navHostController.navigateSingleTop(LoginRoute.CancelAccountPage.route)
+                navHostController.navigate(LoginRoute.CancelAccountPage.route)
             })
             Divider()
             Spacer(modifier = Modifier.height(64.dp))

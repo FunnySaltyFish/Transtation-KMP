@@ -57,11 +57,11 @@ import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.bean.VipConfig
 import com.funny.translation.translate.ui.buy.manager.BuyVIPManager
-import com.funny.translation.translate.ui.widget.CommonPage
 import com.funny.translation.translate.ui.widget.NoticeBar
 import com.funny.translation.translate.ui.widget.NumberChangeAnimatedText
 import com.funny.translation.translate.ui.widget.TextFlashCanvas
 import com.funny.translation.translate.ui.widget.TextFlashCanvasState
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.touchToScale

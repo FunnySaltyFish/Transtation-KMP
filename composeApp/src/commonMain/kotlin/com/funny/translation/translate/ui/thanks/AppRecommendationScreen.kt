@@ -22,7 +22,7 @@ import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.bean.RecommendApp
 import com.funny.translation.translate.network.TransNetwork
 import com.funny.translation.translate.ui.widget.AsyncImage
-import com.funny.translation.translate.ui.widget.CommonPage
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

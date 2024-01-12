@@ -16,7 +16,7 @@ import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.database.Draft
 import com.funny.translation.translate.ui.main.SwipeToDismissItem
-import com.funny.translation.translate.ui.widget.CommonPage
+import com.funny.translation.ui.CommonPage
 
 private const val TAG = "DraftScreen"
 

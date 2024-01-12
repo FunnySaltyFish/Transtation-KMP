@@ -60,7 +60,7 @@ import com.funny.translation.translate.ui.ai.componets.MessageItem
 import com.funny.translation.translate.ui.long_text.Category
 import com.funny.translation.translate.ui.long_text.ModelListPart
 import com.funny.translation.translate.ui.long_text.components.AIPointText
-import com.funny.translation.translate.ui.widget.CommonPage
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler

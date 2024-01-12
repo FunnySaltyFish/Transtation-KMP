@@ -77,14 +77,6 @@ fun NavGraphBuilder.composable(
 fun NavGraphBuilder.navigation(
     startDestination: String,
     route: String,
-    enterTransition: (() -> EnterTransition) =
-        { fadeIn(animationSpec = tween(700)) },
-    exitTransition: (() -> ExitTransition) =
-        { fadeOut(animationSpec = tween(700)) },
-    popEnterTransition: (() -> EnterTransition) =
-        enterTransition,
-    popExitTransition: (() -> ExitTransition) =
-        exitTransition,
     builder: NavGraphBuilder.() -> Unit,
 ) {
     group(

@@ -44,4 +44,5 @@
     <string name="loading_empty">内容为空</string>
     <string name="no_network">"当前似乎没有联网哦~"</string>
     <string name="login_status_expired">登录状态已过期</string>
+    <string name="back">返回</string>
 </resources>

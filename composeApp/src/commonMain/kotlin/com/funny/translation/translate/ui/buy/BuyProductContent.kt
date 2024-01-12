@@ -47,9 +47,9 @@ import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.bean.Product
 import com.funny.translation.translate.ui.buy.manager.BuyProductManager
 import com.funny.translation.translate.ui.buy.manager.TradeStatusStore.Companion.STATUS_CANCEL_OR_FINISHED
-import com.funny.translation.translate.ui.widget.NavPaddingItem
 import com.funny.translation.translate.ui.widget.NumberChangeAnimatedText
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.NavPaddingItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler

@@ -70,8 +70,8 @@ import com.funny.translation.translate.ui.long_text.components.AIPointText
 import com.funny.translation.translate.ui.long_text.components.RemarkDialog
 import com.funny.translation.translate.ui.long_text.components.ResultTextPart
 import com.funny.translation.translate.ui.long_text.components.SourceTextPart
-import com.funny.translation.translate.ui.widget.CommonPage
 import com.funny.translation.translate.ui.widget.TwoProgressIndicator
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.floatingActionBarModifier
