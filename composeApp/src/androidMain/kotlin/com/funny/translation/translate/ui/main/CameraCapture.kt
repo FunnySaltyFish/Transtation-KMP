@@ -249,4 +249,4 @@ private fun FlashlightButton(
     }
 }
 
-private val photoCachePath = CacheManager.cacheDir.resolve("/temp_captured_photo.jpeg")
+private val photoCachePath = CacheManager.cacheDir.resolve("temp_captured_photo.jpeg")

@@ -15,7 +15,7 @@
     <string name="engine_youdao_normal">Youdao</string>
     <string name="engine_jinshan">Jinshan</string>
     <string name="engine_google">Google</string>
-    <string name="error_result">"Error! :( "</string>
+    <string name="error_result">Error! :( </string>
     <string name="engine_bv2av">Bv2Av</string>
     <string name="engine_each_text">Word by Word</string>
     <string name="translate">Translate</string>
@@ -23,7 +23,7 @@
     <string name="engine_bigger_text">Enlarge Character</string>
     <string name="snack_no_engine_selected">No translation engine has been selected!</string>
     <string name="snack_finish_copy">Copy succeed!</string>
-    <string name="snack_speak_error">"An error occurs while translating! "</string>
+    <string name="snack_speak_error">An error occurs while translating!</string>
     <string name="comming_soon">Coming soon…</string>
     <string name="sponser">Sponsor</string>
     <string name="manage_plugins">Manage Plugin</string>
@@ -82,7 +82,7 @@
     <string name="float_window_tip"> Permission is required to use the floating window. Please grant the corresponding permission correctly.\nThe floating ball can be dragged and moved to the designated position for deletion. \nTranslate by tapping the bottom right corner of the floating window to directly open the application.\nDrag the floating ball to a certain position and hold it for two seconds to trigger area screenshot translation. After selecting the area, you can jump to the translation.\nPress and hold the floating ball to directly translate the current screen content.</string>
     <string name="empty_plugin_tip">It seems that nothing is here.\n Try to add a new plugin to explore more.</string>
     <string name="user_profile">User Profile</string>
-    <string name="setting_enter_to_translate">"Click Enter To Translate "</string>
+    <string name="setting_enter_to_translate">Click Enter To Translate</string>
     <string name="setting_show_history">Show Histories</string>
     <string name="setting_trans_page_input_bottom">Place Input At Bottom</string>
     <string name="avatar">Avatar</string>
@@ -194,8 +194,8 @@
     <string name="save_screenshot_success">Screenshot saved successfully</string>
     <string name="click_to_generate">Click to generate</string>
     <string name="low_price_promotion">Low price promotion</string>
-    <string name="nearly">"About "</string>
-    <string name="price_per_day">" yuan/day"</string>
+    <string name="nearly">About </string>
+    <string name="price_per_day"> yuan/day</string>
     <string name="beian">APP record number</string>
     <string name="flashlight">Flashlight</string>
     <string name="delete_this_history">Delete this history</string>
@@ -332,4 +332,5 @@
     <string name="model_engine">LLM</string>
     <string name="llm_engine_tip">Using LLM to translate will cost AI text points, goto long-text-translation page to check the detail.</string>
     <string name="load_llm_models">Load LLM list</string>
+    <string name="failed_to_take_photo">Failed to take photo!</string>
 </resources>

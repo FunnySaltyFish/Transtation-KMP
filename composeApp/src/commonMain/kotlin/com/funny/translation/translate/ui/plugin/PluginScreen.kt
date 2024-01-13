@@ -23,7 +23,12 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -48,16 +53,17 @@ import com.funny.compose.loading.loadingList
 import com.funny.compose.loading.rememberRetryableLoadingState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.WebViewActivity
+import com.funny.translation.codeeditor.CodeEditorActivity
 import com.funny.translation.js.bean.JsBean
-import com.funny.translation.kmp.Platform
-import com.funny.translation.kmp.currentPlatform
-import com.funny.translation.kmp.ifThen
+import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.readText
 import com.funny.translation.kmp.rememberOpenFileLauncher
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.translate.ui.widget.ExpandMoreButton
+import com.funny.translation.ui.CommonPage
+import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.NavPaddingItem
 import com.funny.translation.ui.touchToScale
@@ -175,39 +181,39 @@ fun PluginScreen() {
     }
 
     val updateShowAddPluginMenu = { show: Boolean -> showAddPluginMenu = show }
-//    CommonPage(
-//        modifier = Modifier.height(400.dp),
-//        title = ResStrings.manage_plugins,
-//        actions = {
-//            IconButton(onClick = { updateShowAddPluginMenu(true) }) {
-//                FixedSizeIcon(
-//                    Icons.Default.AddCircle,
-//                    tint = MaterialTheme.colorScheme.onBackground,
-//                    contentDescription = "Add plugins"
-//                )
-//                DropdownMenu(
-//                    expanded = showAddPluginMenu,
-//                    onDismissRequest = { updateShowAddPluginMenu(false) }) {
-//                    DropdownMenuItem(onClick = {
-//                        updateShowAddPluginMenu(false)
-//                        importPluginLauncher.launch(arrayOf("application/javascript"))
-//                    }, text = {
-//                        Text(ResStrings.import_plugin)
-//                    })
-//                    DropdownMenuItem(onClick = {
-//                        updateShowAddPluginMenu(false)
-//                        ActivityManager.start(CodeEditorActivity::class.java)
-//                    }, text = {
-//                        Text(ResStrings.create_plugin)
-//                    })
-//                }
-//            }
-//        },
-//        addNavPadding = false
-//    ) {
+    CommonPage(
+        modifier = Modifier,
+        title = ResStrings.manage_plugins,
+        actions = {
+            IconButton(onClick = { updateShowAddPluginMenu(true) }) {
+                FixedSizeIcon(
+                    Icons.Default.AddCircle,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    contentDescription = "Add plugins"
+                )
+                DropdownMenu(
+                    expanded = showAddPluginMenu,
+                    onDismissRequest = { updateShowAddPluginMenu(false) }) {
+                    DropdownMenuItem(onClick = {
+                        updateShowAddPluginMenu(false)
+                        importPluginLauncher.launch(arrayOf("application/javascript"))
+                    }, text = {
+                        Text(ResStrings.import_plugin)
+                    })
+                    DropdownMenuItem(onClick = {
+                        updateShowAddPluginMenu(false)
+                        ActivityManager.start(CodeEditorActivity::class.java)
+                    }, text = {
+                        Text(ResStrings.create_plugin)
+                    })
+                }
+            }
+        },
+        addNavPadding = false
+    ) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
             // Desktop will throw java.lang.IllegalStateException: Vertically scrollable component was measured with an infinity maximum height constraints, which is disallowed. One of the common reasons is nesting layouts like LazyColumn and Column(Modifier.verticalScroll()). If you want to add a header before the list of items please add a header as a separate item() before the main items() inside the LazyColumn scope. There are could be other reasons for this to happen: your ComposeView was added into a LinearLayout with some weight, you applied Modifier.wrapContentSize(unbounded = true) or wrote a custom layout. Please try to remove the source of infinite constraints in the hierarchy above the scrolling container.
-            if (currentPlatform == Platform.Android && maxWidth > 720.dp) { //宽屏
+            if (maxWidth > 720.dp) { //宽屏
                 Row(
                     Modifier
                         .fillMaxSize()
@@ -216,7 +222,6 @@ fun PluginScreen() {
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .ifThen(currentPlatform == Platform.Desktop, Modifier.height(600.dp))
                             .weight(0.45f),
                         verticalArrangement = spacedBy(8.dp),
                         contentPadding = PaddingValues(bottom = 8.dp)
@@ -226,7 +231,6 @@ fun PluginScreen() {
                     Spacer(modifier = Modifier.weight(0.015f))
                     LazyColumn(
                         modifier = Modifier
-                            .ifThen(currentPlatform == Platform.Desktop, Modifier.height(600.dp))
                             .weight(0.45f),
                         verticalArrangement = spacedBy(8.dp),
                         contentPadding = PaddingValues(bottom = 8.dp)
@@ -241,8 +245,7 @@ fun PluginScreen() {
                 }
                 LazyColumn(
                     Modifier
-                        .fillMaxWidth()
-                        .height(400.dp),
+                        .fillMaxSize(),
                     verticalArrangement = spacedBy(8.dp),
                     contentPadding = PaddingValues(start = 20.dp, end = 20.dp),
                     state = lazyListState
@@ -258,7 +261,7 @@ fun PluginScreen() {
                 }
             }
         }
-//    }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

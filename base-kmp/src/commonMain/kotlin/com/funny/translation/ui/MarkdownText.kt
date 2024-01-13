@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
+import com.funny.translation.WebViewActivity
 import com.funny.translation.helper.Context
 
 @Composable
@@ -31,7 +32,8 @@ expect fun MarkdownText(
     // this option will disable all clicks on links, inside the markdown text
     // it also enable the parent view to receive the click event
     disableLinkMovementMethod: Boolean = false,
-    onLinkClicked: ((Context, String) -> Unit)? = { _, _ ->
+    onLinkClicked: ((Context, String) -> Unit)? = { context, url ->
+        WebViewActivity.start(context, url)
     },
     onTextLayout: ((numLines: Int) -> Unit)? = null
 )

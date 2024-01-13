@@ -2,7 +2,6 @@ package com.funny.translation.translate.ui.thanks
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -88,118 +87,116 @@ fun UserProfileSettings(navHostController: NavHostController) {
     val scope = rememberCoroutineScope()
     val userInfo = AppConfig.userInfo.value
     CommonPage(
+        Modifier
+            .padding(horizontal = 8.dp)
+            .verticalScroll(rememberScrollState()),
         title = ResStrings.user_profile + "(${userInfo.username})"
     ) {
-        Column(
-            Modifier
-                .padding(horizontal = 8.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = CenterHorizontally
-        ) {
-            UserAvatarTile()
-            Tile(text = ResStrings.change_username, onClick = {
-                navHostController.navigate(LoginRoute.ChangeUsernamePage.route)
-            })
-            Tile(text = ResStrings.modify_password, onClick = {
-                navHostController.navigate(LoginRoute.ResetPasswordPage.route)
-            })
-            Tile(text = ResStrings.img_remaining_points) {
-                Text(text = userInfo.img_remain_points.toString())
-            }
-            // 剩余 AI 文字点数
-            Tile(text = ResStrings.ai_remaining_text_points, onClick = {
-                navHostController.navigate(
-                    TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
-                        "planName" to AI_TEXT_POINT
-                    )
+
+        UserAvatarTile()
+        Tile(text = ResStrings.change_username, onClick = {
+            navHostController.navigate(LoginRoute.ChangeUsernamePage.route)
+        })
+        Tile(text = ResStrings.modify_password, onClick = {
+            navHostController.navigate(LoginRoute.ResetPasswordPage.route)
+        })
+        Tile(text = ResStrings.img_remaining_points) {
+            Text(text = userInfo.img_remain_points.toString())
+        }
+        // 剩余 AI 文字点数
+        Tile(text = ResStrings.ai_remaining_text_points, onClick = {
+            navHostController.navigate(
+                TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
+                    "planName" to AI_TEXT_POINT
                 )
-            }) {
-                Text(text = "%.3f".format(userInfo.ai_text_point))
-            }
-            // 剩余 AI 语音点数
-            Tile(text = ResStrings.ai_remaining_voice_points, onClick = {
-                navHostController.navigate(
-                    TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
-                        "planName" to AI_VOICE_POINT
-                    )
+            )
+        }) {
+            Text(text = "%.3f".format(userInfo.ai_text_point))
+        }
+        // 剩余 AI 语音点数
+        Tile(text = ResStrings.ai_remaining_voice_points, onClick = {
+            navHostController.navigate(
+                TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
+                    "planName" to AI_VOICE_POINT
                 )
-            }) {
-                Text(text = "%.3f".format(userInfo.ai_voice_point))
-            }
-            Tile(text = ResStrings.vip_end_time) {
-                Text(text = userInfo.vipEndTimeStr())
-            }
-            Divider()
-            // 生成邀请码
-            Tile(text = ResStrings.invite_code, onClick = {
-                if (userInfo.invite_code.isBlank()) {
-                    scope.launch {
-                        api(UserUtils.userService::generateInviteCode) {
-                            addSuccess {
-                                AppConfig.userInfo.value =
-                                    userInfo.copy(invite_code = it.data ?: "")
-                            }
+            )
+        }) {
+            Text(text = "%.3f".format(userInfo.ai_voice_point))
+        }
+        Tile(text = ResStrings.vip_end_time) {
+            Text(text = userInfo.vipEndTimeStr())
+        }
+        Divider()
+        // 生成邀请码
+        Tile(text = ResStrings.invite_code, onClick = {
+            if (userInfo.invite_code.isBlank()) {
+                scope.launch {
+                    api(UserUtils.userService::generateInviteCode) {
+                        addSuccess {
+                            AppConfig.userInfo.value =
+                                userInfo.copy(invite_code = it.data ?: "")
                         }
                     }
-                } else {
-                    val txt = ResStrings.invite_user_content.format(userInfo.invite_code)
-                    ClipBoardUtil.copy(txt)
-                    context.toastOnUi(ResStrings.copied_to_clipboard)
                 }
-            }) {
-                Text(userInfo.invite_code.ifEmpty { ResStrings.click_to_generate })
+            } else {
+                val txt = ResStrings.invite_user_content.format(userInfo.invite_code)
+                ClipBoardUtil.copy(txt)
+                context.toastOnUi(ResStrings.copied_to_clipboard)
             }
-            // 查询被邀请人
-            val (showInviteUserDialog, update) = remember { mutableStateOf(false) }
-            Tile(text = ResStrings.invited_users, onClick = {
-                update(true)
-            }) {
-                InvitedUserAlertDialog(show = showInviteUserDialog, updateShow = update)
-            }
-            Divider()
-            Tile(text = ResStrings.disable_account, onClick = {
-                navHostController.navigate(LoginRoute.CancelAccountPage.route)
-            })
-            Divider()
-            Spacer(modifier = Modifier.height(64.dp))
-            Button(modifier = Modifier.align(CenterHorizontally), onClick = {
-                AppConfig.logout()
-                navHostController.popBackStack()
-            }) {
-                Text(text = ResStrings.logout)
-            }
+        }) {
+            Text(userInfo.invite_code.ifEmpty { ResStrings.click_to_generate })
+        }
+        // 查询被邀请人
+        val (showInviteUserDialog, update) = remember { mutableStateOf(false) }
+        Tile(text = ResStrings.invited_users, onClick = {
+            update(true)
+        }) {
+            InvitedUserAlertDialog(show = showInviteUserDialog, updateShow = update)
+        }
+        Divider()
+        Tile(text = ResStrings.disable_account, onClick = {
+            navHostController.navigate(LoginRoute.CancelAccountPage.route)
+        })
+        Divider()
+        Spacer(modifier = Modifier.height(64.dp))
+        Button(modifier = Modifier.align(CenterHorizontally), onClick = {
+            AppConfig.logout()
+            navHostController.popBackStack()
+        }) {
+            Text(text = ResStrings.logout)
+        }
 
-            val text = remember {
-                buildAnnotatedString {
-                    append(ResStrings.join_group_tip_p1)
-                    pushStringAnnotation(
-                        tag = "url",
-                        annotation = "mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D"
-                    )
-                    withStyle(style = SpanStyle(color = MaterialColors.BlueA700)) {
-                        append(" 857362450 ")
-                    }
-                    pop()
-                    append(ResStrings.join_group_tip_p2)
-                }
-            }
-            ClickableText(
-                text = text,
-                modifier = Modifier.fillMaxWidth(0.9f),
-                style = TextStyle(
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
+        val text = remember {
+            buildAnnotatedString {
+                append(ResStrings.join_group_tip_p1)
+                pushStringAnnotation(
+                    tag = "url",
+                    annotation = "mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D"
                 )
-            ) { index ->
-                // 根据tag取出annotation并打印
-                text.getStringAnnotations(tag = "url", start = index, end = index).firstOrNull()
-                    ?.let {
-                        QQUtils.joinQQGroup(context)
-                    }
+                withStyle(style = SpanStyle(color = MaterialColors.BlueA700)) {
+                    append(" 857362450 ")
+                }
+                pop()
+                append(ResStrings.join_group_tip_p2)
             }
         }
+        ClickableText(
+            text = text,
+            modifier = Modifier.fillMaxWidth(0.9f),
+            style = TextStyle(
+                color = Color.Gray,
+                textAlign = TextAlign.Center,
+                fontSize = 14.sp
+            )
+        ) { index ->
+            // 根据tag取出annotation并打印
+            text.getStringAnnotations(tag = "url", start = index, end = index).firstOrNull()
+                ?.let {
+                    QQUtils.joinQQGroup(context)
+                }
+        }
     }
+
 }
 
 @Composable

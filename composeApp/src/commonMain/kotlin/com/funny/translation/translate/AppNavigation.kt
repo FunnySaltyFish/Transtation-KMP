@@ -214,7 +214,7 @@ fun AppNavigation(
                     ChatScreen()
                 }
                 animateComposable(
-                    TranslateScreen.BuyAIPointScreen.route,
+                    TranslateScreen.BuyAIPointScreen.route.removeQuery(),
 //                        arguments = listOf(
 //                            navArgument("planName") {
 //                                type = NavType.StringType; defaultValue = null; nullable = true

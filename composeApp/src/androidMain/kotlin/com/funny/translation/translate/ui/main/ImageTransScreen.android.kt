@@ -189,7 +189,8 @@ actual fun ImageTransScreen(
                     doClip(uri)
                 },
                 onError = {
-                    context.toastOnUi("拍照失败！")
+                    it.printStackTrace()
+                    context.toastOnUi(ResStrings.failed_to_take_photo)
                 },
                 startChooseImage = {
                     pickLauncher.launch(

@@ -194,8 +194,8 @@
     <string name="save_screenshot_success">截图保存成功</string>
     <string name="click_to_generate">点击生成</string>
     <string name="low_price_promotion">低价促销</string>
-    <string name="nearly">"约 "</string>
-    <string name="price_per_day">" 元/天"</string>
+    <string name="nearly">约 </string>
+    <string name="price_per_day"> 元/天</string>
     <string name="beian">APP 备案号</string>
     <string name="flashlight">闪光灯</string>
     <string name="delete_this_history">删除此历史记录</string>
@@ -333,4 +333,5 @@
     <string name="llm_engine_tip">使用大模型翻译需消耗AI文字点数，具体细则请前往“长文翻译”查看</string>
     <string name="load_llm_models">加载大模型列表</string>
     <string name="day_hour_min_sec">${day}天${hour}时${min}分${sec}秒</string>
+    <string name="failed_to_take_photo">拍照失败！</string>
 </resources>
