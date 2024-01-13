@@ -2,7 +2,6 @@ package com.funny.translation.kmp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -57,11 +56,11 @@ interface WindowHolderScope
 @Composable
 inline fun <reified T: BaseActivity> WindowHolderScope.addWindow(
     windowState: WindowState,
-    show: Boolean,
+    show: Boolean = false,
     noinline onCloseRequest: SimpleAction = {},
     crossinline content: @Composable (T) -> Unit
 ) {
-    var activity: T = remember {
+    val activity: T = remember {
         val activityClass = T::class.java
         ActivityManager.findActivity<T>() ?: activityClass.getConstructor().newInstance().also {
             it.windowShowState.value = show
@@ -70,11 +69,7 @@ inline fun <reified T: BaseActivity> WindowHolderScope.addWindow(
         } as T
     }
 
-    val showWindow by remember(activity) {
-        derivedStateOf {
-            activity.windowShowState.value
-        }
-    }
+    val showWindow by activity.windowShowState
 
     if (showWindow) {
         key(activity) {

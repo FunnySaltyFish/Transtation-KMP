@@ -278,23 +278,13 @@ private fun NavGraphBuilder.addLongTextTransNavigation() {
             LongTextTransListScreen()
         }
         animateComposable(
-            TranslateScreen.LongTextTransDetailScreen.route,
-//            arguments = listOf(
-//                navArgument("id") {
-//                    type = NavType.StringType; defaultValue = null; nullable = true
-//                }
-//            )
+            TranslateScreen.LongTextTransDetailScreen.route.removeQuery(),
         ) {
             val id = it.getQueryString("id") ?: UUID.randomUUID().toString()
             LongTextTransDetailScreen(id = id)
         }
         animateComposable(
-            TranslateScreen.TextEditorScreen.route,
-//            arguments = listOf(
-//                navArgument("action") {
-//                    type = NavType.StringType
-//                }
-//            )
+            TranslateScreen.TextEditorScreen.route.removeQuery(),
         ) {
             val action = kotlin.runCatching {
                 TextEditorAction.fromString(it.getQueryString("action") ?: "")
@@ -376,4 +366,8 @@ fun NavHostController.navigateToTextTrans(
                 inclusive = false
             }
         })
+}
+
+fun String.removeQuery(): String {
+    return this.substringBefore("?")
 }

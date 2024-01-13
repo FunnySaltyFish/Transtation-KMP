@@ -57,7 +57,7 @@ class ChatViewModel: BaseViewModel() {
         // TODO 更改为多个 ConvId 的支持
         convId.value = "convId"
 
-        submit {
+        submit(context = Dispatchers.Default) {
             delay(NAV_ANIM_DURATION.toLong())
             modelList.addAll(ModelManager.models.await())
 

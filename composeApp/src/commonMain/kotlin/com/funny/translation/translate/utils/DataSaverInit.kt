@@ -34,11 +34,6 @@ fun initTypeConverters() {
             }
         }
     )
-
-//        registerTypeConverters<EditorSchemes>(
-//            save = { it.name },
-//            restore = { EditorSchemes.valueOf(it) }
-//        )
 //
     DataSaverConverter.registerTypeConverters<SponsorSortType>(
         save = { it.name },

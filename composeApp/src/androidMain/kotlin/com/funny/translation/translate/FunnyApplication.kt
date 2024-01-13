@@ -5,7 +5,9 @@ import android.app.NotificationManager
 import android.content.res.Resources
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.funny.data_saver.core.DataSaverConverter
 import com.funny.translation.BaseApplication
+import com.funny.translation.codeeditor.ui.editor.EditorSchemes
 import com.funny.translation.translate.utils.FunnyUncaughtExceptionHandler
 import com.funny.translation.translate.utils.InitUtil
 import com.funny.translation.translate.utils.initCommon
@@ -24,6 +26,11 @@ class FunnyApplication : BaseApplication() {
 
         runBlocking {
             InitUtil.initCommon()
+
+            DataSaverConverter.registerTypeConverters<EditorSchemes>(
+                save = { it.name },
+                restore = { EditorSchemes.valueOf(it) }
+            )
         }
     }
 

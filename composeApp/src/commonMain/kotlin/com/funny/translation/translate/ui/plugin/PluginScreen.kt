@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,6 +56,9 @@ import com.funny.translation.WebViewActivity
 import com.funny.translation.codeeditor.CodeEditorActivity
 import com.funny.translation.js.bean.JsBean
 import com.funny.translation.kmp.ActivityManager
+import com.funny.translation.kmp.Platform
+import com.funny.translation.kmp.currentPlatform
+import com.funny.translation.kmp.ifThen
 import com.funny.translation.kmp.readText
 import com.funny.translation.kmp.rememberOpenFileLauncher
 import com.funny.translation.kmp.strings.ResStrings
@@ -183,6 +185,7 @@ fun PluginScreen() {
 
     val updateShowAddPluginMenu = { show: Boolean -> showAddPluginMenu = show }
     CommonPage(
+        modifier = Modifier.height(400.dp),
         title = ResStrings.manage_plugins,
         actions = {
             IconButton(onClick = { updateShowAddPluginMenu(true) }) {
@@ -212,15 +215,17 @@ fun PluginScreen() {
         addNavPadding = false
     ) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
-            if (maxWidth > 720.dp) { //宽屏
+            // Desktop will throw java.lang.IllegalStateException: Vertically scrollable component was measured with an infinity maximum height constraints, which is disallowed. One of the common reasons is nesting layouts like LazyColumn and Column(Modifier.verticalScroll()). If you want to add a header before the list of items please add a header as a separate item() before the main items() inside the LazyColumn scope. There are could be other reasons for this to happen: your ComposeView was added into a LinearLayout with some weight, you applied Modifier.wrapContentSize(unbounded = true) or wrote a custom layout. Please try to remove the source of infinite constraints in the hierarchy above the scrolling container.
+            if (currentPlatform == Platform.Android && maxWidth > 720.dp) { //宽屏
                 Row(
                     Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 12.dp), horizontalArrangement = Arrangement.SpaceAround
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxHeight()
+                            .ifThen(currentPlatform == Platform.Desktop, Modifier.height(600.dp))
                             .weight(0.45f),
                         verticalArrangement = spacedBy(8.dp),
                         contentPadding = PaddingValues(bottom = 8.dp)
@@ -230,7 +235,7 @@ fun PluginScreen() {
                     Spacer(modifier = Modifier.weight(0.015f))
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxHeight()
+                            .ifThen(currentPlatform == Platform.Desktop, Modifier.height(600.dp))
                             .weight(0.45f),
                         verticalArrangement = spacedBy(8.dp),
                         contentPadding = PaddingValues(bottom = 8.dp)

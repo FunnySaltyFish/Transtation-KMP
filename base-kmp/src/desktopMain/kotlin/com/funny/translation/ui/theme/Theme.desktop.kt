@@ -73,6 +73,7 @@ actual fun TransTheme(
 
 private val detector = OsThemeDetector.getDetector()
 
+
 @Composable
 @ReadOnlyComposable
 actual fun isSystemInDarkTheme(): Boolean = detector.isDark

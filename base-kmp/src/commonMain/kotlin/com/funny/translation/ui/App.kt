@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import com.funny.data_saver.core.LocalDataSaver
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.ui.theme.TransTheme
+import com.funny.translation.ui.theme.calcDark
 import com.funny.translation.ui.toast.Toast
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
@@ -29,7 +30,7 @@ fun App(content: @Composable () -> Unit = {}) {
         LocalImageLoader provides remember { generateImageLoader() },
     ) {
         PreComposeApp {
-            TransTheme {
+            TransTheme(dark = calcDark()) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     content()
                     Toast(

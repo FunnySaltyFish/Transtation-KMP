@@ -29,9 +29,15 @@ fun main() {
     init()
     application {
         WindowHolder {
-            addWindow<TransActivity>(rememberWindowState(), show = true, {
-                exitApplication()
-            }) { transActivity ->
+            addWindow<TransActivity>(
+                rememberWindowState(
+                    placement = WindowPlacement.Floating,
+                    width = 900.dp,
+                    height = 600.dp,
+                ),
+                show = true,
+                onCloseRequest = { exitApplication() },
+            ) { transActivity ->
                 CompositionLocalProvider(LocalActivityVM provides transActivity.activityViewModel) {
                     AppNavigation(navController = rememberNavController().also {
                         ActivityManager.findActivity<TransActivity>()?.navController = it
@@ -45,8 +51,6 @@ fun main() {
                     width = 360.dp,
                     height = 700.dp,
                 ),
-                show = false,
-                onCloseRequest = {},
             ) { loginActivity ->
                 LoginNavigation(
                     onLoginSuccess = {

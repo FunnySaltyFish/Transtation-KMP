@@ -59,7 +59,9 @@ import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
+import com.funny.translation.kmp.Platform
 import com.funny.translation.kmp.appCtx
+import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.network.ServiceCreator
@@ -227,11 +229,13 @@ fun SettingsScreen() {
                 text = ResStrings.expand_detail_by_default,
                 resourceName = "ic_detail"
             )
-            JetSettingTile(
-                resourceName = "ic_theme",
-                text = ResStrings.theme
-            ) {
-                navController.navigate(TranslateScreen.ThemeScreen.route)
+            if (currentPlatform == Platform.Android) {
+                JetSettingTile(
+                    resourceName = "ic_theme",
+                    text = ResStrings.theme
+                ) {
+                    navController.navigate(TranslateScreen.ThemeScreen.route)
+                }
             }
         }
     }

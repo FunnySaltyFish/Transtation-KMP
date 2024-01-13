@@ -25,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.NavHostController
+import com.funny.translation.kmp.Platform
 import com.funny.translation.kmp.base.strings.ResStrings
+import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.translate.LocalNavController
 
 /**
@@ -100,10 +102,13 @@ fun CommonNavBackIcon(
 
 /**
  * 纵向的空白，高度为底部导航栏的高度
+ * 仅 Android 有效
  */
 @Composable
 fun NavPaddingItem() {
-    Spacer(modifier = Modifier.windowInsetsPadding(
-        WindowInsets.navigationBars.only(WindowInsetsSides.Vertical))
-    )
+    if (currentPlatform == Platform.Android) {
+        Spacer(modifier = Modifier.windowInsetsPadding(
+            WindowInsets.navigationBars.only(WindowInsetsSides.Vertical))
+        )
+    }
 }

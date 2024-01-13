@@ -119,7 +119,7 @@ class LongTextTransViewModel: BaseViewModel() {
     private var recordOutput = JSONArray()
 
     init {
-        submit {
+        submit(context = Dispatchers.Default) {
             modelList.addAll(ModelManager.models.await())
 
             if (modelList.isEmpty()) return@submit
