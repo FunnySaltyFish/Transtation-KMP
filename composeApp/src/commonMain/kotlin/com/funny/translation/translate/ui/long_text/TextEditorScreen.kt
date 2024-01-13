@@ -31,6 +31,7 @@ import com.funny.compose.ai.token.TokenCounters
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.DataHolder
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.TimeUtils
 import com.funny.translation.helper.formatQueryStyle
 import com.funny.translation.kmp.NavController
@@ -155,10 +156,7 @@ fun TextEditorScreen(
                 is TextEditorAction.UpdateSourceText -> {
                     action.putToDataHolder(text)
                     // TODO 改成 navigateForResult 实现
-//                    navController.?.savedStateHandle?.set(
-//                        KEY_EDITED_SOURCE_TEXT_KEY, action.textKey
-//                    )
-                    navController.popBackStack()
+                    navController.goBackWith(action.textKey)
                 }
             }
         },
@@ -175,6 +173,7 @@ fun TextEditorScreen(
             showDialog.value = true
         }
     }
+
     CommonPage(
         actions = {
             TokenNumRow(tokenCounter = tokenCounter, text = text)
@@ -227,11 +226,18 @@ fun TextEditorScreen(
 }
 
 internal fun NavController.navigateToTextEdit(
-    action: TextEditorAction
+    action: TextEditorAction,
+    onResult: (String) -> Unit = {}
 ) {
-    navigate(
-        TranslateScreen.TextEditorScreen.route.formatQueryStyle(
-            "action" to action.toString()
+    CoroutineScope(Dispatchers.Default).launch {
+        val result = navigateForResult(
+            TranslateScreen.TextEditorScreen.route.formatQueryStyle(
+                "action" to action.toString()
+            )
         )
-    )
+        Log.d("TextEditorScreen", "navigateToTextEdit with result = $result")
+        if (result != null) {
+            onResult(result as String)
+        }
+    }
 }

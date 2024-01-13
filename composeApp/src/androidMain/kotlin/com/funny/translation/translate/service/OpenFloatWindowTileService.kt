@@ -6,8 +6,7 @@ import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
 import com.funny.translation.helper.Log
 import com.funny.translation.translate.TransActivityIntent
-//import com.funny.translation.translate.utils.EasyFloatUtils
-// TODO finish EasyFloatUtils
+import com.funny.translation.translate.utils.EasyFloatUtils
 
 @RequiresApi(Build.VERSION_CODES.N)
 class OpenFloatWindowTileService: TileService() {
@@ -18,16 +17,16 @@ class OpenFloatWindowTileService: TileService() {
 
     override fun onStartListening() {
         super.onStartListening()
-//        Log.d(TAG, "onStartListening: showing: ${EasyFloatUtils.isShowingFloatBall()}, state: ${qsTile.state}")
+        Log.d(TAG, "onStartListening: showing: ${EasyFloatUtils.isShowingFloatBall()}, state: ${qsTile.state}")
         // 检测状态是否匹配
-//        if (EasyFloatUtils.isShowingFloatBall() && qsTile.state == Tile.STATE_INACTIVE){
-//            qsTile.state = Tile.STATE_ACTIVE
-//            qsTile.updateTile()
-//        }
-//        else if (!EasyFloatUtils.isShowingFloatBall() && qsTile.state == Tile.STATE_ACTIVE){
-//            qsTile.state = Tile.STATE_INACTIVE
-//            qsTile.updateTile()
-//        }
+        if (EasyFloatUtils.isShowingFloatBall() && qsTile.state == Tile.STATE_INACTIVE){
+            qsTile.state = Tile.STATE_ACTIVE
+            qsTile.updateTile()
+        }
+        else if (!EasyFloatUtils.isShowingFloatBall() && qsTile.state == Tile.STATE_ACTIVE){
+            qsTile.state = Tile.STATE_INACTIVE
+            qsTile.updateTile()
+        }
     }
 
     override fun onClick() {

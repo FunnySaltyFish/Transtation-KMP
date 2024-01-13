@@ -4,4 +4,14 @@
     <string name="crash">糟糕，崩溃了</string>
     <string name="transtation_floating_window">译站悬浮球</string>
     <string name="edit_code">编辑代码</string>
+    <string name="float_ball">悬浮球</string>
+    <string name="source_string">源文本</string>
+    <string name="source_language">源语言</string>
+    <string name="target_language">目标语言</string>
+    <string name="close">关闭</string>
+    <string name="exchange">交换</string>
+    <string name="single_translate_text">译</string>
+    <string name="speak">朗读</string>
+    <string name="copy_content">复制</string>
+    <string name="open_app">打开应用</string>
 </resources>

@@ -120,6 +120,7 @@ class LongTextTransViewModel: BaseViewModel() {
 
     init {
         submit(context = Dispatchers.Default) {
+            delay(200)
             modelList.addAll(ModelManager.models.await())
 
             if (modelList.isEmpty()) return@submit

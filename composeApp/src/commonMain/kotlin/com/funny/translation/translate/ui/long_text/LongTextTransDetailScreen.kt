@@ -108,7 +108,7 @@ fun LongTextTransDetailScreen(
     }
     
     CommonPage(
-        title = ResStrings.long_text_trans,
+        title = null,
         actions = {
             AIPointText(planName = AI_TEXT_POINT)
             IconButton(onClick = { showHelpDialog = true }) {

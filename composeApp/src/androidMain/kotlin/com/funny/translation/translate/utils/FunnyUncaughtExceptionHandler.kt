@@ -38,7 +38,6 @@ object FunnyUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
         try {
             println("接管了应用的报错！")
             val intent = Intent()
-            // TODO 加回来
             intent.setClass(appCtx, ErrorDialogActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("CRASH_MESSAGE", getCrashReport(ex))

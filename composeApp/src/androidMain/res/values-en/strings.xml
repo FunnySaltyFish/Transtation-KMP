@@ -4,4 +4,14 @@
     <string name="crash">Oh, crashed</string>
     <string name="transtation_floating_window">Translation floating ball</string>
     <string name="edit_code">Edit Code</string>
+    <string name="float_ball">Floating Ball</string>
+    <string name="source_string">Source Text</string>
+    <string name="source_language">Source Language</string>
+    <string name="target_language">Target Language</string>
+    <string name="close">Close</string>
+    <string name="exchange">Exchange</string>
+    <string name="single_translate_text">T</string>
+    <string name="speak">Speak</string>
+    <string name="copy_content">Copy</string>
+    <string name="open_app">Open App</string>
 </resources>

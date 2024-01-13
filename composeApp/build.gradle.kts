@@ -2,11 +2,10 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
-import java.util.Properties
-import java.io.File
 import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -62,6 +61,12 @@ kotlin {
             implementation("androidx.camera:camera-camera2:${camerax_version}")
             // If you want to additionally use the CameraX Lifecycle library
             implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+
+            implementation("com.github.princekin-f:EasyFloat:2.0.4")
+            implementation("com.github.thomhurst:RoundImageView:1.0.2")
+
+            // 应用更新
+            implementation("com.github.azhon:AppUpdate:3.0.6")
         }
 
         val desktopMain by getting {

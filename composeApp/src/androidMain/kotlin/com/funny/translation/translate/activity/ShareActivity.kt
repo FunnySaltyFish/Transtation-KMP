@@ -10,6 +10,7 @@ import com.funny.translation.AppConfig
 import com.funny.translation.Consts
 import com.funny.translation.helper.Log
 import com.funny.translation.translate.TransActivityIntent
+import com.funny.translation.translate.utils.EasyFloatUtils
 
 
 /**
@@ -78,19 +79,18 @@ class ShareActivity : AppCompatActivity() {
         val source = AppConfig.sDefaultSourceLanguage.value
         val target = AppConfig.sDefaultTargetLanguage.value
         // 如果已经开启了悬浮窗，那么就直接翻译
-        // TODO add EasyFloatUtils
-//        if (openTransWindow && EasyFloatUtils.isShowingFloatBall()) {
-//            EasyFloatUtils.showTransWindow()
-//            EasyFloatUtils.startTranslate(text, source, target)
-//        } else {
-//            val intent = TransActivityIntent.TranslateText(
-//                text = text,
-//                sourceLanguage = AppConfig.sDefaultSourceLanguage.value,
-//                targetLanguage = AppConfig.sDefaultTargetLanguage.value,
-//                byFloatWindow = openTransWindow
-//            ).asIntent()
-//            startActivity(intent)
-//        }
+        if (openTransWindow && EasyFloatUtils.isShowingFloatBall()) {
+            EasyFloatUtils.showTransWindow()
+            EasyFloatUtils.startTranslate(text, source, target)
+        } else {
+            val intent = TransActivityIntent.TranslateText(
+                text = text,
+                sourceLanguage = AppConfig.sDefaultSourceLanguage.value,
+                targetLanguage = AppConfig.sDefaultTargetLanguage.value,
+                byFloatWindow = openTransWindow
+            ).asIntent()
+            startActivity(intent)
+        }
     }
 }
 

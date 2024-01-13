@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.compose.ai.token.TokenCounter
 import com.funny.translation.debug.rememberStateOf
+import com.funny.translation.helper.DataHolder
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.ui.long_text.Category
@@ -74,7 +75,12 @@ internal fun ColumnScope.SourceTextPart(
                                 .UpdateSourceText(sourceTextKey(text), tokenCounter.id)
                                 .apply {
                                     putToDataHolder(content = text)
+                                },
+                            onResult = {
+                                if (it.isNotBlank()) {
+                                    updateSourceText(DataHolder.get<String>(it) ?: "")
                                 }
+                            }
                         )
                     })
             }

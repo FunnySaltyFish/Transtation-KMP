@@ -1,5 +1,6 @@
 package com.funny.translation.translate.ui.settings
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.translate.utils.EasyFloatUtils
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.touchToScale
@@ -28,14 +30,13 @@ import com.funny.translation.ui.touchToScale
 @Composable
 actual fun FloatWindowScreen() {
     val context = LocalContext.current
-    // TODO finish float window
     CommonPage(title = ResStrings.float_window) {
         JetSettingSwitch(state = AppConfig.sShowFloatWindow, text = ResStrings.open_float_window) {
             try {
-//                if (it) EasyFloatUtils.showFloatBall(context as Activity)
-//                else EasyFloatUtils.hideAllFloatWindow()
+                if (it) EasyFloatUtils.showFloatBall(context as Activity)
+                else EasyFloatUtils.hideAllFloatWindow()
             } catch (e: Exception) {
-                context.toastOnUi("显示悬浮窗失败，请检查是否正确授予权限！")
+                context.toastOnUi(ResStrings.failed_to_show_float_window)
                 DataSaverUtils.saveData(Consts.KEY_SHOW_FLOAT_WINDOW, false)
             }
         }

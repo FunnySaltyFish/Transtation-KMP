@@ -6,6 +6,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -24,14 +25,38 @@
         android:theme="@style/AppTheme"
         tools:targetApi="33"
         tools:ignore="Instantiatable"> <!-- 由于 Activity 继承的 BaseActivity 只是在 Android 上间接继承 AppCompatActivity，Activity会报这个警告，忽略掉 -->
+
         <activity
-            android:exported="true"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
             android:name="com.funny.translation.translate.TransActivity"
-            >
+            android:exported="true"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- funny://translation/image_translate?imageUri={imageUri}&sourceId={sourceId}&targetId={targetId}" -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="funny"
+                    android:host="translation"
+                    android:pathPattern="/image_translate"
+                    />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="translation"
+                    android:scheme="funny"
+                    android:pathPattern="/translate"
+                    />
             </intent-filter>
         </activity>
 
