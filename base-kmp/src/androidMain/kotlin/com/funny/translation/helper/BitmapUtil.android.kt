@@ -12,7 +12,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.ByteBuffer
 
-
+private const val TAG = "BitmapUtil"
 actual object BitmapUtil {
     actual fun compressImage(bytes: ByteArray?, width: Int, height: Int, maxSize: Long): ByteArray {
         bytes ?: return byteArrayOf()
@@ -47,6 +47,7 @@ actual object BitmapUtil {
 
     // 获取图片的宽高，如果获取失败则返回 -1, -1
     actual fun getImageSizeFromUri(ctx: Context, uri: Uri): Pair<Int, Int> {
+        Log.d(TAG, "getImageSizeFromUri: $uri, toAndroidUri: ${uri.toAndroidUri()}")
         val input = ctx.contentResolver.openInputStream(uri.toAndroidUri())
         input?.use {
             val onlyBoundsOptions = BitmapFactory.Options()

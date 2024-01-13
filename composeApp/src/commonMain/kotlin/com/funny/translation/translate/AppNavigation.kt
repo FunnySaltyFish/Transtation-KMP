@@ -136,7 +136,7 @@ fun AppNavigation(
                 animateComposable(
                     TranslateScreen.ImageTranslateScreen.route,
                     deepLinks = listOf(
-                        "${DeepLinkManager.PREFIX}${DeepLinkManager.IMAGE_TRANS_PATH}?imageUri={imageUri}&sourceId={sourceId}&targetId={targetId}&doClip={doClip}"
+                        "${DeepLinkManager.PREFIX}${DeepLinkManager.IMAGE_TRANS_PATH}?imageUri={imageUri}&sourceId={sourceId}&targetId={targetId}&doClip={doClip}".removeQuery()
                     ),
                     arguments = listOf(
 //                            navArgument("imageUri") {

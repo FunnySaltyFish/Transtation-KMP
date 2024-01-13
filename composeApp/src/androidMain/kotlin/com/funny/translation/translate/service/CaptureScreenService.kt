@@ -13,9 +13,9 @@ import android.media.Image
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.net.Uri
 import android.os.*
 import androidx.core.app.NotificationCompat
+import androidx.core.content.FileProvider
 import com.eygraber.uri.toAndroidUri
 import com.eygraber.uri.toUri
 import com.funny.translation.helper.BitmapUtil
@@ -31,7 +31,6 @@ import com.funny.translation.translate.activity.StartCaptureScreenActivity.Compa
 import com.funny.translation.translate.bean.FileSize
 import com.funny.translation.translate.utils.DeepLinkManager
 import com.funny.translation.translate.utils.ScreenUtils
-import java.io.File
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -42,7 +41,7 @@ class CaptureScreenService : Service() {
         private var mResultData: Intent? = null
 
         val hasMediaProjection get() = mResultData != null
-        val TEMP_CAPTURED_IMAGE_PATH: String = CacheManager.cacheDir.resolve("temp_captured_image.jpg").absolutePath
+        val TEMP_CAPTURED_IMAGE_FILE = CacheManager.cacheDir.resolve("temp_captured_image.jpg")
         val WHOLE_SCREEN_RECT = Rect(-1, -1, -1, -1)
     }
 
@@ -170,7 +169,7 @@ class CaptureScreenService : Service() {
                 }
                 //保存图片到本地
                 val bytes = BitmapUtil.compressImage(bitmap, FileSize.fromMegabytes(1).size)
-                BitmapUtil.saveBitmap(bytes, TEMP_CAPTURED_IMAGE_PATH)
+                BitmapUtil.saveBitmap(bytes, TEMP_CAPTURED_IMAGE_FILE.absolutePath)
                 appCtx.toastOnUi(ResStrings.save_screenshot_success)
                 // 如果是全屏翻译，先裁剪一下
                 startTranslate(doClip = (mRect == WHOLE_SCREEN_RECT))
@@ -186,7 +185,14 @@ class CaptureScreenService : Service() {
     }
 
     private fun startTranslate(doClip: Boolean){
-        val fileUri = Uri.fromFile(File(TEMP_CAPTURED_IMAGE_PATH))
+//        val fileUri = TEMP_CAPTURED_IMAGE_FILE.toUri()
+        val context = appCtx
+        val fileUri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            TEMP_CAPTURED_IMAGE_FILE
+        )
+        Log.d(TAG, "startTranslate fileUri: $fileUri, toURi: ${fileUri.toUri()}")
         TransActivityIntent.TranslateImage(DeepLinkManager.buildImageTransUri(imageUri = fileUri.toUri(), doClip = doClip).toAndroidUri()).asIntent().let {
             // 已经存在，就带到前台
             it.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)

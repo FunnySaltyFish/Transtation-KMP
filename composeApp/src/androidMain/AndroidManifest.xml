@@ -139,6 +139,20 @@
             android:name="com.funny.translation.translate.activity.StartCaptureScreenActivity"
             android:exported="true"
             android:theme="@style/AppTheme.Translucent"/>
+
+<!--       java.io.FileNotFoundException: No content provider: file%3A%2F%2F%2Fstorage%2Femulated%2F0%2FAndroid%2Fdata%2Fcom.funny.translation.kmp.debug%2Fcache%2Ftemp_captured_image.jpg -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource"/>
+        </provider>
+
     </application>
 
 

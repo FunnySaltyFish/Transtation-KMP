@@ -67,7 +67,7 @@ import cn.qhplus.emo.photo.activity.getPhotoPickResult
 import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
 import cn.qhplus.emo.photo.ui.GestureContent
 import cn.qhplus.emo.photo.ui.GestureContentState
-import com.eygraber.uri.toAndroidUri
+import com.eygraber.uri.toUri
 import com.funny.compose.loading.LoadingState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
@@ -162,11 +162,13 @@ actual fun ImageTransScreen(
     // 如果进入页面时参数携带了图片uri
     LaunchedEffect(key1 = imageUri) {
         if (imageUri == null) return@LaunchedEffect
-        val androidImageUri = imageUri.toAndroidUri()
+
+        // 先对 uri 解码
+        val androidImageUri = Uri.decode(imageUri.toString()).toUri()
         // 如果不需要裁剪，那么直接翻译
         if (!doClipFirst) {
             vm.imageUri = androidImageUri
-            val imageSize = BitmapUtil.getImageSizeFromUri(appCtx, imageUri)
+            val imageSize = BitmapUtil.getImageSizeFromUri(appCtx, androidImageUri.toUri())
             if (imageSize == (-1 to -1)) return@LaunchedEffect
             vm.updateImgSize(imageSize.first, imageSize.second)
             vm.sourceLanguage = sourceId?.let { findLanguageById(it) } ?: Language.AUTO
