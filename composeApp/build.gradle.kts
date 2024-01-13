@@ -2,6 +2,11 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+import java.util.Properties
+import java.io.File
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -84,21 +89,68 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        resourceConfigurations.addAll(arrayOf("zh-rCN", "en"))
+        multiDexEnabled = true
+        ndk.abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a"))
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+
+    signingConfigs {
+        create("release") {
+            // 如果需要打 release 包，请在项目根目录下自行添加此文件
+            /**
+             *  STORE_FILE=yourAppStroe.keystore
+             *  STORE_PASSWORD=yourStorePwd
+             *  KEY_ALIAS=yourKeyAlias
+             *  KEY_PASSWORD=yourAliasPwd
+             */
+            val props = Properties()
+            val propFile = File("signing.properties")
+            if (propFile.exists()) {
+                val reader = BufferedReader(InputStreamReader(FileInputStream(propFile), "utf-8"))
+                props.load(reader)
+
+                storeFile = file(props["STORE_FILE"] as String)
+                storePassword = props["STORE_PASSWORD"] as String
+                keyAlias = props["KEY_ALIAS"] as String
+                keyPassword = props["KEY_PASSWORD"] as String
+
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+            }
         }
     }
+
+    buildTypes {
+        getByName("release") {
+            // 临时可调试
+//            isDebuggable = true
+            // 开启代码混淆
+            isMinifyEnabled = true
+            // Zipalign 优化
+            isZipAlignEnabled = true
+            // 移除无用的 resource 文件
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
+        }
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }

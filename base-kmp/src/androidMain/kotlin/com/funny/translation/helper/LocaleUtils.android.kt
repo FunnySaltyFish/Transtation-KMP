@@ -11,23 +11,30 @@ actual object LocaleUtils {
 
     actual fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences("shared_pref", android.content.Context.MODE_PRIVATE)
-        appLanguage = kotlin.runCatching {
-            AppLanguage.values()[sharedPreferences.getInt(Consts.KEY_APP_LANGUAGE, 0)]
-        }.onFailure { it.printStackTrace() }.getOrDefault(AppLanguage.FOLLOW_SYSTEM)
     }
 
     actual fun getWarpedContext(context: Context, locale: Locale): Context {
         val configuration = context.resources.configuration
         configuration.setLocale(locale)
+        Locale.setDefault(locale)
+        Log.d("LocaleUtils", "getWarpedContext: ${locale.language}")
         return context.createConfigurationContext(configuration)
     }
 
     actual fun saveAppLanguage(appLanguage: AppLanguage) {
         this.appLanguage = appLanguage
         sharedPreferences.edit().putInt(Consts.KEY_APP_LANGUAGE, appLanguage.ordinal).apply()
+
+        Log.d("LocaleUtils", "saveAppLanguage: ${appLanguage.description}")
     }
 
     actual fun getAppLanguage(): AppLanguage {
+        if (!this::appLanguage.isInitialized) {
+            appLanguage = kotlin.runCatching {
+                AppLanguage.values()[sharedPreferences.getInt(Consts.KEY_APP_LANGUAGE, 0)]
+            }.onFailure { it.printStackTrace() }.getOrDefault(AppLanguage.FOLLOW_SYSTEM)
+        }
+        Log.d("LocaleUtils", "getAppLanguage: ${appLanguage.description}")
         return this.appLanguage
     }
 

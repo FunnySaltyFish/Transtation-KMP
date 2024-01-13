@@ -22,3 +22,4 @@ captures
 base-kmp/src/commonMain/resources/assets/funny_sign_v1_release.js
 funny_sign_v1_release_template.js
 encrypt_funny_js.js
+signing.properties

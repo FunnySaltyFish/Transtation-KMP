@@ -78,7 +78,9 @@ import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.theme.LightDarkMode
 import com.funny.translation.ui.theme.ThemeConfig
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.draggedItem
@@ -256,9 +258,12 @@ private fun SelectAppLanguage() {
         },
         confirmButtonText = ResStrings.confirm_and_restart_app,
         confirmButtonAction = {
-            LocaleUtils.saveAppLanguage(tempLanguage)
-            // restart App
-            ApplicationUtil.restartApp()
+            CoroutineScope(Dispatchers.Default).launch {
+                LocaleUtils.saveAppLanguage(tempLanguage)
+                delay(200)
+                // restart App
+                ApplicationUtil.restartApp()
+            }
         }
     )
 }

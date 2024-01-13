@@ -12,6 +12,7 @@ actual object LocaleUtils {
         appLanguage = kotlin.runCatching {
             AppLanguage.entries[DataSaverUtils.readData(KEY_LOCALE, 0)]
         }.onFailure { it.printStackTrace() }.getOrDefault(AppLanguage.FOLLOW_SYSTEM)
+        Locale.setDefault(appLanguage.toLocale())
     }
 
     actual fun getWarpedContext(
@@ -23,6 +24,7 @@ actual object LocaleUtils {
 
     actual fun saveAppLanguage(appLanguage: AppLanguage) {
         this.appLanguage = appLanguage
+        Locale.setDefault(appLanguage.toLocale())
         DataSaverUtils.saveData(KEY_LOCALE, appLanguage.ordinal)
     }
 

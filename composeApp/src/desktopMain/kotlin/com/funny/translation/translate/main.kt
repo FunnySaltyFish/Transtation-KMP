@@ -78,8 +78,8 @@ fun main() {
 }
 
 private fun init() {
-    DesktopUncaughtExceptionHandler.init(appCtx)
     LocaleUtils.init(appCtx)
+    DesktopUncaughtExceptionHandler.init(appCtx)
     runBlocking {
         InitUtil.initCommon()
     }
