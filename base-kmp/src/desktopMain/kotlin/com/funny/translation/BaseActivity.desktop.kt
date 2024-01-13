@@ -11,6 +11,10 @@ actual open class BaseActivity : KMPActivity() {
     var data: DataType? = null
 //    lateinit var onBack: (DataType) -> Unit
 
+    open fun onShow() {
+
+    }
+
     fun finish() {
         windowShowState.value = false
     }

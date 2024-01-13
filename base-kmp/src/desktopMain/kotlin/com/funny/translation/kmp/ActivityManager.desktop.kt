@@ -42,12 +42,18 @@ actual object ActivityManager {
         activity.data = data
         activity.windowShowState.value = true
 
+        activity.onShow()
+
         Log.d("ActivityManager", "start: $activity")
     }
 
 
     inline fun <reified T: BaseActivity> findActivity(): T? {
         return allActivities[T::class.java] as? T
+    }
+
+    inline fun <reified T: BaseActivity> hide() {
+        findActivity<T>()?.windowShowState?.value = false
     }
 }
 

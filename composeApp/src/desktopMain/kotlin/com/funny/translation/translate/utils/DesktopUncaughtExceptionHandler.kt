@@ -4,6 +4,7 @@ import com.funny.translation.AppConfig
 import com.funny.translation.helper.Context
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.appCtx
+import com.funny.translation.translate.TransActivity
 import com.funny.translation.translate.activity.ErrorDialogActivity
 import com.funny.translation.translate.activity.KEY_CRASH_MESSAGE
 import kotlin.system.exitProcess
@@ -27,7 +28,8 @@ object DesktopUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
             // 系统处理
             mDefaultHandler!!.uncaughtException(thread, throwable)
         }
-        destroy()
+        ActivityManager.hide<TransActivity>()
+//        destroy()
     }
 
     private fun handleCrashByMe(ex: Throwable?): Boolean {

@@ -64,7 +64,7 @@ fun main() {
             addWindow<ErrorDialogActivity>(
                 rememberWindowState(),
                 show = false,
-                onCloseRequest = {},
+                onCloseRequest = ::exitApplication,
             ) { errorDialogActivity ->
                 errorDialogActivity.crashMessage?.let {
                     ErrorDialog(
@@ -78,7 +78,7 @@ fun main() {
 }
 
 private fun init() {
-    Thread.setDefaultUncaughtExceptionHandler(DesktopUncaughtExceptionHandler)
+    DesktopUncaughtExceptionHandler.init(appCtx)
     LocaleUtils.init(appCtx)
     runBlocking {
         InitUtil.initCommon()

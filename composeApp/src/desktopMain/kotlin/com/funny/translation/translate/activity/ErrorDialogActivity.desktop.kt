@@ -8,7 +8,11 @@ import kotlin.system.exitProcess
 const val KEY_CRASH_MESSAGE = "KEY_CRASH_MESSAGE"
 
 actual class ErrorDialogActivity : BaseActivity() {
-    internal actual var crashMessage: String? = data?.get(KEY_CRASH_MESSAGE) as? String
+    internal actual var crashMessage: String? = null
+
+    override fun onShow() {
+        crashMessage = data?.get(KEY_CRASH_MESSAGE) as? String
+    }
 
     actual fun saveCrashMessage(msg: String) {
         val file = CacheManager.cacheDir.resolve("crash_logs")
