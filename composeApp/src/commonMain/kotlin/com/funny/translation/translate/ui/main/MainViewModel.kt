@@ -112,7 +112,6 @@ class MainViewModel : ViewModel() {
     }
 
 
-
     val transHistories by lazy {
         Pager(PagingConfig(pageSize = 10)) {
             val queries = appDB.transHistoryQueries

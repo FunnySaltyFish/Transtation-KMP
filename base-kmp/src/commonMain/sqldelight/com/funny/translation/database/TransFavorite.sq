@@ -12,9 +12,14 @@ CREATE TABLE IF NOT EXISTS transFavorite (
 
 -- Queries for TransFavoriteDao
 
+countAll:
+SELECT COUNT(1) FROM transFavorite;
+
 -- Query to select all TransFavoriteBeans with paging
 queryAllPaging:
-SELECT * FROM transFavorite ORDER BY id DESC;
+SELECT * FROM transFavorite
+ORDER BY id DESC
+LIMIT :limit OFFSET :offset;
 
 -- Insert a TransFavoriteBean
 insertTransFavorite:

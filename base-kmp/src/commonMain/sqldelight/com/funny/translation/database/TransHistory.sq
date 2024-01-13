@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS transHistory (
 );
 
 countHistory:
-SELECT COUNT(*) FROM transHistory;
+SELECT COUNT(DISTINCT sourceString) FROM transHistory;
 
 -- Query to get the latest entries for each unique sourceString
 queryAllPaging:
