@@ -5,8 +5,8 @@ import java.util.Locale
 
 enum class AppLanguage(val description: String) {
     FOLLOW_SYSTEM(ResStrings.follow_system),
-    ENGLISH(ResStrings.language_english),
-    CHINESE(ResStrings.language_chinese);
+    ENGLISH("English"),
+    CHINESE("简体中文");
 
     fun toLocale(): Locale = when (this) {
         FOLLOW_SYSTEM -> Locale.getDefault()

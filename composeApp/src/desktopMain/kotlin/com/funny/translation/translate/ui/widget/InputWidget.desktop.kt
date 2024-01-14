@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.translation.AppConfig
+import com.funny.translation.kmp.strings.ResStrings
 
 @Composable
 @ExperimentalComposeUiApi
@@ -34,7 +35,7 @@ actual fun InputText(
         onValueChange = updateText,
         maxLines = 6,
         decorationBox = { innerTextField ->
-            if (text == "") Text(text = "译你所译……", color = LocalContentColor.current.copy(0.8f))
+            if (text == "") Text(text = ResStrings.trans_text_input_hint, color = LocalContentColor.current.copy(0.8f))
             innerTextField()
         },
         keyboardActions = KeyboardActions(onDone = {

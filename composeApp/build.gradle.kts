@@ -174,11 +174,19 @@ fun KotlinDependencyHandler.addProjectDependencies() {
 compose.desktop {
     application {
         mainClass = "MainKt"
+        javaHome = "D:/Environment/jdk17"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.funny.translation.kmp"
-            packageVersion = "1.0.0"
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
+            packageName = "Transtation"
+            packageVersion = libs.versions.project.versionName.get()
+            description = "译站 | Transtation"
+            copyright = "©2024 FunnySaltyFish. All rights reserved."
+            outputBaseDir.set(projectDir.resolve("release"))
+
+            windows {
+                iconFile.set(rootDir.resolve("composeApp/src/desktopMain/kotlin/resources/icon.ico"))
+            }
         }
     }
 }
