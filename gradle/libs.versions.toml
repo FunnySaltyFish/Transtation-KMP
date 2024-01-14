@@ -1,8 +1,8 @@
 [versions]
 androidxPaging3Extensions = "2.0.1"
 precompose = "1.5.10"
-project-versionCode = "1"
-project-versionName = "1.0.0"
+project-versionCode = "63"
+project-versionName = "2.8.0"
 agp = "8.1.4"
 android-compileSdk = "34"
 android-minSdk = "24"

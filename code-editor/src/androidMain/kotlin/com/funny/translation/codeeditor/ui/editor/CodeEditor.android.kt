@@ -252,15 +252,14 @@ actual fun ComposeCodeEditor(
                                             ResStrings.export_plugin_success
                                         )
                                     }
-                                },
-                                onError = {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            ResStrings.export_plugin_error
-                                        )
-                                    }
                                 }
-                            )
+                            ) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        ResStrings.export_plugin_error
+                                    )
+                                }
+                            }
 
                         }
                     }

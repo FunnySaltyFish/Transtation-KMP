@@ -37,11 +37,10 @@ class CodeRunnerViewModel : BaseViewModel(),
                             targetLanguage = activityCodeViewModel.targetLanguage.value
                         }
                         viewModelScope.launch(Dispatchers.IO) { jsTranslateTask.translate() }
-                    },
-                    onError = {
-                        it.printStackTrace()
                     }
-                )
+                ) {
+                    it.printStackTrace()
+                }
             }
         }
 

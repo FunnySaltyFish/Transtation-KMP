@@ -2,6 +2,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import java.io.ByteArrayOutputStream
 
 
 plugins {
@@ -110,7 +111,7 @@ kotlin {
             api(libs.mmkv)
 
             // libs/monet.aar
-            implementation(files("libs/monet.aar"))
+            implementation(project(":local_repo:monet"))
 
             // Markwon
             val markwon_version = "4.6.2"
@@ -224,6 +225,53 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("com.funny.translation.database")
+        }
+    }
+}
+
+// 定义函数，用于输出 Hello, FunnyTranslation Open Source
+fun printHello(exec: Exec) {
+    // just print FunnyTranslation OpenSource
+    // windows: cmd /c echo FunnyTranslation OpenSource
+    // linux: sh -c echo FunnyTranslation OpenSource
+    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        exec.commandLine("cmd", "/c", "echo", "Hello FunnyTranslation-OpenSource")
+    } else {
+        exec.commandLine("sh", "-c", "echo", "Hello FunnyTranslation-OpenSource")
+    }
+}
+
+tasks.register<Exec>("encryptFunnyJs") {
+    // 如果 funny_sign_v1_release 存在，则用它
+    val release = File(rootDir, "funny_sign_v1_release_template.js")
+    println("release.exists() = " + release.exists())
+
+    if (release.exists()) {
+        val filePath = release.absolutePath
+        val targetFilePath = rootDir.resolve("base-kmp/src/commonMain/resources/assets/funny_sign_v1_release.js").absolutePath
+        val versionCode = libs.versions.project.versionCode.get()
+        commandLine("node", rootProject.file("encrypt_funny_js.js"), filePath, targetFilePath, versionCode)
+    } else {
+        doLast {
+            printHello(this as Exec)
+        }
+    }
+
+    standardOutput = ByteArrayOutputStream()
+    doLast {
+        println(standardOutput.toString())
+    }
+}
+
+tasks.register<Exec>("signApk") {
+    // 执行根目录下的 sign_new_key.py
+    val signNewKey = rootProject.file("sign_new_key.py")
+
+    if (signNewKey.exists()) {
+        commandLine("python", signNewKey.path, rootDir.path)
+    } else {
+        doLast {
+            printHello(this as Exec)
         }
     }
 }

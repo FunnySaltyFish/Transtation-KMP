@@ -37,3 +37,7 @@ include(":login")
 include(":android-code-editor:editor", ":android-code-editor:language-base", ":android-code-editor:language-universal")
 include(":code-editor")
 
+// https://www.jianshu.com/p/a6a221e04d30
+include(":local_repo:monet")
+
+

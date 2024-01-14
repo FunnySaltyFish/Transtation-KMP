@@ -49,7 +49,6 @@ android {
 
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(path: ':android-code-editor:language-base')
     compileOnly project(path: ':android-code-editor:editor')
 }

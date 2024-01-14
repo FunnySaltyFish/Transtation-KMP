@@ -57,7 +57,7 @@ class PluginViewModel : BaseViewModel() {
             val origin = appDB.jsDao.queryJsByName(jsBean.fileName)
             if(origin != null){
                 val new = jsBean.copy(id = origin.id)
-                appDB.jsDao.updateJs(new)
+                appDB.jsQueries.updateJs(new)
             }
         }
     }
@@ -89,10 +89,10 @@ class PluginViewModel : BaseViewModel() {
                 {
                     // Log.d(TAG, "onActivityResult: min:${jsBean.minSupportVersion} max:${jsBean.maxSupportVersion}")
                     installOrUpdatePlugin(jsEngine.jsBean, successCall, failureCall)
-                },{
-                    failureCall("插件加载时出错！请联系插件开发者解决！")
                 }
-            )
+            ) {
+                failureCall("插件加载时出错！请联系插件开发者解决！")
+            }
         }
     }
 

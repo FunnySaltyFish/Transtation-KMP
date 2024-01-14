@@ -2,6 +2,7 @@ package com.funny.translation.js
 
 import androidx.annotation.Keep
 import com.funny.translation.debug.Debug
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.ScriptEngineDelegate
 import com.funny.translation.js.bean.JsBean
 import com.funny.translation.js.config.JsConfig
@@ -28,7 +29,9 @@ class JsEngine(val code: String) : JsInterface {
     lateinit var funnyJS: NativeObject
     lateinit var jsBean: JsBean
     internal val scriptEngine by lazy {
-        ScriptEngineDelegate(jsBean.fileName)
+        ScriptEngineDelegate(fileName).also {
+            Log.d("JsEngine", "get ScriptEngine with fileName = $fileName")
+        }
     }
 
     @Throws(ScriptException::class)
@@ -65,6 +68,10 @@ class JsEngine(val code: String) : JsInterface {
 
     fun getId() = jsBean.id
 
+    val fileName: String
+        // 如果 jsBean 初始化了，就用 jsBean 的 fileName，否则用 Unknown
+        get() = if (::jsBean.isInitialized) jsBean.fileName else "Unknown"
+
     val isOffline
         get() = jsBean.isOffline
 
@@ -86,7 +93,7 @@ class JsEngine(val code: String) : JsInterface {
                  * FunnyJS : IdScriptableObject
                  * isOffline : Iter...Function
                  */
-                jsBean = jsBean.copy(
+                jsBean = JsBean(
                     author = funnyJS["author"] as String,
                     description = funnyJS["description"] as String,
                     fileName = funnyJS["name"] as String,
@@ -97,7 +104,10 @@ class JsEngine(val code: String) : JsInterface {
                         getFunnyOrDefault("targetSupportVersion", JsConfig.JS_ENGINE_VERSION),
                     debugMode = getFunnyOrDefault("debugMode", false),
                     isOffline = getFunnyOrDefault("isOffline", false),
-                    supportLanguages = getFunnyListOrDefault("supportLanguages", allLanguages)
+                    supportLanguages = getFunnyListOrDefault("supportLanguages", allLanguages),
+                    id = 999,
+                    code = code,
+                    enabled = 1
                 )
             }.onSuccess {
                 log("插件加载完毕！")
@@ -109,12 +119,12 @@ class JsEngine(val code: String) : JsInterface {
                 onSuccess()
             }.onFailure { e ->
                 when (e) {
-                    is ScriptException -> log("加载插件时出错！${e.messageWithDetail}")
                     is RhinoException -> log("加载插件时出错！${e.messageWithDetail}")
                     is TypeCastException -> log("加载插件时出错！${e.message}\n【建议检查配置文件名称及返回值是否正确】")
                     is NullPointerException -> log("加载插件时出错！${e.message}\n【建议检查配置文件名称及返回值是否正确】")
                     is Exception -> log("加载插件时出错！${e.message}")
                 }
+                e.printStackTrace()
                 onError(e)
             }
         }
@@ -143,5 +153,5 @@ class JsEngine(val code: String) : JsInterface {
         }
     }
 
-    private fun log(text: String) = Debug.log(text, "[DebugLog-${jsBean.fileName}]")
+    private fun log(text: String) = Debug.log(text, "[DebugLog-${fileName}]")
 }

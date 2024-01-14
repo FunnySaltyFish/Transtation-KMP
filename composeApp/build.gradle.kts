@@ -7,6 +7,7 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Properties
 
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -94,8 +95,8 @@ android {
         applicationId = "com.funny.translation.kmp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = libs.versions.project.versionCode.get().toInt()
+        versionName = libs.versions.project.versionName.get()
         resourceConfigurations.addAll(arrayOf("zh-rCN", "en"))
         multiDexEnabled = true
         ndk.abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a"))
@@ -136,7 +137,7 @@ android {
     buildTypes {
         getByName("release") {
             // 临时可调试
-//            isDebuggable = true
+            isDebuggable = true
             // 开启代码混淆
             isMinifyEnabled = true
             // Zipalign 优化
@@ -218,6 +219,20 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("com.funny.translation.database")
+        }
+    }
+}
+
+afterEvaluate {
+    // debug 和 release 时执行加密代码
+    val signApkTask = project(":base-kmp").tasks.named("signApk")
+
+    tasks.withType<Task> {
+        if (name.startsWith("assemble") && !name.endsWith("Test")) {
+            // 打包前先加密下 Js
+            dependsOn(":base-kmp:encryptFunnyJs")
+            // 结束后签个名
+            // finalizedBy(signApkTask)
         }
     }
 }
