@@ -74,7 +74,6 @@
     <string name="not_agree">Deny</string>
     <string name="select_language">Select Language</string>
     <string name="agree">Agree</string>
-    <string name="tip_privacy_policy">Please read and agree [Privacy Policy](https://api.funnysaltyfish.fun/trans/v1/api/privacy?locale=en) before using the application.</string>
     <string name="action_expand_or_close_select_engines">Click to ${action} the engine-selecting page</string>
     <string name="action_see_notice_detail">Show detail of the announcement</string>
     <string name="des_current_source_lang">Current selected source language is </string>
@@ -335,4 +334,5 @@
     <string name="failed_to_take_photo">Failed to take photo!</string>
     <string name="failed_to_show_float_window">Failed to show float window, please check if you have granted the permission correctly!</string>
     <string name="restart_app_tip">Due to the limit of Desktop, please restart by yourself.</string>
+    <string name="tip_privacy_policy">Please read and agree to our [Privacy Policy](https://api.funnysaltyfish.fun/trans/v1/api/privacy?locale=en) and [User Agreement](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement?locale=en) before using the application.</string>
 </resources>

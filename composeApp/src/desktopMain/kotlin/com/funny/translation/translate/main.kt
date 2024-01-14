@@ -17,6 +17,7 @@ import com.funny.translation.kmp.WindowHolder
 import com.funny.translation.kmp.addWindow
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.rememberNavController
+import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.activity.ErrorDialog
 import com.funny.translation.translate.activity.ErrorDialogActivity
 import com.funny.translation.translate.utils.DesktopUncaughtExceptionHandler
@@ -51,6 +52,7 @@ fun main() {
                     width = 360.dp,
                     height = 700.dp,
                 ),
+                title = ResStrings.login_or_register,
             ) { loginActivity ->
                 LoginNavigation(
                     onLoginSuccess = {
@@ -63,6 +65,7 @@ fun main() {
 
             addWindow<ErrorDialogActivity>(
                 rememberWindowState(),
+                title = ResStrings.crash,
                 show = false,
                 onCloseRequest = ::exitApplication,
             ) { errorDialogActivity ->

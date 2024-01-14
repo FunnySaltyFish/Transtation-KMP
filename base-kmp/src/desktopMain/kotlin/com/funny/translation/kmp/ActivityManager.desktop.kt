@@ -6,11 +6,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import com.funny.translation.BaseActivity
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.ui.App
 import moe.tlaster.precompose.navigation.NavOptions
 import java.util.LinkedList
@@ -63,6 +65,8 @@ interface WindowHolderScope
 inline fun <reified T: BaseActivity> WindowHolderScope.addWindow(
     windowState: WindowState,
     show: Boolean = false,
+    title: String = ResStrings.app_name,
+    icon: Painter = painterDrawableRes("ic_launcher_icon"),
     noinline onCloseRequest: SimpleAction = {},
     crossinline content: @Composable (T) -> Unit
 ) {
@@ -89,7 +93,7 @@ inline fun <reified T: BaseActivity> WindowHolderScope.addWindow(
                     Log.d("WindowHolder", "onCloseRequest: $activity")
                     onCloseRequest()
                     activity.windowShowState.value = false
-                }) {
+                }, title = title, icon = icon) {
                     App {
                         content(activity)
                     }

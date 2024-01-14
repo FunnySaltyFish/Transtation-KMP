@@ -246,7 +246,7 @@ fun AppNavigation(
             AlertDialog(
                 onDismissRequest = { },
                 text = {
-                    MarkdownText(markdown = "我们更新了新的[隐私政策](https://api.funnysaltyfish.fun/trans/v1/api/privacy)和[用户协议](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement)，请认真阅读并同意后，方可使用本应用")
+                    MarkdownText(markdown = ResStrings.tip_privacy_policy)
                 },
                 confirmButton = {
                     Button(onClick = { firstOpenApplication = false }) {

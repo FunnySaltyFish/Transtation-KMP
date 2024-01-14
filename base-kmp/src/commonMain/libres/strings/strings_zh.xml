@@ -47,4 +47,7 @@
     <string name="back">返回</string>
     <string name="working">稍安勿躁</string>
     <string name="please_wait">等待是为了更好的相遇，我正在努力</string>
+    <string name="app_name">译站</string>
+    <string name="login_or_register">登录/注册</string>
+    <string name="crash">崩溃了</string>
 </resources>

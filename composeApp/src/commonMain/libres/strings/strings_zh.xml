@@ -74,7 +74,6 @@
     <string name="not_agree">拒绝</string>
     <string name="agree">同意</string>
     <string name="select_language">语种选择</string>
-    <string name="tip_privacy_policy">请认真阅读并同意[隐私政策](https://api.funnysaltyfish.fun/trans/v1/api/privacy)后，方可使用本应用</string>
     <string name="action_expand_or_close_select_engines">点击${action}引擎选择页面</string>
     <string name="action_see_notice_detail">查看公告详情</string>
     <string name="des_current_source_lang">当前选中的源语言</string>
@@ -336,4 +335,5 @@
     <string name="failed_to_take_photo">拍照失败！</string>
     <string name="failed_to_show_float_window">显示悬浮窗失败，请检查是否正确授予权限！</string>
     <string name="restart_app_tip">由于桌面端限制，请手动重启。</string>
+    <string name="tip_privacy_policy">我们更新了新的[隐私政策](https://api.funnysaltyfish.fun/trans/v1/api/privacy)和[用户协议](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement)，请认真阅读并同意后，方可使用本应用</string>
 </resources>
