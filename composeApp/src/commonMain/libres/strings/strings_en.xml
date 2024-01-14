@@ -334,4 +334,5 @@
     <string name="load_llm_models">Load LLM list</string>
     <string name="failed_to_take_photo">Failed to take photo!</string>
     <string name="failed_to_show_float_window">Failed to show float window, please check if you have granted the permission correctly!</string>
+    <string name="restart_app_tip">Due to the limit of Desktop, please restart by yourself.</string>
 </resources>

@@ -260,9 +260,13 @@ private fun SelectAppLanguage() {
         confirmButtonAction = {
             CoroutineScope(Dispatchers.Default).launch {
                 LocaleUtils.saveAppLanguage(tempLanguage)
-                delay(200)
-                // restart App
-                ApplicationUtil.restartApp()
+                if (currentPlatform == Platform.Android) {
+                    delay(200)
+                    // restart App
+                    ApplicationUtil.restartApp()
+                } else {
+                    appCtx.toastOnUi(ResStrings.restart_app_tip)
+                }
             }
         }
     )

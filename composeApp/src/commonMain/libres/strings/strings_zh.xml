@@ -335,4 +335,5 @@
     <string name="day_hour_min_sec">${day}天${hour}时${min}分${sec}秒</string>
     <string name="failed_to_take_photo">拍照失败！</string>
     <string name="failed_to_show_float_window">显示悬浮窗失败，请检查是否正确授予权限！</string>
+    <string name="restart_app_tip">由于桌面端限制，请手动重启。</string>
 </resources>

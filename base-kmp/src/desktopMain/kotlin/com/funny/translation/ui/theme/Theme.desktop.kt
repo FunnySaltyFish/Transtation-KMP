@@ -54,7 +54,8 @@ actual fun TransTheme(
     hideStatusBar: Boolean,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = remember(ThemeConfig.sThemeType.value) {
+
+    val colorScheme = remember(ThemeConfig.lightDarkMode.value, ThemeConfig.sThemeType.value) {
         when (ThemeConfig.sThemeType.value) {
             ThemeType.StaticDefault -> if (dark) DarkColors else LightColors
             ThemeType.DynamicNative -> run {

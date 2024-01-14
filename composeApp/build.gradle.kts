@@ -75,6 +75,8 @@ kotlin {
                 
                 // sqldelight
                 implementation(libs.sqldelight.driver)
+
+                implementation("javazoom:jlayer:1.0.1")
             }
         }
     }
