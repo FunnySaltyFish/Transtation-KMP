@@ -37,8 +37,8 @@ You can get the latest version from the following ways:
 
 - Android  
   - [This repository - for Chinese Mainland](/composeApp/release/composeApp-release.apk)
-  - [Coolapk](https://www.coolapk.com/apk/com.funny.translation) (Not KMP version still now)
-  - [Official website(Chinese)](https://www.funnysaltyfish.fun/trans) (Not KMP version still now)
+  - [Coolapk](https://www.coolapk.com/apk/com.funny.translation) (Not KMP version till now)
+  - [Official website(Chinese)](https://www.funnysaltyfish.fun/trans) (Not KMP version till now)
 - Desktop(JVM)
   -  I've tried to build a Windows exe, however, it can be installed but cannot be run. I'm still working on it.
   - You should compile it by yourself if you want to run it now.
@@ -79,6 +79,50 @@ UI v4：
 | <img src="./screenshots/desktop_1.png" alt="" style="zoom:33%;" /> | <img src="./screenshots/desktop_2.png" alt="" style="zoom:33%;" /> |
 | <img src="./screenshots/desktop_3.png" alt="" style="zoom:33%;" /> | <img src="./screenshots/desktop_4.png" alt="" style="zoom:33%;" /> |
 | <img src="./screenshots/desktop_5.png" alt="" style="zoom:33%;" /> | <img src="./screenshots/desktop_6.png" alt="" style="zoom:33%;" /> |
+
+#### Screen Recording
+
+**I'm recording a video to show the features of this app, please wait for a moment.**
+
+## For Kotlin Multiplatform Contest
+The project is intended to join the [Kotlin Multiplatform Contest 2024](https://blog.jetbrains.com/kotlin/2023/08/kotlin-multiplatform-contest-2024/). However, due to the time limit, there are something that needs further work. I will continue to work on it after the contest.
+
+### Some Key Highlights
+
+- Completed KMP migration of various components such as `Context`, `Activity` using expect/actual + typealias, minimizing code changes as much as possible.
+- Designed a Compose Desktop window management system, configuring windows through DSL, ensuring correspondence between Window and Activity.
+- Completed DAO migration using dynamic proxy, maintaining the usability of the original Room DAO with simple code (underlying transformation to SqlDelight-generated code invocation).
+- ...
+
+### Known Issues on Desktop
+
+#### Pages that Crash
+
+The following pages may crash:
+
+- TransProScreen (However, the page for purchasing AI points is not affected, both share the same Composable. Why is that?)
+- Chat translation page (after generating a reply)
+- Plugin page
+
+The error is:
+
+> java.lang.IllegalStateException: Vertically scrollable component was measured with an infinity maximum height constraints, which is disallowed. One of the common reasons is nesting layouts like LazyColumn and Column(Modifier.verticalScroll()). ...
+
+I don't know why these pages share the same code on Android and Desktop, **but work correctly on Android while crashing on Desktop**. Strangely, their parent layout Column is not scrollable; even if I limit the height of `LazyColumn` (e.g., `Modifier.height(400.dp)`), it still crashes. I suspect it might be a Compose Desktop issue, and due to time constraints, I haven't found a solution yet.
+
+#### Not Functioning Properly
+
+- Tasks for translating long texts cannot change remarks. The corresponding SQLite code executes correctly, but the database content does not change. I suspect it might be an issue with SqlDelight. I have submitted an issue, see: [Update statement has no effect in JVM(Windows 11), Sqlite · Issue #4962 · cashapp/sqldelight (github.com)](https://github.com/cashapp/sqldelight/issues/4962)
+
+### IDE Experience
+
+In the initial days of development, I tried using Fleet, Android Studio, and IDEA multiple times to develop this application. In the end, I continued using Android Studio. Its development experience is essentially consistent with IDEA, and Desktop applications can be run directly by clicking a small button. The reasons for not choosing the other two are:
+
+- Fleet: Currently, it seems a bit rudimentary, and it's challenging to bring up various windows (cannot be kept resident), lacks AI completion.
+- IDEA: The automatically generated expect/actual positions are very strange. For example, on the Android side, it displays both `androidMain` and `kotlin.androidMain`. Choosing the former has no effect, and choosing the latter generates a file with a name like: `Xxx.android.commonMain.kotlin.kt`, which is not very reasonable.
+
+### Migration Process
+I recorded some of the migration process, I suggest you refer it if you're one of the judges. Because it is too long, I put it to another file [here](migration_process.md)
 
 
 ### Source Code Overview
