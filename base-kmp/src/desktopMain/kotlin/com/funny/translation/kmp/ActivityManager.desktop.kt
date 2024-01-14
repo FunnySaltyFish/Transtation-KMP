@@ -2,6 +2,7 @@ package com.funny.translation.kmp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -42,8 +43,7 @@ actual object ActivityManager {
         activity.data = data
         activity.windowShowState.value = true
 
-        activity.onShow()
-
+        activity.onStart()
         Log.d("ActivityManager", "start: $activity")
     }
 
@@ -82,6 +82,9 @@ inline fun <reified T: BaseActivity> WindowHolderScope.addWindow(
             CompositionLocalProvider(
                 LocalKMPContext provides activity,
             ) {
+                LaunchedEffect(activity) {
+                    activity.onShow()
+                }
                 Window(state = activity.windowState, onCloseRequest = {
                     Log.d("WindowHolder", "onCloseRequest: $activity")
                     onCloseRequest()

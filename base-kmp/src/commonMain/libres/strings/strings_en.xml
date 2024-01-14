@@ -45,4 +45,6 @@
     <string name="no_network">Please connect to the Internet</string>
     <string name="login_status_expired">Login status expired</string>
     <string name="back">Go back</string>
+    <string name="working">Working...</string>
+    <string name="please_wait">Waiting for a better encounter, I\'m working hard</string>
 </resources>

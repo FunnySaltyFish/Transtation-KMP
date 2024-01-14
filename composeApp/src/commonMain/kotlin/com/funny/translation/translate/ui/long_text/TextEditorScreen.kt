@@ -44,6 +44,7 @@ import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.draftDao
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.long_text.components.TokenNumRow
+import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.CoroutineScope
@@ -99,7 +100,7 @@ sealed class TextEditorAction(val textKey: String, val tokenCounterId: String = 
                 }
                 string.startsWith("UpdateSourceText") -> {
                     val split = string.split(SEPARATOR)
-                    UpdateSourceText(split[1].let { URLDecoder.decode(it, "UTF-8") }, split[3])
+                    UpdateSourceText(split[1].let { URLDecoder.decode(it, "UTF-8") }, split[2])
                 }
                 else -> throw IllegalArgumentException("Unknown TextEditorAction: $string")
             }
@@ -166,15 +167,26 @@ fun TextEditorScreen(
         }
     )
 
-    BackHandler(!textEmpty) {
-        if (text == "" || text == initialText) {
-            navController.popBackStack()
-        } else {
-            showDialog.value = true
+    val goBackAction = remember {
+        {
+            if (text == "" || text == initialText) {
+                navController.popBackStack()
+            } else {
+                showDialog.value = true
+            }
         }
     }
 
+    BackHandler(!textEmpty) {
+        goBackAction()
+    }
+
     CommonPage(
+        navigationIcon = {
+            CommonNavBackIcon {
+                goBackAction()
+            }
+        },
         actions = {
             TokenNumRow(tokenCounter = tokenCounter, text = text)
             if (action is TextEditorAction.NewDraft || action is TextEditorAction.UpdateDraft) {
@@ -233,7 +245,9 @@ internal fun NavController.navigateToTextEdit(
         val result = navigateForResult(
             TranslateScreen.TextEditorScreen.route.formatQueryStyle(
                 "action" to action.toString()
-            )
+            ).also {
+                Log.d("TextEditorScreen", "navigateToTextEdit with route = $it")
+            }
         )
         Log.d("TextEditorScreen", "navigateToTextEdit with result = $result")
         if (result != null) {

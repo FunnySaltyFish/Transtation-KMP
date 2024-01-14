@@ -55,6 +55,7 @@ actual class TransActivity : BaseActivity() {
             // 做一些耗时的后台任务
             lifecycleScope.launch(Dispatchers.IO) {
                 // MobileAds.initialize(context) {}
+                activityViewModel.refreshUserInfo()
                 UpdateUtils.checkUpdate(this@TransActivity)
             }
 

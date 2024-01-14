@@ -45,4 +45,6 @@
     <string name="no_network">"当前似乎没有联网哦~"</string>
     <string name="login_status_expired">登录状态已过期</string>
     <string name="back">返回</string>
+    <string name="working">稍安勿躁</string>
+    <string name="please_wait">等待是为了更好的相遇，我正在努力</string>
 </resources>

@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,7 +23,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ColumnScope.ModelListPart(
-    modelList: SnapshotStateList<Model>,
+    modelList: List<Model>,
     initialSelectId: Int,
     onModelSelected: (model: Model) -> Unit
 ) {

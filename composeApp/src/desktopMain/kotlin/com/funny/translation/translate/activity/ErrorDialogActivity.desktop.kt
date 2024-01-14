@@ -11,6 +11,11 @@ actual class ErrorDialogActivity : BaseActivity() {
     internal actual var crashMessage: String? = null
 
     override fun onShow() {
+        super.onShow()
+    }
+
+    override fun onStart() {
+        super.onStart()
         crashMessage = data?.get(KEY_CRASH_MESSAGE) as? String
     }
 

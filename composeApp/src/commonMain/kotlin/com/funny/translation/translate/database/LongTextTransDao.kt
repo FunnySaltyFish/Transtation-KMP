@@ -2,6 +2,7 @@ package com.funny.translation.translate.database
 
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.database.Dao
+import com.funny.translation.database.GetAllMini
 import com.funny.translation.database.Insert
 import com.funny.translation.database.LongTextTransTasks
 import com.funny.translation.database.Query
@@ -45,22 +46,14 @@ val LongTextTransTask.translatedProgress
     get() = (translatedLength.toFloat() / sourceText.length.toFloat()).coerceIn(0f, 1f)
 
 // 不带具体文本，只包括少量信息的 LongTextTransTask，以加快列表时的查询速度
-data class LongTextTransTaskMini(
-    val id: String,
-    val chatBotId: Int,
-    val translatedLength: Int = 0,
-    val remark: String = "",
-    val createTime: Long = now(),
-    val updateTime: Long = now(),
+typealias LongTextTransTaskMini = GetAllMini
 
-    val sourceTextLength: Int,
-) {
-    val finishTranslating: Boolean
-        get() = translatedLength >= sourceTextLength
+val LongTextTransTaskMini.finishTranslating: Boolean
+    get() = translatedLength >= sourceTextLength
 
-    val translatedProgress
-        get() = (translatedLength.toFloat() / sourceTextLength.toFloat()).coerceIn(0f, 1f)
-}
+val LongTextTransTaskMini.translatedProgress
+    get() = (translatedLength.toFloat() / sourceTextLength.toFloat()).coerceIn(0f, 1f)
+
 
 @Dao
 interface LongTextTransDao {

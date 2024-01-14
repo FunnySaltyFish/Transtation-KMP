@@ -3,7 +3,6 @@ package com.funny.translation.translate.ui.long_text
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.funny.compose.ai.bean.ChatMemoryFixedMsgLength
@@ -33,6 +32,7 @@ import com.funny.translation.translate.database.LongTextTransTask
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.longTextTransDao
 import com.funny.translation.translate.ui.long_text.bean.TermList
+import com.funny.translation.translate.utils.createFileIfNotExist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -63,7 +63,7 @@ class LongTextTransViewModel: BaseViewModel() {
     internal var screenState by mutableStateOf(ScreenState.Init)
 
     var chatBot: ModelChatBot by mutableStateOf(TestLongTextChatBot())
-    var modelList = mutableStateListOf<Model>()
+    var modelList by mutableStateOf(listOf<Model>())
     var selectedModelId by mutableDataSaverStateOf(DataSaverUtils,"selected_chat_model_id", 0)
 
     private var totalLength = 0
@@ -120,8 +120,8 @@ class LongTextTransViewModel: BaseViewModel() {
 
     init {
         submit(context = Dispatchers.Default) {
-            delay(200)
-            modelList.addAll(ModelManager.models.await())
+            delay(500)
+            modelList = ModelManager.models.await()
 
             if (modelList.isEmpty()) return@submit
 
@@ -461,6 +461,7 @@ class LongTextTransViewModel: BaseViewModel() {
         if (record) {
             viewModelScope.launch(Dispatchers.IO) {
                 val file = CacheManager.cacheDir.resolve("long_text_trans_records/record_${System.currentTimeMillis()}.json")
+                file.createFileIfNotExist()
                 file.writeText(recordObj.toString(2))
             }
         }

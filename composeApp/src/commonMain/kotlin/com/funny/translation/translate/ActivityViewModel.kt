@@ -39,7 +39,6 @@ class ActivityViewModel : ViewModel(), LifecycleObserver {
     }
 
     init {
-        refreshUserInfo()
         getNotice()
     }
 

@@ -10,7 +10,8 @@ actual class TransActivity : BaseActivity() {
         ActivityViewModel()
     }
 
-    init {
-
+    override fun onShow() {
+        super.onShow()
+        activityViewModel.refreshUserInfo()
     }
 }
