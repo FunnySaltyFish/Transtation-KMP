@@ -2,62 +2,49 @@ package com.funny.translation.kmp
 
 import androidx.compose.runtime.Composable
 import com.eygraber.uri.Uri
+import com.funny.translation.helper.Log
+import java.awt.FileDialog
+import java.awt.Frame
 import java.io.File
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileFilter
+import java.io.FilenameFilter
 
 actual class FileLauncher<Input>(val onResult: (Uri?) -> Unit): Launcher<Input, Uri?>() {
     actual override fun launch(input: Input) {
-        val jFileChooser = JFileChooser()
+        val dialog = FileDialog(null as Frame?, "Choose a file", FileDialog.LOAD)
 
         when (input) {
             is String -> {
-                // 单个文件类型
-                val mime = input
-                configureFileChooser(jFileChooser, mime)
+                // String 为文件名，对应创建文件
+                dialog.file = input
             }
             is Array<*> -> {
-                // 多个文件类型
+                // Array<String> 多种文件类型，对应选择文件
                 val mimes = input.filterIsInstance<String>()
-                configureFileChooser(jFileChooser, *mimes.toTypedArray())
+                dialog.filenameFilter = FilenameFilter { file, s ->
+                    if (file != null) {
+                        val fileName = file.name
+                        val fileSuffixes = mimes.flatMap { mimeToSuffixList(it) }.distinct()
+                        return@FilenameFilter fileSuffixes.any { suffix ->
+                            return@any fileName.endsWith(".$suffix")
+                        }
+                    }
+                    return@FilenameFilter false
+                }
             }
             else -> {
                 // 其他类型，可以根据需要进行处理
             }
         }
 
-        val result = jFileChooser.showOpenDialog(null)
+        dialog.isVisible = true
 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            val selectedFile = jFileChooser.selectedFile
-            onResult(Uri.fromFile(selectedFile.absolutePath))
+        val selectedFile = dialog.file
+        if (selectedFile != null) {
+            val filePath = "${dialog.directory}${File.separator}$selectedFile"
+            Log.d("FileLauncher", "selected filePath: $filePath")
+            onResult(Uri.fromFile(filePath))
         } else {
             onResult(null)
-        }
-    }
-
-    private fun configureFileChooser(fileChooser: JFileChooser, vararg fileMimes: String) {
-        fileChooser.fileFilter = object : FileFilter() {
-            override fun accept(file: File?): Boolean {
-                if (file != null) {
-                    val fileName = file.name
-                    val fileSuffixes = fileMimes.flatMap { mimeToSuffixList(it) }.distinct()
-                    return fileSuffixes.any { mime ->
-                        return fileName.endsWith(".$mime")
-                    }
-                }
-                return false
-            }
-
-            override fun getDescription(): String {
-                return fileMimes.joinToString(",") { mime ->
-                    if (mime.endsWith("/*")) {
-                        mime.substringBefore("/")
-                    } else {
-                        "*.$mime"
-                    }
-                }
-            }
         }
     }
 }

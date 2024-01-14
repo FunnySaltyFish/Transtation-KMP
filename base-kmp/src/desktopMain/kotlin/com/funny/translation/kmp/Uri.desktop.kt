@@ -26,7 +26,7 @@ actual fun Uri.readText(): String {
 }
 
 fun Uri.Companion.fromFile(file: String): Uri {
-    return Uri.fromParts("file", file, null)
+    return Uri.parse("file://$file")
 }
 
 fun Uri.toFileString(): String {

@@ -30,6 +30,8 @@ import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.database.LongTextTransTaskMini
+import com.funny.translation.translate.database.finishTranslating
+import com.funny.translation.translate.database.translatedProgress
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.long_text.components.RemarkDialog
 import com.funny.translation.translate.ui.main.SwipeToDismissItem
