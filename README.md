@@ -1,5 +1,3 @@
-I'm editing the README... please wait for a moment
-
 ## Transtation
 "Transtation" is the combination of "Translate" and "Station", it's an easy-to-use and powerful translation software for Android/Desktop(JVM), based on Kotlin Multiplatform + Compose Multiplatform. 
 
@@ -49,6 +47,12 @@ If you find it helpful, **welcome to star**!
 
 ### Screenshot
 
+#### Screen Recording
+v2.8.0 (2024/01/15)
+
+https://github.com/FunnySaltyFish/Transtation-KMP/assets/46063434/ded5d1c6-553c-4f45-96a4-74d870fcbcb8
+
+
 #### Running Screenshot
 
 ##### Android
@@ -79,10 +83,6 @@ UI v4：
 | <img src="./screenshots/desktop_1.png" alt="" style="zoom:33%;" /> | <img src="./screenshots/desktop_2.png" alt="" style="zoom:33%;" /> |
 | <img src="./screenshots/desktop_3.png" alt="" style="zoom:33%;" /> | <img src="./screenshots/desktop_4.png" alt="" style="zoom:33%;" /> |
 | <img src="./screenshots/desktop_5.png" alt="" style="zoom:33%;" /> | <img src="./screenshots/desktop_6.png" alt="" style="zoom:33%;" /> |
-
-#### Screen Recording
-
-**I'm recording a video to show the features of this app, please wait for a moment.**
 
 ## For Kotlin Multiplatform Contest
 The project is intended to join the [Kotlin Multiplatform Contest 2024](https://blog.jetbrains.com/kotlin/2023/08/kotlin-multiplatform-contest-2024/). However, due to the time limit, there are something that needs further work. I will continue to work on it after the contest.
@@ -122,7 +122,7 @@ In the initial days of development, I tried using Fleet, Android Studio, and IDE
 - IDEA: The automatically generated expect/actual positions are very strange. For example, on the Android side, it displays both `androidMain` and `kotlin.androidMain`. Choosing the former has no effect, and choosing the latter generates a file with a name like: `Xxx.android.commonMain.kotlin.kt`, which is not very reasonable.
 
 ### Migration Process
-I recorded some of the migration process, I suggest you refer it if you're one of the judges. Because it is too long, I put it to another file [here](migration_process.md)
+I recorded some of the migration process, I suggest you read it if you're one of the judges. Because it is too long, I put it to another file [here](migration_process.md)
 
 
 ### Source Code Overview
@@ -143,10 +143,8 @@ However, there are still some basic cleanliness aspects, such as naming conventi
 - **code-editor: the code editor page**
 - **login: the login and registration page**
 - **ai: LLM related logics**
-- android-code-editor: editor, language-base, language-universal: code editor View from the open-source project [sora-editor](https://github.com/Rosemoe/sora-editor)
-~~- buildSrc: dependency version management~~
-
-You can refer to [this document(Chinese)](https://chat.openai.com/chat/detail_introduction.md) for a detailed understanding of the code composition of each module.
+- android-code-editor: editor, language-base, language-universal: code editor View from the open-source project [sora-editor](https://github.com/Rosemoe/sora-editor)  
+- ~~buildSrc: dependency version management~~
 
 #### Preparation Before Running
 
