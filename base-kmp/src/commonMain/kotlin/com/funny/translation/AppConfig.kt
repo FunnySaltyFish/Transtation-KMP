@@ -3,6 +3,8 @@ package com.funny.translation
 import androidx.annotation.Keep
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.bean.TranslationConfig
 import com.funny.translation.bean.UserInfoBean
@@ -97,4 +99,4 @@ object AppConfig {
 val GlobalTranslationConfig = TranslationConfig()
 // 外部 intent 导致，表示待会儿需要做翻译
 // 不用 DeepLink
-var NeedToTransConfig = TranslationConfig()
+var NeedToTransConfig by mutableStateOf(TranslationConfig())

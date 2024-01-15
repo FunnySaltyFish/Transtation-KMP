@@ -29,13 +29,13 @@ import com.funny.translation.translate.utils.EasyFloatUtils
 import com.funny.translation.translate.utils.UpdateUtils
 import com.funny.translation.ui.App
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
 
 private const val TAG = "TransActivity"
 
 actual class TransActivity : BaseActivity() {
-    actual var navController: NavController by Delegates.notNull()
+    actual var navController: NavController? = null
     private lateinit var activityViewModel: ActivityViewModel
     private lateinit var netWorkReceiver: NetworkReceiver
 
@@ -152,7 +152,7 @@ actual class TransActivity : BaseActivity() {
                 }
 
                 is TransActivityIntent.TranslateImage -> {
-                    navController.navigate(transActivityIntent.deepLinkUri.toString())
+                    navController?.navigate(transActivityIntent.deepLinkUri.toString())
                 }
 
                 is TransActivityIntent.OpenFloatWindow -> {
@@ -178,7 +178,8 @@ actual class TransActivity : BaseActivity() {
         targetLanguage: Language? = null
     ) {
         lifecycleScope.launch {
-            navController.navigateToTextTrans(
+            while (navController == null) { delay(50) }
+            navController!!.navigateToTextTrans(
                 sourceText,
                 sourceLanguage ?: AppConfig.sDefaultSourceLanguage.value,
                 targetLanguage ?: AppConfig.sDefaultTargetLanguage.value

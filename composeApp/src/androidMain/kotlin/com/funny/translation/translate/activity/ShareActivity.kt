@@ -5,8 +5,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import com.funny.translation.AppConfig
+import com.funny.translation.BaseActivity
 import com.funny.translation.Consts
 import com.funny.translation.helper.Log
 import com.funny.translation.translate.TransActivityIntent
@@ -17,7 +17,7 @@ import com.funny.translation.translate.utils.EasyFloatUtils
  * 接收外部分享过来的文本、图片
  * 或者磁贴打开悬浮窗
  */
-class ShareActivity : AppCompatActivity() {
+class ShareActivity : BaseActivity() {
     private val shouldOpenFloatingWindow = AppConfig.sTextMenuFloatingWindow.value
 
     override fun onCreate(savedInstanceState: Bundle?) {
