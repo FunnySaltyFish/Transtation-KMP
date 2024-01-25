@@ -2,7 +2,7 @@ package com.funny.translation.helper
 
 import android.util.Log as AndroidLog
 
-actual object Log {
+actual object Logger {
     private const val TAG = "DefaultLog"
     // i, d, w, e, v
     actual fun d(msg: String) { AndroidLog.d(TAG, msg) }

@@ -1,7 +1,7 @@
 @file:Suppress("unused")
 package com.funny.translation.helper
 
-expect object Log {
+expect object Logger {
     fun d(msg: String) : Unit
     fun d(tag: String, msg: String) : Unit
     fun d(tag: String, msg: String, throwable: Throwable) : Unit
@@ -26,3 +26,5 @@ expect object Log {
     fun wtf(tag: String, msg: String) : Unit
     fun wtf(tag: String, msg: String, throwable: Throwable) : Unit
 }
+
+typealias Log = Logger

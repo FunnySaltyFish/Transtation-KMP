@@ -5,7 +5,7 @@ import io.github.oshai.kotlinlogging.KLoggingEventBuilder
 import io.github.oshai.kotlinlogging.Level
 import io.github.oshai.kotlinlogging.Marker
 
-actual object Log {
+actual object Logger {
     init {
         // kotlin-logging-to-jul
 //        System.setProperty("kotlin-logging-to-jul", "true")

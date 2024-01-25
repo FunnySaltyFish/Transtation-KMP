@@ -15,7 +15,7 @@ fun ChatMessage(
     sender: String,
     content: String,
     type: Int = ChatMessageTypes.TEXT,
-    error: String = "",
+    error: String? = null,
 ): ChatMessage {
     return ChatMessage(
         id = UUID.randomUUID().toString(),

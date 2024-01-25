@@ -22,6 +22,7 @@ import com.funny.compose.ai.utils.ModelManager
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.helper.BaseViewModel
 import com.funny.translation.helper.DataSaverUtils
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.displayMsg
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.NAV_ANIM_DURATION
@@ -34,6 +35,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
+
+private const val TAG = "ChatViewModel"
 
 class ChatViewModel: BaseViewModel() {
     private val dao = appDB.chatHistoryDao
@@ -116,6 +119,7 @@ class ChatViewModel: BaseViewModel() {
     private fun startAsk(message: String) {
         job = viewModelScope.launch(Dispatchers.IO) {
             chatBot.value.chat(convId.value, message, messages, systemPrompt, memory).collect {
+                Log.d(TAG, "received stream msg: $it")
                 when (it) {
                     is StreamMessage.Start -> {
                         currentMessage = ChatMessage(

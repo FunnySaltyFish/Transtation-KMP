@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -161,8 +160,6 @@ suspend fun Flow<String>.asStreamMessageFlow() = map {
         }
         else -> StreamMessage.Part(it)
     }
-}.onStart {
-    emit(StreamMessage.Start)
 }.onCompletion { err ->
     if (err != null) {
         emit(StreamMessage.Error(err.message ?: "Unknown error"))

@@ -64,7 +64,7 @@ fun MessageItem(
                     .animateContentSize()
             ) {
                 when (chatMessage.type) {
-                    ChatMessageTypes.TEXT ->
+                    ChatMessageTypes.TEXT -> {
                         if (sendByMe) {
                             Text(
                                 text = chatMessage.content,
@@ -72,18 +72,20 @@ fun MessageItem(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         } else {
+                            val color = if (chatMessage.error != null)
+                                MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSecondaryContainer
                             val content = if (chatMessage.error != null) {
                                 chatMessage.content + "\n" + chatMessage.error
                             } else {
-                                chatMessage.content.ifEmpty { "..." }
+                                chatMessage.content.ifEmpty { "thinking..." }
                             }
                             MarkdownText(
                                 markdown = content,
-                                color = if (chatMessage.error != null)
-                                    MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = color,
                                 selectable = true
                             )
                         }
+                    }
 
                     ChatMessageTypes.IMAGE ->
                         AsyncImage(model = chatMessage.content, modifier = Modifier.size(200.dp))
