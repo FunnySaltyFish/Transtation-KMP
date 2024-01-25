@@ -91,6 +91,9 @@ android {
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
+    // mainDebug
+    sourceSets["debug"].res.srcDirs("src/androidMainDebug/res")
+
     defaultConfig {
         applicationId = "com.funny.translation.kmp"
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -211,7 +214,7 @@ buildkonfig {
         val debug = System.getenv("TranslationDebug")?.toBoolean() ?: true
         buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
         val buildType = if (debug) "Debug" else "Release"
-        buildConfigField(FieldSpec.Type.STRING, "BUILD_TYPE", buildType)
+        buildConfigField(FieldSpec.Type.STRING,  "BUILD_TYPE", buildType)
     }
 
     defaultConfigs("common") {

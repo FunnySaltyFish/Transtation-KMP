@@ -20,9 +20,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.NavHostController
@@ -48,6 +50,9 @@ fun CommonPage(
     navController: NavHostController = LocalNavController.current,
     navigationIcon: @Composable () -> Unit = { CommonNavBackIcon(navController) },
     actions: @Composable RowScope.() -> Unit = { },
+    topBar: @Composable () -> Unit = {
+        CommonTopBar(title = title, navigationIcon = navigationIcon, navController = navController, actions = actions)
+    },
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
@@ -56,7 +61,7 @@ fun CommonPage(
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CommonTopBar(title = title, navigationIcon = navigationIcon, navController = navController, actions = actions)
+        topBar()
         content()
         if (addNavPadding) {
             NavPaddingItem()
@@ -85,6 +90,35 @@ fun CommonTopBar(
             actions()
             Spacer(modifier = Modifier.width(12.dp))
         }
+    )
+}
+
+// TopBar that without background
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TransparentTopBar(
+    modifier: Modifier = Modifier,
+    title: String? = null,
+    navController: NavHostController = LocalNavController.current,
+    navigationIcon: @Composable () -> Unit = { CommonNavBackIcon(navController) },
+    actions: @Composable RowScope.() -> Unit = { },
+) {
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            if (title != null) {
+                Text(text = title, Modifier.padding(start = 12.dp))
+            }
+        },
+        navigationIcon = navigationIcon,
+        actions = {
+            actions()
+            Spacer(modifier = Modifier.width(12.dp))
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent
+        )
     )
 }
 

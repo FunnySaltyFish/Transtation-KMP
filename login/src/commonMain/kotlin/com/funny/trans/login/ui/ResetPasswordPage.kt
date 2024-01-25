@@ -26,12 +26,17 @@ import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.login.strings.ResStrings
 import com.funny.translation.ui.CommonPage
+import com.funny.translation.ui.TransparentTopBar
 
 @Composable
 fun ResetPasswordPage(
     navController: NavController
 ) {
-    CommonPage {
+    CommonPage(
+        topBar = {
+            TransparentTopBar()
+        }
+    ) {
         val vm = viewModel<LoginViewModel>()
         val context = LocalKMPContext.current
 

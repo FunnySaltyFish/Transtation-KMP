@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.kmp.NavGraphBuilder
@@ -11,6 +12,7 @@ import com.funny.translation.kmp.NavHost
 import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.rememberNavController
+import com.funny.translation.translate.LocalNavController
 import com.funny.translation.ui.animatedGradientBackground
 
 sealed class LoginRoute(val route: String) {
@@ -26,19 +28,20 @@ fun LoginNavigation(
     onLoginSuccess: (UserInfoBean) -> Unit,
 ) {
     val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = LoginRoute.LoginPage.route,
-        modifier = Modifier
-            .fillMaxSize()
-            .animatedGradientBackground(
-                 MaterialTheme.colorScheme.surface,
-                 MaterialTheme.colorScheme.tertiaryContainer,
-            )
-            .statusBarsPadding(),
-    ){
-        addLoginRoutes(navController, onLoginSuccess = onLoginSuccess)
+    CompositionLocalProvider(LocalNavController provides navController) {
+        NavHost(
+            navController = navController,
+            startDestination = LoginRoute.LoginPage.route,
+            modifier = Modifier
+                .fillMaxSize()
+                .animatedGradientBackground(
+                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.tertiaryContainer,
+                )
+                .statusBarsPadding(),
+        ) {
+            addLoginRoutes(navController, onLoginSuccess = onLoginSuccess)
+        }
     }
 }
 
