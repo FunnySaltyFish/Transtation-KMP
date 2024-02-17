@@ -11,7 +11,8 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.libres)
+//    alias(libs.plugins.libres)
+    alias(libs.plugins.transtation.kmp.thirdpartylibs)
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.sqlDelight)
 }
@@ -194,12 +195,12 @@ compose.desktop {
 //    multiplatformResourcesPackage = "com.funny.translation" // required
 //}
 
-libres {
-    generatedClassName = "Res" // "Res" by default
-    generateNamedArguments = true // false by default
-    baseLocaleLanguageCode = "zh" // "en" by default
-    camelCaseNamesForAppleFramework = false // false by default
-}
+//libres {
+//    generatedClassName = "Res" // "Res" by default
+//    generateNamedArguments = true // false by default
+//    baseLocaleLanguageCode = "zh" // "en" by default
+//    camelCaseNamesForAppleFramework = false // false by default
+//}
 
 buildkonfig {
     packageName = "com.funny.translation"
