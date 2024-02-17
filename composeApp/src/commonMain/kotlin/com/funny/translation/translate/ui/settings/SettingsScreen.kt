@@ -333,7 +333,7 @@ private fun ProJetSettingCheckbox(
 
 
 @Composable
-fun SortResult(
+fun SortResultScreen(
     modifier: Modifier = Modifier
 ) {
     CommonPage(title = ResStrings.sort_result) {
@@ -387,7 +387,7 @@ fun SortResult(
 }
 
 @Composable
-fun SelectLanguage(modifier: Modifier) {
+fun SelectLanguageScreen(modifier: Modifier) {
     val data = remember {
         allLanguages.map { DataSaverUtils.readData(it.selectedKey, true) }.toMutableStateList()
     }
