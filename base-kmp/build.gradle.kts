@@ -3,6 +3,7 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import java.io.ByteArrayOutputStream
+import java.util.Locale
 
 
 plugins {
@@ -234,7 +235,7 @@ fun printHello(exec: Exec) {
     // just print FunnyTranslation OpenSource
     // windows: cmd /c echo FunnyTranslation OpenSource
     // linux: sh -c echo FunnyTranslation OpenSource
-    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+    if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")) {
         exec.commandLine("cmd", "/c", "echo", "Hello FunnyTranslation-OpenSource")
     } else {
         exec.commandLine("sh", "-c", "echo", "Hello FunnyTranslation-OpenSource")
@@ -243,7 +244,7 @@ fun printHello(exec: Exec) {
 
 tasks.register<Exec>("encryptFunnyJs") {
     // 如果 funny_sign_v1_release 存在，则用它
-    val release = File(rootDir, "funny_sign_v1_release_template.js")
+    val release = File(rootDir, "funny_sign_v1_release_template_.js")
     println("release.exists() = " + release.exists())
 
     if (release.exists()) {
@@ -252,9 +253,7 @@ tasks.register<Exec>("encryptFunnyJs") {
         val versionCode = libs.versions.project.versionCode.get()
         commandLine("node", rootProject.file("encrypt_funny_js.js"), filePath, targetFilePath, versionCode)
     } else {
-        doLast {
-            printHello(this as Exec)
-        }
+        printHello(this)
     }
 
     standardOutput = ByteArrayOutputStream()
@@ -270,8 +269,6 @@ tasks.register<Exec>("signApk") {
     if (signNewKey.exists()) {
         commandLine("python", signNewKey.path, rootDir.path)
     } else {
-        doLast {
-            printHello(this as Exec)
-        }
+        printHello(this)
     }
 }
