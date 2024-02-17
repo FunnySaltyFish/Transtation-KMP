@@ -101,6 +101,8 @@ gradle-plugin-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 gradle-plugin-sqldelight = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqlDelight" }
 gradle-plugin-libres = { group = "io.github.skeptick.libres", name = "gradle-plugin", version.ref = "libres" }
 gradle-plugin-buildKonfig = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
+gradle-plugin-buildKonfig-compiler = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-compiler", version.ref = "buildKonfig" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -131,8 +133,8 @@ sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 #transtation-android-test = { id = "nowinandroid.android.test", version = "unspecified" }
 #transtation-jvm-library = { id = "nowinandroid.jvm.library", version = "unspecified" }
 
-# id = "$prefix.kmp.thirdpartylibs"
-transtation-kmp-thirdpartylibs = { id = "transtation.kmp.thirdpartylibs", version = "unspecified" }
+# id = "$prefix.kmp.thirdpartyplugins"
+transtation-kmp-thirdpartyplugins = { id = "transtation.kmp.thirdpartyplugins", version = "unspecified" }
 
 [bundles]
 #stately = ["stately-common","stately-concurrency","stately-isolate","stately-iso-collections"]

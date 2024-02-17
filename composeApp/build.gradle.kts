@@ -1,5 +1,4 @@
 
-import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import java.io.BufferedReader
@@ -13,9 +12,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.libres)
-    alias(libs.plugins.buildKonfig)
-    alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.transtation.kmp.thirdpartyplugins)
 }
 
 configureBuildKonfigFlavorFromTasks()
@@ -192,44 +189,8 @@ compose.desktop {
     }
 }
 
-libres {
-    generatedClassName = "Res" // "Res" by default
-    generateNamedArguments = true // false by default
-    baseLocaleLanguageCode = "zh" // "en" by default
-    camelCaseNamesForAppleFramework = false // false by default
-}
-
 buildkonfig {
     packageName = "com.funny.translation.translate"
-    objectName = "BuildConfig"
-    // exposeObjectWithName = 'YourAwesomePublicConfig'
-
-    defaultConfigs {
-        buildConfigField(FieldSpec.Type.STRING, "FLAVOR", "common")
-        buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.versions.project.versionName.get())
-        buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
-        // DEBUG
-        val debug = System.getProperty("TranslationDebug")?.toBoolean() ?: true
-        buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
-        val buildType = if (debug) "Debug" else "Release"
-        buildConfigField(FieldSpec.Type.STRING,  "BUILD_TYPE", buildType)
-    }
-
-    defaultConfigs("common") {
-        buildConfigField(FieldSpec.Type.STRING, "FLAVOR", "common")
-    }
-
-    defaultConfigs("google") {
-        buildConfigField(FieldSpec.Type.STRING, "FLAVOR", "google")
-    }
-}
-
-sqldelight {
-    databases {
-        create("Database") {
-            packageName.set("com.funny.translation.database")
-        }
-    }
 }
 
 afterEvaluate {

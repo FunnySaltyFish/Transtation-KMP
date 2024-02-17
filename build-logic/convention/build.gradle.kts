@@ -40,6 +40,9 @@ dependencies {
     compileOnly(libs.gradle.plugin.kotlin)
 //    compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.gradle.plugin.libres)
+    compileOnly(libs.gradle.plugin.buildKonfig)
+    compileOnly(libs.gradle.plugin.buildKonfig.compiler)
+    compileOnly(libs.gradle.plugin.sqldelight)
 }
 
 tasks {
@@ -52,9 +55,9 @@ tasks {
 gradlePlugin {
     plugins {
         val prefix = "transtation"
-        register("thirdPartyLibs") {
-            id = "$prefix.kmp.thirdpartylibs"
-            implementationClass = "ThirdPartyLibCP"
+        register("thirdPartyPlugins") {
+            id = "$prefix.kmp.thirdpartyplugins"
+            implementationClass = "ThirdPartyPluginsCP"
         }
 //        register("androidApplicationCompose") {
 //            id = "$prefix.android.application.compose"

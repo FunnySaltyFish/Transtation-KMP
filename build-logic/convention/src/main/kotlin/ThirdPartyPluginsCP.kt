@@ -1,9 +1,11 @@
 
+import com.funny.translation.buildlogic.setupBuildKonfig
 import com.funny.translation.buildlogic.setupLibres
+import com.funny.translation.buildlogic.setupSqlDelight
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class ThirdPartyLibCP : Plugin<Project> {
+class ThirdPartyPluginsCP : Plugin<Project> {
     override fun apply(target: Project) {
         /**
          * libres {
@@ -18,20 +20,7 @@ class ThirdPartyLibCP : Plugin<Project> {
          *     objectName = "BuildConfig"
          *     // exposeObjectWithName = 'YourAwesomePublicConfig'
          *
-         *     defaultConfigs {
-         *         buildConfigField(STRING, "FLAVOR", "common")
-         *         buildConfigField(STRING, "VERSION_NAME", libs.versions.project.versionName.get())
-         *         buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
-         *         buildConfigField(STRING, "BUILD_TYPE", "debug")
-         *     }
-         *
-         *     defaultConfigs("common") {
-         *         buildConfigField(STRING, "FLAVOR", "common")
-         *     }
-         *
-         *     defaultConfigs("google") {
-         *         buildConfigField(STRING, "FLAVOR", "google")
-         *     }
+         *     // ...
          * }
          *
          * sqldelight {
@@ -45,6 +34,8 @@ class ThirdPartyLibCP : Plugin<Project> {
 
         with(target) {
             setupLibres()
+            setupBuildKonfig()
+            setupSqlDelight()
         }
     }
 }

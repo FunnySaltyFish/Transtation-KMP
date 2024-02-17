@@ -1,14 +1,9 @@
-import com.codingfeline.buildkonfig.compiler.FieldSpec
-import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.libres)
-    alias(libs.plugins.buildKonfig)
-    alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.transtation.kmp.thirdpartyplugins)
 }
 
 kotlin {
@@ -69,39 +64,6 @@ android {
     }
 }
 
-libres {
-    generatedClassName = "Res" // "Res" by default
-    generateNamedArguments = true // false by default
-    baseLocaleLanguageCode = "zh" // "en" by default
-    camelCaseNamesForAppleFramework = false // false by default
-}
-
 buildkonfig {
     packageName = "com.funny.translation.ai"
-    objectName = "BuildConfig"
-    // exposeObjectWithName = 'YourAwesomePublicConfig'
-
-    defaultConfigs {
-        buildConfigField(STRING, "FLAVOR", "common")
-        buildConfigField(STRING, "VERSION_NAME", libs.versions.project.versionName.get())
-        buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
-        // debug
-        buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", "true")
-    }
-
-    defaultConfigs("common") {
-        buildConfigField(STRING, "FLAVOR", "common")
-    }
-
-    defaultConfigs("google") {
-        buildConfigField(STRING, "FLAVOR", "google")
-    }
-}
-
-sqldelight {
-    databases {
-        create("Database") {
-            packageName.set("com.funny.translation.database")
-        }
-    }
 }
