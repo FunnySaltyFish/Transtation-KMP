@@ -244,7 +244,7 @@ fun printHello(exec: Exec) {
 
 tasks.register<Exec>("encryptFunnyJs") {
     // 如果 funny_sign_v1_release 存在，则用它
-    val release = File(rootDir, "funny_sign_v1_release_template_.js")
+    val release = File(rootDir, "funny_sign_v1_release_template.js")
     println("release.exists() = " + release.exists())
 
     if (release.exists()) {

@@ -18,6 +18,8 @@ plugins {
     alias(libs.plugins.sqlDelight)
 }
 
+configureBuildKonfigFlavorFromTasks()
+
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
@@ -44,8 +46,6 @@ kotlin {
         }
 
         androidMain.dependencies {
-            addProjectDependencies()
-
             // sqldelight
             implementation(libs.sqldelight.android.driver)
 
@@ -72,8 +72,6 @@ kotlin {
 
         val desktopMain by getting {
             dependencies {
-                addProjectDependencies()
-                
                 // sqldelight
                 implementation(libs.sqldelight.driver)
 
@@ -211,7 +209,7 @@ buildkonfig {
         buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.versions.project.versionName.get())
         buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.versions.project.versionCode.get())
         // DEBUG
-        val debug = System.getenv("TranslationDebug")?.toBoolean() ?: true
+        val debug = System.getProperty("TranslationDebug")?.toBoolean() ?: true
         buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
         val buildType = if (debug) "Debug" else "Release"
         buildConfigField(FieldSpec.Type.STRING,  "BUILD_TYPE", buildType)
@@ -243,7 +241,35 @@ afterEvaluate {
             // 打包前先加密下 Js
             dependsOn(":base-kmp:encryptFunnyJs")
             // 结束后签个名
-            // finalizedBy(signApkTask)
+            finalizedBy(signApkTask)
         }
     }
+}
+
+
+fun configureBuildKonfigFlavorFromTasks() {
+    val startParameter = project.gradle.startParameter
+    if (startParameter.projectProperties.containsKey("buildkonfig.flavor")) {
+        // prefer cli parameter
+        println("buildkonfig.flavor=${startParameter.projectProperties["buildkonfig.flavor"]}")
+        return
+    }
+
+    val pattern = Regex("^:composeApp:(assemble|test|bundle|extractApksFor)(\\w*)(Release|Debug)(|UnitTest)\$")
+    val runningTasks = project.gradle.startParameter.taskNames
+    val matchingTask = runningTasks.find { it.matches(pattern) } ?: return
+
+    val m = pattern.find(matchingTask) ?: return
+
+    val flavor = m.groupValues[2]
+    val buildType = m.groupValues[3]
+    val envKey = "TranslationDebug"
+    when (buildType) {
+        "Release" -> System.setProperty(envKey, "false")
+        "Debug" -> System.setProperty(envKey, "true")
+    }
+    val buildkonfigFlavor = "common"
+
+    println("composeApp:flavor=$flavor, buildType=$buildType; final buildkonfig.flavor=$buildkonfigFlavor")
+    project.setProperty("buildkonfig.flavor", buildkonfigFlavor)
 }

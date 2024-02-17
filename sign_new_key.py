@@ -47,11 +47,11 @@ def execute_command(command):
 
 if __name__ == '__main__':
     path_list = []
-    translate_dir = os.path.join(sys.argv[1], "translate")
-    subdirs = ["common", "google", "build/outputs/apk", "build/intermediates/apk"]
+    translate_dir = os.path.join(sys.argv[1], "composeApp")
+    subdirs = ["common", "google", "release", "build/outputs/apk", "build/intermediates/apk"]
     for each in subdirs:
         path_list.append(translate_dir + "/" + each)
-    print("path_list:", path_list)
+#     print("path_list:", path_list)
     apk_path = get_recent_modified_apk(path_list)
     print("find apk_path: ", apk_path)
     if apk_path:
