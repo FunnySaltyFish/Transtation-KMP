@@ -15,7 +15,7 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         maven("https://repo1.maven.org/maven2/")
-//        maven("https://maven.aliyun.com/repository/public/")
+        maven("https://maven.aliyun.com/repository/public/")
         maven("https://maven.aliyun.com/repository/google/")
         maven("https://maven.aliyun.com/repository/jcenter/")
         maven("https://jitpack.io")
@@ -23,11 +23,10 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev/")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
-
 }
 
 // 添加自定义脚本
-//include("kts-scripts")
+includeBuild("build-logic")
 
 include(":composeApp")
 include(":base-kmp")
