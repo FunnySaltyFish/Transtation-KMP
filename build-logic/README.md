@@ -1,4 +1,4 @@
-from https://github.com/android/nowinandroid/tree/main/build-logic
+modified from https://github.com/android/nowinandroid/tree/main/build-logic
 
 # Convention Plugins
 

@@ -5,34 +5,13 @@ import java.util.Locale
 
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
-//    alias(libs.plugins.libres)
     alias(libs.plugins.transtation.kmp.thirdpartyplugins)
+    alias(libs.plugins.transtation.kmp.library)
 }
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
-    }
-
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "11"
-            }
-        }
-    }
-
-
-    jvm("desktop") {
-
-    }
-    
     sourceSets {
-
         // 指定 androidx.paging 的版本为 3.2.0
         val pagingVersion = "3.2.0"
         configurations.all {
@@ -137,7 +116,7 @@ kotlin {
             kotlin.srcDir("src/desktopMain/java")
             dependencies {
                 api(compose.desktop.currentOs)
-//                org.slf4j:slf4j-simple:2.0.3
+
                 implementation("org.slf4j:slf4j-simple:2.0.3")
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
@@ -157,27 +136,12 @@ kotlin {
     }
 }
 
+val NAMESPACE = "com.funny.translation.kmp.base"
+
 android {
-    namespace = "com.funny.translation.kmp.base"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+    namespace = NAMESPACE
 
     dependencies {
-        debugApi(libs.compose.ui.tooling)
-
         androidTestImplementation("androidx.test.ext:junit:1.1.3")
         androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     }
@@ -187,9 +151,6 @@ compose.desktop {
 
 }
 
-//multiplatformResources {
-//    multiplatformResourcesPackage = "com.funny.translation" // required
-//}
 
 
 buildkonfig {

@@ -36,7 +36,6 @@ tasks.withType<KotlinCompile>().configureEach {
 
 dependencies {
     compileOnly(libs.gradle.plugin.android.tools)
-//    compileOnly(libs.android.tools.common)
     compileOnly(libs.gradle.plugin.kotlin)
 //    compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.gradle.plugin.libres)
@@ -59,61 +58,13 @@ gradlePlugin {
             id = "$prefix.kmp.thirdpartyplugins"
             implementationClass = "ThirdPartyPluginsCP"
         }
-//        register("androidApplicationCompose") {
-//            id = "$prefix.android.application.compose"
-//            implementationClass = "AndroidApplicationComposeConventionPlugin"
-//        }
-//        register("androidApplication") {
-//            id = "$prefix.android.application"
-//            implementationClass = "AndroidApplicationConventionPlugin"
-//        }
-//        register("androidApplicationJacoco") {
-//            id = "$prefix.android.application.jacoco"
-//            implementationClass = "AndroidApplicationJacocoConventionPlugin"
-//        }
-//        register("androidLibraryCompose") {
-//            id = "$prefix.android.library.compose"
-//            implementationClass = "AndroidLibraryComposeConventionPlugin"
-//        }
-//        register("androidLibrary") {
-//            id = "$prefix.android.library"
-//            implementationClass = "AndroidLibraryConventionPlugin"
-//        }
-//        register("androidFeature") {
-//            id = "$prefix.android.feature"
-//            implementationClass = "AndroidFeatureConventionPlugin"
-//        }
-//        register("androidLibraryJacoco") {
-//            id = "$prefix.android.library.jacoco"
-//            implementationClass = "AndroidLibraryJacocoConventionPlugin"
-//        }
-//        register("androidTest") {
-//            id = "$prefix.android.test"
-//            implementationClass = "AndroidTestConventionPlugin"
-//        }
-//        register("androidHilt") {
-//            id = "$prefix.android.hilt"
-//            implementationClass = "AndroidHiltConventionPlugin"
-//        }
-//        register("androidRoom") {
-//            id = "$prefix.android.room"
-//            implementationClass = "AndroidRoomConventionPlugin"
-//        }
-//        register("androidFirebase") {
-//            id = "$prefix.android.application.firebase"
-//            implementationClass = "AndroidApplicationFirebaseConventionPlugin"
-//        }
-//        register("androidFlavors") {
-//            id = "$prefix.android.application.flavors"
-//            implementationClass = "AndroidApplicationFlavorsConventionPlugin"
-//        }
-//        register("androidLint") {
-//            id = "$prefix.android.lint"
-//            implementationClass = "AndroidLintConventionPlugin"
-//        }
-//        register("jvmLibrary") {
-//            id = "$prefix.jvm.library"
-//            implementationClass = "JvmLibraryConventionPlugin"
-//        }
+        register("kmpLibrary") {
+            id = "$prefix.kmp.library"
+            implementationClass = "KMPLibraryCP"
+        }
+        register("kmpApplication") {
+            id = "$prefix.kmp.application"
+            implementationClass = "KMPApplicationCP"
+        }
     }
 }

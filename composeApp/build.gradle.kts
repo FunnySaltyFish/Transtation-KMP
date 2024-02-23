@@ -1,4 +1,3 @@
-
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import java.io.BufferedReader
@@ -6,35 +5,16 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Properties
 
-
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.transtation.kmp.thirdpartyplugins)
+    alias(libs.plugins.transtation.kmp.application)
 }
 
 configureBuildKonfigFlavorFromTasks()
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
-    }
-
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "11"
-            }
-        }
-    }
-    
-    jvm("desktop") {
-    }
-    
     sourceSets {
-
         val commonMain by getting {
             dependencies {
                 addProjectDependencies()
@@ -47,7 +27,7 @@ kotlin {
             implementation(libs.sqldelight.android.driver)
 
             // 图片选择器
-            implementation(platform("cn.qhplus.emo:bom:2023.08.00"))
+            implementation(project.dependencies.platform("cn.qhplus.emo:bom:2023.08.00"))
             implementation("cn.qhplus.emo:photo-coil")
             // 图片裁剪
             implementation("com.github.yalantis:ucrop:2.2.6")
@@ -78,31 +58,18 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.funny.translation.kmp"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+val NAMESPACE = "com.funny.translation.kmp"
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+android {
+    namespace = NAMESPACE
 
     // mainDebug
     sourceSets["debug"].res.srcDirs("src/androidMainDebug/res")
 
     defaultConfig {
         applicationId = "com.funny.translation.kmp"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = libs.versions.project.versionCode.get().toInt()
         versionName = libs.versions.project.versionName.get()
-        resourceConfigurations.addAll(arrayOf("zh-rCN", "en"))
-        multiDexEnabled = true
-        ndk.abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a"))
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
     }
 
     signingConfigs {
@@ -150,15 +117,6 @@ android {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    dependencies {
-        debugImplementation(libs.compose.ui.tooling)
     }
 }
 

@@ -1,5 +1,6 @@
 [versions]
 androidxPaging3Extensions = "2.0.1"
+jtokkit = "0.6.1"
 precompose = "1.5.10"
 project-versionCode = "63"
 project-versionName = "2.8.0"
@@ -7,6 +8,7 @@ agp = "8.1.4"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "33"
+android-tools = "34.0.0"
 androidx-activityCompose = "1.7.1"
 androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
@@ -31,6 +33,7 @@ roomCommon = "2.6.1"
 
 [libraries]
 # Kotlin
+jtokkit = { module = "com.knuddels:jtokkit", version.ref = "jtokkit" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-compose-gradle = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-plugin" }
 
@@ -95,6 +98,7 @@ precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.re
 
 # Dependencies of the included build-logic
 gradle-plugin-android-tools = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+gradle-plugin-android-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
 gradle-plugin-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 #ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 #work-testing = { group = "androidx.work", name = "work-testing", version = "2.9.0" }
@@ -102,7 +106,6 @@ gradle-plugin-sqldelight = { group = "app.cash.sqldelight", name = "gradle-plugi
 gradle-plugin-libres = { group = "io.github.skeptick.libres", name = "gradle-plugin", version.ref = "libres" }
 gradle-plugin-buildKonfig = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
 gradle-plugin-buildKonfig-compiler = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-compiler", version.ref = "buildKonfig" }
-
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -118,23 +121,9 @@ buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig"
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 
 # Plugins defined by this project
-#transtation-android-application = { id = "nowinandroid.android.application", version = "unspecified" }
-#transtation-android-application-compose = { id = "nowinandroid.android.application.compose", version = "unspecified" }
-#transtation-android-application-firebase = { id = "nowinandroid.android.application.firebase", version = "unspecified" }
-#transtation-android-application-flavors = { id = "nowinandroid.android.application.flavors", version = "unspecified" }
-#transtation-android-application-jacoco = { id = "nowinandroid.android.application.jacoco", version = "unspecified" }
-#transtation-android-feature = { id = "nowinandroid.android.feature", version = "unspecified" }
-#transtation-android-hilt = { id = "nowinandroid.android.hilt", version = "unspecified" }
-#transtation-android-library = { id = "nowinandroid.android.library", version = "unspecified" }
-#transtation-android-library-compose = { id = "nowinandroid.android.library.compose", version = "unspecified" }
-#transtation-android-library-jacoco = { id = "nowinandroid.android.library.jacoco", version = "unspecified" }
-#transtation-android-lint = { id = "nowinandroid.android.lint", version = "unspecified" }
-#transtation-android-room = { id = "nowinandroid.android.room", version = "unspecified" }
-#transtation-android-test = { id = "nowinandroid.android.test", version = "unspecified" }
-#transtation-jvm-library = { id = "nowinandroid.jvm.library", version = "unspecified" }
-
-# id = "$prefix.kmp.thirdpartyplugins"
 transtation-kmp-thirdpartyplugins = { id = "transtation.kmp.thirdpartyplugins", version = "unspecified" }
+transtation-kmp-library = { id = "transtation.kmp.library", version = "unspecified" }
+transtation-kmp-application = { id = "transtation.kmp.application", version = "unspecified" }
 
 [bundles]
 #stately = ["stately-common","stately-concurrency","stately-isolate","stately-iso-collections"]
