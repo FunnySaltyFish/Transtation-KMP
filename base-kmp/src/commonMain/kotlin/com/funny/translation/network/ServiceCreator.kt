@@ -29,6 +29,7 @@ object ServiceCreator {
     var BASE_URL = readBaseURL()
         set(value) {
             if (!AppConfig.developerMode.value) return
+            if (!value.isValidUrl()) return
             field = value
             DataSaverUtils.saveData("BASE_URL", value)
             ApplicationUtil.restartApp()
@@ -113,3 +114,6 @@ fun encodeCookie(cookies: List<String>): String {
 
     return sb.toString()
 }
+
+private fun String.isValidUrl() = "https?://[\\w-]+(\\.[\\w-]+)+(:\\d{2,})?([\\w-.,@?^=%&:/~+#]*[\\w@?^=%&/~+#])?".toRegex()
+    .matches(this)

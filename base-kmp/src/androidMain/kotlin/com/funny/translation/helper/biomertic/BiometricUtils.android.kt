@@ -8,7 +8,6 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.Log
-import com.funny.translation.helper.ServiceCreator
 import com.funny.translation.helper.UserUtils
 import com.funny.translation.helper.awaitDialog
 import com.funny.translation.helper.handler.runOnUI
@@ -16,6 +15,7 @@ import com.funny.translation.kmp.KMPActivity
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.kmp.toastOnUi
+import com.funny.translation.network.ServiceCreator
 import com.funny.translation.network.api
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,7 +1,6 @@
 package com.funny.translation.translate.ui.long_text
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,12 +40,12 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ColumnScope.Category(
+internal fun Category(
     title: String,
     helpText: String = "helpText",
     expandable: Boolean = true,
     defaultExpand: Boolean = false,
-    extraRowContent: (@Composable RowScope.() -> Unit)? = null,
+    extraRowContent: @Composable() (RowScope.() -> Unit)? = null,
     content: @Composable (expanded: Boolean) -> Unit,
 ) {
     var expand by rememberStateOf(value = defaultExpand)

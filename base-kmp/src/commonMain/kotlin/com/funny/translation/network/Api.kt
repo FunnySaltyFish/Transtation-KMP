@@ -123,6 +123,7 @@ suspend inline fun <reified T : Any?> api(
     block: Api<T>.() -> Unit = {},
 ) = apiNoCall(func, *args, dispatcher = dispatcher, block = block).call(rethrowErr)
 
+
 //suspend inline fun <reified T> api(
 //    noinline func: (args: Array<out Any>) -> CommonData<T>?,
 //    vararg args: Any?,

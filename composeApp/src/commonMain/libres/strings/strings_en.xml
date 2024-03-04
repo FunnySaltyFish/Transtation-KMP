@@ -23,7 +23,7 @@
     <string name="engine_bigger_text">Enlarge Character</string>
     <string name="snack_no_engine_selected">No translation engine has been selected!</string>
     <string name="snack_finish_copy">Copy succeed!</string>
-    <string name="snack_speak_error">An error occurs while translating!</string>
+    <string name="snack_speak_error">An error occurs while speaking!</string>
     <string name="comming_soon">Coming soon…</string>
     <string name="sponser">Sponsor</string>
     <string name="manage_plugins">Manage Plugin</string>
@@ -335,4 +335,17 @@
     <string name="failed_to_show_float_window">Failed to show float window, please check if you have granted the permission correctly!</string>
     <string name="restart_app_tip">Due to the limit of Desktop, please restart by yourself.</string>
     <string name="tip_privacy_policy">Please read and agree to our [Privacy Policy](https://api.funnysaltyfish.fun/trans/v1/api/privacy?locale=en) and [User Agreement](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement?locale=en) before using the application.</string>
+
+<!--    <string name="speak_speed">朗读速度</string>-->
+<!--    <string name="speak_volume">朗读音量</string>-->
+<!--    <string name="speak_voice">朗读音色</string>-->
+<!--    <string name="gender">性别</string>-->
+<!--    <string name="male">男</string>-->
+<!--    <string name="female">女</string>-->
+    <string name="speak_speed">Reading Speed</string>
+    <string name="speak_volume">Reading Volume</string>
+    <string name="speak_voice">Reading Voice</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 </resources>

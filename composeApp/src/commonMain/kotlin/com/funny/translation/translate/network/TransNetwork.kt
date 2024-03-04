@@ -9,6 +9,7 @@ import com.funny.translation.translate.network.service.NoticeService
 import com.funny.translation.translate.network.service.PayService
 import com.funny.translation.translate.network.service.PluginService
 import com.funny.translation.translate.network.service.SponsorService
+import com.funny.translation.translate.tts.TTSService
 
 object TransNetwork {
     val sponsorService by lazy {
@@ -41,5 +42,9 @@ object TransNetwork {
 
     val aiService by lazy {
         ServiceCreator.create(AIService::class.java)
+    }
+
+    val ttsService by lazy {
+        ServiceCreator.create(TTSService::class.java)
     }
 }
