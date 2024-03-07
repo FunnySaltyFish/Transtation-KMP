@@ -7,6 +7,7 @@ import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.engine.TextTranslationEngines
 import com.funny.translation.translate.ui.long_text.Category
+import kotlinx.collections.immutable.persistentListOf
 import java.net.URLEncoder
 
 abstract class TTSProvider {
@@ -21,15 +22,16 @@ abstract class TTSProvider {
     abstract suspend fun getSpeakers(gender: Gender, locale: String): List<Speaker>
 
     abstract val id: String
+    abstract val name: String
 
     @Composable
     abstract fun Settings()
 }
 
 
-
 object BaiduTransTTSProvider: TTSProvider() {
     override val id: String = "BaiduTrans"
+    override val name: String = ResStrings.engine_baidu
 
     override fun getUrl(word: String, language: Language, voice: String, speed: Int, volume: Int): String {
         return String.format(
@@ -58,7 +60,7 @@ object BaiduTransTTSProvider: TTSProvider() {
         }
     }
 
-    private val DEFAULT_SPEAKER by lazy {
+    internal val DEFAULT_SPEAKER by lazy {
         arrayListOf(
             Speaker(
                 fullName = "Default",
@@ -69,3 +71,14 @@ object BaiduTransTTSProvider: TTSProvider() {
         )
     }
 }
+
+object OpenAIProvider: ServerTTSProvider("openai") {
+    override val name: String = "OpenAI"
+}
+
+val ttsProviders: List<TTSProvider> = persistentListOf(
+    BaiduTransTTSProvider,
+    OpenAIProvider
+)
+
+fun findTTSProviderById(id: String) = ttsProviders.find { it.id == id } ?: BaiduTransTTSProvider

@@ -27,6 +27,8 @@ sealed class TranslateScreen(val title: String, val route: String) {
     object ChatScreen: TranslateScreen(ResStrings.chat, "nav_chat")
     object BuyAIPointScreen: TranslateScreen(ResStrings.buy_ai_point, "nav_buy_ai_point?planName={planName}")
     object AnnualReportScreen : TranslateScreen(ResStrings.annual_report, "nav_annual_report")
+    object TTSSettingsScreen: TranslateScreen("TTS", "nav_tts_settings")
+    object TTSEditConfScreen: TranslateScreen("TTS", "nav_tts_edit_conf?id={id}")
 
     companion object {
 

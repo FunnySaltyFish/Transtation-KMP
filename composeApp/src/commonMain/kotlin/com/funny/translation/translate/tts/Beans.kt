@@ -1,5 +1,6 @@
 package com.funny.translation.translate.tts
 
+import com.funny.translation.kmp.strings.ResStrings
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -10,7 +11,24 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = GenderSerializer::class)
 enum class Gender {
-    Male, Female, All, Unknown
+    Male, Female, All, Unknown;
+
+    /**
+     * 当前的gender是否包含另一个
+     * @param other Gender
+     * @return Boolean
+     */
+    fun contains(other: Gender) = when (this) {
+        All -> true
+        else -> this == other
+    }
+
+    val displayName
+        get() = when (this) {
+            Male -> ResStrings.male
+            Female -> ResStrings.female
+            else -> name
+        }
 }
 
 // male -> Male

@@ -62,6 +62,7 @@ import com.funny.translation.translate.ui.settings.OpenSourceLibScreen
 import com.funny.translation.translate.ui.settings.SelectLanguageScreen
 import com.funny.translation.translate.ui.settings.SettingsScreen
 import com.funny.translation.translate.ui.settings.SortResultScreen
+import com.funny.translation.translate.ui.settings.TTSScreen
 import com.funny.translation.translate.ui.settings.ThemeScreen
 import com.funny.translation.translate.ui.thanks.AnnualReportScreen
 import com.funny.translation.translate.ui.thanks.AppRecommendationScreen
@@ -327,6 +328,11 @@ private fun NavGraphBuilder.addSettingsNavigation() {
             TranslateScreen.SelectLanguageScreen.route
         ) {
             SelectLanguageScreen(modifier = Modifier.fillMaxSize())
+        }
+        animateComposable(
+            TranslateScreen.TTSSettingsScreen.route
+        ) {
+            TTSScreen()
         }
     }
 }

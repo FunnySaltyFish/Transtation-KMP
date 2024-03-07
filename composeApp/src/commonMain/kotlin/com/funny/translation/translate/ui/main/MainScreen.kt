@@ -83,6 +83,7 @@ import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.ui.settings.TTSScreen
 import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.translate.ui.widget.SimpleNavigation
 import com.funny.translation.ui.AnyPopDialog
@@ -117,12 +118,8 @@ enum class MainScreenState {
 @Composable
 fun MainScreen(
 ) {
-     TextTransScreen()
-//    BuyAIPointScreen()
-     // LongTextTransDetailScreen(id = "244", sourceTextKey = "")
-//    LongTextTransListScreen()
-//    LongTextTransScreen()
-//    LongTextTest()
+//     TextTransScreen()
+    TTSScreen()
 }
 
 @ExperimentalComposeUiApi

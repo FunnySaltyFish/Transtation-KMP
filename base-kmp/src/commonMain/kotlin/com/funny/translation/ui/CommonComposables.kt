@@ -45,7 +45,7 @@ import com.funny.translation.translate.LocalNavController
 @Composable
 fun CommonPage(
     modifier: Modifier = Modifier,
-    title: String? = null,
+    title: String?,
     addNavPadding: Boolean = true,
     navController: NavHostController = LocalNavController.current,
     navigationIcon: @Composable () -> Unit = { CommonNavBackIcon(navController) },
