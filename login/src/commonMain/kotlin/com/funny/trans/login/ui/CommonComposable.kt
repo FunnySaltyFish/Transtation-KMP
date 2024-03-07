@@ -23,10 +23,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.UserUtils
+import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.login.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun InputUsername(
@@ -105,7 +105,7 @@ fun ConcealableTextField(
             AnimatedContent(hiddenInput, label = "hidden_input_icon") {
                 if (it) {
                     FixedSizeIcon(
-                        painterResource("drawable/ic_hidden_password.png"),
+                        painterDrawableRes("ic_hidden_password"),
                         contentDescription = ResStrings.click_to_show_password,
                         modifier = Modifier
                             .padding(end = 4.dp)
@@ -114,7 +114,7 @@ fun ConcealableTextField(
                     )
                 } else {
                     FixedSizeIcon(
-                        painterResource("drawable/ic_show_password.png"),
+                        painterDrawableRes("ic_show_password"),
                         contentDescription = ResStrings.click_to_hide_password,
                         modifier = Modifier
                             .padding(end = 4.dp)
@@ -143,7 +143,7 @@ fun CompletableButton(
     OutlinedButton(onClick = onClick, modifier = modifier, enabled = enabled) {
         text()
         if (completed) FixedSizeIcon(
-            painterResource("drawable/ic_finish.png"),
+            painterDrawableRes("ic_finish"),
             contentDescription = ResStrings.finished,
             modifier = Modifier.padding(start = 4.dp),
             tint = MaterialTheme.colorScheme.primary

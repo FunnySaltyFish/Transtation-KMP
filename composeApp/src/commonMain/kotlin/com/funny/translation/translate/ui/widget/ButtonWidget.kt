@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -96,7 +97,7 @@ fun ExchangeButton(
             }
     ) {
         FixedSizeIcon(
-            org.jetbrains.compose.resources.painterResource("drawable/ic_exchange.png"), tint = tint,
+            painterDrawableRes("ic_exchange"), tint = tint,
             contentDescription = ResStrings.exchange,
             modifier = Modifier.size(24.dp)
         )

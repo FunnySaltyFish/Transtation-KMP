@@ -39,6 +39,7 @@ import com.funny.translation.Consts
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
+import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.ui.widget.InputText
 import com.funny.translation.translate.ui.widget.UpperPartBackground
@@ -173,7 +174,7 @@ private fun MainTopBarInputting(
         actions = {
             IconButton(onClick = showEngineSelectAction) {
                 FixedSizeIcon(
-                    org.jetbrains.compose.resources.painterResource("drawable/ic_translate.png"),
+                    painterDrawableRes("ic_translate"),
                     contentDescription = ResStrings.engine_select,
                     modifier = Modifier.size(24.dp)
                 )

@@ -15,7 +15,9 @@ import com.funny.translation.kmp.base.strings.ResStrings
 
 @Composable
 fun Working() {
-    CommonPage {
+    CommonPage(
+        title = "Working"
+    ) {
         Column(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,

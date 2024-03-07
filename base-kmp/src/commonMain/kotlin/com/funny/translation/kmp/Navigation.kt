@@ -112,7 +112,6 @@ fun NavHost(
             pauseTransition = popExitTransition(),
             resumeTransition = popEnterTransition(),
         ),
-        persistNavState = true,
         builder = builder,
     )
 }

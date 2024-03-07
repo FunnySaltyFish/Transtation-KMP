@@ -13,14 +13,15 @@ import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RichTooltipBox
-import androidx.compose.material3.RichTooltipState
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,24 +62,32 @@ internal fun Category(
                 .padding(vertical = 8.dp),
             color = MaterialTheme.colorScheme.primary
         )
-        val tooltipState = remember {  RichTooltipState() }
+        val tooltipState = rememberTooltipState()
         val scope = rememberCoroutineScope()
-        RichTooltipBox(
-            text = {
-                Text(text = helpText, style = MaterialTheme.typography.bodySmall)
-            },
-            tooltipState = tooltipState,
-            action = {
-                // Close
-                TextButton(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.End), onClick = {
-                    scope.launch {
-                        tooltipState.dismiss()
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+            state = tooltipState,
+            tooltip = {
+                RichTooltip(
+                    text = {
+                        Text(text = helpText, style = MaterialTheme.typography.bodySmall)
+                    },
+                    action = {
+                        // Close
+                        TextButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.End),
+                            onClick = {
+                                scope.launch {
+                                    tooltipState.dismiss()
+                                }
+                            }
+                        ) {
+                            Text(text = ResStrings.close)
+                        }
                     }
-                }) {
-                    Text(text = ResStrings.close)
-                }
+                )
             }
         ) {
             FixedSizeIcon(
@@ -86,9 +95,9 @@ internal fun Category(
                 modifier = Modifier
                     .size(14.dp)
                     .offset(4.dp, (-0).dp)
-                    .tooltipAnchor()
             )
         }
+
         Row(modifier = Modifier
             .weight(1f)
             .padding(start = 6.dp), verticalAlignment = Alignment.CenterVertically) {

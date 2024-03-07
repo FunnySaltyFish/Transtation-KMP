@@ -18,13 +18,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -171,26 +170,32 @@ fun SwipeToDismissItem(
     dismissContent: @Composable RowScope.() -> Unit
 ) {
     // 侧滑删除所需State
-    val dismissState = rememberDismissState()
-    // 按指定方向触发删除后的回调，在此处变更具体数据
-    if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-        onDismissed()
-    }
-    SwipeToDismiss(
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            // 按指定方向触发删除后的回调，在此处变更具体数据
+            if (it == SwipeToDismissBoxValue.StartToEnd) {
+                onDismissed()
+                true
+            } else {
+                false
+            }
+        }
+    )
+    SwipeToDismissBox(
         state = dismissState,
         modifier = modifier,
         // 允许滑动删除的方向
-        directions = setOf(DismissDirection.StartToEnd),
+        enableDismissFromStartToEnd = true,
         // "背景 "，即原来显示的内容被划走一部分时显示什么
-        background = {
-            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
+        backgroundContent = {
+            val direction = dismissState.dismissDirection
             val alignment = when (direction) {
-                DismissDirection.StartToEnd -> Alignment.CenterStart
-                DismissDirection.EndToStart -> Alignment.CenterEnd
+                SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.Settled -> Alignment.CenterStart
+                SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
             }
             val icon = Icons.Default.Delete
             val scale by animateFloatAsState(
-                if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f, label = ""
+                if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f, label = ""
             )
 
             Box(
@@ -206,6 +211,6 @@ fun SwipeToDismissItem(
                 )
             }
         },
-        dismissContent = dismissContent
+        content = dismissContent
     )
 }

@@ -19,6 +19,7 @@ kotlin {
             dependencies {
                 addProjectDependencies()
                 implementation("org.burnoutcrew.composereorderable:reorderable:0.7.4")
+                implementation(compose.components.resources)
             }
         }
 

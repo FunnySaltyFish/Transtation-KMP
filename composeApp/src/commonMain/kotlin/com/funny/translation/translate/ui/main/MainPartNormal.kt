@@ -74,6 +74,7 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.NavHostController
+import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalActivityVM
@@ -94,7 +95,6 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.lifecycle.Lifecycle
 import moe.tlaster.precompose.navigation.BackHandler
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import kotlin.math.roundToInt
 
 // 主页面，在未输入状态下展示的页面，默认
@@ -314,7 +314,7 @@ private fun FunctionIconItem(
             )
         ) {
             FixedSizeIcon(
-                painter = painterResource("drawable/$iconName.png"),
+                painter = painterDrawableRes(iconName),
                 contentDescription = text,
                 tint = MaterialTheme.colorScheme.onPrimary
             )
@@ -432,7 +432,7 @@ private fun MainTopBarNormal(
                 .wrapContentWidth(Alignment.End)
         ) {
             FixedSizeIcon(
-                org.jetbrains.compose.resources.painterResource("drawable/ic_plugin.png"),
+                painterDrawableRes("ic_plugin"),
                 contentDescription = ResStrings.manage_plugins
             )
         }
@@ -531,7 +531,7 @@ fun UserInfoPanel(navHostController: NavHostController) {
                             modifier = Modifier
                                 .size(32.dp)
                                 .offset(70.dp, 70.dp),
-                            painter = org.jetbrains.compose.resources.painterResource("drawable/ic_vip.png"),
+                            painter = painterDrawableRes("ic_vip"),
                             contentDescription = "VIP",
                             tint = Color.Unspecified
                         )

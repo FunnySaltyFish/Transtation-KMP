@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.funny.translation.helper.CacheManager
+import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.utils.executor
 import com.funny.translation.ui.FixedSizeIcon
@@ -121,7 +122,7 @@ fun CameraCapture(
                         }
                     )
                     FixedSizeIcon(
-                        painter = org.jetbrains.compose.resources.painterResource("drawable/ic_album.png"),
+                        painter = painterDrawableRes("ic_album"),
                         contentDescription = ResStrings.album,
                         tint = Color.Unspecified,
                         modifier = Modifier
