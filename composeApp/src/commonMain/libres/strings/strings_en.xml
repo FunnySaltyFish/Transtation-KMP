@@ -336,16 +336,14 @@
     <string name="restart_app_tip">Due to the limit of Desktop, please restart by yourself.</string>
     <string name="tip_privacy_policy">Please read and agree to our [Privacy Policy](https://api.funnysaltyfish.fun/trans/v1/api/privacy?locale=en) and [User Agreement](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement?locale=en) before using the application.</string>
 
-<!--    <string name="speak_speed">朗读速度</string>-->
-<!--    <string name="speak_volume">朗读音量</string>-->
-<!--    <string name="speak_voice">朗读音色</string>-->
-<!--    <string name="gender">性别</string>-->
-<!--    <string name="male">男</string>-->
-<!--    <string name="female">女</string>-->
     <string name="speak_speed">Reading Speed</string>
     <string name="speak_volume">Reading Volume</string>
     <string name="speak_voice">Reading Voice</string>
     <string name="gender">Gender</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+<!--    <string name="speak_settings">朗读配置</string>-->
+<!--    <string name="speak_settings_desc">配置文本朗读的引擎、音色、语速等</string>-->
+    <string name="speak_settings">Reading Settings</string>
+    <string name="speak_settings_desc">Configure the engine, voice, speed, etc. for text reading</string>
 </resources>

@@ -48,10 +48,10 @@ import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.sendByMe
 import com.funny.compose.ai.chat.ChatBot
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel

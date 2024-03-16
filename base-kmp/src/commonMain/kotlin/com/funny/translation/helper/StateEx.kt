@@ -1,7 +1,8 @@
-package com.funny.translation.debug
+package com.funny.translation.helper
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -11,6 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.autoSaver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.StateFactoryMarker
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 /**
  * equals to remember { mutableXxxStateOf(value) }
@@ -43,7 +47,28 @@ inline fun <reified T : Any> rememberSaveableStateOf(
     } as MutableState<T>
 }
 
+@StateFactoryMarker
+@Composable
+fun <T> rememberDerivedStateOf(calculation: () -> T) = remember {
+    derivedStateOf(calculation)
+}
+
 @Composable
 fun <T> rememberUpdatedMutableState(newValue: T): MutableState<T> = remember {
     mutableStateOf(newValue)
 }.apply { value = newValue }
+
+
+class LazyMutableState<T>(
+    private val stateProvider: () -> MutableState<T>
+): ReadWriteProperty<Any?, T> {
+    private val lazyState by lazy { stateProvider() }
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        return lazyState.value
+    }
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        lazyState.value = value
+    }
+}

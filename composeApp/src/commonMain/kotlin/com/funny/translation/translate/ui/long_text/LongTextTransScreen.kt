@@ -40,13 +40,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.DataHolder
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.formatBraceStyle
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.safeSubstring
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.NavController

@@ -30,8 +30,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.compose.ai.token.TokenCounter
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.DataHolder
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.ui.long_text.Category

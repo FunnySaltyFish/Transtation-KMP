@@ -21,8 +21,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.UserUtils
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.login.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon

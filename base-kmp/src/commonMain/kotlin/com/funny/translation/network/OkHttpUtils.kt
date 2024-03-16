@@ -1,6 +1,9 @@
 package com.funny.translation.network
 
 import androidx.annotation.Keep
+import cn.netdiscovery.http.interceptor.LoggingInterceptor
+import cn.netdiscovery.http.interceptor.log.LogManager
+import cn.netdiscovery.http.interceptor.log.LogProxy
 import com.funny.translation.AppConfig
 import com.funny.translation.BaseActivity
 import com.funny.translation.BuildConfig
@@ -13,6 +16,7 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.base.strings.ResStrings
+import com.funny.translation.network.ServiceCreator.TRANS_PATH
 import com.funny.translation.sign.SignUtils
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -144,6 +148,32 @@ object OkHttpUtils {
 //            .setLevel(if (BuildConfig.DEBUG) Level.BASIC else Level.NONE)
 //            .log(DEBUG)
 //            .build())
+        addInterceptor(
+            LoggingInterceptor.Builder()
+                .loggable(BuildConfig.DEBUG)
+                .request()
+                .response()
+                .excludePath(TRANS_PATH + "ai/generate_stream")
+                .build()
+        )
+
+        LogManager.logProxy(object: LogProxy {
+            override fun d(tag: String, msg: String) {
+                Log.d(tag, msg)
+            }
+
+            override fun e(tag: String, msg: String) {
+                Log.e(tag, msg)
+            }
+
+            override fun i(tag: String, msg: String) {
+                Log.i(tag, msg)
+            }
+
+            override fun w(tag: String, msg: String) {
+                Log.w(tag, msg)
+            }
+        })
 
     }.build()
 

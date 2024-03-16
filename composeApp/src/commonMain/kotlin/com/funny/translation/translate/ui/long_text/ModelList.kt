@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.compose.ai.bean.Model
-import com.funny.translation.debug.rememberStateOf
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 import kotlin.math.roundToInt
 

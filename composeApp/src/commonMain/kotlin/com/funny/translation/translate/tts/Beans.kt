@@ -23,6 +23,13 @@ enum class Gender {
         else -> this == other
     }
 
+    operator fun plus(other: Gender) = when {
+        this == All -> All
+        other == All -> All
+        this == other -> this
+        else -> All
+    }
+
     val displayName
         get() = when (this) {
             Male -> ResStrings.male

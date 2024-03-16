@@ -185,6 +185,8 @@ class LongTextTransViewModel: BaseViewModel() {
                     }
                     while (isPausing) { delay(100) }
 
+                    // 防止最后一段刚好是 \n||sep||，然后把 ||sep|| 当做关键部分了
+                    lastResultText = lastResultText.removeSuffix("\n" + SEP)
                     // 前文的最后一小点，供上下文衔接
                     val prevEnd = if (lastResultText.isNotEmpty()) {
                         val lastLine = lastResultText.lastIndexOf('\n')

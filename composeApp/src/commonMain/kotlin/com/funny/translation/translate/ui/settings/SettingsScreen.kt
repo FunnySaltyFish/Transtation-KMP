@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.Speaker
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.IconButton
@@ -184,6 +185,14 @@ fun SettingsScreen() {
                 text = ResStrings.select_language,
             ) {
                 navController.navigate(TranslateScreen.SelectLanguageScreen.route)
+            }
+            // TTS
+            JetSettingTile(
+                imageVector = Icons.Default.Speaker,
+                text = ResStrings.speak_settings,
+                description = ResStrings.speak_settings_desc
+            ) {
+                navController.navigate(TranslateScreen.TTSSettingsScreen.route)
             }
             val openConfirmDeleteDialogState = remember { mutableStateOf(false) }
             SimpleDialog(

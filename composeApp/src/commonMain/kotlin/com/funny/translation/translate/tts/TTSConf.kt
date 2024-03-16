@@ -14,3 +14,13 @@ data class TTSConf(
     val conf: String
 ) {
 }
+
+fun TTSConf.Companion.findById(id: Long): TTSConf {
+    return TTSConf(
+        id = id,
+        language = Language.AUTO,
+        ttsProviderId = "baidu",
+        speaker = BaiduTransTTSProvider.DEFAULT_SPEAKER.first(),
+        conf = "{}"
+    )
+}

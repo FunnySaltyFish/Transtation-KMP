@@ -53,10 +53,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.jetsetting.core.ui.SimpleDialog
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.assetsStringLocalized
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.navigateUp
 import com.funny.translation.kmp.painterDrawableRes

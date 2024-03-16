@@ -72,6 +72,8 @@ kotlin {
                 // import org.json.JSONObject
                 api("org.json:json:20210307")
 
+                implementation("com.github.fengzhizi715.okhttp-logging-interceptor:core:v1.1.4")
+
                 implementation(libs.rhino)
             }
         }

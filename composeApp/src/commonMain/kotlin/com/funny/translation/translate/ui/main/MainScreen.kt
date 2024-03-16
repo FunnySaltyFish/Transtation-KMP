@@ -71,9 +71,9 @@ import androidx.compose.ui.unit.sp
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.AppConfig
 import com.funny.translation.NeedToTransConfig
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.UserUtils
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.network.api
@@ -83,6 +83,7 @@ import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.ui.settings.TTSScreen
 import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.translate.ui.widget.SimpleNavigation
 import com.funny.translation.ui.AnyPopDialog
@@ -117,8 +118,8 @@ enum class MainScreenState {
 @Composable
 fun MainScreen(
 ) {
-    TextTransScreen()
-//    TTSScreen()
+//    TextTransScreen()
+    TTSScreen()
 }
 
 @ExperimentalComposeUiApi

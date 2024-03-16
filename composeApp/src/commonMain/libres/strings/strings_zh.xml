@@ -342,4 +342,6 @@
     <string name="gender">性别</string>
     <string name="male">男</string>
     <string name="female">女</string>
+    <string name="speak_settings">朗读配置</string>
+    <string name="speak_settings_desc">配置文本朗读的引擎、音色、语速等</string>
 </resources>

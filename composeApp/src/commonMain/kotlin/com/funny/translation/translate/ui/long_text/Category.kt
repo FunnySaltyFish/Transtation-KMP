@@ -27,7 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.funny.translation.debug.rememberStateOf
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.ui.widget.ExpandMoreButton
 import com.funny.translation.ui.FixedSizeIcon
@@ -62,7 +62,7 @@ internal fun Category(
                 .padding(vertical = 8.dp),
             color = MaterialTheme.colorScheme.primary
         )
-        val tooltipState = rememberTooltipState()
+        val tooltipState = rememberTooltipState(isPersistent = true)
         val scope = rememberCoroutineScope()
         TooltipBox(
             positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),

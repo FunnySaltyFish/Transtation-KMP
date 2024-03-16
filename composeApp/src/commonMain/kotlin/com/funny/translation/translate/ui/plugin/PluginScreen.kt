@@ -61,7 +61,7 @@ import com.funny.translation.kmp.rememberOpenFileLauncher
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.LocalSnackbarState
-import com.funny.translation.translate.ui.widget.ExpandMoreButton
+import com.funny.translation.translate.utils.expandableStickyRow
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
@@ -262,37 +262,6 @@ fun PluginScreen() {
             }
         }
     }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-fun LazyListScope.expandableStickyRow(
-    title: String,
-    expand: Boolean,
-    updateExpand: (Boolean) -> Unit,
-    contentList: LazyListScope.() -> Unit
-) {
-    stickyHeader {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .clickable { updateExpand(!expand) }
-                .background(MaterialTheme.colorScheme.background)
-                .padding(vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = title,
-                fontWeight = W600,
-                fontSize = 24.sp
-            )
-            ExpandMoreButton(expand = expand, onClick = {
-                updateExpand(!expand)
-            })
-        }
-    }
-
-    if (expand) contentList()
 }
 
 

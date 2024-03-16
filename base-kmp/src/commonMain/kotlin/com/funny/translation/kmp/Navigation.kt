@@ -42,6 +42,13 @@ fun NavBackStackEntry.getQueryBoolean(key: String, default: Boolean = false): Bo
     return queryString?.map?.get(key)?.firstOrNull()?.toBoolean() ?: return default
 }
 
+// Long
+fun NavBackStackEntry.getQueryLong(key: String, default: Long? = null): Long? {
+    return queryString?.map?.get(key)?.firstOrNull()?.toLongOrNull() ?: return default
+}
+
+
+
 fun NavGraphBuilder.composable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),

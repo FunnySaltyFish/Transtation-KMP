@@ -21,11 +21,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.funny.jetsetting.core.ui.SimpleDialog
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.DataHolder
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.TimeUtils
 import com.funny.translation.helper.formatBraceStyle
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.LocalNavController

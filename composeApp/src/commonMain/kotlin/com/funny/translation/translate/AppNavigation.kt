@@ -34,6 +34,7 @@ import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.composable
 import com.funny.translation.kmp.getQueryBoolean
 import com.funny.translation.kmp.getQueryInt
+import com.funny.translation.kmp.getQueryLong
 import com.funny.translation.kmp.getQueryString
 import com.funny.translation.kmp.navOptions
 import com.funny.translation.kmp.navigation
@@ -42,6 +43,8 @@ import com.funny.translation.kmp.slideOutOfContainer
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.bean.AI_TEXT_POINT
+import com.funny.translation.translate.tts.TTSConf
+import com.funny.translation.translate.tts.findById
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.ai.ChatScreen
 import com.funny.translation.translate.ui.buy.BuyAIPointScreen
@@ -62,6 +65,7 @@ import com.funny.translation.translate.ui.settings.OpenSourceLibScreen
 import com.funny.translation.translate.ui.settings.SelectLanguageScreen
 import com.funny.translation.translate.ui.settings.SettingsScreen
 import com.funny.translation.translate.ui.settings.SortResultScreen
+import com.funny.translation.translate.ui.settings.TTSConfEditScreen
 import com.funny.translation.translate.ui.settings.TTSScreen
 import com.funny.translation.translate.ui.settings.ThemeScreen
 import com.funny.translation.translate.ui.thanks.AnnualReportScreen
@@ -333,6 +337,11 @@ private fun NavGraphBuilder.addSettingsNavigation() {
             TranslateScreen.TTSSettingsScreen.route
         ) {
             TTSScreen()
+        }
+        animateComposable(TranslateScreen.TTSEditConfScreen.route.removeQuery()) {
+            val id = it.getQueryLong("id") ?: return@animateComposable
+            val conf = TTSConf.findById(id)
+            TTSConfEditScreen(conf)
         }
     }
 }

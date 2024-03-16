@@ -26,8 +26,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.token.TokenCounter
 import com.funny.translation.bean.EditablePrompt
-import com.funny.translation.debug.rememberStateOf
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.ui.long_text.components.TokenNum
 import com.funny.translation.ui.FixedSizeIcon

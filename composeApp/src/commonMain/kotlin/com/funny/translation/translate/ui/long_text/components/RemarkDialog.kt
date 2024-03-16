@@ -7,7 +7,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.funny.jetsetting.core.ui.SimpleDialog
-import com.funny.translation.debug.rememberStateOf
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 
 @Composable

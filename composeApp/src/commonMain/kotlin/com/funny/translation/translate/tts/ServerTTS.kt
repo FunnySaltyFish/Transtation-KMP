@@ -31,6 +31,11 @@ interface TTSService {
 
 abstract class ServerTTSProvider(private val modelName: String) : TTSProvider() {
     override val id: String = modelName
+
+    /**
+     * 语言到 Locale 字段的映射
+     */
+    abstract fun languageToLocale(language: Language): String
     
     override fun getUrl(word: String, language: Language, voice: String, speed: Int, volume: Int): String =
         String.format(
