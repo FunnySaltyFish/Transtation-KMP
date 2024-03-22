@@ -50,6 +50,24 @@ private val OffsetSaver = listSaver<Offset, Float>(
 
 @Stable
 fun Modifier.slideIn() = this.then(SlideInElement())
+//composed {
+//    val animatable = Animatable(1f)
+//    val scope = rememberCoroutineScope()
+//    DisposableEffect(Unit) {
+//        scope.launch {
+//            animatable.animateTo(0f)
+//        }
+//        onDispose {
+//            scope.launch {
+//                animatable.snapTo(1f)
+//            }
+//        }
+//    }
+//    this.graphicsLayer {
+//        val width = size.width
+//        translationX = (width * animatable.value)
+//    }
+//}
 
 private class SlideInNode: LayoutModifierNode, Modifier.Node() {
     private val animatable = Animatable(1f)

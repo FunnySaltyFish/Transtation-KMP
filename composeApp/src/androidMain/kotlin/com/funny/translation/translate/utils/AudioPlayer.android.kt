@@ -36,14 +36,14 @@ actual object AudioPlayer {
         onInterrupt: () -> Unit,
         onError: (Exception) -> Unit
     ) {
-        if (language == Language.AUTO) {
-            appCtx.toastOnUi(ResStrings.speak_language_auto_not_supported)
-            return
-        }
+//        if (language == Language.AUTO) {
+//            appCtx.toastOnUi(ResStrings.speak_language_auto_not_supported)
+//            return
+//        }
         if (DeviceUtils.isMute()) {
             appCtx.toastOnUi(ResStrings.speak_device_mute_tip)
         }
-        val url = getUrl(word, language)
+        val url = TTSManager.getURL(word, language)
         Log.d(TAG, "play: url:$url")
         try {
             mediaPlayer.setOnErrorListener { _, _, _ ->

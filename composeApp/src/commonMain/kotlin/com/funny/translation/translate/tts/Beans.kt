@@ -10,25 +10,26 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = GenderSerializer::class)
-enum class Gender {
-    Male, Female, All, Unknown;
+enum class Gender(
+    private val value: Int
+) {
+    // Male:   0001
+    // Female: 0010
+    // All:    0011
+    Male(1), Female(2), All(3);
 
     /**
      * 当前的gender是否包含另一个
      * @param other Gender
      * @return Boolean
      */
-    fun contains(other: Gender) = when (this) {
-        All -> true
-        else -> this == other
-    }
+    fun contains(other: Gender) = (value and other.value) == other.value
 
-    operator fun plus(other: Gender) = when {
-        this == All -> All
-        other == All -> All
-        this == other -> this
-        else -> All
-    }
+    operator fun plus(other: Gender) =
+        entries.find { it.value == (this.value or other.value) } ?: All
+
+    operator fun minus(other: Gender) =
+        entries.find { it.value == (this.value and other.value.inv()) } ?: All
 
     val displayName
         get() = when (this) {
@@ -36,6 +37,11 @@ enum class Gender {
             Female -> ResStrings.female
             else -> name
         }
+
+    override fun toString(): String {
+        // Retrofit 会调用 toString() 方法，所以这里返回的是小写
+        return name.lowercase()
+    }
 }
 
 // male -> Male
@@ -49,7 +55,7 @@ class GenderSerializer : KSerializer<Gender> {
             "male" -> Gender.Male
             "female" -> Gender.Female
             "all" -> Gender.All
-            else -> Gender.Unknown
+            else -> Gender.All
         }
     }
 

@@ -62,4 +62,4 @@ fun ColumnScope.ModelListPart(
 }
 
 fun Model.description(): String
-    = "${ResStrings.context_length} ${ ((maxContextTokens)/1000f).roundToInt() }k | ${ResStrings.currency_symbol}${ cost1kTokens} / ${ResStrings.kilo_char} | $description"
+    = "${ResStrings.context_length} ${ ((maxContextTokens)/1000f).roundToInt() }k | ${ResStrings.currency_symbol}${ cost1kTokens} / ${ResStrings.kilo_tokens} | $description"

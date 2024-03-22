@@ -300,7 +300,7 @@
     <string name="model_select">模型选择</string>
     <string name="model_select_help">不同的模型拥有不同的上下文长度，且有着不同的单价，越好的模型单价越高，请按需选择。</string>
     <string name="currency_symbol">¥</string>
-    <string name="kilo_char">千字符</string>
+    <string name="kilo_tokens">千Token</string>
     <string name="translate_paused_too_many_retries">重试次数已达上限，自动暂停</string>
     <string name="attemp_to_retry">这一小段结果解析失败了，正在等待更长的输出</string>
     <string name="token_tip">模型处理文本时以 Token 形式，这里计算的是 Token 数</string>
@@ -344,4 +344,6 @@
     <string name="female">女</string>
     <string name="speak_settings">朗读配置</string>
     <string name="speak_settings_desc">配置文本朗读的引擎、音色、语速等</string>
+    <string name="price_1k_chars">每千字符价格：</string>
+    <string name="tts_generated_by_ai_note">此音频由AI生成，非人工朗读结果</string>
 </resources>

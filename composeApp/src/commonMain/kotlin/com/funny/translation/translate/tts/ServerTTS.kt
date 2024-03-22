@@ -2,6 +2,7 @@ package com.funny.translation.translate.tts
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.funny.translation.AppConfig
 import com.funny.translation.network.CommonData
 import com.funny.translation.network.ServiceCreator
 import com.funny.translation.network.api
@@ -39,12 +40,13 @@ abstract class ServerTTSProvider(private val modelName: String) : TTSProvider() 
     
     override fun getUrl(word: String, language: Language, voice: String, speed: Int, volume: Int): String =
         String.format(
-            ServiceCreator.BASE_URL + "ai/tts/generate_stream?model_name=%s&text=%s&voice=%s&speed=%d&volume=%d",
+            ServiceCreator.BASE_URL + "ai/tts/generate_stream?model_name=%s&text=%s&voice=%s&speed=%d&volume=%d&uid=%d",
             modelName,
             URLEncoder.encode(word, "UTF-8"),
             voice,
             speed,
-            volume
+            volume,
+            AppConfig.uid
         )
 
     override suspend fun getSpeakers(gender: Gender, locale: String): List<Speaker> {
@@ -52,7 +54,7 @@ abstract class ServerTTSProvider(private val modelName: String) : TTSProvider() 
     }
 
     @Composable
-    override fun Settings() {
+    override fun Settings(conf: TTSConf, onSettingSpeedFinish: (Float) -> Unit) {
         Text("Settings Area for $id")
     }
 }

@@ -300,7 +300,7 @@
     <string name="exporting">Exporting, please wait…</string>
     <string name="model_select">Model Selection</string>
     <string name="model_select_help">Different models have different context lengths and different unit prices. The better the model, the higher the unit price. Please choose as needed.</string>
-    <string name="kilo_char">Thousand characters</string>
+    <string name="kilo_tokens">Thousand tokens</string>
     <string name="translate_paused_too_many_retries">The retry limit has been reached, and it is automatically paused</string>
     <string name="attemp_to_retry">This small segment result parsing failed, waiting for longer output</string>
     <string name="token_tip">The model processes text in token form, and the calculation here is the number of tokens</string>
@@ -335,15 +335,14 @@
     <string name="failed_to_show_float_window">Failed to show float window, please check if you have granted the permission correctly!</string>
     <string name="restart_app_tip">Due to the limit of Desktop, please restart by yourself.</string>
     <string name="tip_privacy_policy">Please read and agree to our [Privacy Policy](https://api.funnysaltyfish.fun/trans/v1/api/privacy?locale=en) and [User Agreement](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement?locale=en) before using the application.</string>
-
     <string name="speak_speed">Reading Speed</string>
     <string name="speak_volume">Reading Volume</string>
     <string name="speak_voice">Reading Voice</string>
     <string name="gender">Gender</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-<!--    <string name="speak_settings">朗读配置</string>-->
-<!--    <string name="speak_settings_desc">配置文本朗读的引擎、音色、语速等</string>-->
     <string name="speak_settings">Reading Settings</string>
     <string name="speak_settings_desc">Configure the engine, voice, speed, etc. for text reading</string>
+    <string name="price_1k_chars">price per 1k chars: </string>
+    <string name="tts_generated_by_ai_note">NOTE: The voice is generated entirely by AI</string>
 </resources>

@@ -39,14 +39,14 @@ fun <T : Any> LazyListScope.loadingList(
     success: @Composable LazyItemScope.(data: T) -> Unit,
 ) {
     when (value.value) {
-        is LoadingState.Loading -> item(key = "loading") { loading() }
+        is LoadingState.Loading -> item(contentType = "loading") { loading() }
         is LoadingState.Success<*> -> {
             val data = (value.value as LoadingState.Success<List<T>>).data
             if (data.isEmpty()) {
-                item(key = "empty") { empty() }
+                item(contentType = "empty") { empty() }
             } else {
                 if (successHeader != null) {
-                    item(key = "successHeader") {
+                    item(contentType = "successHeader") {
                         successHeader()
                     }
                 }
@@ -55,7 +55,7 @@ fun <T : Any> LazyListScope.loadingList(
                     success(it)
                 }
                 if (successFooter != null) {
-                    item(key = "successFooter") {
+                    item(contentType = "successFooter") {
                         successFooter()
                     }
                 }

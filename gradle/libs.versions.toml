@@ -1,7 +1,7 @@
 [versions]
 androidxPaging3Extensions = "2.0.1"
 jtokkit = "0.6.1"
-precompose = "1.6.0-rc03"
+precompose = "1.6.0-rc04"
 project-versionCode = "63"
 project-versionName = "2.8.0"
 agp = "8.1.4"

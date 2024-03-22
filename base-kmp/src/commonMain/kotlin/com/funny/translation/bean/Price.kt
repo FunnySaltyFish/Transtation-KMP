@@ -12,7 +12,7 @@ fun Price.show(scale: Int = 2): String {
 
 fun Price.showWithUnit(scale: Int = 2): String {
     val unit = if (BuildConfig.FLAVOR == "google") "$" else "¥"
-    return "$unit${this.setScale(scale, RoundingMode.HALF_UP).toString()}"
+    return "$unit${this.setScale(scale, RoundingMode.HALF_UP)}"
 }
 
 operator fun Price.times(num: Double): Price {

@@ -75,7 +75,7 @@ private val configList = listOf(
     TTSConf(
         language = Language.AUTO,
         ttsProviderId = "BaiduTrans",
-        speaker = BaiduTransTTSProvider.DEFAULT_SPEAKER.first(),
-        conf = "{}"
+        speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first(),
+//        extraConf = TTSExtraConf()
     )
 )

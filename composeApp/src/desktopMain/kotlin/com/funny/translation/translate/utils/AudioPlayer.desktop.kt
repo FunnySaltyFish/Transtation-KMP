@@ -32,7 +32,7 @@ actual object AudioPlayer {
                 pause()
                 onInterrupt()
             } else {
-                val url = URL(getUrl(word, language))
+                val url = URL(TTSManager.getURL(word, language))
                 val inputStream = url.openStream()
                 player = AdvancedPlayer(inputStream)
 
