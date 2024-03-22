@@ -2,8 +2,10 @@ package com.funny.translation.translate.utils
 
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.tts.TTSConf
-import com.funny.translation.translate.tts.findByLanguage
+import com.funny.translation.translate.tts.TTSConfManager
 import com.funny.translation.translate.tts.findTTSProviderById
+import com.funny.translation.translate.tts.speed
+import com.funny.translation.translate.tts.volume
 
 enum class PlaybackState {
     IDLE, PLAYING, PAUSED
@@ -31,7 +33,7 @@ object TTSManager {
     private var confProvider: (language: Language) -> TTSConf = ::getDefaultConf
 
     private fun getDefaultConf(language: Language): TTSConf {
-        return confMap.getOrPut(language) { TTSConf.findByLanguage(language) }
+        return confMap.getOrPut(language) { TTSConfManager.findByLanguage(language) }
     }
 
     fun getURL(word: String, language: Language): String {

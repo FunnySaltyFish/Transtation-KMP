@@ -4,6 +4,7 @@ import app.cash.sqldelight.ColumnAdapter
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.helper.JsonX
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.findLanguageById
 
 private typealias Term = Pair<String, String>
 
@@ -35,4 +36,9 @@ object IntListAdapter : ColumnAdapter<List<Int>, String> {
     override fun encode(value: List<Int>): String = JsonX.toJson(value)
 
     override fun decode(databaseValue: String): List<Int> = JsonX.fromJson(databaseValue)
+}
+
+object LanguageAdapter: ColumnAdapter<Language, Long> {
+    override fun encode(value: Language) = value.id.toLong()
+    override fun decode(databaseValue: Long) = findLanguageById(databaseValue.toInt())
 }

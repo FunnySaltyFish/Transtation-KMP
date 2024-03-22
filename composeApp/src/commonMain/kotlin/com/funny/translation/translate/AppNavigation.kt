@@ -43,8 +43,7 @@ import com.funny.translation.kmp.slideOutOfContainer
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.bean.AI_TEXT_POINT
-import com.funny.translation.translate.tts.TTSConf
-import com.funny.translation.translate.tts.findById
+import com.funny.translation.translate.tts.TTSConfManager
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.ai.ChatScreen
 import com.funny.translation.translate.ui.buy.BuyAIPointScreen
@@ -340,7 +339,7 @@ private fun NavGraphBuilder.addSettingsNavigation() {
         }
         animateComposable(TranslateScreen.TTSEditConfScreen.route.removeQuery()) {
             val id = it.getQueryLong("id") ?: return@animateComposable
-            val conf = TTSConf.findById(id)
+            val conf = TTSConfManager.findById(id)
             TTSConfEditScreen(conf)
         }
     }

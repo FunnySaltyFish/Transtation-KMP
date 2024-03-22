@@ -17,6 +17,8 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.tts.TTSConf
+import com.funny.translation.translate.tts.speed
+import com.funny.translation.translate.tts.volume
 import com.funny.translation.translate.utils.TTSManager
 
 @Composable

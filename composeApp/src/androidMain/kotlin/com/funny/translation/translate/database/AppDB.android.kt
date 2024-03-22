@@ -2,7 +2,6 @@ package com.funny.translation.translate.database
 
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.funny.translation.database.Database
 import com.funny.translation.helper.Context
 import com.funny.translation.kmp.appCtx
 

@@ -152,6 +152,15 @@ buildkonfig {
     packageName = "com.funny.translation.translate"
 }
 
+sqldelight {
+    databases {
+        getByName("Database") {
+            packageName = "com.funny.translation.translate.database"
+            dependency(project(":base-kmp"))
+        }
+    }
+}
+
 afterEvaluate {
     // debug 和 release 时执行加密代码
     val signApkTask = project(":base-kmp").tasks.named("signApk")
