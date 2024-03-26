@@ -20,6 +20,7 @@ fun Project.setupSqlDelight() {
     configure<SqlDelightExtension> {
         databases.create("Database") {
             packageName.set("com.funny.translation.database")
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/schema"))
         }
     }
 }

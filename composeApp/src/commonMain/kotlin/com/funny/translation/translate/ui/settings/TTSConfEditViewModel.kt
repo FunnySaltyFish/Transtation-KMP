@@ -1,6 +1,7 @@
 package com.funny.translation.translate.ui.settings
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,7 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.tts.Gender
 import com.funny.translation.translate.tts.Speaker
 import com.funny.translation.translate.tts.TTSConf
@@ -22,14 +24,14 @@ import com.funny.translation.translate.utils.TTSManager
 class TTSConfEditViewModel(
     private val initialConf: TTSConf
 ): BaseViewModel() {
-    var conf = initialConf
+    var conf by mutableStateOf(initialConf)
         private set
 
-    var gender by mutableStateOf(conf.speaker.gender)
-    var speaker by mutableStateOf(conf.speaker)
+    var gender by mutableStateOf(Gender.All)
+    val speaker by derivedStateOf {  conf.speaker }
     var speaking by mutableStateOf(false)
 
-    val locale = conf.speaker.locale
+    private val locale = conf.speaker.locale
 
     val filteredTTSProviders = ttsProviders.filter { it.supportLanguages.contains(conf.language) }
 
@@ -49,8 +51,7 @@ class TTSConfEditViewModel(
     }
 
     fun updateSpeakerChecked(ttsProvider: TTSProvider, newSpeaker: Speaker) {
-        speaker = newSpeaker
-        conf = conf.copy(ttsProviderId = ttsProvider.id, speaker = newSpeaker)
+        conf = conf.copy(ttsProviderId = ttsProvider.id, speaker = newSpeaker, extraConf = ttsProvider.savedExtraConf)
         speakExampleText()
     }
 
@@ -83,8 +84,13 @@ class TTSConfEditViewModel(
 
     fun save() {
         if (initialConf.speaker != speaker || initialConf.extraConf != conf.extraConf) {
-            // TODO save new conf
             TTSManager.updateConf(conf)
+            appDB.tTSConfQueries.updateById(
+                id = conf.id,
+                ttsProviderId = conf.ttsProviderId,
+                speaker = speaker,
+                extraConf = conf.extraConf
+            )
         }
     }
 

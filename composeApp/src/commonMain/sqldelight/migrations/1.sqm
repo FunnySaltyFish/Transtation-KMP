@@ -1,0 +1,12 @@
+import com.funny.translation.translate.Language;
+import com.funny.translation.translate.tts.Speaker;
+import com.funny.translation.translate.tts.TTSExtraConf;
+
+-- 新增 TTS 配置表
+CREATE TABLE IF NOT EXISTS ttsConf (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    language INTEGER AS Language NOT NULL,
+    ttsProviderId TEXT NOT NULL,
+    speaker TEXT AS Speaker DEFAULT '{}' NOT NULL,
+    extraConf TEXT AS TTSExtraConf DEFAULT '{}' NOT NULL
+);

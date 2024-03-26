@@ -1,22 +1,24 @@
 package com.funny.translation.translate.ui.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.funny.translation.database.executeAsFlowList
 import com.funny.translation.helper.formatBraceStyle
-import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalNavController
-import com.funny.translation.translate.tts.BaiduTransTTSProvider
+import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.findTTSProviderById
 import com.funny.translation.translate.ui.TranslateScreen
@@ -29,13 +31,13 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 fun TTSScreen() {
     CommonPage(title = "TTS") {
         val navController = LocalNavController.current
-
+        val confList by appDB.tTSConfQueries.getAll().executeAsFlowList().collectAsState(emptyList())
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
 //            contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(configList, key = { it.id }) { conf ->
+            items(confList, key = { it.id }) { conf ->
                 ConfigItem(
                     conf = conf,
                     editAction = {
@@ -57,6 +59,7 @@ private fun ConfigItem(
     }
 
     ListItem(
+        modifier = Modifier.clickable { editAction(conf) },
         headlineContent = {
             Text(conf.language.displayText)
         },
@@ -64,18 +67,7 @@ private fun ConfigItem(
             Text("${ttsProvider.name} - ${conf.speaker.shortName}")
         },
         trailingContent = {
-            IconButton(onClick = { editAction(conf) }) {
-                FixedSizeIcon(imageVector = Icons.Default.Edit, contentDescription = null)
-            }
+            FixedSizeIcon(imageVector = Icons.Default.Edit, contentDescription = null)
         }
     )
 }
-
-private val configList = listOf(
-    TTSConf(
-        language = Language.AUTO,
-        ttsProviderId = "BaiduTrans",
-        speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first(),
-//        extraConf = TTSExtraConf()
-    )
-)

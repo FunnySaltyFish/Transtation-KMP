@@ -1,5 +1,7 @@
 package com.funny.translation.translate.utils
 
+import com.funny.translation.helper.toastOnUi
+import com.funny.translation.kmp.appCtx
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.TTSConfManager
@@ -31,6 +33,7 @@ expect object AudioPlayer {
 object TTSManager {
     private val confMap = hashMapOf<Language, TTSConf>()
     private var confProvider: (language: Language) -> TTSConf = ::getDefaultConf
+    private var speakingExample: Boolean = false
 
     private fun getDefaultConf(language: Language): TTSConf {
         return confMap.getOrPut(language) { TTSConfManager.findByLanguage(language) }
@@ -39,8 +42,13 @@ object TTSManager {
     fun getURL(word: String, language: Language): String {
         val playConf = confProvider(language)
         val speaker = playConf.speaker
+        appCtx.toastOnUi("${speaker.shortName} 正在为您朗读")
         val provider = findTTSProviderById(playConf.ttsProviderId)
-        return provider.getUrl(word, language, speaker.fullName, playConf.speed, playConf.volume)
+        val url = provider.getUrl(word, language, speaker.fullName, playConf.speed, playConf.volume)
+        return if (speakingExample) {
+            // 临时修改配置，播放示例音频。这个配置主要是让服务端缓存一下，节省一点点资源
+            "$url&example=true"
+        } else url
     }
 
     /**
@@ -49,7 +57,9 @@ object TTSManager {
     fun withConf(newConf: TTSConf, block: (TTSConf) -> Unit) {
         val old = confProvider
         confProvider = { newConf }
+        speakingExample = true
         block(newConf)
+        speakingExample = false
         confProvider = old
     }
 

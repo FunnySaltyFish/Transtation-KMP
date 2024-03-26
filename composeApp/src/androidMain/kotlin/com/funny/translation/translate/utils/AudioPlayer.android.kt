@@ -42,6 +42,7 @@ actual object AudioPlayer {
 //        }
         if (DeviceUtils.isMute()) {
             appCtx.toastOnUi(ResStrings.speak_device_mute_tip)
+            return
         }
         val url = TTSManager.getURL(word, language)
         Log.d(TAG, "play: url:$url")

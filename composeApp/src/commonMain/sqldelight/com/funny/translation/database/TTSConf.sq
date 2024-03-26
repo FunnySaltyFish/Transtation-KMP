@@ -1,7 +1,6 @@
 import com.funny.translation.translate.Language;
-import com.funny.translation.translate.tts.TTSExtraConf;
 import com.funny.translation.translate.tts.Speaker;
-import kotlin.Int;
+import com.funny.translation.translate.tts.TTSExtraConf;
 
 CREATE TABLE IF NOT EXISTS ttsConf (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -10,10 +9,14 @@ CREATE TABLE IF NOT EXISTS ttsConf (
     speaker TEXT AS Speaker DEFAULT '{}' NOT NULL,
     extraConf TEXT AS TTSExtraConf DEFAULT '{}' NOT NULL
 );
-
+--
 -- Query to select a TTSConf by id
 getById:
 SELECT * FROM ttsConf WHERE id = ?;
+
+-- Query to select a TTSConf by language
+getByLanguage:
+SELECT * FROM ttsConf WHERE language = ?;
 
 -- Query to select all TTSConfs
 getAll:
@@ -26,3 +29,6 @@ INSERT INTO ttsConf (language, ttsProviderId, speaker, extraConf) VALUES ?;
 -- Query to delete a TTSConf by id
 deleteById:
 DELETE FROM ttsConf WHERE id = ?;
+
+updateById:
+UPDATE ttsConf SET ttsProviderId = ?, speaker = ?, extraConf = ? WHERE id = ?;

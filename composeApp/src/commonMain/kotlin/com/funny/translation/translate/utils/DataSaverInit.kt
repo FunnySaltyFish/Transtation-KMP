@@ -9,6 +9,7 @@ import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.JsonX
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.tts.TTSExtraConf
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.thanks.SponsorSortType
 import com.funny.translation.ui.theme.LightDarkMode
@@ -62,7 +63,7 @@ fun initTypeConverters() {
 
     DataSaverConverter.registerTypeConverters<AppLanguage>(
         save = { it.ordinal.toString() },
-        restore = { AppLanguage.values()[it.toInt()] }
+        restore = { AppLanguage.entries[it.toInt()] }
     )
 
     DataSaverConverter.registerTypeConverters<ThemeType>(
@@ -83,6 +84,11 @@ fun initTypeConverters() {
     DataSaverConverter.registerTypeConverters<LightDarkMode>(
         save = { it.name },
         restore = { LightDarkMode.valueOf(it) })
+
+    DataSaverConverter.registerTypeConverters<TTSExtraConf>(
+        save = { JsonX.toJson(it) },
+        restore = { JsonX.fromJson(it) }
+    )
 }
 
 private val OLD_VIP_START_TIME = """("vip_start_time"):(-?\d+)""".toRegex()

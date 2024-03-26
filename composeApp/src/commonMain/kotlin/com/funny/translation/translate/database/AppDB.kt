@@ -16,7 +16,6 @@ import com.funny.translation.database.TransFavorite
 import com.funny.translation.database.TransHistory
 import com.funny.translation.database.TtsConf
 import com.funny.translation.helper.JsonX
-import com.funny.translation.helper.now
 import com.funny.translation.translate.tts.Speaker
 import com.funny.translation.translate.tts.TTSExtraConf
 
@@ -74,19 +73,6 @@ fun createDatabase(driverFactory: DriverFactory): Database {
 
 expect val appDB: Database
 
-
-private fun test() {
-    appDB.transHistoryQueries.queryAllBetween(0, now()).executeAsList()
-}
-
-/**
- * object IntListAdapter : ColumnAdapter<List<Int>, String> {
- *     override fun encode(value: List<Int>): String = JsonX.toJson(value)
- *
- *     override fun decode(databaseValue: String): List<Int> = JsonX.fromJson(databaseValue)
- * }
- *
- */
 
 private object SpeakerAdapter: ColumnAdapter<Speaker, String> {
     // 基于 JsonX 的实现

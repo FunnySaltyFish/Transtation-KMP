@@ -3,6 +3,7 @@ package com.funny.translation.translate.tts
 import androidx.annotation.IntRange
 import com.funny.translation.database.TtsConf
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.database.appDB
 import kotlinx.serialization.Serializable
 
 //@Serializable
@@ -35,9 +36,9 @@ fun TTSConf(
 )
 
 val TTSConf.speed: Int
-    get() = if (extraConf.speed < 0) findTTSProviderById(ttsProviderId).defaultExtraConf.speed else extraConf.speed
+    get() = findTTSProviderById(ttsProviderId).savedExtraConf.speed
 val TTSConf.volume: Int
-    get() = if (extraConf.volume < 0) findTTSProviderById(ttsProviderId).defaultExtraConf.volume else extraConf.volume
+    get() = findTTSProviderById(ttsProviderId).savedExtraConf.volume
 
 @Serializable
 data class TTSExtraConf(
@@ -51,18 +52,10 @@ private val EmptyExtraConf = TTSExtraConf(-1, -1)
 
 object TTSConfManager {
     fun findById(id: Long): TTSConf {
-        return TTSConf(
-            language = Language.AUTO,
-            ttsProviderId = "baidu",
-            speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first(),
-        )
+        return appDB.tTSConfQueries.getById(id).executeAsOne()
     }
 
     fun findByLanguage(language: Language): TTSConf {
-        return TTSConf(
-            language = language,
-            ttsProviderId = "baidu",
-            speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first(),
-        )
+        return appDB.tTSConfQueries.getByLanguage(language).executeAsOne()
     }
 }

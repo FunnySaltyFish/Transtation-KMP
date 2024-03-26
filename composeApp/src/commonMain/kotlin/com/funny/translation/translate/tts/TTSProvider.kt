@@ -35,6 +35,10 @@ abstract class TTSProvider {
         mutableDataSaverStateOf(DataSaverUtils, "TTSProvider_${id}_expanded", false)
     }
 
+    var savedExtraConf by LazyMutableState {
+        mutableDataSaverStateOf(DataSaverUtils, "TTSProvider_${id}_extraConf", defaultExtraConf)
+    }
+
     @Composable
     abstract fun Settings(conf: TTSConf, onSettingSpeedFinish: (Float) -> Unit)
 }
@@ -74,7 +78,7 @@ object BaiduTransTTSProvider: TTSProvider() {
         arrayListOf(
             Speaker(
                 fullName = "Default",
-                shortName = "Default",
+                shortName = ResStrings.default_str,
                 gender = Gender.Female,
                 locale = "auto"
             )
