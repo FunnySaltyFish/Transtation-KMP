@@ -346,4 +346,6 @@
     <string name="price_1k_chars">price per 1k chars: </string>
     <string name="tts_generated_by_ai_note">NOTE: The voice is generated entirely by AI</string>
     <string name="add_config">Add Config</string>
+    <string name="apply_config_to">Apply config to...</string>
+    <string name="current_config">Current Config: </string>
 </resources>

@@ -347,4 +347,7 @@
     <string name="price_1k_chars">每千字符价格：</string>
     <string name="tts_generated_by_ai_note">此音频由AI生成，非人工朗读结果</string>
     <string name="add_config">添加配置</string>
+    <string name="apply_config_to">应用配置到...</string>
+<!--    current_config-->
+    <string name="current_config">当前配置：</string>
 </resources>
