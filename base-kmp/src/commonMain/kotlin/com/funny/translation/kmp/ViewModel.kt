@@ -7,6 +7,6 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 @Composable
 inline fun <reified T: ViewModel> viewModel(): T {
     return moe.tlaster.precompose.viewmodel.viewModel(listOf()) {
-        T::class.java.newInstance()
+        T::class.java.getConstructor().newInstance()
     }
 }

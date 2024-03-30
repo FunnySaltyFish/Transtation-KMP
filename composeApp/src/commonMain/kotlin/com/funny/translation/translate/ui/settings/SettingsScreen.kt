@@ -18,8 +18,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material.icons.filled.Speaker
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.IconButton
@@ -188,7 +188,7 @@ fun SettingsScreen() {
             }
             // TTS
             JetSettingTile(
-                imageVector = Icons.Default.Speaker,
+                imageVector = Icons.Default.SettingsVoice,
                 text = ResStrings.speak_settings,
                 description = ResStrings.speak_settings_desc
             ) {

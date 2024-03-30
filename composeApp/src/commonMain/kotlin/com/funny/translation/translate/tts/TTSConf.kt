@@ -58,4 +58,13 @@ object TTSConfManager {
     fun findByLanguage(language: Language): TTSConf {
         return appDB.tTSConfQueries.getByLanguage(language).executeAsOne()
     }
+
+    fun createDefaultConf(language: Language): TTSConf {
+        return TTSConf(
+            language = language,
+            ttsProviderId = BaiduTransTTSProvider.id,
+            speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first(),
+            extraConf = BaiduTransTTSProvider.defaultExtraConf
+        )
+    }
 }

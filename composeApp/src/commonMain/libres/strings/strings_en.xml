@@ -345,4 +345,5 @@
     <string name="speak_settings_desc">Configure the engine, voice, speed, etc. for text reading</string>
     <string name="price_1k_chars">price per 1k chars: </string>
     <string name="tts_generated_by_ai_note">NOTE: The voice is generated entirely by AI</string>
+    <string name="add_config">Add Config</string>
 </resources>
