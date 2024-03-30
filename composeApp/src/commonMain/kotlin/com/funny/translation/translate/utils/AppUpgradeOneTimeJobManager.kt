@@ -3,7 +3,6 @@ package com.funny.translation.translate.utils
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
-import com.funny.translation.translate.BuildConfig
 
 /**
  * 应用更新时的一次性任务管理器
@@ -15,19 +14,18 @@ object AppUpgradeOneTimeJobManager {
 
     fun executeIfNeeded() {
         val executedVersion = DataSaverUtils.readData(DATA_SAVER_KEY, 0.0f)
-        val currentVersion = BuildConfig.VERSION_CODE
+        Log.d("AppUpgradeOneTimeJobManager", "executedVersion = $executedVersion")
+        var maxVersion = executedVersion
 
-        if (executedVersion < currentVersion) {
-            var maxVersion = 0.0f
-            jobs.forEach { (version: Float, action: ArrayList<SimpleAction>) ->
-                if (version > executedVersion) {
-                    maxVersion = maxOf(maxVersion, version)
-                    Log.d("AppUpgradeOneTimeJobManager", "execute job [version = $version]")
-                    action.forEach { it.invoke() }
-                }
+        jobs.forEach { (version: Float, action: ArrayList<SimpleAction>) ->
+            if (version > executedVersion) {
+                maxVersion = maxOf(maxVersion, version)
+                Log.d("AppUpgradeOneTimeJobManager", "execute job [version = $version], maxVersion = $maxVersion")
+                action.forEach { it.invoke() }
             }
-            DataSaverUtils.saveData(DATA_SAVER_KEY, maxVersion)
         }
+        DataSaverUtils.saveData(DATA_SAVER_KEY, maxVersion)
+        Log.d("AppUpgradeOneTimeJobManager", "save maxVersion = $maxVersion")
     }
 
     fun addJob(version: Float, action: SimpleAction) {
