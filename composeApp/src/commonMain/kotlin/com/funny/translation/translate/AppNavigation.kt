@@ -43,7 +43,6 @@ import com.funny.translation.kmp.slideOutOfContainer
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.bean.AI_TEXT_POINT
-import com.funny.translation.translate.tts.TTSConfManager
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.ai.ChatScreen
 import com.funny.translation.translate.ui.buy.BuyAIPointScreen
@@ -72,6 +71,7 @@ import com.funny.translation.translate.ui.thanks.AppRecommendationScreen
 import com.funny.translation.translate.ui.thanks.ThanksScreen
 import com.funny.translation.translate.ui.thanks.addUserProfileRoutes
 import com.funny.translation.translate.utils.DeepLinkManager
+import com.funny.translation.translate.utils.TTSConfManager
 import com.funny.translation.ui.MarkdownText
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler

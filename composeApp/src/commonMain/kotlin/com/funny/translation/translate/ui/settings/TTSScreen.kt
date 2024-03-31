@@ -36,10 +36,10 @@ import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.tts.TTSConf
-import com.funny.translation.translate.tts.TTSConfManager
 import com.funny.translation.translate.tts.TTSProvider
 import com.funny.translation.translate.tts.findTTSProviderById
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.utils.TTSConfManager
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.NavPaddingItem

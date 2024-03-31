@@ -2,11 +2,7 @@ package com.funny.translation.translate.tts
 
 import androidx.annotation.IntRange
 import com.funny.translation.database.TtsConf
-import com.funny.translation.helper.formatBraceStyle
-import com.funny.translation.kmp.NavController
 import com.funny.translation.translate.Language
-import com.funny.translation.translate.database.appDB
-import com.funny.translation.translate.ui.TranslateScreen
 import kotlinx.serialization.Serializable
 
 //@Serializable
@@ -52,33 +48,3 @@ data class TTSExtraConf(
 
 // 默认配置，不应该被使用
 private val EmptyExtraConf = TTSExtraConf(-1, -1)
-
-object TTSConfManager {
-    fun findById(id: Long): TTSConf {
-        return appDB.tTSConfQueries.getById(id).executeAsOne()
-    }
-
-    fun findByLanguage(language: Language): TTSConf {
-        return appDB.tTSConfQueries.getByLanguage(language).executeAsOne()
-    }
-
-    fun createDefaultConf(language: Language): TTSConf {
-        return TTSConf(
-            language = language,
-            ttsProviderId = BaiduTransTTSProvider.id,
-            speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first(),
-            extraConf = BaiduTransTTSProvider.defaultExtraConf
-        )
-    }
-
-    fun createNewAndJump(navController: NavController, language: Language) {
-        // 创建默认配置，并直接跳转到编辑页面
-        createDefaultConf(language).let(appDB.tTSConfQueries::insert)
-
-        navController.navigate(
-            TranslateScreen.TTSEditConfScreen.route.formatBraceStyle(
-                "id" to appDB.tTSConfQueries.getByLanguage(language).executeAsOne().id
-            )
-        )
-    }
-}

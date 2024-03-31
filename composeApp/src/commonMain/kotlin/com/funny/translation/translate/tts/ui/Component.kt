@@ -20,7 +20,7 @@ import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.findTTSProviderById
 import com.funny.translation.translate.tts.speed
 import com.funny.translation.translate.tts.volume
-import com.funny.translation.translate.utils.TTSManager
+import com.funny.translation.translate.utils.TTSConfManager
 
 @Composable
 internal fun SpeedSettings(
@@ -44,7 +44,7 @@ internal fun SpeedSettings(
                 val newExtraConf = conf.extraConf.copy(speed = speed.toInt())
 
                 // 更新内存中的配置（朗读时使用）
-                TTSManager.updateConf(conf.copy(extraConf = newExtraConf))
+                TTSConfManager.updateConf(conf.copy(extraConf = newExtraConf))
 
                 // 更新保存到本地的配置
                 conf.ttsProviderId.let(::findTTSProviderById).savedExtraConf = newExtraConf
@@ -71,7 +71,7 @@ internal fun VolumeSettings(
             valueRange = valueRange,
             steps = steps,
             onValueChangeFinished = {
-                TTSManager.updateConf(conf.copy(extraConf = conf.extraConf.copy(volume = volume.toInt())))
+                TTSConfManager.updateConf(conf.copy(extraConf = conf.extraConf.copy(volume = volume.toInt())))
                 playExampleAction()
             }
         )

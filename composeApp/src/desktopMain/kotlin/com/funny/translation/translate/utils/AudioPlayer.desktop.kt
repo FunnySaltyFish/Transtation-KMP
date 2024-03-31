@@ -32,11 +32,18 @@ actual object AudioPlayer {
                 pause()
                 onInterrupt()
             } else {
-                val url = URL(TTSManager.getURL(word, language))
+                val urlStr = TTSConfManager.getURL(word, language) ?: return
+                val url = URL(urlStr)
                 val inputStream = url.openStream()
                 player = AdvancedPlayer(inputStream)
 
                 player?.playBackListener = object : PlaybackListener() {
+                    override fun playbackStarted(evt: PlaybackEvent?) {
+                        super.playbackStarted(evt)
+                        Log.d(TAG, "playbackStarted: ${evt?.id}")
+                        playbackState = PlaybackState.PLAYING
+                    }
+
                     override fun playbackFinished(evt: PlaybackEvent?) {
                         Log.d(TAG, "playbackFinished: ${evt?.id}")
                         if (evt?.id == PlaybackEvent.STOPPED) {
@@ -51,7 +58,7 @@ actual object AudioPlayer {
                     try {
                         onStartPlay()
                         currentPlayingText = word
-                        playbackState = PlaybackState.PLAYING
+                        playbackState = PlaybackState.LOADING
                         player?.play()
                     } catch (e: JavaLayerException) {
                         onError(e)
@@ -73,7 +80,16 @@ actual object AudioPlayer {
             player?.close()
             player = null
             currentPlayingText = ""
-            playbackState = PlaybackState.PAUSED
+            playbackState = PlaybackState.IDLE
+        }
+    }
+
+    actual fun stop() {
+        if (player != null) {
+            player?.close()
+            player = null
+            currentPlayingText = ""
+            playbackState = PlaybackState.IDLE
         }
     }
 }

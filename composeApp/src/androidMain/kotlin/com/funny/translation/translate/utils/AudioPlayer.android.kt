@@ -36,15 +36,11 @@ actual object AudioPlayer {
         onInterrupt: () -> Unit,
         onError: (Exception) -> Unit
     ) {
-//        if (language == Language.AUTO) {
-//            appCtx.toastOnUi(ResStrings.speak_language_auto_not_supported)
-//            return
-//        }
         if (DeviceUtils.isMute()) {
             appCtx.toastOnUi(ResStrings.speak_device_mute_tip)
             return
         }
-        val url = TTSManager.getURL(word, language)
+        val url = TTSConfManager.getURL(word, language) ?: return
         Log.d(TAG, "play: url:$url")
         try {
             mediaPlayer.setOnErrorListener { _, _, _ ->
@@ -55,21 +51,22 @@ actual object AudioPlayer {
             mediaPlayer.setOnCompletionListener {
                 currentPlayingText = ""
                 onComplete()
+                playbackState = PlaybackState.IDLE
             }
             mediaPlayer.setOnPreparedListener {
                 it.start()
                 onStartPlay()
+                playbackState = PlaybackState.PLAYING
             }
             if(mediaPlayer.isPlaying) {
                 // 点两次当做暂停
                 if (currentPlayingText == word) {
                     appCtx.toastOnUi(ResStrings.speak_stopped)
-                    mediaPlayer.pause()
-                    currentPlayingText = ""
+                    pause()
                     onComplete()
                     return
                 } else {
-                    mediaPlayer.pause()
+                    pause()
                     onInterrupt()
                 }
             }
@@ -77,10 +74,12 @@ actual object AudioPlayer {
             mediaPlayer.setDataSource(appCtx, Uri.parse(url))
             mediaPlayer.prepareAsync()
             currentPlayingText = word
+            playbackState = PlaybackState.LOADING
         }catch (e : Exception){
             e.printStackTrace()
             onError(e)
             currentPlayingText = ""
+            playbackState = PlaybackState.IDLE
         }
     }
 
@@ -88,6 +87,13 @@ actual object AudioPlayer {
         if(mediaPlayer.isPlaying) {
             mediaPlayer.pause()
             currentPlayingText = ""
+            playbackState = PlaybackState.IDLE
         }
+    }
+
+    actual fun stop() {
+        mediaPlayer.stop()
+        currentPlayingText = ""
+        playbackState = PlaybackState.IDLE
     }
 }

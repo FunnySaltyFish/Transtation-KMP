@@ -19,7 +19,7 @@ import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.TTSProvider
 import com.funny.translation.translate.tts.ttsProviders
 import com.funny.translation.translate.utils.AudioPlayer
-import com.funny.translation.translate.utils.TTSManager
+import com.funny.translation.translate.utils.TTSConfManager
 
 class TTSConfEditViewModel(
     private val initialConf: TTSConf
@@ -84,7 +84,7 @@ class TTSConfEditViewModel(
 
     fun save() {
         if (initialConf.speaker != speaker || initialConf.extraConf != conf.extraConf) {
-            TTSManager.updateConf(conf)
+            TTSConfManager.updateConf(conf)
             appDB.tTSConfQueries.updateById(
                 id = conf.id,
                 ttsProviderId = conf.ttsProviderId,
@@ -95,7 +95,7 @@ class TTSConfEditViewModel(
     }
 
     private fun speakExampleText() {
-        TTSManager.withConf(
+        TTSConfManager.withConf(
             newConf = conf,
         ) { conf ->
             Log.d(TAG, "Start to speak example text with conf = $conf")

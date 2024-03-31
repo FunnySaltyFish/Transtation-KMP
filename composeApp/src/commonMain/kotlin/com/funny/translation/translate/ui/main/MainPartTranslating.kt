@@ -3,7 +3,9 @@ package com.funny.translation.translate.ui.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +66,7 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.TranslationResult
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transFavoriteDao
@@ -71,6 +75,8 @@ import com.funny.translation.translate.ui.widget.FrameAnimationIcon
 import com.funny.translation.translate.ui.widget.TwoProgressIndicator
 import com.funny.translation.translate.ui.widget.rememberFrameAnimIconState
 import com.funny.translation.translate.utils.AudioPlayer
+import com.funny.translation.translate.utils.PlaybackState
+import com.funny.translation.translate.utils.TTSConfManager
 import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
@@ -208,6 +214,7 @@ private fun SwipeableText(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun SpeakButton(
     modifier: Modifier = Modifier,
@@ -219,42 +226,60 @@ internal fun SpeakButton(
     val speakerState = rememberFrameAnimIconState(
         listOf("ic_speaker_2", "ic_speaker_1"),
     )
+    val navController = LocalNavController.current
     LaunchedEffect(AudioPlayer.currentPlayingText) {
         // 修正：当列表划出屏幕后state与实际播放不匹配的情况
         if (AudioPlayer.currentPlayingText != text && speakerState.isPlaying) {
             speakerState.reset()
         }
     }
-    IconButton(
-        modifier = modifier.size(48.dp),
-        onClick = {
-            if (text == AudioPlayer.currentPlayingText) {
-                speakerState.reset()
-                AudioPlayer.pause()
-            } else {
-                AudioPlayer.playOrPause(
-                    text,
-                    language,
-                    onError = {
-                        appCtx.toastOnUi(ResStrings.snack_speak_error)
-                    },
-                    onComplete = {
-                        speakerState.reset()
-                    },
-                    onStartPlay = {
-                        speakerState.play()
-                        onStartPlay?.invoke()
-                    }
+    Box (contentAlignment = Alignment.Center, modifier = Modifier.size(48.dp)) {
+        when (AudioPlayer.playbackState) {
+            PlaybackState.IDLE, PlaybackState.PLAYING -> {
+                Box(
+                    modifier = modifier.size(48.dp).clip(CircleShape).combinedClickable(
+                        onLongClick = {
+                            TTSConfManager.jumpToEdit(navController, language)
+                        },
+                        onClick = {
+                            if (text == AudioPlayer.currentPlayingText) {
+                                speakerState.reset()
+                                AudioPlayer.pause()
+                            } else {
+                                AudioPlayer.playOrPause(
+                                    text,
+                                    language,
+                                    onError = {
+                                        appCtx.toastOnUi(ResStrings.snack_speak_error)
+                                    },
+                                    onComplete = {
+                                        speakerState.reset()
+                                    },
+                                    onStartPlay = {
+                                        speakerState.play()
+                                        onStartPlay?.invoke()
+                                    }
+                                )
+                            }
+                        }
+                    ),
+                ) {
+                    FrameAnimationIcon(
+                        state = speakerState,
+                        contentDescription = ResStrings.speak,
+                        tint = tint,
+                        modifier = Modifier.size(24.dp).align(Alignment.Center)
+                    )
+                }
+            }
+
+            PlaybackState.LOADING -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center).size(24.dp),
+                    strokeWidth = 2.dp,
                 )
             }
         }
-    ) {
-        FrameAnimationIcon(
-            state = speakerState,
-            contentDescription = ResStrings.speak,
-            tint = tint,
-            modifier = Modifier.size(24.dp)
-        )
     }
 }
 
