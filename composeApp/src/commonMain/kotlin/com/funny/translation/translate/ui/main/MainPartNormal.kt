@@ -75,7 +75,7 @@ import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.painterDrawableRes
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.LocalNavController

@@ -7,18 +7,28 @@ import android.view.Gravity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.Spinner
+import android.widget.TextView
 import com.funny.translation.AppConfig
 import com.funny.translation.GlobalTranslationConfig
+import com.funny.translation.R
 import com.funny.translation.bean.TranslationConfig
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.VibratorUtils
 import com.funny.translation.helper.toastOnUi
-import com.funny.translation.kmp.R
-import com.funny.translation.kmp.strings.ResStrings
-import com.funny.translation.translate.*
+import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.FunnyApplication
+import com.funny.translation.translate.Language
+import com.funny.translation.translate.TransActivityIntent
 import com.funny.translation.translate.activity.StartCaptureScreenActivity
+import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.TextTranslationEngines
+import com.funny.translation.translate.findLanguageById
 import com.funny.translation.translate.service.CaptureScreenService
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.ShowPattern
@@ -29,8 +39,12 @@ import com.lzf.easyfloat.permission.PermissionUtils
 import com.lzf.easyfloat.utils.DragUtils
 import com.lzf.easyfloat.widget.BaseSwitchView
 import com.tomlonghurst.roundimageview.RoundImageView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 

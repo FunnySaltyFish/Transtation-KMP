@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.SimpleAction
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.findTTSProviderById
 import com.funny.translation.translate.tts.speed

@@ -53,7 +53,7 @@ import com.funny.translation.bean.Price
 import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.toastOnUi
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.bean.VipConfig
 import com.funny.translation.translate.ui.buy.manager.BuyVIPManager

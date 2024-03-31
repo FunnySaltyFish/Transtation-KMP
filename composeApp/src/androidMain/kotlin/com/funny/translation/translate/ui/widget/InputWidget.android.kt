@@ -18,7 +18,7 @@ import androidx.core.widget.doOnTextChanged
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.Log
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import kotlin.math.roundToInt
 
 private const val TAG = "InputWidget"

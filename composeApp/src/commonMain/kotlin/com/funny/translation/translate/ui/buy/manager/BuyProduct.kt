@@ -1,7 +1,7 @@
 package com.funny.translation.translate.ui.buy.manager
 
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.network.CommonData
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.BuyProductResponse
 import com.funny.translation.translate.network.TransNetwork
 import kotlinx.coroutines.Dispatchers

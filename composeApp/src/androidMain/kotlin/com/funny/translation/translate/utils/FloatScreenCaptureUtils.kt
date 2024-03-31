@@ -6,10 +6,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import com.funny.translation.R
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.VibratorUtils
 import com.funny.translation.helper.handler.runOnUI
-import com.funny.translation.kmp.R
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.translate.FunnyApplication
 import com.funny.translation.translate.activity.StartCaptureScreenActivity

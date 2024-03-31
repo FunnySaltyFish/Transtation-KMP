@@ -61,9 +61,9 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.navigateUp
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.rememberCreateFileLauncher
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.kmp.writeText
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.long_text.components.AIPointText

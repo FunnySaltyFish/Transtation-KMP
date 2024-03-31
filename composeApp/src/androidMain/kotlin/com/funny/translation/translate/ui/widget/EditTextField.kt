@@ -14,8 +14,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatEditText
+import com.funny.translation.R
 import com.funny.translation.helper.BitmapUtil.getBitmapFromResources
-import com.funny.translation.kmp.R
 
 /*来源https://github.com/opprime/EditTextField
 	修改byFunnySaltyFish 2020.2.8

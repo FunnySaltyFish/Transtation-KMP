@@ -43,7 +43,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.showSnackbar

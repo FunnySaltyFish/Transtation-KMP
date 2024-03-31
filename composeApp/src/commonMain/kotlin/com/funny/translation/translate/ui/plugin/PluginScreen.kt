@@ -58,8 +58,8 @@ import com.funny.translation.js.bean.JsBean
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.readText
 import com.funny.translation.kmp.rememberOpenFileLauncher
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.translate.utils.expandableStickyRow
 import com.funny.translation.ui.CommonPage

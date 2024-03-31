@@ -15,7 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.translation.AppConfig
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 
 @Composable
 @ExperimentalComposeUiApi

@@ -19,6 +19,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.helper.formatBraceStyle
 import com.funny.translation.helper.rememberStateOf
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.tts.TTSConf
@@ -56,6 +57,9 @@ fun TTSScreen() {
         val confList by vm.confListFlow.collectAsState(emptyList())
         val sortedConfList = remember(confList) {
             confList.sortedBy { it.language.id }.toImmutableList()
+        }
+        LaunchedEffect(Unit) {
+            vm.init()
         }
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),

@@ -18,7 +18,7 @@ import com.funny.jetsetting.core.ui.throttleClick
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.openUrl
 import com.funny.translation.kmp.NAV_ANIM_DURATION
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.RecommendApp
 import com.funny.translation.translate.network.TransNetwork
 import com.funny.translation.translate.ui.widget.AsyncImage

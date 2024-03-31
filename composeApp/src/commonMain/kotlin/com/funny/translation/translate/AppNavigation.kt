@@ -40,8 +40,8 @@ import com.funny.translation.kmp.navOptions
 import com.funny.translation.kmp.navigation
 import com.funny.translation.kmp.slideIntoContainer
 import com.funny.translation.kmp.slideOutOfContainer
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.ai.ChatScreen

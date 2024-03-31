@@ -1,7 +1,7 @@
 package com.funny.translation.translate.service
 
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.Service
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
@@ -13,7 +13,8 @@ import android.media.Image
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.os.*
+import android.os.Binder
+import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import com.eygraber.uri.toAndroidUri
@@ -24,15 +25,16 @@ import com.funny.translation.helper.Log
 import com.funny.translation.helper.handler.runOnUI
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
-import com.funny.translation.translate.*
+import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.BuildConfig
+import com.funny.translation.translate.FunnyApplication
+import com.funny.translation.translate.TransActivityIntent
 import com.funny.translation.translate.activity.StartCaptureScreenActivity.Companion.ACTION_CAPTURE
 import com.funny.translation.translate.activity.StartCaptureScreenActivity.Companion.ACTION_INIT
 import com.funny.translation.translate.bean.FileSize
 import com.funny.translation.translate.utils.DeepLinkManager
 import com.funny.translation.translate.utils.ScreenUtils
 import java.nio.ByteBuffer
-import java.util.*
 
 class CaptureScreenService : Service() {
     companion object {

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ui.long_text.Term
 
 /**

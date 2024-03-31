@@ -28,7 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.rememberStateOf
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ui.widget.ExpandMoreButton
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.launch

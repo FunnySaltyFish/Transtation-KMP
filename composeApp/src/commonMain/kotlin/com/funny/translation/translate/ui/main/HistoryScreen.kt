@@ -23,8 +23,8 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.paging.LazyPagingItems
 import com.funny.translation.kmp.paging.collectAsLazyPagingItems
 import com.funny.translation.kmp.paging.items
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.TransHistoryBean
 import com.funny.translation.translate.findLanguageById
 import com.funny.translation.translate.ui.widget.HintText

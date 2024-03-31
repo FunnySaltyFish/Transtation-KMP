@@ -5,10 +5,10 @@ import com.azhon.appupdate.config.UpdateConfiguration
 import com.azhon.appupdate.manager.DownloadManager
 import com.funny.translation.AppConfig
 import com.funny.translation.Consts
+import com.funny.translation.R
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
-import com.funny.translation.kmp.R
 import com.funny.translation.translate.network.TransNetwork
 import com.funny.translation.translate.network.UpdateDownloadManager
 import kotlinx.coroutines.Dispatchers

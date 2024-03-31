@@ -64,7 +64,7 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.lerp
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.TranslationResult

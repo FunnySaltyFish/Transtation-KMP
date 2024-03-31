@@ -1,6 +1,6 @@
 package com.funny.translation.translate.engine
 
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.CoreTextTranslationTask
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.TranslationEngine

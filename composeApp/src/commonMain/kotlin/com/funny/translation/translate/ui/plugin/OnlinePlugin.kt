@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.funny.translation.WebViewActivity
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.js.bean.JsBean
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.touchToScale
 

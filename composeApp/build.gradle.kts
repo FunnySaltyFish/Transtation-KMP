@@ -59,7 +59,7 @@ kotlin {
     }
 }
 
-val NAMESPACE = "com.funny.translation.kmp"
+val NAMESPACE = "com.funny.translation"
 
 android {
     namespace = NAMESPACE
@@ -68,7 +68,7 @@ android {
     sourceSets["debug"].res.srcDirs("src/androidMainDebug/res")
 
     defaultConfig {
-        applicationId = "com.funny.translation.kmp"
+        applicationId = NAMESPACE
         versionCode = libs.versions.project.versionCode.get().toInt()
         versionName = libs.versions.project.versionName.get()
     }

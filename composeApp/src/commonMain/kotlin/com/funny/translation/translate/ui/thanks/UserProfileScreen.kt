@@ -48,8 +48,8 @@ import com.funny.translation.kmp.NavGraphBuilder
 import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.navigation
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.network.api
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.bean.AI_VOICE_POINT

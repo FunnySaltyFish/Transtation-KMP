@@ -6,7 +6,7 @@ import com.funny.translation.bean.Price
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.LazyMutableState
 import com.funny.translation.helper.get
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.allLanguages
 import com.funny.translation.translate.engine.TextTranslationEngines

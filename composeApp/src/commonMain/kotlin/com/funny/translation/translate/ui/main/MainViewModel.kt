@@ -24,7 +24,7 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.js.JsEngine
 import com.funny.translation.js.core.JsTranslateTaskText
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.TranslationException

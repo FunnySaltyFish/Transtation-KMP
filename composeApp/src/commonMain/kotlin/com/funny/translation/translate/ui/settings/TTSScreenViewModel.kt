@@ -38,11 +38,9 @@ class TTSScreenViewModel: BaseViewModel() {
         }
     }
 
-    init {
-        submit {
-            confListFlow.collectLatest {  confList ->
-                noConfLangList = enabledLanguages.value - confList.map { it.language }.toSet()
-            }
+    suspend fun init() {
+        confListFlow.collectLatest {  confList ->
+            noConfLangList = enabledLanguages.value - confList.map { it.language }.toSet()
         }
     }
 

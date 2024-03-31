@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.funny.translation.AppConfig
 import com.funny.translation.bean.Price
 import com.funny.translation.bean.showWithUnit
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.AIPointPlan
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.bean.AI_VOICE_POINT

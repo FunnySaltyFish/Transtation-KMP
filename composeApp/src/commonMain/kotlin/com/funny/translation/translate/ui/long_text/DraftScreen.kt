@@ -11,8 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.funny.compose.loading.DefaultEmpty
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.database.Draft
 import com.funny.translation.translate.ui.main.SwipeToDismissItem

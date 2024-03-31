@@ -52,7 +52,7 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.readText
 import com.funny.translation.kmp.rememberOpenFileLauncher
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.ui.TranslateScreen

@@ -1,6 +1,6 @@
 package com.funny.translation.translate.ui
 
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 
 sealed class TranslateScreen(val title: String, val route: String) {
     object MainScreen : TranslateScreen(ResStrings.nav_main, "nav_trans_main")

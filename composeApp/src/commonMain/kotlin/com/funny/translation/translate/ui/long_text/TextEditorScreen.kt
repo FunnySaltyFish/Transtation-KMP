@@ -37,7 +37,7 @@ import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.kmpImeNestedScroll
 import com.funny.translation.kmp.navOptions
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.database.Draft
 import com.funny.translation.translate.database.appDB

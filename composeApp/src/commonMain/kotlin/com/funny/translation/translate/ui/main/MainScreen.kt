@@ -74,9 +74,9 @@ import com.funny.translation.NeedToTransConfig
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.UserUtils
 import com.funny.translation.helper.rememberStateOf
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.network.api
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.translate.TranslationEngine

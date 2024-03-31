@@ -37,7 +37,7 @@ import com.funny.compose.loading.loadingList
 import com.funny.translation.bean.Price
 import com.funny.translation.bean.showWithUnit
 import com.funny.translation.helper.rememberDerivedStateOf
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.tts.Gender
 import com.funny.translation.translate.tts.OpenAIProvider
 import com.funny.translation.translate.tts.Speaker

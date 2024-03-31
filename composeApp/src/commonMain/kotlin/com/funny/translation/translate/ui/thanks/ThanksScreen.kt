@@ -46,8 +46,8 @@ import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.Log
 import com.funny.translation.kmp.paging.collectAsLazyPagingItems
 import com.funny.translation.kmp.paging.items
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.Sponsor
 import com.funny.translation.translate.ui.widget.HeadingText
 import com.funny.translation.ui.CommonPage

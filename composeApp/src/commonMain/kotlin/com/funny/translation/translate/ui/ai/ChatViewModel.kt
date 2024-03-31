@@ -27,7 +27,7 @@ import com.funny.translation.helper.displayMsg
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.NAV_ANIM_DURATION
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.chatHistoryDao
 import kotlinx.coroutines.Dispatchers

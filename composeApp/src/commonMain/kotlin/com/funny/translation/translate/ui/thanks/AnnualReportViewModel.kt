@@ -7,7 +7,7 @@ import com.funny.compose.loading.LoadingState
 import com.funny.data_saver.core.mutableDataSaverListStateOf
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.get
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.TransHistoryBean
 import com.funny.translation.translate.database.TransHistoryDao
 import com.funny.translation.translate.database.appDB

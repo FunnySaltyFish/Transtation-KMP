@@ -41,8 +41,8 @@ import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.rememberFastClickHandler
 import com.funny.translation.helper.toastOnUi
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.BuildConfig
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.RegionConfig

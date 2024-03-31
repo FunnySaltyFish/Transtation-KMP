@@ -26,8 +26,8 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.TimeUtils
 import com.funny.translation.helper.formatBraceStyle
 import com.funny.translation.helper.rememberStateOf
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.database.LongTextTransTaskMini
 import com.funny.translation.translate.database.finishTranslating

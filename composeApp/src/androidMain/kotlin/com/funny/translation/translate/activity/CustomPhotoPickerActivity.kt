@@ -18,7 +18,7 @@ import cn.qhplus.emo.photo.vm.PhotoPickerViewModel
 import cn.qhplus.emo.ui.core.ex.setNavTransparent
 import cn.qhplus.emo.ui.core.ex.setNormalDisplayCutoutMode
 import com.funny.translation.helper.Log
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

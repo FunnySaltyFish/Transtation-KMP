@@ -26,7 +26,7 @@ import com.funny.translation.helper.BitmapUtil
 import com.funny.translation.helper.Context
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.getKeyColors
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
 import com.funny.translation.translate.ui.widget.ArrowTile
 import com.funny.translation.translate.ui.widget.AsyncImage

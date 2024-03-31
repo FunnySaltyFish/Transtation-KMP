@@ -1,6 +1,6 @@
 package com.funny.translation.translate.task
 
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationTask
 import com.funny.translation.translate.TranslationException
 import com.funny.translation.translate.engine.ImageTranslationEngine

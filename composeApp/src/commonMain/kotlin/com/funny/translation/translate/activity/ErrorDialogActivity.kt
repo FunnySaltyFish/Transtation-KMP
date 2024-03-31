@@ -25,9 +25,9 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.helper.trimLineStart
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.network.OkHttpUtils
 import com.funny.translation.network.ServiceCreator
+import com.funny.translation.strings.ResStrings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader

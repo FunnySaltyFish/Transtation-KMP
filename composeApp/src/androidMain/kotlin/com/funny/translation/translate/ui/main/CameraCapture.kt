@@ -47,7 +47,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.kmp.painterDrawableRes
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.utils.executor
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.Permission

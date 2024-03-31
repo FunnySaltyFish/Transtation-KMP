@@ -40,7 +40,7 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.painterDrawableRes
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ui.widget.InputText
 import com.funny.translation.translate.ui.widget.UpperPartBackground
 import com.funny.translation.ui.FixedSizeIcon

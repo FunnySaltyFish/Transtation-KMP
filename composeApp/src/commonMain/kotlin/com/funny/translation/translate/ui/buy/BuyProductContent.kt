@@ -42,7 +42,7 @@ import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.NAV_ANIM_DURATION
 import com.funny.translation.kmp.painterDrawableRes
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.bean.Product
 import com.funny.translation.translate.ui.buy.manager.BuyProductManager

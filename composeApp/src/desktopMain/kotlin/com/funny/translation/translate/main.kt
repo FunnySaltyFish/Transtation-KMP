@@ -17,7 +17,7 @@ import com.funny.translation.kmp.WindowHolder
 import com.funny.translation.kmp.addWindow
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.rememberNavController
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.activity.ErrorDialog
 import com.funny.translation.translate.activity.ErrorDialogActivity
 import com.funny.translation.translate.utils.DesktopUncaughtExceptionHandler

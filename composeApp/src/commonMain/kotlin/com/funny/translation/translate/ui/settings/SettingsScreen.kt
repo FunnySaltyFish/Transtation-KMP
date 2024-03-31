@@ -64,8 +64,8 @@ import com.funny.translation.kmp.Platform
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.kmp.painterDrawableRes
-import com.funny.translation.kmp.strings.ResStrings
 import com.funny.translation.network.ServiceCreator
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.allLanguages

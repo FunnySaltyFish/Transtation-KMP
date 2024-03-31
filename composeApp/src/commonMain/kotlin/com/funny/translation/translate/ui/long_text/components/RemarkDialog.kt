@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.helper.rememberStateOf
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 
 @Composable
 fun RemarkDialog(

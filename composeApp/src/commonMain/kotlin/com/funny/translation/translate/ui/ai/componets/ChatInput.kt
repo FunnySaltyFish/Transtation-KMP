@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.toastOnUi
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
 
 @Composable

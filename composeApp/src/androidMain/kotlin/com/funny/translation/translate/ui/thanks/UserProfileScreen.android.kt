@@ -32,7 +32,7 @@ import com.funny.translation.helper.UserUtils
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.helper.uploadUserAvatar
 import com.funny.translation.kmp.painterDrawableRes
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
 import kotlinx.coroutines.launch

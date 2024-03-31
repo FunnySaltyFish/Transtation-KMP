@@ -1,0 +1,111 @@
+import com.funny.translation.bean.EditablePrompt;
+import com.funny.translation.translate.Language;
+import com.funny.translation.translate.tts.Speaker;
+import com.funny.translation.translate.tts.TTSExtraConf;
+import kotlin.Boolean;
+import kotlin.Int;
+import kotlin.Pair;
+import kotlin.String;
+import kotlin.collections.List;
+
+-- 10 -> 11，完成从原有 Room 数据库的迁移，并新增 ttsConf 表
+
+CREATE TABLE IF NOT EXISTS chatHistory (
+    id TEXT PRIMARY KEY NOT NULL,
+    botId INTEGER AS Int NOT NULL,
+    conversationId TEXT NOT NULL,
+    sender TEXT NOT NULL,
+    content TEXT NOT NULL,
+    type INTEGER AS Int NOT NULL,
+    error TEXT,
+    timestamp INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS drafts (
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT NOT NULL,
+    content TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
+    remark TEXT NOT NULL DEFAULT ''
+);
+
+
+CREATE TABLE IF NOT EXISTS plugin (
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT NOT NULL,
+    fileName TEXT NOT NULL,
+    code TEXT NOT NULL,
+    author TEXT NOT NULL,
+    version INTEGER AS Int NOT NULL,
+    description TEXT NOT NULL,
+    enabled INTEGER AS Int NOT NULL,
+    minSupportVersion INTEGER AS Int NOT NULL DEFAULT 2,
+    maxSupportVersion INTEGER AS Int NOT NULL DEFAULT 999,
+    targetSupportVersion INTEGER AS Int NOT NULL,
+    isOffline INTEGER AS Boolean NOT NULL,
+    debugMode INTEGER AS Boolean NOT NULL,
+    supportLanguages TEXT AS List<Language> NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS longTextTransTasks (
+    id TEXT PRIMARY KEY NOT NULL,
+    chatBotId INTEGER AS Int NOT NULL,
+    sourceText TEXT NOT NULL,
+    resultText TEXT NOT NULL,
+    prompt TEXT AS EditablePrompt NOT NULL,
+    allCorpus TEXT AS List<Pair<String, String>> NOT NULL,
+    sourceTextSegments TEXT AS List<Int> NOT NULL,
+    resultTextSegments TEXT AS List<Int> NOT NULL,
+    translatedLength INTEGER AS Int NOT NULL,
+    createTime INTEGER NOT NULL DEFAULT 0,
+    updateTime INTEGER NOT NULL DEFAULT 0,
+    remark TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS transFavorite (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    sourceString TEXT NOT NULL,
+    resultText TEXT NOT NULL,
+    sourceLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    targetLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    engineName TEXT NOT NULL DEFAULT '未知引擎',
+    time INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS transHistory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    sourceString TEXT NOT NULL,
+    sourceLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    targetLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
+    engineNames TEXT AS List<String> NOT NULL DEFAULT '[]',
+    time INTEGER NOT NULL
+);
+
+-- Create the new tables in the existing database
+INSERT OR IGNORE INTO transHistory       SELECT * FROM table_trans_history;
+INSERT OR IGNORE INTO transFavorite      SELECT * FROM table_trans_favorite;
+INSERT OR IGNORE INTO longTextTransTasks SELECT * FROM table_long_text_trans_tasks;
+INSERT OR IGNORE INTO plugin             SELECT * FROM table_js;
+INSERT OR IGNORE INTO drafts             SELECT * FROM table_drafts;
+INSERT OR IGNORE INTO chatHistory        SELECT * FROM table_chat_history;
+
+-- Drop the old tables
+DROP TABLE IF EXISTS table_trans_history;
+DROP TABLE IF EXISTS table_trans_favorite;
+DROP TABLE IF EXISTS table_long_text_trans_tasks;
+DROP TABLE IF EXISTS table_js;
+DROP TABLE IF EXISTS table_drafts;
+DROP TABLE IF EXISTS table_chat_history;
+
+-- 新增 TTS 配置表
+CREATE TABLE IF NOT EXISTS ttsConf (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    language INTEGER AS Language NOT NULL,
+    ttsProviderId TEXT NOT NULL,
+    speaker TEXT AS Speaker DEFAULT '{}' NOT NULL,
+    extraConf TEXT AS TTSExtraConf DEFAULT '{}' NOT NULL
+);
+
+-- 创建触发器
+CREATE TRIGGER updateLongTransTasksTrigger AFTER UPDATE OF chatBotId, sourceText, resultText, prompt, allCorpus, sourceTextSegments, resultTextSegments, remark ON longTextTransTasks
+BEGIN
+    UPDATE longTextTransTasks SET updateTime = CAST(strftime('%s', 'now') AS INTEGER) * 1000 WHERE id = NEW.id;
+END;

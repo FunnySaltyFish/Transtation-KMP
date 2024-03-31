@@ -9,7 +9,7 @@ import com.funny.translation.helper.DeviceUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
-import com.funny.translation.kmp.strings.ResStrings
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import java.io.IOException
 
