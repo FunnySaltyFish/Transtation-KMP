@@ -88,6 +88,9 @@ private class SlideInNode: LayoutModifierNode, Modifier.Node() {
 
     override fun onReset() {
         super.onReset()
+        coroutineScope.launch {
+            animatable.snapTo(1f)
+        }
     }
 
     override fun MeasureScope.measure(

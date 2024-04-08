@@ -3,11 +3,13 @@ package com.funny.translation.translate.ui.settings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -18,15 +20,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Checkbox
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Female
+import androidx.compose.material.icons.filled.Male
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.compose.loading.loadingList
+import com.funny.data_saver.core.getLocalDataSaverInterface
 import com.funny.translation.bean.Price
 import com.funny.translation.bean.showWithUnit
 import com.funny.translation.helper.rememberDerivedStateOf
@@ -44,9 +59,9 @@ import com.funny.translation.translate.tts.Speaker
 import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.TTSProvider
 import com.funny.translation.translate.ui.widget.HintText
-import com.funny.translation.translate.utils.expandableStickyRow
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.slideIn
+import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModel
 
 @Composable
@@ -87,44 +102,7 @@ fun TTSConfEditScreen(
         Category(
             title = ResStrings.speak_voice
         ) {
-            LazyColumn {
-                val map = vm.providerListMap
-                vm.filteredTTSProviders.forEach { provider: TTSProvider ->
-                    expandableStickyRow(
-                        expand = provider.expanded,
-                        updateExpand = { provider.expanded = it },
-                        headlineContent = {
-                            Text(
-                                text = provider.name,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 20.sp
-                            )
-                        },
-                        supportContent = {
-                            if (provider.price1kChars > Price.ZERO) {
-                                Text(
-                                    text = ResStrings.price_1k_chars.plus(provider.price1kChars.showWithUnit()),
-                                )
-                            }
-                        }
-                    ) {
-                        loadingList(
-                            map[provider]!!,
-                            retry = { vm.loadProviderList(provider) },
-                            key = { it.fullName },
-                            successFooter = {
-                                if (provider is OpenAIProvider) {
-                                    HintText(
-                                        text = ResStrings.tts_generated_by_ai_note,
-                                    )
-                                }
-                            }
-                        ) { speaker ->
-                            ConfItem(vm, speaker, provider)
-                        }
-                    }
-                }
-            }
+            ConfListPager(vm)
         }
     }
 
@@ -137,6 +115,89 @@ fun TTSConfEditScreen(
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
         )
+    }
+}
+
+// TabRow + Pager 改造主体页面
+private const val KEY_SELECTED_TAB = "TTSConfEditScreen_selectedTab"
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ColumnScope.ConfListPager(
+    vm: TTSConfEditViewModel
+) {
+    // TabRow + Pager
+    val dataSaver = getLocalDataSaverInterface()
+
+    val map = vm.providerListMap
+    val providers = vm.filteredTTSProviders
+
+    val pagerState = rememberPagerState(
+        initialPage = dataSaver.readData(KEY_SELECTED_TAB, 0),
+        pageCount = providers::size
+    )
+    val scope = rememberCoroutineScope()
+    fun changePage(index: Int) = scope.launch {
+        pagerState.animateScrollToPage(index)
+    }
+
+    TabRow(
+        selectedTabIndex = pagerState.currentPage,
+//        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.primary,
+//        indicator = { tabPositions ->
+//            SecondaryIndicator(
+//                modifier = Modifier.height(2.dp),
+//                color = MaterialTheme.colorScheme.primary
+//            )
+//        }
+    ) {
+        providers.forEachIndexed { index, provider ->
+            Tab(
+                text = { Text(provider.name) },
+                selected = pagerState.currentPage == index,
+                onClick = {
+                    changePage(index)
+                    dataSaver.saveData(KEY_SELECTED_TAB, index)
+                }
+            )
+        }
+    }
+
+    // Pager
+    HorizontalPager(
+        modifier = Modifier.fillMaxSize(),
+        state = pagerState,
+        contentPadding = PaddingValues(top = 4.dp),
+        pageSpacing = 4.dp,
+        verticalAlignment = Alignment.Top
+    ) { page: Int ->
+        val provider = providers[page]
+        val listState = map[provider]!!
+        LazyColumn {
+            loadingList(
+                listState,
+                retry = { vm.loadProviderList(provider) },
+                key = { it.fullName },
+                successHeader = {
+                    if (provider.price1kChars > Price.ZERO) {
+                        HintText(
+                            text = ResStrings.price_1k_chars.plus(provider.price1kChars.showWithUnit()),
+                        )
+                    }
+                },
+                successFooter = {
+                    if (provider is OpenAIProvider) {
+                        HintText(
+                            text = ResStrings.tts_generated_by_ai_note,
+                        )
+                    }
+                }
+            ) { speaker ->
+                ConfItem(vm, speaker, provider)
+            }
+        }
+
     }
 }
 
@@ -162,14 +223,20 @@ private fun RowScope.SelectGender(
     vm: TTSConfEditViewModel,
     gender: Gender,
 ) {
-    val checked by rememberDerivedStateOf { vm.gender.contains(gender) }
-    Checkbox(
-        checked = checked,
-        onCheckedChange = {
-            vm.updateGenderChecked(newValue = gender, checked = it)
+    val selected by rememberDerivedStateOf { vm.gender.contains(gender) }
+    FilterChip(
+        selected = selected,
+        onClick = {
+            vm.updateGenderChecked(newValue = gender, checked = !selected)
+        },
+        label = {
+            Text(gender.displayName)
+        },
+        leadingIcon = {
+            val icon = if (gender == Gender.Male) Icons.Default.Male else Icons.Default.Female
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
         }
     )
-    Text(gender.displayName)
 }
 
 @Composable
@@ -178,7 +245,11 @@ private fun ConfItem(
     speaker: Speaker,
     provider: TTSProvider
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(horizontal = 0.dp, vertical = 4.dp)
+            .background(MaterialTheme.colorScheme.primaryContainer , RoundedCornerShape(4.dp))
+            .slideIn()
+    ) {
         val selected = vm.speaker == speaker
         val onClick = {
             if (!vm.speaking) {
@@ -186,7 +257,8 @@ private fun ConfItem(
             }
         }
         ListItem(
-            modifier = Modifier.clickable(onClick = onClick).slideIn(),
+            modifier = Modifier
+                .clickable(onClick = onClick),
             headlineContent = {
                 Text(speaker.shortName)
             },
@@ -194,9 +266,16 @@ private fun ConfItem(
                 RadioButton(
                     selected = selected,
                     onClick = onClick,
-                    enabled = !vm.speaking
+                    enabled = !vm.speaking,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = MaterialTheme.colorScheme.primary,
+
+                    )
                 )
-            }
+            },
+            colors = ListItemDefaults.colors(
+                containerColor = Color.Transparent
+            )
         )
         AnimatedVisibility(
             visible = selected,

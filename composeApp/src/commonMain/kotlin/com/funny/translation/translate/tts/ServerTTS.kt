@@ -50,7 +50,9 @@ abstract class ServerTTSProvider(private val modelName: String) : TTSProvider() 
         )
 
     override suspend fun getSpeakers(gender: Gender, locale: String): List<Speaker> {
-        return api(TransNetwork.ttsService::getSpeakers, modelName, gender, locale) ?: emptyList()
+        return api(TransNetwork.ttsService::getSpeakers, modelName, gender, locale, rethrowErr = true) {
+            success {  }
+        } ?: emptyList()
     }
 
     @Composable

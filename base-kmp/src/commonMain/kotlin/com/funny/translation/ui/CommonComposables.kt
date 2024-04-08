@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -148,5 +149,11 @@ fun NavPaddingItem() {
     } else {
         // add some padding for Desktop
         Spacer(modifier = Modifier.height(8.dp))
+    }
+}
+
+fun LazyListScope.navPaddingItem() {
+    item {
+        NavPaddingItem()
     }
 }
