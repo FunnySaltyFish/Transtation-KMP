@@ -32,7 +32,7 @@ abstract class TTSProvider {
     open val price1kChars: Price = Price.ZERO
 
     var expanded by LazyMutableState {
-        mutableDataSaverStateOf(DataSaverUtils, "TTSProvider_${id}_expanded", false)
+        mutableDataSaverStateOf(DataSaverUtils, "TTSProvider_${id}_expanded", true)
     }
 
     var savedExtraConf by LazyMutableState {

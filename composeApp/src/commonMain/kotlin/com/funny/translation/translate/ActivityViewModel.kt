@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moe.tlaster.precompose.lifecycle.Lifecycle
 import moe.tlaster.precompose.lifecycle.LifecycleObserver
 import moe.tlaster.precompose.viewmodel.ViewModel
@@ -59,10 +60,18 @@ class ActivityViewModel : ViewModel(), LifecycleObserver {
             kotlin.runCatching {
                 val jsonBody = OkHttpUtils.get("${ServiceCreator.BASE_URL}/api/notice")
                 if (jsonBody != "") {
-                    noticeInfo.value = JsonX.fromJson(json = jsonBody, NoticeInfo::class)
+                    withContext(Dispatchers.Main) {
+                        noticeInfo.value = JsonX.fromJson(json = jsonBody, NoticeInfo::class)
+                    }
                 }
             }.onFailure {
-                noticeInfo.value = NoticeInfo("获取公告失败，如果网络连接没问题，则服务器可能崩了，请告知开发者修复……", Date(), null)
+                withContext(Dispatchers.Main) {
+                    noticeInfo.value = NoticeInfo(
+                        "获取公告失败，如果网络连接没问题，则服务器可能崩了，请告知开发者修复……",
+                        Date(),
+                        null
+                    )
+                }
                 it.printStackTrace()
             }
         }

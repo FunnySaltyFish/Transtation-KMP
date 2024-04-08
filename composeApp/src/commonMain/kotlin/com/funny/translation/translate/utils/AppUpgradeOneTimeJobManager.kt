@@ -20,12 +20,15 @@ object AppUpgradeOneTimeJobManager {
         jobs.forEach { (version: Float, action: ArrayList<SimpleAction>) ->
             if (version > executedVersion) {
                 maxVersion = maxOf(maxVersion, version)
-                Log.d("AppUpgradeOneTimeJobManager", "execute job [version = $version], maxVersion = $maxVersion")
+                Log.d("AppUpgradeOneTimeJobManager", "start to execute job [version = $version]")
                 action.forEach { it.invoke() }
+                Log.d("AppUpgradeOneTimeJobManager", "finish to execute job [version = $version], len = ${action.size}")
             }
         }
-        DataSaverUtils.saveData(DATA_SAVER_KEY, maxVersion)
-        Log.d("AppUpgradeOneTimeJobManager", "save maxVersion = $maxVersion")
+        if (maxVersion > executedVersion) {
+            DataSaverUtils.saveData(DATA_SAVER_KEY, maxVersion)
+            Log.d("AppUpgradeOneTimeJobManager", "save maxVersion = $maxVersion")
+        }
     }
 
     fun addJob(version: Float, action: SimpleAction) {
