@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -38,7 +37,7 @@ import com.funny.translation.ui.theme.ThemeType
 actual fun SelectDynamicTheme(modifier: Modifier) {
     Column(modifier = modifier) {
         val context = LocalContext.current
-        var themeType by ThemeConfig.sThemeType
+        val themeType by ThemeConfig.sThemeType
         var selectImageUri: Uri? by rememberDataSaverState<Uri?>(
             key = "key_dynamic_theme_selected_img_uri",
             initialValue = null
@@ -95,6 +94,6 @@ private fun changeThemeFromImageUri(context: Context, uri: Uri) {
     val bytes = BitmapUtil.getBitmapFromUri(context, 400, 600, 1024*1024, uri.toUri())
     bytes ?: return
     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-    val color = bitmap.getKeyColors(1)[0]
+    val color = bitmap.getKeyColors(1).firstOrNull() ?: return
     ThemeConfig.updateThemeType(ThemeType.DynamicFromImage(color))
 }

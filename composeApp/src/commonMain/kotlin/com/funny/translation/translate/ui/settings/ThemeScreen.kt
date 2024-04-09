@@ -5,10 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -34,8 +32,8 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.ui.widget.HeadingText
 import com.funny.translation.translate.ui.widget.RadioTile
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.theme.ThemeConfig
 import com.funny.translation.ui.theme.ThemeStaticColors
@@ -45,19 +43,15 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun ThemeScreen() {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp, vertical = 12.dp)
-            .background(MaterialTheme.colorScheme.surface)
+    CommonPage(
+        title = ResStrings.theme,
+        modifier = Modifier.padding(horizontal = 16.dp),
     ) {
         val themeType by ThemeConfig.sThemeType
         var selectedColorIndex by rememberDataSaverState<Int>(
             key = "key_color_theme_selected_index",
             initialValue = 0
         )
-        Spacer(modifier = Modifier.height(40.dp))
-        HeadingText(text = ResStrings.theme)
         Spacer(modifier = Modifier.height(16.dp))
         Box(
             modifier = Modifier
