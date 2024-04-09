@@ -348,4 +348,6 @@
     <string name="add_config">Add Config</string>
     <string name="apply_config_to">Apply config to...</string>
     <string name="current_config">Current Config: </string>
+    <string name="ai_trans_explain">Explain When Using LLMs</string>
+    <string name="ai_trans_explain_desc">When the input text is short, the large model will provide additional detailed explanations (this will take more time)</string>
 </resources>

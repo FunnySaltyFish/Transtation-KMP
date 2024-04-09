@@ -17,6 +17,7 @@ object Consts {
     const val KEY_USER_INFO = "user_info"
     const val KEY_APP_CURRENT_SCREEN = "key_app_nav_current_screen"
     const val KEY_APP_LANGUAGE = "app_language"
+    const val KEY_AI_TRANS_EXPLAIN = "ai_trans_explain"
 
     const val EXTRA_USER_INFO = "extra_user_info"
 

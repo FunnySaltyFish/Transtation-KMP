@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.Checkbox
@@ -171,6 +172,14 @@ fun SettingsScreen() {
                 resourceName = "ic_float_window",
                 text = ResStrings.setting_text_menu_floating_window,
                 description = ResStrings.setting_text_menu_floating_window_desc
+            ) {
+
+            }
+            JetSettingSwitch(
+                state = AppConfig.sAITransExplain,
+                imageVector = Icons.Default.Insights,
+                text = ResStrings.ai_trans_explain,
+                description = ResStrings.ai_trans_explain_desc
             ) {
 
             }

@@ -43,6 +43,7 @@ object AppConfig {
     val sShowFloatWindow = mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_SHOW_FLOAT_WINDOW, false)
     val sDefaultSourceLanguage = mutableDataSaverStateOf(DataSaverUtils, "KEY_DEFAULT_SOURCE_LANGUAGE", Language.AUTO)
     val sDefaultTargetLanguage = mutableDataSaverStateOf(DataSaverUtils, "KEY_DEFAULT_TARGET_LANGUAGE", Language.CHINESE)
+    val sAITransExplain = mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_AI_TRANS_EXPLAIN, true)
 
     // 以下为Pro专享
     val sParallelTrans = mutableDataSaverStateOf(DataSaverUtils, "KEY_PARALLEL_TRANS", false)
