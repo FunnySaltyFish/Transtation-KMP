@@ -62,6 +62,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.compose.loading.LoadingContent
@@ -107,9 +108,8 @@ internal fun MainPartNormal(
     showEngineSelectAction: () -> Unit,
     openDrawerAction: SimpleAction?,
 ) {
-    val swipeableState = rememberSwipeableState(SwipeShowType.Main)
     val scope = rememberCoroutineScope()
-
+    val swipeableState = rememberSwipeableState(initialValue = SwipeShowType.Main)
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPostScroll(
@@ -117,16 +117,24 @@ internal fun MainPartNormal(
                 available: Offset,
                 source: NestedScrollSource
             ): Offset {
-                // 因为 HistoryScreen 是列表，如果滑到底部仍然有多余的滑动距离，就关闭
+                // 因为前景是列表，如果滑到底部仍然有多余的滑动距离，就关闭
                 // Log.d("NestedScrollConnection", "onPostScroll: $available")
-                if (!swipeableState.isAnimationRunning && source == NestedScrollSource.Drag && available.y < -30.0f) {
-                    scope.launch {
-                        swipeableState.animateTo(SwipeShowType.Main)
-                    }
-                    return Offset(0f, available.y)
+                // 读者可以自行运行这行代码，滑动列表到底部后仍然上滑，看看上面会打印什么，就能明白这个 available 的作用了
+                return if (available.y < 0 && source == NestedScrollSource.Drag) {
+                    swipeableState.performDrag(available.toFloat()).toOffset()
+                } else {
+                    Offset.Zero
                 }
-                return super.onPostScroll(consumed, available, source)
             }
+
+            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                swipeableState.performFling(velocity = Offset(available.x, available.y).toFloat())
+                return available
+            }
+
+            private fun Float.toOffset(): Offset = Offset(0f, this)
+
+            private fun Offset.toFloat(): Float = this.y
         }
     }
 
