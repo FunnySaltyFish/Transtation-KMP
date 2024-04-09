@@ -5,10 +5,12 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.funny.translation.AppConfig
 import com.funny.translation.helper.DeviceUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
+import com.funny.translation.network.ServiceCreator
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import java.io.IOException
@@ -42,6 +44,7 @@ actual object AudioPlayer {
         }
         val url = TTSConfManager.getURL(word, language) ?: return
         Log.d(TAG, "play: url:$url")
+
         try {
             mediaPlayer.setOnErrorListener { _, _, _ ->
                 onError(IOException("Load internet media error!"))
@@ -71,7 +74,16 @@ actual object AudioPlayer {
                 }
             }
             mediaPlayer.reset()
-            mediaPlayer.setDataSource(appCtx, Uri.parse(url))
+
+            val uri = Uri.parse(url)
+            val headers = hashMapOf<String, String>()
+            // 访问 trans/v1下的所有api均带上请求头-jwt
+            if (uri.path?.startsWith(ServiceCreator.TRANS_PATH) == true){
+                val jwt = AppConfig.jwtToken
+                if (jwt != "") headers["Authorization"] = "Bearer $jwt"
+            }
+
+            mediaPlayer.setDataSource(appCtx, uri, headers)
             mediaPlayer.prepareAsync()
             currentPlayingText = word
             playbackState = PlaybackState.LOADING

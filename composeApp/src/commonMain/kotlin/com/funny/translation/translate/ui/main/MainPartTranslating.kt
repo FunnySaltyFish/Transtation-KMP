@@ -233,11 +233,19 @@ internal fun SpeakButton(
             speakerState.reset()
         }
     }
-    Box (contentAlignment = Alignment.Center, modifier = Modifier.size(48.dp)) {
-        when (AudioPlayer.playbackState) {
-            PlaybackState.IDLE, PlaybackState.PLAYING -> {
+    Box (contentAlignment = Alignment.Center, modifier = modifier.size(48.dp)) {
+        val playbackState = AudioPlayer.playbackState
+        when {
+            playbackState == PlaybackState.LOADING && text == AudioPlayer.currentPlayingText -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp,
+                )
+            }
+
+            else -> {
                 Box(
-                    modifier = modifier.size(48.dp).clip(CircleShape).combinedClickable(
+                    modifier = Modifier.size(48.dp).clip(CircleShape).combinedClickable(
                         onLongClick = {
                             TTSConfManager.jumpToEdit(navController, language)
                         },
@@ -273,12 +281,6 @@ internal fun SpeakButton(
                 }
             }
 
-            PlaybackState.LOADING -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center).size(24.dp),
-                    strokeWidth = 2.dp,
-                )
-            }
         }
     }
 }
