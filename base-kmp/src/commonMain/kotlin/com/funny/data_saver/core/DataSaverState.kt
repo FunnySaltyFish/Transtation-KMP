@@ -291,8 +291,7 @@ inline fun <reified T> mutableDataSaverStateOf(
     coroutineScope: CoroutineScope? = null
 ): DataSaverMutableState<T> {
     val data = try {
-        if (!dataSaverInterface.contains(key)) initialValue
-        else dataSaverInterface.readData(key, initialValue)
+        dataSaverInterface.readData(key, initialValue)
     } catch (e: Exception) {
         val restore = DataSaverConverter.findRestorer<T>()
         restore ?: throw e

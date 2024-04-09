@@ -29,7 +29,7 @@ open class DataSaverMMKV(
                 is Double -> encode(key, data)
                 is Parcelable -> encode(key, data)
                 is ByteArray -> encode(key, data)
-                else -> throw IllegalArgumentException("Unable to save $data, this type(${data!!::class.java}) cannot be saved to MMKV, call [registerTypeConverters] to support it.")
+                else -> throwError("save", data)
             }
             notifyExternalDataChanged(key, data)
         }
@@ -45,7 +45,7 @@ open class DataSaverMMKV(
             is Double -> decodeDouble(key, default)
             is Parcelable -> decodeParcelable(key, (default as Parcelable)::class.java) ?: default
             is ByteArray -> decodeBytes(key, default)!!
-            else -> throw IllegalArgumentException("Unable to read $default, this type(${default!!::class.java}) cannot be read from MMKV, call [registerTypeConverters] to support it.")
+            else -> throwError("read", default)
         }
         return@with res as T
     }

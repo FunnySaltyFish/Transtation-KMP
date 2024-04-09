@@ -21,6 +21,11 @@ abstract class DataSaverInterface(val senseExternalDataChange: Boolean = false) 
 
     var externalDataChangedFlow: MutableSharedFlow<Pair<String, Any?>>? =
         if (senseExternalDataChange) MutableSharedFlow(replay = 1) else null
+
+    protected fun <T> throwError(action: String = "read", data: T): Nothing {
+        val type = if (data == null) "null" else data!!::class.simpleName
+        throw IllegalArgumentException("Unable to $action $data, this type($type) is not supported, call [registerTypeConverters] to support it.")
+    }
 }
 
 /**

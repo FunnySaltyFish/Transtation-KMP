@@ -38,7 +38,7 @@ class DataSaverProperties(private val filePath: String) : DataSaverInterface() {
             is Double -> value.toDoubleOrNull() ?: default
             is Float -> value.toFloatOrNull() ?: default
             is String -> value
-            else -> throw IllegalArgumentException("Unable to read $default, this type(${default!!::class.java}) cannot be read from Properties, call [registerTypeConverters] to support it.")
+            else -> throwError("read", default)
         } as T
     }
 

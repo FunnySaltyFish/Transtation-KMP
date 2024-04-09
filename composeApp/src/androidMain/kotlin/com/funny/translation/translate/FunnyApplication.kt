@@ -3,6 +3,7 @@ package com.funny.translation.translate
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.funny.data_saver.core.DataSaverConverter
@@ -30,6 +31,11 @@ class FunnyApplication : BaseApplication() {
             DataSaverConverter.registerTypeConverters<EditorSchemes>(
                 save = { it.name },
                 restore = { EditorSchemes.valueOf(it) }
+            )
+
+            DataSaverConverter.registerTypeConverters<Uri?>(
+                save = { it.toString() },
+                restore = { if (it == "null") null else Uri.parse(it) }
             )
         }
     }
