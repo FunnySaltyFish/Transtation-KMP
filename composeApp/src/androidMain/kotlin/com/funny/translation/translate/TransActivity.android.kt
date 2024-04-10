@@ -43,6 +43,7 @@ actual class TransActivity : BaseActivity() {
     private var initialized = false
 
 
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -81,6 +82,15 @@ actual class TransActivity : BaseActivity() {
                     )
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (initialized) {
+            // 由于 PreCompose 的 ViewModel 不支持 Activity 生命周期的分发，手动分发一个 Active 事件
+            // 供实现“打开应用自动打开软键盘”的功能
+            activityViewModel.onStateChanged(moe.tlaster.precompose.lifecycle.Lifecycle.State.Active)
         }
     }
 

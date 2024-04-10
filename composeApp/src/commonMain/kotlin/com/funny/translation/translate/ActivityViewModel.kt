@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.JsonX
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.UserUtils
 import com.funny.translation.network.OkHttpUtils
 import com.funny.translation.network.ServiceCreator
@@ -55,7 +56,7 @@ class ActivityViewModel : ViewModel(), LifecycleObserver {
         }
     }
 
-    fun getNotice() {
+    private fun getNotice() {
         viewModelScope.launch (Dispatchers.IO) {
             kotlin.runCatching {
                 val jsonBody = OkHttpUtils.get("${ServiceCreator.BASE_URL}/api/notice")
@@ -79,7 +80,7 @@ class ActivityViewModel : ViewModel(), LifecycleObserver {
 
     override fun onStateChanged(state: Lifecycle.State) {
         viewModelScope.launch {
-            // Log.d(TAG, "onStateChanged: emit $event")
+            Log.d(TAG, "onStateChanged: emit $state")
             // 等待 Composable 订阅，以避免 Composable 未订阅时发送的事件丢失
             while (activityLifecycleState.subscriptionCount.value == 0) {
                 delay(100)
