@@ -28,7 +28,7 @@ kotlin {
             implementation(libs.sqldelight.android.driver)
 
             // 图片选择器
-            implementation(project.dependencies.platform("cn.qhplus.emo:bom:2023.08.00"))
+            implementation(project.dependencies.platform("cn.qhplus.emo:bom:2024.03.00"))
             implementation("cn.qhplus.emo:photo-coil")
             // 图片裁剪
             implementation("com.github.yalantis:ucrop:2.2.6")
