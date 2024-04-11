@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -460,7 +460,7 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
                                 remember { (part.height * imageInitialScale / density.density).dp }
                             AutoResizedText(
                                 modifier = Modifier
-                                    .size(w, h)
+                                    .requiredSize(w, h)
                                     .offset {
                                         IntOffset(
                                             (part.x * imageInitialScale).toInt(),
