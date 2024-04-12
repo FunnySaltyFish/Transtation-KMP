@@ -16,4 +16,12 @@ sealed class LoadingState<out R> {
         get() = this is Loading
     val isSuccess
         get() = this is Success<*>
+
+    fun <R> getOrNull(): R? {
+        return (this as? Success<R>)?.data
+    }
+
+    fun <R> getOrDefault(default: R): R {
+        return (this as? Success<R>)?.data ?: default
+    }
 }

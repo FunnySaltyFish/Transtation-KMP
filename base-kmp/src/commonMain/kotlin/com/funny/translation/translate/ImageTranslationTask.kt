@@ -7,10 +7,10 @@ import kotlinx.serialization.SerialName
 data class ImageTranslationPart(
     val source: String,
     var target: String,
-    val x: Int,
-    val y: Int,
-    val width: Int,
-    val height: Int
+    val x: Int = 0,
+    val y: Int = 0,
+    val width: Int = 100,
+    val height: Int = 100
 )
 
 @kotlinx.serialization.Serializable

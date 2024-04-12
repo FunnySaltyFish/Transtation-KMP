@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.autoSaver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.StateFactoryMarker
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -47,7 +46,6 @@ inline fun <reified T : Any> rememberSaveableStateOf(
     } as MutableState<T>
 }
 
-@StateFactoryMarker
 @Composable
 fun <T> rememberDerivedStateOf(calculation: () -> T) = remember {
     derivedStateOf(calculation)

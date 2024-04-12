@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -104,6 +106,20 @@ actual fun ImageTransScreen(
     doClipFirst: Boolean
 ) {
     val vm: ImageTransViewModel = viewModel()
+    when (vm.currentPage) {
+        ImageTransPage.Main -> ImageTransMain(vm, imageUri, sourceId, targetId, doClipFirst)
+        ImageTransPage.ResultList -> ImageTransResultList(vm)
+    }
+}
+
+@Composable
+private fun ImageTransMain(
+    vm: ImageTransViewModel,
+    imageUri: KMPUri?,
+    sourceId: Int?,
+    targetId: Int?,
+    doClipFirst: Boolean
+) {
     val context = LocalKMPContext.current
     val imagePickResult: MutableState<PhotoPickResult?> = remember {
         mutableStateOf(null)
@@ -222,7 +238,6 @@ actual fun ImageTransScreen(
                 enabledLanguages = currentEnabledLanguages
             )
         }
-
     }
 
 }
@@ -366,7 +381,7 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
     val density = LocalDensity.current
     var showResult by remember { mutableStateOf(true) }
     // 图片为了铺满屏幕进行的缩放
-    var imageInitialScale by remember { mutableStateOf(1f) }
+    var imageInitialScale by remember { mutableFloatStateOf(1f) }
     var scaleByWidth by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
@@ -407,7 +422,7 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
             }
         }
         GestureContent(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .drawBehind { drawRect(Color.Black) },
             state = gestureState,
@@ -452,24 +467,26 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
                                 )
                             }
                     ) {
-                        val data = (vm.translateState as LoadingState.Success).data
-                        data.content.forEach { part ->
-                            val w =
-                                remember { (part.width * imageInitialScale / density.density).dp }
-                            val h =
-                                remember { (part.height * imageInitialScale / density.density).dp }
-                            AutoResizedText(
-                                modifier = Modifier
-                                    .requiredSize(w, h)
-                                    .offset {
-                                        IntOffset(
-                                            (part.x * imageInitialScale).toInt(),
-                                            (part.y * imageInitialScale).toInt()
-                                        )
-                                    },
-                                text = part.target,
-                                color = Color.White,
-                            )
+                        SelectionContainer {
+                            val data = (vm.translateState as LoadingState.Success).data
+                            data.content.forEach { part ->
+                                val w =
+                                    remember { (part.width * imageInitialScale / density.density).dp }
+                                val h =
+                                    remember { (part.height * imageInitialScale / density.density).dp }
+                                AutoResizedText(
+                                    modifier = Modifier
+                                        .requiredSize(w, h)
+                                        .offset {
+                                            IntOffset(
+                                                (part.x * imageInitialScale).toInt(),
+                                                (part.y * imageInitialScale).toInt()
+                                            )
+                                        },
+                                    text = part.target,
+                                    color = Color.White,
+                                )
+                            }
                         }
                     }
 
