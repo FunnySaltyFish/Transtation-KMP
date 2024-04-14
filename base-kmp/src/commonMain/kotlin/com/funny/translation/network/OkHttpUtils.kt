@@ -153,7 +153,7 @@ object OkHttpUtils {
                 .loggable(BuildConfig.DEBUG)
                 .request()
                 .response()
-                .excludePath(TRANS_PATH + "ai/generate_stream")
+                .excludePath(TRANS_PATH + "ai/ask_stream")
                 .build()
         )
 

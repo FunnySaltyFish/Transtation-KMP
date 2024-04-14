@@ -29,9 +29,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -76,6 +78,8 @@ import com.funny.translation.AppConfig
 import com.funny.translation.helper.BitmapUtil
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.Log
+import com.funny.translation.helper.SimpleAction
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.appCtx
@@ -90,6 +94,7 @@ import com.funny.translation.translate.ui.widget.AutoResizedText
 import com.funny.translation.translate.ui.widget.CustomCoilProvider
 import com.funny.translation.translate.ui.widget.ExchangeButton
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.floatingActionBarModifier
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.math.min
@@ -105,21 +110,26 @@ actual fun ImageTransScreen(
     targetId: Int?,
     doClipFirst: Boolean
 ) {
-    val vm: ImageTransViewModel = viewModel()
-    when (vm.currentPage) {
-        ImageTransPage.Main -> ImageTransMain(vm, imageUri, sourceId, targetId, doClipFirst)
-        ImageTransPage.ResultList -> ImageTransResultList(vm)
+    var currentPage by rememberStateOf(ImageTransPage.Main)
+    val updateCurrentPage = remember {
+        { page: ImageTransPage -> currentPage = page }
+    }
+    when (currentPage) {
+        ImageTransPage.Main -> ImageTransMain(imageUri, sourceId, targetId, doClipFirst, updateCurrentPage)
+        ImageTransPage.ResultList -> ImageTransResultList(updateCurrentPage)
     }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 private fun ImageTransMain(
-    vm: ImageTransViewModel,
     imageUri: KMPUri?,
     sourceId: Int?,
     targetId: Int?,
-    doClipFirst: Boolean
+    doClipFirst: Boolean,
+    updateCurrentPage: (ImageTransPage) -> Unit
 ) {
+    val vm = viewModel<ImageTransViewModel>()
     val context = LocalKMPContext.current
     val imagePickResult: MutableState<PhotoPickResult?> = remember {
         mutableStateOf(null)
@@ -133,7 +143,7 @@ private fun ImageTransMain(
         }
         onDispose {
             vm.imageUri = null
-            vm.cancel()
+            vm.cancelTranslateJob()
         }
     }
 
@@ -197,7 +207,7 @@ private fun ImageTransMain(
     }
 
     if (vm.imageUri != null) {
-        ImageTranslationPart(vm = vm)
+        ImageTranslationPart(vm = vm, updateCurrentPage = updateCurrentPage)
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
             CameraCapture(
@@ -320,7 +330,8 @@ private fun LanguageSelect(
 
 @Composable
 private fun ImageTranslationPart(
-    vm: ImageTransViewModel
+    vm: ImageTransViewModel,
+    updateCurrentPage: (ImageTransPage) -> Unit
 ) {
     val goBackTipDialogState = remember {
         mutableStateOf(false)
@@ -373,6 +384,23 @@ private fun ImageTranslationPart(
             )
         }
         ResultPart(modifier = Modifier.fillMaxSize(), vm = vm)
+    }
+
+    FloatButtonRow(
+        onClick = { updateCurrentPage(ImageTransPage.ResultList) }
+    )
+}
+
+@Composable
+private fun FloatButtonRow(
+    onClick: SimpleAction
+) {
+    FloatingActionButton(
+        onClick = onClick,
+        modifier = Modifier.floatingActionBarModifier()
+    ) {
+        // 解析结果
+        FixedSizeIcon(imageVector = Icons.Filled.ViewList, contentDescription = "Next", tint = Color.White)
     }
 }
 

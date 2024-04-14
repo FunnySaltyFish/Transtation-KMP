@@ -8,18 +8,11 @@ import androidx.compose.runtime.setValue
 import com.funny.compose.ai.bean.ChatMemoryFixedMsgLength
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.ChatMessageReq
-import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.bean.SENDER_ME
 import com.funny.compose.ai.bean.StreamMessage
-import com.funny.compose.ai.chat.ModelChatBot
-import com.funny.compose.ai.chat.TestLongTextChatBot
-import com.funny.compose.ai.utils.ModelManager
-import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.bean.EditablePrompt
-import com.funny.translation.helper.BaseViewModel
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.DataHolder
-import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.JsonX
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.TextSplitter
@@ -31,6 +24,7 @@ import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.LongTextTransTask
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.longTextTransDao
+import com.funny.translation.translate.ui.ai.ModelViewModel
 import com.funny.translation.translate.ui.long_text.bean.TermList
 import com.funny.translation.translate.utils.createFileIfNotExist
 import kotlinx.coroutines.Dispatchers
@@ -57,14 +51,10 @@ internal enum class ScreenState {
     Init, Translating, Result
 }
 
-class LongTextTransViewModel: BaseViewModel() {
+class LongTextTransViewModel: ModelViewModel() {
     private val dao = appDB.longTextTransDao
     internal var task: LongTextTransTask? by mutableStateOf(null)
     internal var screenState by mutableStateOf(ScreenState.Init)
-
-    var chatBot: ModelChatBot by mutableStateOf(TestLongTextChatBot())
-    var modelList by mutableStateOf(listOf<Model>())
-    var selectedModelId by mutableDataSaverStateOf(DataSaverUtils,"selected_chat_model_id", 0)
 
     private var totalLength = 0
     var translatedLength by mutableIntStateOf(0)
@@ -117,19 +107,6 @@ class LongTextTransViewModel: BaseViewModel() {
     private val recordObj = JSONObject()
     private var recordProcess = JSONArray()
     private var recordOutput = JSONArray()
-
-    init {
-        submit(context = Dispatchers.Default) {
-            delay(500)
-            modelList = ModelManager.models.await()
-
-            if (modelList.isEmpty()) return@submit
-
-            chatBot = (modelList.find { it.chatBotId == selectedModelId } ?: modelList[0]).let {
-                ModelChatBot(it)
-            }
-        }
-    }
 
     fun initArgs(id:String) {
         this.transId = id
@@ -429,10 +406,7 @@ class LongTextTransViewModel: BaseViewModel() {
     fun resetPrompt() { prompt = DEFAULT_PROMPT }
     fun updateEditingTermState(isEditing: Boolean) { isEditingTerm = isEditing }
     fun updateSourceText(text: String) { sourceText = text; totalLength = text.length }
-    fun updateBot(model: Model) {
-        chatBot = ModelChatBot(model)
-        selectedModelId = model.chatBotId
-    }
+
     fun updateRemark(taskId: String, remark: String) {
         task ?: return
         dbAction {

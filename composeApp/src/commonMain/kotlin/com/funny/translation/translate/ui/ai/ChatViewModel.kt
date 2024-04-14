@@ -10,39 +10,31 @@ import com.funny.compose.ai.bean.ChatMemoryFixedMsgLength
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.ChatMessageReq
 import com.funny.compose.ai.bean.ChatMessageTypes
-import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.bean.SENDER_ME
 import com.funny.compose.ai.bean.StreamMessage
-import com.funny.compose.ai.chat.ChatBot
-import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.compose.ai.service.AskStreamRequest
 import com.funny.compose.ai.service.aiService
 import com.funny.compose.ai.service.askAndProcess
-import com.funny.compose.ai.utils.ModelManager
 import com.funny.data_saver.core.mutableDataSaverStateOf
-import com.funny.translation.helper.BaseViewModel
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.displayMsg
 import com.funny.translation.helper.toastOnUi
-import com.funny.translation.kmp.NAV_ANIM_DURATION
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.chatHistoryDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
 private const val TAG = "ChatViewModel"
 
-class ChatViewModel: BaseViewModel() {
+class ChatViewModel: ModelViewModel() {
     private val dao = appDB.chatHistoryDao
 
     val inputText = mutableStateOf("")
-    val chatBot: MutableState<ChatBot> = mutableStateOf(ModelChatBot.Empty)
     val messages: SnapshotStateList<ChatMessage> = mutableStateListOf()
     var currentMessage: ChatMessage? by mutableStateOf(null)
     val convId: MutableState<String?> = mutableStateOf(null)
@@ -50,26 +42,12 @@ class ChatViewModel: BaseViewModel() {
     val memory = ChatMemoryFixedMsgLength(3)
 
     var checkingPrompt by mutableStateOf(false)
-
-    var modelList = mutableStateListOf<Model>()
-    var selectedModelId by mutableDataSaverStateOf(DataSaverUtils,"selected_chat_model_id", 0)
-
+    
     private var job: Job? = null
 
     init {
         // TODO 更改为多个 ConvId 的支持
         convId.value = "convId"
-
-        submit(context = Dispatchers.Default) {
-            delay(NAV_ANIM_DURATION.toLong())
-            modelList.addAll(ModelManager.models.await())
-
-            if (modelList.isEmpty()) return@submit
-
-            chatBot.value = (modelList.find { it.chatBotId == selectedModelId } ?: modelList[0]).let {
-                ModelChatBot(it)
-            }
-        }
 
         messages.addAll(dao.getMessagesByConversationId(convId.value!!))
     }
@@ -85,7 +63,7 @@ class ChatViewModel: BaseViewModel() {
         val convId = convId.value ?: return
         addMessage(
             ChatMessage(
-                botId = chatBot.value.id,
+                botId = chatBot.id,
                 conversationId = convId,
                 sender = sender,
                 content = message,
@@ -98,9 +76,9 @@ class ChatViewModel: BaseViewModel() {
         val convId = convId.value ?: return
         addMessage(
             ChatMessage(
-                botId = chatBot.value.id,
+                botId = chatBot.id,
                 conversationId = convId,
-                sender = chatBot.value.name,
+                sender = chatBot.name,
                 content = "",
                 error = error,
                 type = ChatMessageTypes.ERROR
@@ -118,14 +96,14 @@ class ChatViewModel: BaseViewModel() {
 
     private fun startAsk(message: String) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            chatBot.value.chat(convId.value, message, messages, systemPrompt, memory).collect {
+            chatBot.chat(convId.value, message, messages, systemPrompt, memory).collect {
                 Log.d(TAG, "received stream msg: $it")
                 when (it) {
                     is StreamMessage.Start -> {
                         currentMessage = ChatMessage(
-                            botId = chatBot.value.id,
+                            botId = chatBot.id,
                             conversationId = convId.value!!,
-                            sender = chatBot.value.name,
+                            sender = chatBot.name,
                             content = "",
                             type = it.type
                         )
@@ -154,7 +132,7 @@ class ChatViewModel: BaseViewModel() {
             try {
                 val txt = aiService.askAndProcess(
                     AskStreamRequest(
-                        chatBot.value.id,
+                        chatBot.id,
                         listOf(ChatMessageReq("user", newPrompt)),
                         CHECK_PROMPT_PROMPT,
                     )
@@ -197,13 +175,10 @@ class ChatViewModel: BaseViewModel() {
         val lastMyMsg = messages.last()
         startAsk(lastMyMsg.content)
     }
+
     
     fun updateInputText(text: String) { inputText.value = text }
     fun updateSystemPrompt(prompt: String) { systemPrompt = prompt }
-    fun updateBot(model: Model) {
-        chatBot.value = ModelChatBot(model)
-        selectedModelId = model.chatBotId
-    }
 
     companion object {
         private const val BASE_PROMPT = "You're ChatGPT, a helpful AI assistant."

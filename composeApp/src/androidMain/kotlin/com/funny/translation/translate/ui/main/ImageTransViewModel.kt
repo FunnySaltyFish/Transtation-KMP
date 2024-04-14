@@ -6,12 +6,17 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.eygraber.uri.toUri
+import com.funny.compose.ai.bean.ChatMessageReq
+import com.funny.compose.ai.bean.Model
+import com.funny.compose.ai.bean.StreamMessage
+import com.funny.compose.ai.service.AskStreamRequest
+import com.funny.compose.ai.service.aiService
+import com.funny.compose.ai.service.askAndParseStream
 import com.funny.compose.loading.LoadingState
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.AppConfig
 import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.helper.BitmapUtil
-import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
@@ -23,20 +28,26 @@ import com.funny.translation.translate.database.DefaultData
 import com.funny.translation.translate.engine.ImageTranslationEngine
 import com.funny.translation.translate.engine.ImageTranslationEngines
 import com.funny.translation.translate.engine.selectKey
+import com.funny.translation.translate.ui.ai.ModelViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import org.json.JSONArray
+import java.util.LinkedList
 
 enum class ImageTransPage {
     Main, ResultList
 }
 
-class ImageTransViewModel : ViewModel() {
-    var currentPage by mutableStateOf(ImageTransPage.ResultList)
+class MultiIndexedImageTranslationPart(val indexes: IntArray, val part: ImageTranslationPart)
 
+typealias SingleIndexedImageTranslationPart = Pair<Int, ImageTranslationPart>
+
+class ImageTransViewModel : ModelViewModel() {
     var imageUri: Uri? by mutableStateOf(null)
     var translateEngine: ImageTranslationEngine by mutableStateOf(ImageTranslationEngines.Baidu)
     private var translateJob: Job? = null
@@ -51,7 +62,8 @@ class ImageTransViewModel : ViewModel() {
     var allEngines = arrayListOf(ImageTranslationEngines.Baidu, ImageTranslationEngines.Tencent)
 
     // 下面是处理结果的相关
-    var selectedResultParts = mutableStateListOf<ImageTranslationPart>()
+    var selectedResultParts = mutableStateListOf<SingleIndexedImageTranslationPart>()
+    var optimizeByAITask: OptimizeByAITask? by mutableStateOf(null)
 
     init {
         translateEngine = DefaultData.bindImageEngines.firstOrNull {
@@ -59,18 +71,18 @@ class ImageTransViewModel : ViewModel() {
         } ?: ImageTranslationEngines.Baidu
 
         // mock data
-        translateState = LoadingState.Success(
-            ImageTranslationResult(
-                source = "source",
-                target = "target",
-                content = listOf(
-                    ImageTranslationPart("白日依山尽", "The white sun sets behind the mountains"),
-                    ImageTranslationPart("黄河入海流", "The Yellow River flows into the sea"),
-                    ImageTranslationPart("欲穷千里目", "If you want to see a thousand miles"),
-                    ImageTranslationPart("更上一层楼", "Climb to a higher level")
-                )
-            )
-        )
+//        translateState = LoadingState.Success(
+//            ImageTranslationResult(
+//                source = "source",
+//                target = "target",
+//                content = listOf(
+//                    ImageTranslationPart("白日依山尽", "The white sun sets behind the mountains"),
+//                    ImageTranslationPart("黄河入海流", "The Yellow River flows into the sea"),
+//                    ImageTranslationPart("欲穷千里目", "If you want to see a thousand miles"),
+//                    ImageTranslationPart("更上一层楼", "Climb to a higher level")
+//                )
+//            )
+//        )
     }
 
     // 翻译相关
@@ -114,17 +126,16 @@ class ImageTransViewModel : ViewModel() {
         }
     }
 
-    fun cancel() {
+    fun cancelTranslateJob() {
         translateJob?.cancel()
-        translateState = LoadingState.Loading
     }
 
     // 处理结果相关
-    fun updateSelectedResultParts(part: ImageTranslationPart, newSelectState: Boolean) {
+    fun updateSelectedResultParts(index: Int, part: ImageTranslationPart, newSelectState: Boolean) {
         if (newSelectState) {
-            selectedResultParts.add(part)
+            selectedResultParts.add(index to part)
         } else {
-            selectedResultParts.remove(part)
+            selectedResultParts.remove(index to part)
         }
     }
 
@@ -132,20 +143,69 @@ class ImageTransViewModel : ViewModel() {
         selectedResultParts.clear()
     }
 
-    fun copySelectedResultParts() {
-        val text = selectedResultParts.joinToString("\n") { it.target }
-        ClipBoardUtil.copy(text)
-    }
-
     fun selectAllResultParts() {
         selectedResultParts.clear()
         selectedResultParts.addAll(
-            translateState.getOrNull<ImageTranslationResult>()?.content ?: emptyList()
+            translateState.getOrNull<ImageTranslationResult>()?.content?.mapIndexed { i, v -> i to v }
+                ?: emptyList()
         )
     }
 
+    fun optimizeByAI() {
+        val selectedParts = selectedResultParts.toList()
+        if (selectedParts.isEmpty()) {
+            appCtx.toastOnUi("请先选择需要优化的部分")
+            return
+        }
+        optimizeByAITask = OptimizeByAITask(chatBot.model, selectedParts, viewModelScope)
+        optimizeByAITask?.start(
+            onPartReceived = {
 
+            }
+        )
+    }
+
+    fun cancelOptimizeByAI() {
+        optimizeByAITask?.cancel()
+        optimizeByAITask = null
+    }
+
+    /**
+     * 替换选中的部分
+     * @param newParts 新的部分，key 是原始的 id 数组，value 是新的 ImageTranslationPart
+     */
+    fun replaceSelectedParts(newParts: List<MultiIndexedImageTranslationPart>) {
+        val oldResult = translateState.getOrNull<ImageTranslationResult>() ?: return
+        val oldResultList = oldResult.content
+        val result = LinkedList<ImageTranslationPart>()
+        var newSource = ""
+        var newTarget = ""
+
+        oldResultList.forEachIndexed { i, oldPart ->
+            // 按 ids 找到原来的部分，然后替换
+            // 对于方框也要做相应的合并
+            val newPart = newParts.find { it.indexes.contains(i) }?.part
+            // 如果找到了，就合并
+            val addPart =
+                newPart?.combineWith(oldPart, newPart.source, newPart.target) ?: oldPart
+            result.add(addPart)
+            newSource += (addPart.source + "\n")
+            newTarget += (addPart.target + "\n")
+        }
+
+        translateState = LoadingState.Success(
+            oldResult.copy(content = result, source = newSource, target = newTarget)
+        )
+        // 优化任务完成，清空
+        optimizeByAITask = null
+    }
+
+
+
+    // 一些状态
     fun isTranslating() = translateJob?.isActive == true
+    fun isOptimizing() = optimizeByAITask?.job?.isActive == true
+
     fun updateImageUri(uri: Uri?) {
         imageUri = uri
     }
@@ -172,5 +232,134 @@ class ImageTransViewModel : ViewModel() {
 
     companion object {
         private const val TAG = "ImageTransVM"
+    }
+}
+
+class OptimizeByAITask(
+    private val model: Model,
+    private val selectedParts: List<SingleIndexedImageTranslationPart>,
+    private val scope: CoroutineScope
+) {
+    var job: Job? = null
+    // 优化结果: key 是原始的 id 数组，value 是优化后的 ImageTranslationPart
+    val loadingState = mutableStateOf<LoadingState<List<MultiIndexedImageTranslationPart>>>(LoadingState.Loading)
+    var aiJobGeneratedText by mutableStateOf("")
+
+    fun cancel() {
+        job?.cancel()
+    }
+
+    fun start(
+        onPartReceived: (String) -> Unit
+    ) {
+        job?.cancel()
+        job = scope.launch(Dispatchers.IO) {
+            val input = selectedParts.map { (i, part) ->
+                mapOf(
+                    "id" to i,
+                    "source" to part.source,
+                    "target" to part.target
+                )
+            }.run {
+                JSONArray(this)
+            }
+
+            val req = AskStreamRequest(
+                modelId = model.chatBotId,
+                prompt = SYSTEM_PROMPT,
+                messages = listOf(
+                    ChatMessageReq.text(
+                        input.toString()
+                    )
+                )
+            )
+            aiService.askAndParseStream(req).onStart {
+                loadingState.value = LoadingState.Loading
+            }.collect { it ->
+                when (it) {
+                    is StreamMessage.Error -> {
+                        loadingState.value = LoadingState.Failure(Exception(it.error))
+                    }
+                    is StreamMessage.Part -> {
+                        aiJobGeneratedText += it.part
+                        onPartReceived(it.part)
+                    }
+                    is StreamMessage.End -> {
+                        loadingState.value = runCatching {
+                            val result = JSONArray(aiJobGeneratedText)
+                            val list = mutableListOf<MultiIndexedImageTranslationPart>()
+                            for (i in 0 until result.length()) {
+                                val each = result.getJSONObject(i)
+                                val ids = each.getJSONArray("id").run {
+                                    IntArray(length()).also { arr ->
+                                        for (j in 0 until length()) {
+                                            arr[j] = getInt(j)
+                                        }
+                                    }
+                                }
+                                val source = each["source"] as String
+                                val target = each["target"] as String
+                                list.add(MultiIndexedImageTranslationPart(ids, ImageTranslationPart(source, target)))
+                            }
+                            list
+                        }.fold(
+                            onSuccess = { map -> LoadingState.Success(map) },
+                            onFailure = { err -> LoadingState.Failure(err) }
+                        )
+                    }
+                    else -> Unit
+                }
+            }
+
+        }
+    }
+
+    companion object {
+        private const val TAG = "OptimizeByAIJob"
+
+        @org.intellij.lang.annotations.Language("Markdown")
+        private const val SYSTEM_PROMPT = """You're doing some post-processing for image translation. Given a list of text boxes containing both original and translated text, your task is to correct any errors in text recognition and translation, you should also combine incorrect split text boxes if necessary.
+
+**Input Format:**
+```
+[
+    {
+        "id": 1,
+        "source": "You're my dea r est friend",
+        "target": "你是我dea r的朋友"
+    },
+    {
+        "id": 2,
+        "source": "I'm going to the sto",
+        "target": "我要去sto"
+    },
+    {
+        "id": 3,
+        "source": "re to buy some milk",
+        "target": "买一些牛奶"
+    },
+    ...
+]
+```
+
+**Output Format:**
+```
+[
+    {
+        "id": [1], // array of original text box ids
+        "source": "You're my dearest friend", // corrected original text
+        "target": "你是我最好的朋友" // corrected translated text
+    },
+    {
+        "id": [2, 3], // combined original text box ids
+        "source": "I'm going to the store to buy some milk",
+        "target": "我要去商店买一些牛奶"
+    },
+    ...
+]
+```
+
+You output must be a valid JSON object.
+"""
     }
 }

@@ -5,8 +5,6 @@ import com.funny.translation.helper.lazyPromise
 
 object ModelManager {
     val models by lazyPromise {
-        kotlin.runCatching {
-            aiService.getChatModels()
-        }.onFailure { it.printStackTrace() }.getOrDefault(listOf())
+        aiService.getChatModels()
     }
 }

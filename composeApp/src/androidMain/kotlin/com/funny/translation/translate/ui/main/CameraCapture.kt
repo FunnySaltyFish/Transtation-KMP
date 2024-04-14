@@ -55,9 +55,7 @@ import com.funny.translation.ui.touchToScale
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
 @ExperimentalCoroutinesApi
 @Composable
 fun CameraCapture(
@@ -96,7 +94,7 @@ fun CameraCapture(
                 )
             }
 
-            val controlLineContent: (@Composable ()->Unit) = remember{
+            val controlLineContent: (@Composable ()->Unit) = remember {
                 {
                     FlashlightButton(cameraControl = cameraState.value?.cameraControl)
                     CapturePictureButton(

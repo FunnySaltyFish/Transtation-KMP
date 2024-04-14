@@ -146,9 +146,8 @@ fun LongTextTransDetailScreen(
             title = ResStrings.model_select,
             content = {
                 ModelListPart(
-                    modelList = vm.modelList,
-                    initialSelectId = vm.selectedModelId,
-                    onModelSelected = vm::updateBot
+                    onModelLoaded = vm::onModelListLoaded,
+                    onModelSelected = vm::updateChatBot
                 )
             },
             confirmButtonText = "",
@@ -254,7 +253,10 @@ private fun ColumnScope.DetailContent(
                     ) { expanded ->
                         AllCorpusList(vm = vm, expanded = expanded)
                     }
-                    ModelListPart(modelList = vm.modelList, vm.selectedModelId, onModelSelected = vm::updateBot)
+                    ModelListPart(
+                        onModelLoaded = vm::onModelListLoaded,
+                        onModelSelected = vm::updateChatBot
+                    )
                 }
                 ScreenState.Translating -> {
                     SourceTextPart(

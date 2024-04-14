@@ -36,6 +36,8 @@ fun <T : Any> LazyListScope.loadingList(
     empty: @Composable LazyItemScope.() -> Unit = { },
     successHeader: @Composable (LazyItemScope.() -> Unit)? = null,
     successFooter: @Composable (LazyItemScope.() -> Unit)? = null,
+    onSuccess: ((List<T>) -> Unit)? = null,
+    onFail: ((Throwable) -> Unit)? = null,
     success: @Composable LazyItemScope.(data: T) -> Unit,
 ) {
     when (value.value) {
@@ -60,11 +62,15 @@ fun <T : Any> LazyListScope.loadingList(
                     }
                 }
             }
+            onSuccess?.invoke(data)
         }
-        is LoadingState.Failure -> item {
-            failure(
-                (value.value as LoadingState.Failure).error
-            )
+        is LoadingState.Failure -> {
+            item {
+                failure(
+                    (value.value as LoadingState.Failure).error
+                )
+            }
+            onFail?.invoke((value.value as LoadingState.Failure).error)
         }
     }
 }

@@ -71,7 +71,7 @@ import moe.tlaster.precompose.navigation.BackHandler
 fun ChatScreen() {
     val vm: ChatViewModel = viewModel()
     val inputText by vm.inputText
-    val chatBot by vm.chatBot
+    val chatBot = vm.chatBot
     val chatMessages = vm.messages
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -279,7 +279,7 @@ private fun Settings(
             }
         }
 
-        ModelListPart(modelList = vm.modelList, vm.selectedModelId, onModelSelected = vm::updateBot)
+        ModelListPart(onModelLoaded = vm::onModelListLoaded, onModelSelected = vm::updateChatBot)
     }
 }
 
