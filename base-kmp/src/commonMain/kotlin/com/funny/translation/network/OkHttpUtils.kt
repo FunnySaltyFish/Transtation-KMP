@@ -31,7 +31,7 @@ object OkHttpUtils {
     private const val SET_COOKIE_KEY = "set-cookie"
     private const val COOKIE_NAME = "Cookie"
     private const val CONNECT_TIMEOUT = 15L
-    private const val READ_TIMEOUT = 10L
+    private const val READ_TIMEOUT = 20L
     private const val TAG = "OkHttpUtils"
 
     private fun saveCookie(url: String?, domain: String?, cookies: String) {
@@ -87,12 +87,12 @@ object OkHttpUtils {
 //            }
 
             // 访问 trans/v1下的所有api均带上请求头-jwt
-            if (newUrl.path.startsWith(ServiceCreator.TRANS_PATH)){
+            if (newUrl.path.startsWith(TRANS_PATH)){
                 val jwt = AppConfig.jwtToken
                 if (jwt != "") builder.addHeader("Authorization", "Bearer $jwt")
             }
 
-            if (newUrl.path.startsWith(ServiceCreator.TRANS_PATH + "api/translate")){
+            if (newUrl.path.startsWith(TRANS_PATH + "api/translate")){
                 if (GlobalTranslationConfig.isValid()) {
                     builder.addHeader("sign", SignUtils.encodeSign(
                         uid = AppConfig.uid.toLong(), appVersionCode = AppConfig.versionCode,
@@ -114,6 +114,8 @@ object OkHttpUtils {
             builder.url(newUrl)
             it.proceed(builder.build())
         }
+
+        addInterceptor(DynamicTimeoutInterceptor())
 
         // get response cookie
         addInterceptor { chain ->

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FlashlightOff
@@ -94,7 +95,7 @@ fun CameraCapture(
                 )
             }
 
-            val controlLineContent: (@Composable ()->Unit) = remember {
+            val controlLineContent: (@Composable () -> Unit) = remember {
                 {
                     FlashlightButton(cameraControl = cameraState.value?.cameraControl)
                     CapturePictureButton(
@@ -176,7 +177,8 @@ fun CameraCapture(
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .align(Alignment.BottomCenter),
+                            .align(Alignment.BottomCenter)
+                            .statusBarsPadding(),
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically
                     ) {

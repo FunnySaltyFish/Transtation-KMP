@@ -18,3 +18,5 @@ expect object LocaleUtils {
     // 这个方法会在 attachBaseContext() 里调用，所以不能使用 AppLanguage 这个类
     fun getLocaleDirectly(): Locale
 }
+
+fun LocaleUtils.getLanguageCode() = getAppLanguage().toLocale().isO3Language

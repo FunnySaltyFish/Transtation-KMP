@@ -297,7 +297,8 @@ fun HintText(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
     fontSize: TextUnit = MaterialTheme.typography.bodySmall.fontSize,
-    textAlign: TextAlign = TextAlign.Center
+    textAlign: TextAlign = TextAlign.Center,
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -306,7 +307,9 @@ fun HintText(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp),
-        textAlign = textAlign
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis
     )
 }
 

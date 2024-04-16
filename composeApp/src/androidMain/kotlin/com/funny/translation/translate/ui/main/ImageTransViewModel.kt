@@ -32,7 +32,6 @@ import com.funny.translation.translate.ui.ai.ModelViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
@@ -60,6 +59,9 @@ class ImageTransViewModel : ModelViewModel() {
     var imgHeight = 0
 
     var allEngines = arrayListOf(ImageTranslationEngines.Baidu, ImageTranslationEngines.Tencent)
+
+    var showResultState = mutableStateOf(true)
+    var showTranslateButton by mutableStateOf(true)
 
     // 下面是处理结果的相关
     var selectedResultParts = mutableStateListOf<SingleIndexedImageTranslationPart>()
@@ -90,10 +92,9 @@ class ImageTransViewModel : ModelViewModel() {
         imageUri ?: return
         translateJob?.cancel()
         Log.d(TAG, "translate: start")
+        showTranslateButton = false
         translateJob = viewModelScope.launch(Dispatchers.IO) {
             translateState = LoadingState.Loading
-            // 延迟一下再开始翻译，防止语言选的不对临时变更
-            delay(1000)
             kotlin.runCatching {
                 val bytes = BitmapUtil.getBitmapFromUri(
                     appCtx,
@@ -118,10 +119,14 @@ class ImageTransViewModel : ModelViewModel() {
                     AppConfig.userInfo.value =
                         user.copy(img_remain_points = user.img_remain_points - translateEngine.getPoint())
                 translateState = LoadingState.Success(it)
+                showTranslateButton = false
+                // 翻译成功了，把结果展示出来
+                showResultState.value = true
             }.onFailure {
                 it.printStackTrace()
                 translateState = LoadingState.Failure(it)
                 appCtx.toastOnUi("翻译错误！原因是：${it.message}")
+                showTranslateButton = true
             }
         }
     }
@@ -158,11 +163,7 @@ class ImageTransViewModel : ModelViewModel() {
             return
         }
         optimizeByAITask = OptimizeByAITask(chatBot.model, selectedParts, viewModelScope)
-        optimizeByAITask?.start(
-            onPartReceived = {
-
-            }
-        )
+        optimizeByAITask?.start()
     }
 
     fun cancelOptimizeByAI() {
@@ -176,22 +177,34 @@ class ImageTransViewModel : ModelViewModel() {
      */
     fun replaceSelectedParts(newParts: List<MultiIndexedImageTranslationPart>) {
         val oldResult = translateState.getOrNull<ImageTranslationResult>() ?: return
-        val oldResultList = oldResult.content
+        val oldResultList = oldResult.content.toMutableList()
         val result = LinkedList<ImageTranslationPart>()
         var newSource = ""
         var newTarget = ""
 
-        oldResultList.forEachIndexed { i, oldPart ->
-            // 按 ids 找到原来的部分，然后替换
-            // 对于方框也要做相应的合并
-            val newPart = newParts.find { it.indexes.contains(i) }?.part
-            // 如果找到了，就合并
-            val addPart =
-                newPart?.combineWith(oldPart, newPart.source, newPart.target) ?: oldPart
-            result.add(addPart)
-            newSource += (addPart.source + "\n")
-            newTarget += (addPart.target + "\n")
+        val needToRemove = mutableSetOf<ImageTranslationPart>()
+        newParts.forEach { newPart ->
+            var addPart: ImageTranslationPart? = null
+            for (idx in newPart.indexes) {
+                val oldPart = oldResultList[idx]
+                needToRemove.add(oldPart)
+                // 不断合并新的部分，得到新的矩形框
+                addPart = addPart?.combineWith(oldPart) ?: oldPart
+            }
+            addPart?.let {
+                result.add(it.copy(source = newPart.part.source, target = newPart.part.target))
+            }
         }
+
+        // 加上那些没有被替换的部分
+        result.addAll(oldResultList - needToRemove)
+
+        // 按从坐上到右下的顺序排列
+        result.sortBy { it.y * imgWidth + it.x }
+
+        // 重新生成 source 和 target
+        newSource = result.joinToString("\n") { it.source }
+        newTarget = result.joinToString("\n") { it.target }
 
         translateState = LoadingState.Success(
             oldResult.copy(content = result, source = newSource, target = newTarget)
@@ -199,8 +212,6 @@ class ImageTransViewModel : ModelViewModel() {
         // 优化任务完成，清空
         optimizeByAITask = null
     }
-
-
 
     // 一些状态
     fun isTranslating() = translateJob?.isActive == true
@@ -220,6 +231,10 @@ class ImageTransViewModel : ModelViewModel() {
 
     fun updateImgSize(w: Int, h: Int) {
         imgWidth = w; imgHeight = h
+    }
+
+    fun updateShowTranslateButton(show: Boolean) {
+        showTranslateButton = show
     }
 
     fun updateTranslateEngine(new: ImageTranslationEngine) {
@@ -249,9 +264,7 @@ class OptimizeByAITask(
         job?.cancel()
     }
 
-    fun start(
-        onPartReceived: (String) -> Unit
-    ) {
+    fun start() {
         job?.cancel()
         job = scope.launch(Dispatchers.IO) {
             val input = selectedParts.map { (i, part) ->
@@ -282,7 +295,6 @@ class OptimizeByAITask(
                     }
                     is StreamMessage.Part -> {
                         aiJobGeneratedText += it.part
-                        onPartReceived(it.part)
                     }
                     is StreamMessage.End -> {
                         loadingState.value = runCatching {
@@ -318,10 +330,9 @@ class OptimizeByAITask(
         private const val TAG = "OptimizeByAIJob"
 
         @org.intellij.lang.annotations.Language("Markdown")
-        private const val SYSTEM_PROMPT = """You're doing some post-processing for image translation. Given a list of text boxes containing both original and translated text, your task is to correct any errors in text recognition and translation, you should also combine incorrect split text boxes if necessary.
+        private const val SYSTEM_PROMPT = """You're doing some post-processing for image translation. Given a list of text boxes containing both original and translated text, your task is to correct any errors in text recognition and translation, you should also combine incorrect split text boxes if necessary. Give only the changed parts.
 
 **Input Format:**
-```
 [
     {
         "id": 1,
@@ -338,12 +349,15 @@ class OptimizeByAITask(
         "source": "re to buy some milk",
         "target": "买一些牛奶"
     },
+    {
+        "id": 4,
+        "source": "This is correct",
+        "target": "这是正确的"
+    },
     ...
 ]
-```
 
 **Output Format:**
-```
 [
     {
         "id": [1], // array of original text box ids
@@ -355,11 +369,11 @@ class OptimizeByAITask(
         "source": "I'm going to the store to buy some milk",
         "target": "我要去商店买一些牛奶"
     },
+    // 4 is correct, so it's not included in the output
     ...
 ]
-```
 
-You output must be a valid JSON object.
+You output must be a valid JSON array.
 """
     }
 }

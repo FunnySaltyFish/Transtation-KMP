@@ -33,7 +33,7 @@ kotlin {
                 api(compose.materialIconsExtended)
 
                 // JVM-specific dependencies like OkHttp and Retrofit
-                api("com.squareup.okhttp3:okhttp:4.11.0")
+                api("com.squareup.okhttp3:okhttp:4.12.0")
                 api("com.squareup.retrofit2:retrofit:2.9.0")
 
                 // kotlinx.serialization

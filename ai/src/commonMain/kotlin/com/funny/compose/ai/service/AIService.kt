@@ -6,9 +6,12 @@ import com.funny.compose.ai.bean.StreamMessage
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.JSONObjectSerializer
 import com.funny.translation.helper.JsonX
+import com.funny.translation.helper.LocaleUtils
+import com.funny.translation.helper.getLanguageCode
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.network.CommonData
+import com.funny.translation.network.DynamicTimeout
 import com.funny.translation.network.ServiceCreator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +27,6 @@ import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
 import retrofit2.http.Streaming
@@ -56,12 +58,15 @@ interface AIService {
      */
     @POST("ai/ask_stream")
     // 设置超时时间
-    @Headers("Cache-Control: no-cache", "CONNECT_TIMEOUT: 60", "READ_TIMEOUT: 3000", "WRITE_TIMEOUT: 30")
     @Streaming
+    @DynamicTimeout(connectTimeout = 45, readTimeout = 300, writeTimeout = 30)
     suspend fun askStream(@Body req: AskStreamRequest): ResponseBody
 
     @GET("ai/get_models")
-    suspend fun getChatModels() : List<Model>
+    suspend fun getChatModels(
+        // 这个 lang 并不实际使用，主要是区分 url，避免 nginx 缓存带来的问题
+        @Query("lang") lang: String = LocaleUtils.getLanguageCode()
+    ) : List<Model>
 
     @POST("ai/count_tokens_text")
     @FormUrlEncoded

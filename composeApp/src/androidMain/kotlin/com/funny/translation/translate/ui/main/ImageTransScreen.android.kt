@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +30,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -85,6 +89,7 @@ import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
 import com.funny.translation.translate.enabledLanguages
@@ -142,7 +147,7 @@ private fun ImageTransMain(
             context.toastOnUi(ResStrings.login_to_use_image_translation, Toast.LENGTH_LONG)
         }
         onDispose {
-            vm.imageUri = null
+//            vm.imageUri = null
             vm.cancelTranslateJob()
         }
     }
@@ -156,6 +161,7 @@ private fun ImageTransMain(
                     val width = UCrop.getOutputImageWidth(intent)
                     val height = UCrop.getOutputImageHeight(intent)
                     vm.updateImgSize(width, height)
+                    vm.translate()
                 }
             }
         }
@@ -188,6 +194,8 @@ private fun ImageTransMain(
     // 如果进入页面时参数携带了图片uri
     LaunchedEffect(key1 = imageUri) {
         if (imageUri == null) return@LaunchedEffect
+        // 如果已经翻译成功，那么不再进行翻译（这个是防止从结果列表返回到这个页面时再次翻译）
+        if (vm.translateState.isSuccess) return@LaunchedEffect
 
         // 先对 uri 解码
         val androidImageUri = Uri.decode(imageUri.toString()).toUri()
@@ -355,9 +363,10 @@ private fun ImageTranslationPart(
 
     BackHandler(onBack = goBack)
 
-    LaunchedEffect(vm.imageUri, vm.sourceLanguage, vm.targetLanguage, vm.translateEngine) {
-        vm.translate()
+    LaunchedEffect(vm.sourceLanguage, vm.targetLanguage, vm.translateEngine) {
+        vm.updateShowTranslateButton(true)
     }
+
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
         Row(
             Modifier
@@ -387,27 +396,76 @@ private fun ImageTranslationPart(
     }
 
     FloatButtonRow(
-        onClick = { updateCurrentPage(ImageTransPage.ResultList) }
+        showTranslateButton = vm.showTranslateButton,
+        translateState = vm.translateState,
+        translateAction = vm::translate,
+        showResultState = vm.showResultState,
+        gotoResultListAction = { updateCurrentPage(ImageTransPage.ResultList) }
     )
 }
 
 @Composable
 private fun FloatButtonRow(
-    onClick: SimpleAction
+    showTranslateButton: Boolean,
+    translateState: LoadingState<ImageTranslationResult>,
+    translateAction: SimpleAction,
+    showResultState: MutableState<Boolean>,
+    gotoResultListAction: SimpleAction
 ) {
-    FloatingActionButton(
-        onClick = onClick,
+    Row(
         modifier = Modifier.floatingActionBarModifier()
     ) {
-        // 解析结果
-        FixedSizeIcon(imageVector = Icons.Filled.ViewList, contentDescription = "Next", tint = Color.White)
+        if (showTranslateButton) {
+            FloatingActionButton(
+                onClick = { translateAction() },
+                modifier = Modifier
+            ) {
+                // 开始翻译
+                FixedSizeIcon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Translate",
+                    tint = Color.White
+                )
+            }
+        }
+
+        if (translateState.isSuccess) {
+            if (showTranslateButton) Spacer(modifier = Modifier.width(8.dp))
+            // 解析结果
+            FloatingActionButton(
+                onClick = { showResultState.value = !showResultState.value },
+                modifier = Modifier
+            ) {
+                // 解析结果
+                FixedSizeIcon(
+                    imageVector = if (showResultState.value) Icons.Default.VisibilityOff else Icons.Filled.Visibility,
+                    contentDescription = "Toggle Result",
+                    tint = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // 更改透明度
+            FloatingActionButton(
+                onClick = gotoResultListAction,
+                modifier = Modifier
+            ) {
+                // 解析结果
+                FixedSizeIcon(
+                    imageVector = Icons.Filled.ViewList,
+                    contentDescription = "Next",
+                    tint = Color.White
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
     val density = LocalDensity.current
-    var showResult by remember { mutableStateOf(true) }
+    val showResult by vm.showResultState
     // 图片为了铺满屏幕进行的缩放
     var imageInitialScale by remember { mutableFloatStateOf(1f) }
     var scaleByWidth by remember { mutableStateOf(true) }
@@ -454,7 +512,6 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
                 .fillMaxSize()
                 .drawBehind { drawRect(Color.Black) },
             state = gestureState,
-            onTap = { if (vm.translateState.isSuccess) showResult = !showResult }
         ) { _ ->
             // imageGestureScale = gestureScale
             // imageOffsetRect = rect

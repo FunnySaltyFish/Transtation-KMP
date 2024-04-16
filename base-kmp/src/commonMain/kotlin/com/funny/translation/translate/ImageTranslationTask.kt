@@ -14,20 +14,18 @@ data class ImageTranslationPart(
 ) {
 
     /**
-     * 合并产生新的矩形框，其中，使用 newSource 和 newTarget 作为新的 source 和 target
+     * 合并产生新的矩形框
      * @param other ImageTranslationPart 只使用 x, y, width, height
      * @param newSource String
      * @param newTarget String
      * @return ImageTranslationPart
      */
-    fun combineWith(other: ImageTranslationPart, newSource: String, newTarget: String): ImageTranslationPart {
-        val x1 = x.coerceAtMost(other.x)
-        val y1 = y.coerceAtMost(other.y)
-        val x2 = (x + width).coerceAtLeast(other.x + other.width)
-        val y2 = (y + height).coerceAtLeast(other.y + other.height)
-        return ImageTranslationPart(
-            source = newSource,
-            target = newTarget,
+    fun combineWith(other: ImageTranslationPart): ImageTranslationPart {
+        val x1 = minOf(x, other.x)
+        val y1 = minOf(y, other.y)
+        val x2 = maxOf(x + width, other.x + other.width)
+        val y2 = maxOf(y + height, other.y + other.height)
+        return this.copy(
             x = x1,
             y = y1,
             width = x2 - x1,
