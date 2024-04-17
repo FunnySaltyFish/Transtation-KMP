@@ -59,7 +59,7 @@ interface AIService {
     @POST("ai/ask_stream")
     // 设置超时时间
     @Streaming
-    @DynamicTimeout(connectTimeout = 45, readTimeout = 300, writeTimeout = 30)
+    @DynamicTimeout(connectTimeout = 30, readTimeout = 120, writeTimeout = 30)
     suspend fun askStream(@Body req: AskStreamRequest): ResponseBody
 
     @GET("ai/get_models")

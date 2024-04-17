@@ -117,9 +117,9 @@ enum class MainScreenState {
 @Composable
 fun MainScreen(
 ) {
-//    TextTransScreen()
+    TextTransScreen()
 //    TTSScreen()
-    ImageTransScreen()
+//    ImageTransScreen()
 }
 
 @ExperimentalComposeUiApi

@@ -41,18 +41,18 @@ class DynamicTimeoutInterceptor : Interceptor {
         if (timeout != null) {
             // 大于 0 才设置超时时间，否则使用默认值
             Log.i("DynamicTimeoutInterceptor", "reset dynamic timeout: $timeout for url: ${request.url}")
-            return chain.apply {
-                if (timeout.connectTimeout > 0) {
-                    withConnectTimeout(timeout.connectTimeout, TimeUnit.SECONDS)
-                }
-                if (timeout.readTimeout > 0) {
-                    withReadTimeout(timeout.readTimeout, TimeUnit.SECONDS)
-                }
-                if (timeout.writeTimeout > 0) {
-                    withWriteTimeout(timeout.writeTimeout, TimeUnit.SECONDS)
-                }
-                Log.d("DynamicTimeoutInterceptor", "proceed timeout: (${chain.connectTimeoutMillis()}, ${chain.readTimeoutMillis()}, ${chain.writeTimeoutMillis()})")
-            }.proceed(request)
+            var newChain = chain
+            if (timeout.connectTimeout > 0) {
+                newChain = newChain.withConnectTimeout(timeout.connectTimeout, TimeUnit.SECONDS)
+            }
+            if (timeout.readTimeout > 0) {
+                newChain = newChain.withReadTimeout(timeout.readTimeout, TimeUnit.SECONDS)
+            }
+            if (timeout.writeTimeout > 0) {
+                newChain = newChain.withWriteTimeout(timeout.writeTimeout, TimeUnit.SECONDS)
+            }
+            Log.d("DynamicTimeoutInterceptor", "proceed timeout: (${newChain.connectTimeoutMillis()}, ${newChain.readTimeoutMillis()}, ${newChain.writeTimeoutMillis()})")
+            return newChain.proceed(request)
         }
 
         return chain.proceed(request)
