@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -51,8 +52,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.funny.compose.ai.token.TokenCounter
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.jetsetting.core.ui.SimpleDialog
+import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.assetsStringLocalized
@@ -180,6 +183,7 @@ fun LongTextTransDetailScreen(
 
         FunctionRow(
             modifier = Modifier.fillMaxWidth(),
+            vm = vm,
             screenState = vm.screenState,
             showModelAction = { modelSelectDialog.value = true },
             remark = vm.task?.remark ?: "",
@@ -306,6 +310,7 @@ private fun ColumnScope.DetailContent(
 @Composable
 private fun FunctionRow(
     modifier: Modifier = Modifier,
+    vm: LongTextTransViewModel,
     screenState: ScreenState,
     startTranslateAction: SimpleAction,
     showModelAction: SimpleAction,
@@ -320,26 +325,64 @@ private fun FunctionRow(
             .navigationBarsPadding(),
             horizontalArrangement = Arrangement.Start
         ) {
-            AnimatedContent(targetState = screenState, label = "") { screenState ->
-                when (screenState) {
-                    ScreenState.Init -> {
-                        TintIconButton(icon =Icons.Default.PlayArrow, onClick = startTranslateAction)
+
+            if (screenState == ScreenState.Init) {
+                TintIconButton(icon =Icons.Default.PlayArrow, onClick = startTranslateAction)
+            }
+
+            else if (screenState == ScreenState.Translating) {
+                TintIconButton(icon = Icons.Default.Dashboard, onClick = showModelAction)
+                EditPromptButton(
+                    initialPrompt = vm.prompt,
+                    tokenCounter = vm.chatBot.tokenCounter,
+                    onConfirmPrompt = {
+                        vm.updatePrompt(it)
+                        vm.savePrompt()
                     }
-                    ScreenState.Translating -> {
-                        TintIconButton(icon = Icons.Default.Dashboard, onClick = showModelAction)
-                    }
-                    ScreenState.Result -> {
-                        ExportButton(
-                            remark = remark,
-                            showUpdateRemarkDialog = showUpdateRemarkDialog,
-                            exportOnlyResultProvider = exportOnlyResultProvider,
-                            exportBothSourceAndResultProvider = exportBothSourceAndResultProvider
-                        )
-                    }
-                }
+                )
+            }
+
+            if (screenState == ScreenState.Result || screenState == ScreenState.Translating) {
+                ExportButton(
+                    remark = remark,
+                    showUpdateRemarkDialog = showUpdateRemarkDialog,
+                    exportOnlyResultProvider = exportOnlyResultProvider,
+                    exportBothSourceAndResultProvider = exportBothSourceAndResultProvider
+                )
             }
         }
+
     }
+}
+
+@Composable
+private fun EditPromptButton(
+    initialPrompt: EditablePrompt,
+    tokenCounter: TokenCounter,
+    onConfirmPrompt: (String) -> Unit,
+) {
+    val showEditPromptDialog = rememberStateOf(false)
+    var prompt by rememberStateOf(initialPrompt)
+    SimpleDialog(
+        openDialogState = showEditPromptDialog,
+        content = {
+            Column {
+                PromptPart(
+                    initialPrompt = prompt,
+                    tokenCounter = tokenCounter,
+                    onPrefixUpdate = { prompt = prompt.copy(prefix = it) },
+                    resetPromptAction = {
+                        prompt = initialPrompt
+                    }
+                )
+            }
+        },
+        confirmButtonAction = {
+            onConfirmPrompt(prompt.prefix)
+        }
+    )
+
+    TintIconButton(icon = Icons.Default.Edit, onClick = { showEditPromptDialog.value = true })
 }
 
 

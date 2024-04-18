@@ -55,9 +55,9 @@ CREATE TABLE IF NOT EXISTS longTextTransTasks (
     sourceTextSegments TEXT AS List<Int> NOT NULL,
     resultTextSegments TEXT AS List<Int> NOT NULL,
     translatedLength INTEGER AS Int NOT NULL,
+    remark TEXT NOT NULL DEFAULT '',
     createTime INTEGER NOT NULL DEFAULT 0,
-    updateTime INTEGER NOT NULL DEFAULT 0,
-    remark TEXT NOT NULL DEFAULT ''
+    updateTime INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS transFavorite (
@@ -107,5 +107,5 @@ CREATE TABLE IF NOT EXISTS ttsConf (
 -- 创建触发器
 CREATE TRIGGER updateLongTransTasksTrigger AFTER UPDATE OF chatBotId, sourceText, resultText, prompt, allCorpus, sourceTextSegments, resultTextSegments, remark ON longTextTransTasks
 BEGIN
-    UPDATE longTextTransTasks SET updateTime = CAST(strftime('%s', 'now') AS INTEGER) * 1000 WHERE id = NEW.id;
+    UPDATE longTextTransTasks SET updateTime = CAST(strftime('%s', 'now') AS INTEGER) * 1000 WHERE id = new.id;
 END;

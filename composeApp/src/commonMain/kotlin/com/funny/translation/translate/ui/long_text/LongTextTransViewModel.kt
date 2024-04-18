@@ -17,6 +17,7 @@ import com.funny.translation.helper.JsonX
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.TextSplitter
 import com.funny.translation.helper.displayMsg
+import com.funny.translation.helper.now
 import com.funny.translation.helper.safeSubstring
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
@@ -371,7 +372,10 @@ class LongTextTransViewModel: ModelViewModel() {
                 allCorpus = allCorpus.toList(),
                 sourceTextSegments = sourceTextSegments,
                 resultTextSegments = resultTextSegments,
-                translatedLength = translatedLength
+                translatedLength = translatedLength,
+                remark = task?.remark ?: "",
+                createTime = task?.createTime ?: now(),
+                updateTime = now()
             )
             dao.upsert(task!!)
         }
@@ -404,6 +408,13 @@ class LongTextTransViewModel: ModelViewModel() {
 
     fun updatePrompt(prefix: String) { prompt = prompt.copy(prefix = prefix) }
     fun resetPrompt() { prompt = DEFAULT_PROMPT }
+    fun savePrompt() {
+        task ?: return
+        dbAction {
+            task = task!!.copy(prompt = prompt)
+            appDB.longTextTransTasksQueries.updatePrompt(prompt = prompt, id = task!!.id)
+        }
+    }
     fun updateEditingTermState(isEditing: Boolean) { isEditingTerm = isEditing }
     fun updateSourceText(text: String) { sourceText = text; totalLength = text.length }
 

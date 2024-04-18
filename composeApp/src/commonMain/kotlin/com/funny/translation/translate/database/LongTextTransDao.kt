@@ -23,6 +23,7 @@ fun LongTextTransTask(
     sourceTextSegments: List<Int>,
     resultTextSegments: List<Int>,
     translatedLength: Int,
+    remark: String
 ) = LongTextTransTask(
     id = id,
     chatBotId = chatBotId,

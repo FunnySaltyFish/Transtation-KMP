@@ -29,9 +29,10 @@ SELECT * FROM longTextTransTasks WHERE id = ?;
 getAll:
 SELECT * FROM longTextTransTasks;
 
--- Query to select all LongTextTransTasks with minimal data
+-- Query to select all LongTextTransTasks with minimal data, sort by updateTime desc
 getAllMini:
-SELECT id, chatBotId, translatedLength, remark, createTime, updateTime, LENGTH(sourceText) AS sourceTextLength FROM longTextTransTasks;
+SELECT id, chatBotId, translatedLength, remark, createTime, updateTime, LENGTH(sourceText) AS sourceTextLength FROM longTextTransTasks
+ORDER BY updateTime DESC;
 
 -- Delete a LongTextTransTask by id
 deleteById:
@@ -58,3 +59,7 @@ UPDATE longTextTransTasks SET sourceText = ? WHERE id = ?;
 -- Update remark for a LongTextTransTask
 updateRemark:
 UPDATE longTextTransTasks SET remark = ? WHERE id = ?;
+
+-- Update Prompt
+updatePrompt:
+UPDATE longTextTransTasks SET prompt = ? WHERE id = ?;
