@@ -23,7 +23,7 @@ import java.lang.reflect.Type
  */
 
 object ServiceCreator {
-    var TRANS_PATH = "/trans/v1/"
+    const val TRANS_PATH = "/trans/v1/"
     private const val DEFAULT_BASE_URL = "https://api.funnysaltyfish.fun/trans/v1/"
 
     var BASE_URL = readBaseURL()

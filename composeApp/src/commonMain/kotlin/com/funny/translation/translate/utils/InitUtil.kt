@@ -6,8 +6,6 @@ import com.funny.translation.sign.SignUtils
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.initLanguageDisplay
-import com.funny.translation.translate.tts.BaiduTransTTSProvider
-import com.funny.translation.translate.tts.TTSConf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,13 +38,8 @@ private fun addJobs() {
         val languages = enabledLanguages.value
         languages.forEach {
             if (appDB.tTSConfQueries.getByLanguage(it).executeAsOneOrNull() == null) {
-                if (!BaiduTransTTSProvider.supportLanguages.contains(it)) return@forEach
                 appDB.tTSConfQueries.insert(
-                    TTSConf(
-                        language = it,
-                        ttsProviderId = BaiduTransTTSProvider.id,
-                        speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first()
-                    )
+                    TTSConfManager.createDefaultConf(it)
                 )
             }
         }

@@ -2,10 +2,12 @@ package com.funny.translation.translate.ui.ai
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,10 +27,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -44,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.sendByMe
@@ -62,6 +67,7 @@ import com.funny.translation.translate.ui.long_text.ModelListPart
 import com.funny.translation.translate.ui.long_text.components.AIPointText
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.floatingActionBarModifier
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler
 
@@ -224,19 +230,42 @@ fun ChatMessageList(
         )
     }
 
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-        verticalArrangement = Arrangement.spacedBy(1.dp),
-        modifier = modifier,
-        state = lazyListState
-    ) {
-        itemsIndexed(chats, key = { _, msg -> msg.id }, contentType = { _ , msg -> msg.type }) { i, message ->
-            msgItem(message, if (!message.sendByMe && i == chats.lastIndex) doRefreshAction else null)
-        }
-        if (currentMessage != null) {
-            item {
-                msgItem(currentMessage, doRefreshAction)
+    Box(modifier = modifier) {
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+            verticalArrangement = Arrangement.spacedBy(1.dp),
+            modifier = Modifier,
+            state = lazyListState
+        ) {
+            itemsIndexed(
+                chats,
+                key = { _, msg -> msg.id },
+                contentType = { _, msg -> msg.type }) { i, message ->
+                msgItem(
+                    message,
+                    if (!message.sendByMe && i == chats.lastIndex) doRefreshAction else null
+                )
             }
+            if (currentMessage != null) {
+                item {
+                    msgItem(currentMessage, doRefreshAction)
+                }
+            }
+        }
+
+        val alpha by animateFloatAsState(if (lazyListState.canScrollForward) 1f else 0f)
+        val scope = rememberCoroutineScope()
+        FloatingActionButton(
+            onClick = {
+                scope.launch {
+                    lazyListState.animateScrollToItem(chats.lastIndex)
+                }
+            },
+            modifier = Modifier.floatingActionBarModifier().graphicsLayer {
+                this.alpha = alpha
+            }
+        ) {
+            FixedSizeIcon(Icons.Filled.ArrowCircleDown, contentDescription = "Menu")
         }
     }
 }
@@ -279,7 +308,7 @@ private fun Settings(
             }
         }
 
-        ModelListPart(onModelLoaded = vm::onModelListLoaded, onModelSelected = vm::updateChatBot)
+        ModelListPart(maxHeight = 600.dp, onModelLoaded = vm::onModelListLoaded, onModelSelected = vm::updateChatBot)
     }
 }
 

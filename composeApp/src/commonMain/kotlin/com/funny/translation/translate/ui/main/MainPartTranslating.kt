@@ -53,6 +53,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -221,6 +222,8 @@ internal fun SpeakButton(
     text: String,
     language: Language,
     tint: Color = MaterialTheme.colorScheme.primary,
+    boxSize: Dp = 48.dp,
+    iconSize: Dp = boxSize / 2,
     onStartPlay: SimpleAction? = null
 ) {
     val speakerState = rememberFrameAnimIconState(
@@ -233,19 +236,19 @@ internal fun SpeakButton(
             speakerState.reset()
         }
     }
-    Box (contentAlignment = Alignment.Center, modifier = modifier.size(48.dp)) {
+    Box (contentAlignment = Alignment.Center, modifier = modifier.size(boxSize)) {
         val playbackState = AudioPlayer.playbackState
         when {
             playbackState == PlaybackState.LOADING && text == AudioPlayer.currentPlayingText -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(iconSize),
                     strokeWidth = 2.dp,
                 )
             }
 
             else -> {
                 Box(
-                    modifier = Modifier.size(48.dp).clip(CircleShape).combinedClickable(
+                    modifier = Modifier.size(boxSize).clip(CircleShape).combinedClickable(
                         onLongClick = {
                             TTSConfManager.jumpToEdit(navController, language)
                         },
@@ -276,11 +279,10 @@ internal fun SpeakButton(
                         state = speakerState,
                         contentDescription = ResStrings.speak,
                         tint = tint,
-                        modifier = Modifier.size(24.dp).align(Alignment.Center)
+                        modifier = Modifier.size(iconSize).align(Alignment.Center)
                     )
                 }
             }
-
         }
     }
 }

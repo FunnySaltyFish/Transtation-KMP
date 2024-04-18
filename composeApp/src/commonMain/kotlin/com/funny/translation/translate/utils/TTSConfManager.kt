@@ -7,6 +7,7 @@ import com.funny.translation.kmp.appCtx
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.tts.BaiduTransTTSProvider
+import com.funny.translation.translate.tts.OpenAIProvider
 import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.findTTSProviderById
 import com.funny.translation.translate.tts.speed
@@ -71,7 +72,7 @@ object TTSConfManager {
      * @param language Language
      * @return TTSConf
      */
-    fun findByLanguage(language: Language): TTSConf {
+    private fun findByLanguage(language: Language): TTSConf {
         return confMap.getOrPut(language) {
             appDB.tTSConfQueries.getByLanguage(language).executeAsOneOrNull() ?: createDefaultConf(language)
         }
@@ -115,11 +116,18 @@ object TTSConfManager {
         }
     }
 
-    private fun createDefaultConf(language: Language): TTSConf {
-        return TTSConf(
+    fun createDefaultConf(language: Language): TTSConf {
+        return if (language == Language.AUTO) {
+            TTSConf(
+                language = language,
+                ttsProviderId = OpenAIProvider.id,
+                speaker = OpenAIProvider.defaultSpeaker,
+                extraConf = OpenAIProvider.defaultExtraConf
+            )
+        } else TTSConf(
             language = language,
             ttsProviderId = BaiduTransTTSProvider.id,
-            speaker = BaiduTransTTSProvider.DEFAULT_SPEAKERS.first(),
+            speaker = BaiduTransTTSProvider.defaultSpeaker,
             extraConf = BaiduTransTTSProvider.defaultExtraConf
         )
     }

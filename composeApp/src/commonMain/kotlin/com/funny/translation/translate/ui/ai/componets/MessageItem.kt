@@ -30,6 +30,8 @@ import com.funny.compose.ai.bean.sendByMe
 import com.funny.jetsetting.core.ui.FunnyIcon
 import com.funny.jetsetting.core.ui.IconWidget
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.translate.Language
+import com.funny.translation.translate.ui.main.SpeakButton
 import com.funny.translation.translate.ui.widget.AsyncImage
 import com.funny.translation.ui.MarkdownText
 
@@ -108,8 +110,15 @@ fun MessageItem(
                     )
                     .padding(4.dp)
             ) {
-                // refresh / copy / delete
+                // speak / refresh / copy / delete
                 if (chatMessage.type == ChatMessageTypes.TEXT) {
+                    SpeakButton(
+//                        modifier = Modifier.padding(4.dp),
+                        text = chatMessage.content,
+                        language = Language.AUTO,
+                        boxSize = 28.dp,
+                        iconSize = 20.dp
+                    )
                     MessageItemMenuIcon(
                         icon = FunnyIcon(imageVector = Icons.Default.ContentCopy),
                         onClick = copyAction

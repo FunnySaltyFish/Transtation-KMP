@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.compose.ai.bean.Model
@@ -25,7 +26,8 @@ import kotlin.math.roundToInt
 @Composable
 fun ColumnScope.ModelListPart(
     onModelLoaded: (currentSelectBotId: Int, models: List<Model>) -> Unit,
-    onModelSelected: (model: Model) -> Unit
+    onModelSelected: (model: Model) -> Unit,
+    maxHeight: Dp = 400.dp,
 ) {
     Category(
         title = ResStrings.model_select,
@@ -33,7 +35,7 @@ fun ColumnScope.ModelListPart(
         defaultExpand = true,
     ) { expanded ->
         var currentSelectBotId by rememberDataSaverState("selected_chat_model_id", initialValue = 0)
-        val height by animateDpAsState(targetValue = if (expanded) 400.dp else 200.dp, label = "height")
+        val height by animateDpAsState(targetValue = if (expanded) maxHeight else 200.dp, label = "height")
         val onClick = { model: Model ->
             currentSelectBotId = model.chatBotId
             onModelSelected(model)

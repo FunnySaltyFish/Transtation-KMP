@@ -67,21 +67,19 @@ object BaiduTransTTSProvider: TTSProvider() {
         )
     }
 
-    override suspend fun getSpeakers(gender: Gender, locale: String): List<Speaker> = DEFAULT_SPEAKERS
+    override suspend fun getSpeakers(gender: Gender, locale: String): List<Speaker> = arrayListOf(defaultSpeaker)
 
     @Composable
     override fun Settings(conf: TTSConf, onSettingSpeedFinish: (Float) -> Unit) {
         SpeedSettings(conf = conf, valueRange = 1f..5f, steps = 3, onFinish = onSettingSpeedFinish)
     }
 
-    internal val DEFAULT_SPEAKERS by lazy {
-        arrayListOf(
-            Speaker(
-                fullName = "Default",
-                shortName = ResStrings.default_str,
-                gender = Gender.Female,
-                locale = "auto"
-            )
+    internal val defaultSpeaker by lazy {
+        Speaker(
+            fullName = "Default",
+            shortName = ResStrings.default_str,
+            gender = Gender.Female,
+            locale = "auto"
         )
     }
 }
@@ -127,6 +125,13 @@ object OpenAIProvider: ServerTTSProvider("openai") {
     override fun Settings(conf: TTSConf, onSettingSpeedFinish: (Float) -> Unit) {
         SpeedSettings(conf = conf, valueRange = 50f..200f, steps = 12, onFinish = onSettingSpeedFinish)
     }
+
+    val defaultSpeaker = Speaker(
+        fullName = "nova",
+        shortName = "nova",
+        gender = Gender.Female,
+        locale = "all"
+    )
 }
 
 val ttsProviders: List<TTSProvider> = persistentListOf(
