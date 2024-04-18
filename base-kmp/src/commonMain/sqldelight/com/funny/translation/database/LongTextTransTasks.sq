@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS longTextTransTasks (
     sourceTextSegments TEXT AS List<Int> NOT NULL,
     resultTextSegments TEXT AS List<Int> NOT NULL,
     translatedLength INTEGER AS Int NOT NULL,
+    remark TEXT NOT NULL DEFAULT '',
     createTime INTEGER NOT NULL DEFAULT 0,
-    updateTime INTEGER NOT NULL DEFAULT 0,
-    remark TEXT NOT NULL DEFAULT ''
+    updateTime INTEGER NOT NULL DEFAULT 0
 );
 
 -- Queries for LongTextTransDao

@@ -411,7 +411,7 @@ class LongTextTransViewModel: ModelViewModel() {
         task ?: return
         dbAction {
             task = task!!.copy(remark = remark)
-            dao.updateRemark(taskId, remark)
+            appDB.longTextTransTasksQueries.updateRemark(id = taskId, remark = remark)
         }
     }
 

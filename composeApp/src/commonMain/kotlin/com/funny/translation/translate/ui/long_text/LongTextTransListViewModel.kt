@@ -25,7 +25,7 @@ class LongTextTransListViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "updateRemark: taskId = $taskId, newRemark = $newRemark")
             try {
-                appDB.longTextTransTasksQueries.updateRemark(taskId, newRemark)
+                appDB.longTextTransTasksQueries.updateRemark(id = taskId, remark = newRemark)
             } catch (e: Exception) {
                 Log.e(TAG, "updateRemark: ", e)
             }

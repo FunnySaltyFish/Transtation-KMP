@@ -89,15 +89,14 @@ fun LongTextTransDetailScreen(
         key = "show_long_trans_tip",
         initialValue = true
     )
-    if (showHelpDialog) {
-        SimpleDialog(
-            openDialog = showHelpDialog,
-            updateOpenDialog = { showHelpDialog = it },
-            content = {
-                MarkdownText(markdown = assetsStringLocalized(name = "long_text_trans_help.md"))
-            }
-        )
-    }
+
+    SimpleDialog(
+        openDialog = showHelpDialog,
+        updateOpenDialog = { showHelpDialog = it },
+        content = {
+            MarkdownText(markdown = assetsStringLocalized(name = "long_text_trans_help.md"))
+        }
+    )
 
     // 跳转到其他页面时，暂停翻译
     DisposableEffect(key1 = Unit) {
