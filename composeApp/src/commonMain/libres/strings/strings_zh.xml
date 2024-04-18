@@ -242,7 +242,7 @@
     <string name="custom_theme_desc">高度自定义主题，你的译站由你定义</string>
     <string name="exclusive_engine">专享引擎</string>
     <string name="exclusive_engine_desc">使用部分会员专享的引擎</string>
-    <string name="markdown_agree_vip_privacy">购买会员即代表您已阅读并同意 [译站会员购买协议](https://api.funnysaltyfish.fun/trans/v1/api/vip_agreement)</string>
+    <string name="markdown_agree_vip_privacy">购买会员即代表您已阅读并同意 [译站会员购买协议](https://api.funnysaltyfish.fun/trans/v1/api/vip_agreement)\n会员价格自2023年12月起实行阶梯计价，每日变化（年卡基础价19.99，日增0.04;月卡1.99，日增0.004）</string>
     <string name="long_text_trans">长文翻译</string>
     <string name="translate_result">翻译结果</string>
     <string name="all_corpus">所有术语</string>

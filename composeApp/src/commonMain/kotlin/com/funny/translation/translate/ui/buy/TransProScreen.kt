@@ -158,8 +158,8 @@ fun TransProContent() {
                 item {
                     MarkdownText(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 4.dp, bottom = 4.dp),
+                            .fillParentMaxWidth(1f)
+                            .padding(top = 4.dp, bottom = 4.dp, start = 16.dp, end = 16.dp),
                         markdown = ResStrings.markdown_agree_vip_privacy,
                         fontSize = 12.sp,
                         color = LocalContentColor.current.copy(0.9f),
