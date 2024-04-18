@@ -44,8 +44,16 @@ object ServiceCreator {
     }
 
     private fun readBaseURL(): String {
-        var url = if (AppConfig.developerMode.value) DataSaverUtils.readData("BASE_URL", DEFAULT_BASE_URL) else DEFAULT_BASE_URL
-        if (!url.endsWith("/")) url += "/"
+        val url = if (AppConfig.developerMode.value) {
+            var readUrl = DataSaverUtils.readData("BASE_URL", DEFAULT_BASE_URL)
+            if (!readUrl.endsWith("/")) readUrl += "/"
+            if (!readUrl.isValidUrl()) {
+                readUrl = DEFAULT_BASE_URL
+                DataSaverUtils.saveData("BASE_URL", readUrl)
+            }
+            readUrl
+        } else DEFAULT_BASE_URL
+
         return url
     }
 
