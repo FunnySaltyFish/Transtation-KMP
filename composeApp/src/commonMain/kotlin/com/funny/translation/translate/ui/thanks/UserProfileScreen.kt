@@ -52,7 +52,6 @@ import com.funny.translation.network.api
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.bean.AI_TEXT_POINT
-import com.funny.translation.translate.bean.AI_VOICE_POINT
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.utils.QQUtils
 import com.funny.translation.ui.CommonPage
@@ -114,15 +113,15 @@ fun UserProfileSettings(navHostController: NavHostController) {
             Text(text = "%.3f".format(userInfo.ai_text_point))
         }
         // 剩余 AI 语音点数
-        Tile(text = ResStrings.ai_remaining_voice_points, onClick = {
-            navHostController.navigate(
-                TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
-                    "planName" to AI_VOICE_POINT
-                )
-            )
-        }) {
-            Text(text = "%.3f".format(userInfo.ai_voice_point))
-        }
+//        Tile(text = ResStrings.ai_remaining_voice_points, onClick = {
+//            navHostController.navigate(
+//                TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
+//                    "planName" to AI_VOICE_POINT
+//                )
+//            )
+//        }) {
+//            Text(text = "%.3f".format(userInfo.ai_voice_point))
+//        }
         Tile(text = ResStrings.vip_end_time) {
             Text(text = userInfo.vipEndTimeStr())
         }

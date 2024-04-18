@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -152,7 +153,7 @@ private fun AIPointCard(
                 modifier = Modifier.padding(end = 16.dp, top = 2.dp)
             ) {
                 BadgedBox(badge = {
-                    Badge {
+                    Badge(modifier = Modifier.offset(x = 2.dp, y = (-8).dp)) {
                         Text(text = ResStrings.vip_only, fontSize = 8.sp)
                     }
                 }) {
