@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.funny.translation.kmp",
+  "applicationId": "com.funny.translation",
   "variantName": "release",
   "elements": [
     {

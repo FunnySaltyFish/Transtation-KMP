@@ -11,8 +11,6 @@ plugins {
     alias(libs.plugins.transtation.kmp.application)
 }
 
-configureBuildKonfigFlavorFromTasks()
-
 kotlin {
     sourceSets {
         val commonMain by getting {
@@ -194,8 +192,8 @@ fun configureBuildKonfigFlavorFromTasks() {
     val buildType = m.groupValues[3]
     val envKey = "TranslationDebug"
     when (buildType) {
-        "Release" -> System.setProperty(envKey, "false")
-        "Debug" -> System.setProperty(envKey, "true")
+        "Release" -> project.setProperty(envKey, "false")
+        "Debug" -> project.setProperty(envKey, "true")
     }
     val buildkonfigFlavor = "common"
 

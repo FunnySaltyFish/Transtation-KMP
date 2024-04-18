@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TranstationKMP</string>
+    <string name="app_name">Transtation</string>
     <string name="crash">Oh, crashed</string>
     <string name="transtation_floating_window">Translation floating ball</string>
     <string name="edit_code">Edit Code</string>

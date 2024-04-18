@@ -112,7 +112,7 @@ fun AboutScreen() {
                 description = ResStrings.source_code_description
             ) {
                 context.toastOnUi(ResStrings.welcome_star)
-                WebViewActivity.start(context, "https://github.com/FunnySaltyFish/FunnyTranslation")
+                WebViewActivity.start(context, "https://github.com/FunnySaltyFish/Transtation-KMP")
             }
         }
         SettingItemCategory(title = {
