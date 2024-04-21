@@ -141,6 +141,12 @@ compose.desktop {
 
             windows {
                 iconFile.set(rootDir.resolve("composeApp/src/desktopMain/kotlin/resources/icon.ico"))
+                console = true
+                exePackageVersion = libs.versions.project.versionName.get()
+                msiPackageVersion = libs.versions.project.versionName.get()
+                shortcut = true
+                menu = true
+                upgradeUuid = "6968d1f5-ff2e-11ee-a22d-b07d64123c7e"
             }
         }
     }
