@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 <!--    <style name="AppTheme" parent="android:Theme.DeviceDefault.Light.NoActionBar.Fullscreen">-->
 <!--    </style>-->
     <style name="BaseTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
@@ -9,7 +9,11 @@
     </style>
 
     <style name="AppTheme" parent="BaseTheme">
-
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
+        <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">#00000000</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">

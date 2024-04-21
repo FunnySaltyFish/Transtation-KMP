@@ -13,12 +13,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -83,6 +89,7 @@ import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.NavPaddingItem
+import com.funny.translation.ui.safeMain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -114,24 +121,42 @@ fun MainPartTranslating(vm: MainViewModel) {
     }
 
     BackHandler(onBack = goBack)
-    CommonPage(
-        navigationIcon = {
-            CommonNavBackIcon(navigateBackAction = goBack)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .run {
+                when (LocalWindowSizeState.current) {
+                    WindowSizeState.VERTICAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top))
+                    WindowSizeState.HORIZONTAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.End + WindowInsetsSides.Top))
+                }
+            }
     ) {
-        TranslateProgress(startedProgress = vm.startedProgress, finishedProgress = vm.finishedProgress)
-        SourceTextPart(
-            modifier = Modifier.fillMaxWidth(0.88f),
-            sourceText = vm.translateText,
-            sourceLanguage = vm.sourceLanguage
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        ResultList(
+        CommonNavBackIcon(navigateBackAction = goBack)
+        Column(
             modifier = Modifier
-                .fillMaxSize(),
-            resultList = vm.resultList,
-            doFavorite = vm::doFavorite
-        )
+                .fillMaxSize()
+                .run {
+                    when (LocalWindowSizeState.current) {
+                        WindowSizeState.VERTICAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Horizontal))
+                        WindowSizeState.HORIZONTAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.End))
+                    }
+                },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TranslateProgress(startedProgress = vm.startedProgress, finishedProgress = vm.finishedProgress)
+            SourceTextPart(
+                modifier = Modifier.fillMaxWidth(0.88f),
+                sourceText = vm.translateText,
+                sourceLanguage = vm.sourceLanguage
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            ResultList(
+                modifier = Modifier
+                    .fillMaxSize(),
+                resultList = vm.resultList,
+                doFavorite = vm::doFavorite
+            )
+        }
     }
 }
 

@@ -14,12 +14,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -91,6 +95,8 @@ import com.funny.translation.translate.ui.widget.SwipeCrossFadeLayout
 import com.funny.translation.translate.ui.widget.SwipeShowType
 import com.funny.translation.translate.ui.widget.UpperPartBackground
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.safeMain
+import com.funny.translation.ui.safeMainPadding
 import com.funny.translation.ui.touchToScale
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.lifecycle.Lifecycle
@@ -168,21 +174,38 @@ internal fun MainPartNormal(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primaryContainer),
         onProgressChanged = { progressState.floatValue = it },
-
         mainUpper = {
             UpperPartBackground {
-                MainTopBarNormal(showDrawerAction = openDrawerAction)
-                Notice(Modifier.fillMaxWidth(0.9f))
-                Spacer(modifier = Modifier.height(8.dp))
-                HintText(
-                    onClick = { vm.updateMainScreenState(MainScreenState.Inputting) },
-                    onLongClick = vm::tryToPasteAndTranslate
-                )
+                Column(
+                    modifier = Modifier
+                        .run {
+                            when (LocalWindowSizeState.current) {
+                                WindowSizeState.VERTICAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
+                                WindowSizeState.HORIZONTAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Top + WindowInsetsSides.End))
+                            }
+                        },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    MainTopBarNormal(showDrawerAction = openDrawerAction)
+                    Notice(Modifier.fillMaxWidth(0.9f))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    HintText(
+                        onClick = { vm.updateMainScreenState(MainScreenState.Inputting) },
+                        onLongClick = vm::tryToPasteAndTranslate
+                    )
+                }
             }
         },
         mainLower = {
             Column(
-                Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .run {
+                        when (LocalWindowSizeState.current) {
+                            WindowSizeState.VERTICAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal))
+                            WindowSizeState.HORIZONTAL -> windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Bottom + WindowInsetsSides.End))
+                        }
+                    },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -203,7 +226,7 @@ internal fun MainPartNormal(
                             start = 24.dp,
                             end = 24.dp,
                             top = 8.dp,
-                            bottom = if (isScreenHorizontal) 8.dp else 52.dp
+                            bottom = if (isScreenHorizontal) 8.dp else 24.dp
                         ),
                     showEngineSelectAction
                 )
@@ -397,7 +420,7 @@ private fun ChildrenFixedSizeRow(
             constraints.copy(minWidth = 0)
         )
         val centerWidth = centerPlaceable.width
-        val w = ((allWidth - centerWidth - 2 * ep) / 2)
+        val w = ((allWidth - centerWidth - 2 * ep) / 2).coerceAtLeast(0)
         val leftPlaceable = subcompose("left", left).first().measure(
             constraints.copy(minWidth = w, maxWidth = w)
         )
