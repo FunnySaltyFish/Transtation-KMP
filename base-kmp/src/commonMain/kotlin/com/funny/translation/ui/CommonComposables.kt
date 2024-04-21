@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyListScope
@@ -59,7 +58,7 @@ fun CommonPage(
     Column(
         modifier
             .fillMaxSize()
-            .statusBarsPadding(),
+            .windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         topBar()
@@ -143,9 +142,7 @@ fun CommonNavBackIcon(
 @Composable
 fun NavPaddingItem() {
     if (currentPlatform == Platform.Android) {
-        Spacer(modifier = Modifier.windowInsetsPadding(
-            WindowInsets.navigationBars.only(WindowInsetsSides.Vertical))
-        )
+        Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Bottom)))
     } else {
         // add some padding for Desktop
         Spacer(modifier = Modifier.height(8.dp))

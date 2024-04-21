@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@file:OptIn(ExperimentalResourceApi::class)
 
 package com.funny.translation.translate.ui.main
 
@@ -6,21 +6,23 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -85,6 +87,8 @@ import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.translate.ui.widget.SimpleNavigation
+import com.funny.translation.ui.safeMain
+import com.funny.translation.ui.safeMainPadding
 import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.delay
@@ -153,7 +157,7 @@ fun TextTransScreen() {
         NeedToTransConfig.clear()
     }
 
-    DisposableEffect(key1 = softwareKeyboardController){
+    DisposableEffect(key1 = softwareKeyboardController) {
         onDispose {
             softwareKeyboardController?.hide()
         }
@@ -209,35 +213,23 @@ fun TextTransScreen() {
         }
     }
 
-    // 使用 BoxWithConstraints 用于适配横竖屏
-    BoxWithConstraints(Modifier.fillMaxSize()) {
-        if (maxWidth > 720.dp) { // 横屏
-            Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                Drawer(
-                    Modifier
-                        .fillMaxHeight()
-                        .width(300.dp)
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(horizontal = 12.dp)
-                )
-                Spacer(modifier = Modifier.width(2.dp))
-                MainPart(isScreenHorizontal = true, showEngineSelectAction = showEngineSelectAction, showSnackbar = showSnackbar, openDrawerAction = null)
-            }
-        } else {
+    when (LocalWindowSizeState.current) {
+        WindowSizeState.VERTICAL -> {
             val drawerState = rememberDrawerState(DrawerValue.Closed)
             BackHandler(enabled = drawerState.isOpen) {
                 scope.launch {
                     drawerState.close()
                 }
             }
+
             ModalNavigationDrawer(
                 drawerContent = {
                     Drawer(
-                        Modifier
+                        modifier = Modifier
+                            .windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Start))
                             .fillMaxHeight()
                             .width(280.dp)
                             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
-                            .padding(start = 16.dp, end = 16.dp, top = 32.dp)
                     )
                 },
                 drawerState = drawerState
@@ -251,6 +243,27 @@ fun TextTransScreen() {
                             drawerState.open()
                         }
                     }
+                )
+            }
+        }
+
+        WindowSizeState.HORIZONTAL -> {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(Modifier.windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Start)))
+                Drawer(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .fillMaxHeight()
+                        .background(MaterialTheme.colorScheme.background)
+                )
+                MainPart(
+                    isScreenHorizontal = true,
+                    showEngineSelectAction = showEngineSelectAction,
+                    showSnackbar = showSnackbar,
+                    openDrawerAction = null
                 )
             }
         }
@@ -270,10 +283,6 @@ private fun MainPart(
     SimpleNavigation(
         currentScreen = vm.currentState,
         modifier = modifier
-            .statusBarsPadding()
-            .then(
-                if (isScreenHorizontal) Modifier.navigationBarsPadding() else Modifier
-            )
     ) { state ->
         when (state) {
             MainScreenState.Normal -> MainPartNormal(
@@ -282,11 +291,13 @@ private fun MainPart(
                 showEngineSelectAction = showEngineSelectAction,
                 openDrawerAction = openDrawerAction
             )
+
             MainScreenState.Inputting -> MainPartInputting(
                 vm = vm,
                 showEngineSelectAction = showEngineSelectAction,
                 showSnackbar = showSnackbar
             )
+
             MainScreenState.Translating -> MainPartTranslating(vm = vm)
         }
     }
@@ -433,13 +444,20 @@ private fun Drawer(
             refreshing = false
         }
     })
-    Box(modifier = modifier.pullRefresh(state)) {
+
+    Box(
+        modifier = modifier
+            .pullRefresh(state)
+    ) {
         Column(
             Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
         ) {
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeMain))
+            Spacer(modifier = Modifier.height(16.dp))
+
             UserInfoPanel(navHostController = navController)
             Spacer(modifier = Modifier.height(8.dp))
             drawerItem(Icons.Filled.Verified, TranslateScreen.TransProScreen) {
@@ -467,6 +485,9 @@ private fun Drawer(
             divider()
             drawerItem(Icons.Default.Apps, TranslateScreen.AppRecommendationScreen)
             drawerItem(Icons.Default.Redeem, TranslateScreen.AnnualReportScreen)
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeMain))
         }
         PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.TopCenter))
     }
