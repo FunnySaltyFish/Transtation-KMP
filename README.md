@@ -175,4 +175,23 @@ If you are unable to run it on the latest stable version of Android Studio and t
 - Thank you to all the friends who have sponsored the project!
 - Thank you to all the contributors!
 
+
+
+### Contributors ✨
+
+<a href="https://github.com/FunnySaltyFish/Transtation-KMP/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=FunnySaltyFish/Transtation-KMP"  alt=""/>
+</a>
+
+
+## Star History
+
+<a href="https://star-history.com/#FunnySaltyFish/Transtation-KMP&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=FunnySaltyFish/Transtation-KMP&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=FunnySaltyFish/Transtation-KMP&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=FunnySaltyFish/Transtation-KMP&type=Date" />
+ </picture>
+</a>
+
 If this project is helpful to you, welcome to **Star** it~
