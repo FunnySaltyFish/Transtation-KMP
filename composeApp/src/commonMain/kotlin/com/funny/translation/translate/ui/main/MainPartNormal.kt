@@ -397,7 +397,7 @@ private fun ChildrenFixedSizeRow(
             constraints.copy(minWidth = 0)
         )
         val centerWidth = centerPlaceable.width
-        val w = ((allWidth - centerWidth - 2 * ep) / 2)
+        val w = ((allWidth - centerWidth - 2 * ep) / 2).coerceAtLeast(0)
         val leftPlaceable = subcompose("left", left).first().measure(
             constraints.copy(minWidth = w, maxWidth = w)
         )
