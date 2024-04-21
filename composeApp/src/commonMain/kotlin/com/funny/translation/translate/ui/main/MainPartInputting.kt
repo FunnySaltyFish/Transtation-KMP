@@ -9,12 +9,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ElevatedButton
@@ -91,29 +94,45 @@ fun MainPartInputting(
     }
     BackHandler(onBack = goBackAction)
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .navigationBarsPadding()
-            .imePadding(),
+            .background(MaterialTheme.colorScheme.primaryContainer),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        UpperPartBackground(modifier = Modifier.weight(1f)) {
-            MainTopBarInputting(
-                showEngineSelectAction = showEngineSelectAction,
-                navigateBackAction = goBackAction
-            )
-            InputPart(
+        UpperPartBackground(
+            modifier = Modifier.weight(1f)
+        ) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                vm = vm,
-                startTranslateActon = ::startTranslate
-            )
+                    .run {
+                        when (LocalWindowSizeState.current) {
+                            WindowSizeState.VERTICAL -> windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
+                            WindowSizeState.HORIZONTAL -> windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.End))
+                    }
+                }
+            ) {
+                MainTopBarInputting(
+                    showEngineSelectAction = showEngineSelectAction,
+                    navigateBackAction = goBackAction
+                )
+                InputPart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    vm = vm,
+                    startTranslateActon = ::startTranslate
+                )
+            }
         }
         LanguageSelectRow(
             modifier = Modifier
                 .fillMaxWidth()
+                .run {
+                    when (LocalWindowSizeState.current) {
+                        WindowSizeState.VERTICAL -> windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal))
+                        WindowSizeState.HORIZONTAL -> windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.End))
+                    }
+                }
                 .padding(horizontal = 20.dp, vertical = 12.dp),
             sourceLanguage = vm.sourceLanguage,
             updateSourceLanguage = vm::updateSourceLanguage,
