@@ -1,8 +1,12 @@
+
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Properties
 
 plugins {
@@ -117,6 +121,37 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+
+    // 其他配置...
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            val output = this
+            println("output: $output")
+            if (output is ApkVariantOutputImpl) {
+                // 确定输出文件名
+                val today = Date()
+                val formatter = SimpleDateFormat("yyyyMMddHHmm")
+                val fileName = "Transtation_${variant.flavorName}_${variant.buildType.name}_${variant.versionName}_${formatter.format(today)}.APK"
+
+                output.outputFileName = fileName
+
+                // 打包完成后做的一些事,复制apk到指定文件夹
+//                variant.assembleProvider.get().doLast {
+//                // 打包完成后复制到的目录
+//                val outputFileDir = "${project.projectDir.absolutePath}/release/"
+//                    val out = File(outputFileDir)
+//                    project.copy {
+//                        variant.outputs.forEach { file ->
+//                            from(file.outputFile)
+//                            into(out)
+//                        }
+//                    }
+//                }
+            }
+        }
+    }
+
 }
 
 fun KotlinDependencyHandler.addProjectDependencies() {
@@ -171,32 +206,4 @@ afterEvaluate {
             finalizedBy(signApkTask)
         }
     }
-}
-
-
-fun configureBuildKonfigFlavorFromTasks() {
-    val startParameter = project.gradle.startParameter
-    if (startParameter.projectProperties.containsKey("buildkonfig.flavor")) {
-        // prefer cli parameter
-        println("buildkonfig.flavor=${startParameter.projectProperties["buildkonfig.flavor"]}")
-        return
-    }
-
-    val pattern = Regex("^:composeApp:(assemble|test|bundle|extractApksFor)(\\w*)(Release|Debug)(|UnitTest)\$")
-    val runningTasks = project.gradle.startParameter.taskNames
-    val matchingTask = runningTasks.find { it.matches(pattern) } ?: return
-
-    val m = pattern.find(matchingTask) ?: return
-
-    val flavor = m.groupValues[2]
-    val buildType = m.groupValues[3]
-    val envKey = "TranslationDebug"
-    when (buildType) {
-        "Release" -> project.setProperty(envKey, "false")
-        "Debug" -> project.setProperty(envKey, "true")
-    }
-    val buildkonfigFlavor = "common"
-
-    println("composeApp:flavor=$flavor, buildType=$buildType; final buildkonfig.flavor=$buildkonfigFlavor")
-    project.setProperty("buildkonfig.flavor", buildkonfigFlavor)
 }

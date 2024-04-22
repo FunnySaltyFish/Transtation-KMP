@@ -52,7 +52,7 @@ fun Project.setupBuildKonfig() {
             buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.findVersion("project.versionName").get().toString())
             buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.findVersion("project.versionCode").get().toString())
             // DEBUG
-            println("module: ${project.name}, TranslationDebug=${project.properties.getOrDefault("TranslationDebug", "false")} ")
+            println("module: ${project.name}, TranslationDebug=${System.getProperty("TranslationDebug", "false")} ")
             val debug = System.getProperty("TranslationDebug", "false") == "true"
             buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
             val buildType = if (debug) "Debug" else "Release"
