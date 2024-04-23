@@ -131,6 +131,9 @@ compose.desktop {
         mainClass = "MainKt"
         javaHome = "D:/Environment/jdk17"
 
+
+        val now = System.currentTimeMillis()
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "Transtation"
@@ -138,15 +141,27 @@ compose.desktop {
             description = "译站 | Transtation"
             copyright = "©2024 FunnySaltyFish. All rights reserved."
             outputBaseDir.set(projectDir.resolve("release"))
+//            java.sql.DriverManager
+            modules("java.sql")
+            // 加上  -Dfile.encoding=UTF-8
+            jvmArgs += listOf("-Dfile.encoding=UTF-8")
 
             windows {
                 iconFile.set(rootDir.resolve("composeApp/src/desktopMain/kotlin/resources/icon.ico"))
                 console = true
-                exePackageVersion = libs.versions.project.versionName.get()
-                msiPackageVersion = libs.versions.project.versionName.get()
                 shortcut = true
                 menu = true
                 upgradeUuid = "6968d1f5-ff2e-11ee-a22d-b07d64123c7e"
+                // MAJOR.MINOR.BUILD
+                packageVersion = "${libs.versions.project.versionName.get()}${now%1000}"
+            }
+        }
+
+        buildTypes {
+            release {
+                proguard {
+                    configurationFiles.setFrom(files("proguard-rules.pro"))
+                }
             }
         }
     }
@@ -177,32 +192,4 @@ afterEvaluate {
             finalizedBy(signApkTask)
         }
     }
-}
-
-
-fun configureBuildKonfigFlavorFromTasks() {
-    val startParameter = project.gradle.startParameter
-    if (startParameter.projectProperties.containsKey("buildkonfig.flavor")) {
-        // prefer cli parameter
-        println("buildkonfig.flavor=${startParameter.projectProperties["buildkonfig.flavor"]}")
-        return
-    }
-
-    val pattern = Regex("^:composeApp:(assemble|test|bundle|extractApksFor)(\\w*)(Release|Debug)(|UnitTest)\$")
-    val runningTasks = project.gradle.startParameter.taskNames
-    val matchingTask = runningTasks.find { it.matches(pattern) } ?: return
-
-    val m = pattern.find(matchingTask) ?: return
-
-    val flavor = m.groupValues[2]
-    val buildType = m.groupValues[3]
-    val envKey = "TranslationDebug"
-    when (buildType) {
-        "Release" -> project.setProperty(envKey, "false")
-        "Debug" -> project.setProperty(envKey, "true")
-    }
-    val buildkonfigFlavor = "common"
-
-    println("composeApp:flavor=$flavor, buildType=$buildType; final buildkonfig.flavor=$buildkonfigFlavor")
-    project.setProperty("buildkonfig.flavor", buildkonfigFlavor)
 }

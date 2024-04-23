@@ -119,7 +119,7 @@ kotlin {
             dependencies {
                 api(compose.desktop.currentOs)
 
-                implementation("org.slf4j:slf4j-simple:2.0.3")
+                implementation("org.slf4j:slf4j-simple:2.0.4")
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
                 implementation("com.github.Dansoftowner:jSystemThemeDetector:3.6")

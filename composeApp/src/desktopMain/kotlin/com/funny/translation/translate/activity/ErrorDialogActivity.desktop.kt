@@ -2,6 +2,9 @@ package com.funny.translation.translate.activity
 
 import com.funny.translation.BaseActivity
 import com.funny.translation.helper.CacheManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -17,6 +20,12 @@ actual class ErrorDialogActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         crashMessage = data?.get(KEY_CRASH_MESSAGE) as? String
+
+        crashMessage?.let {
+            CoroutineScope(Dispatchers.IO).launch {
+                saveCrashMessage(it)
+            }
+        }
     }
 
     actual fun saveCrashMessage(msg: String) {

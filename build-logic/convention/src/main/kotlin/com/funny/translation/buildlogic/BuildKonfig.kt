@@ -19,7 +19,7 @@ fun configureBuildKonfigFlavorFromTasks(project: Project) {
         return
     }
 
-    val pattern = Regex("^:composeApp:(assemble|test|bundle|extractApksFor)(\\w*)(Release|Debug)(|UnitTest)\$")
+    val pattern = Regex("^:composeApp:(assemble|test|bundle|extractApksFor|package)(\\w*)(Release|Debug)?(|UnitTest|Exe|Dmg|Deb|Msi)\$")
     val runningTasks = project.gradle.startParameter.taskNames
     val matchingTask = runningTasks.find { it.matches(pattern) } ?: return
 
@@ -32,6 +32,8 @@ fun configureBuildKonfigFlavorFromTasks(project: Project) {
     when (buildType) {
         "Release" -> System.setProperty(envKey, "false")
         "Debug" -> System.setProperty(envKey, "true")
+        // packageExe, packageDmg, packageDeb, packageMsi
+        else -> System.setProperty(envKey, "true")
     }
     val buildkonfigFlavor = "common"
     println("module: ${project.name}, flavor=$flavor, buildType=$buildType; final buildkonfig.flavor=$buildkonfigFlavor")
@@ -52,8 +54,8 @@ fun Project.setupBuildKonfig() {
             buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.findVersion("project.versionName").get().toString())
             buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.findVersion("project.versionCode").get().toString())
             // DEBUG
-            println("module: ${project.name}, TranslationDebug=${project.properties.getOrDefault("TranslationDebug", "false")} ")
-            val debug = System.getProperty("TranslationDebug", "false") == "true"
+            val debug = System.getProperty("TranslationDebug", "true") == "true"
+            println("module: ${project.name}, TranslationDebug=$debug")
             buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
             val buildType = if (debug) "Debug" else "Release"
             buildConfigField(FieldSpec.Type.STRING,  "BUILD_TYPE", buildType)

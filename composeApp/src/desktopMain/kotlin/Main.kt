@@ -1,5 +1,3 @@
-package com.funny.translation.translate
-
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -18,6 +16,9 @@ import com.funny.translation.kmp.addWindow
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.rememberNavController
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.AppNavigation
+import com.funny.translation.translate.LocalActivityVM
+import com.funny.translation.translate.TransActivity
 import com.funny.translation.translate.activity.ErrorDialog
 import com.funny.translation.translate.activity.ErrorDialogActivity
 import com.funny.translation.translate.utils.DesktopUncaughtExceptionHandler

@@ -25,3 +25,6 @@ encrypt_funny_js.js
 signing.properties
 
 .env
+
+composeApp/release/main/app
+composeApp/release/main-release/app
