@@ -69,6 +69,11 @@ object AppConfig {
         userInfo.value = user.copy(ai_voice_point = user.ai_voice_point - amount)
     }
 
+    // 是否是 VIP，强制内联此方法，避免VIP功能被反编译绕过
+    inline fun isMembership() = userInfo.value.isValidVip()
+
+    // 老铁，你看到了，这是你破解的方法。译站已经是开源了，我个人开发整这个会员只是为了支撑服务器成本啊，我好心，你也别破坏了。
+    @Keep
     fun isVip() = userInfo.value.isValidVip()
 
     // 开启 VIP 的一些功能，供体验

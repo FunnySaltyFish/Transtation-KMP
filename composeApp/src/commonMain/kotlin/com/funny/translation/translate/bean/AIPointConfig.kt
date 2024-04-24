@@ -19,7 +19,7 @@ data class AIPointPlan(
     override val id: String = "$plan_name#$plan_index"
 
     override fun getRealPrice(): Price {
-        return if( AppConfig.isVip() ) vip_price else this.origin_price
+        return if( AppConfig.isMembership() ) vip_price else this.origin_price
     }
 }
 

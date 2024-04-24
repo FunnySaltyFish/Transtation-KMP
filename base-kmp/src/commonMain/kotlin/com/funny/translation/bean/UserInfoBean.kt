@@ -6,7 +6,7 @@ import com.funny.translation.helper.DateSerializerType1
 import com.funny.translation.helper.TimeUtils
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
-import java.util.*
+import java.util.Date
 import kotlin.time.Duration.Companion.days
 
 @Keep
@@ -33,7 +33,8 @@ data class UserInfoBean(
     val ai_voice_point: BigDecimal = BigDecimal.ZERO,
 ) {
     fun isValid() = uid >= 0 && jwt_token != ""
-    fun isValidVip() =
+
+    inline fun isValidVip() =
         isValid() && (vip_level > 0) && vip_start_time?.time != null
                 && vip_start_time.time + vip_duration * 86400 * 1000 > System.currentTimeMillis()
 

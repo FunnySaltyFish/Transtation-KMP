@@ -54,5 +54,5 @@ object Consts {
     const val KEY_CUSTOM_NAVIGATION = "custom_nav"
     const val KEY_FIRST_OPEN_APP = "first_open_app_v2"
 
-    val MAX_SELECT_ENGINES get() = if (AppConfig.isVip()) 8 else 5
+    val MAX_SELECT_ENGINES get() = if (AppConfig.isMembership()) 8 else 5
 }

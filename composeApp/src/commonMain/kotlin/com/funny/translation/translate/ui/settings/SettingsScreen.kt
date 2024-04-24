@@ -321,7 +321,7 @@ private fun DevSetBaseUrl() {
 }
 
 internal val DefaultVipInterceptor = {
-    if (!AppConfig.isVip()) {
+    if (!AppConfig.isMembership()) {
         appCtx.toastOnUi(ResStrings.vip_only_tip)
         false
     } else {

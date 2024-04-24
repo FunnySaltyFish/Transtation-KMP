@@ -67,7 +67,7 @@ fun MainPartInputting(
         }
         val selectedSize = selectedEngines.size
         if (selectedSize > Consts.MAX_SELECT_ENGINES) {
-            val tip = if (AppConfig.isVip()) {
+            val tip = if (AppConfig.isMembership()) {
                 ResStrings.message_out_of_max_engine_limit.format(
                     Consts.MAX_SELECT_ENGINES.toString(),
                     selectedSize.toString())

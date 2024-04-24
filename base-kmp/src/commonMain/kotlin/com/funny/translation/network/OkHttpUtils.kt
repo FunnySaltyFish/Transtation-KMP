@@ -99,13 +99,13 @@ object OkHttpUtils {
                         sourceLanguageCode = GlobalTranslationConfig.sourceLanguage!!.id,
                         targetLanguageCode = GlobalTranslationConfig.targetLanguage!!.id,
                         text = GlobalTranslationConfig.sourceString!!,
-                        extra = ""
+                        extra = 1 // 1 -> 截止 2.8.0 出现pojieban的额外措施
                     ).also {
                         Log.d(TAG, "createBaseClient: add sign: $it")
                     })
 
                     // 对于文本翻译，如果是 vip 且开启了显示详细结果，那么加上 show_detail=true
-                    if (!newUrl.path.endsWith("translate_image") && AppConfig.isVip() && AppConfig.sShowDetailResult.value) {
+                    if (!newUrl.path.endsWith("translate_image") && AppConfig.isMembership() && AppConfig.sShowDetailResult.value) {
                         newUrl = URL("$newUrl&show_detail=true")
                     }
                 }

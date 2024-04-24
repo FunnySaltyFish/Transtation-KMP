@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 object SignUtils {
     private var hasInitJs = false
     private const val SCRIPT_ID = "SignUtils"
-    fun encodeSign(uid : Long, appVersionCode: Int, sourceLanguageCode: Int, targetLanguageCode: Int, text: String, extra: String = "") = try {
+    fun encodeSign(uid : Long, appVersionCode: Int, sourceLanguageCode: Int, targetLanguageCode: Int, text: String, extra: Int = 0) = try {
         while (!hasInitJs){
             Thread.sleep(100)
         }
