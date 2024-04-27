@@ -23,6 +23,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.toSize
 import com.funny.cmaterialcolors.MaterialColors
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.translate.utils.FunnyBiggerText
 import kotlinx.coroutines.delay
 import kotlin.random.Random
@@ -79,7 +80,8 @@ fun DrawScope.drawParticle(particle: Particle){
     drawCircle(particle.brush, particle.radius, Offset(particle.x, particle.y))
 }
 
-class TextFlashCanvasState(var particleList: List<Particle>? = null){
+class TextFlashCanvasState {
+    var particleList: List<Particle>? by mutableStateOf(null)
     var animFinished by mutableStateOf(false)
 }
 
@@ -98,8 +100,9 @@ fun TextFlashCanvas(
     val textSize = remember { textMeasurer.measure(buildAnnotatedString { append(text) }, textStyle).size }
     var recompose by remember { mutableStateOf(false) }
     var startTime: Long
-    var canvasSize: Size? = null
+    var canvasSize: Size? by rememberStateOf(null)
     LaunchedEffect(state.particleList){
+        // Log.d(TAG, "LaunchedEffect, state.particleList.size = ${state.particleList?.size}")
         if(state.particleList != null){
             startTime = System.currentTimeMillis()
             var f = true
@@ -117,7 +120,10 @@ fun TextFlashCanvas(
             }
             delay(showTextDuration)
 
-            while (canvasSize == null) delay(100)
+            while (canvasSize == null) {
+                // Log.d(TAG, "canvasSize == null, waiting~")
+                delay(100)
+            }
             resetParticleTargets(state.particleList!!, canvasSize = canvasSize!!)
             // 退出动画
             startTime = System.currentTimeMillis()
