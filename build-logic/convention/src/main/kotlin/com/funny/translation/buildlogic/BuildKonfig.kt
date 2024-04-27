@@ -59,6 +59,18 @@ fun Project.setupBuildKonfig() {
             buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
             val buildType = if (debug) "Debug" else "Release"
             buildConfigField(FieldSpec.Type.STRING,  "BUILD_TYPE", buildType)
+
+            // 读取 rootProject 的 signing.properties 中的配置
+            val localProperties = rootProject.file("signing.properties")
+            var magicKey = "OpenSourceMagicKey"
+            if (localProperties.exists()) {
+                val properties = java.util.Properties()
+                properties.load(localProperties.inputStream())
+                magicKey = properties.getProperty("MAGIC_KEY", magicKey)
+            } else {
+                magicKey = "OpenSourceMagicKey"
+            }
+            buildConfigField(FieldSpec.Type.STRING, "MAGIC_KEY", magicKey)
         }
 
         defaultConfigs("common") {

@@ -1,50 +1,57 @@
 package com.funny.translation.helper
 
 import com.funny.translation.BuildConfig
-import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KLoggingEventBuilder
+import io.github.oshai.kotlinlogging.Level
+import io.github.oshai.kotlinlogging.Marker
 
 actual object Logger {
     private val logDir = CacheManager.baseDir.resolve("logs")
+    private val fileWriter by lazy {
+        logDir.mkdirs()
+        logDir.resolve("log_${System.currentTimeMillis()}.log").writer()
+    }
+
+    // KotlinLogging.logger {} 在控制台看不到输出啊，只好改成最朴素的 System.out.println 了
+    private val logger = object : KLogger {
+        override val name: String = "TranstationLog"
+
+        override fun at(level: Level, marker: Marker?, block: KLoggingEventBuilder.() -> Unit) {
+            KLoggingEventBuilder().apply(block).run {
+                if (BuildConfig.DEBUG && level >= Level.DEBUG) {
+                    val line = "[$level] $message"
+                    println(line)
+                    fileWriter.write(line + "\n")
+                    fileWriter.flush()
+                } else if (!BuildConfig.DEBUG){
+                    // release 版本只输出 WARN 级别以上的日志
+                    if (level >= Level.WARN) {
+                        val line = "[$level] $message"
+                        fileWriter.write(line + "\n")
+                        fileWriter.flush()
+                    }
+                }
+            }
+        }
+
+        override fun isLoggingEnabledFor(level: Level, marker: Marker?): Boolean {
+            return true
+        }
+    }
 
     init {
         // kotlin-logging-to-jul
 //        System.setProperty("kotlin-logging-to-jul", "true")
-        if (BuildConfig.DEBUG) {
-            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "console")
-            System.setProperty(org.slf4j.simple.SimpleLogger.SHOW_DATE_TIME_KEY, "true")
-            System.setProperty(org.slf4j.simple.SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss:SSS")
-            System.setProperty(org.slf4j.simple.SimpleLogger.SHOW_THREAD_NAME_KEY, "false")
-            System.setProperty(org.slf4j.simple.SimpleLogger.SHOW_LOG_NAME_KEY, "false")
-
-            logDir.mkdirs()
-            // 输出到文件
-            System.setProperty(
-                "org.slf4j.simpleLogger.logFile",
-                logDir.resolve("log_${System.currentTimeMillis()}.log").absolutePath
-            )
-
-            // 同时输出到控制台
-
-        } else {
-            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "warn")
-        }
-    }
-
-    // KotlinLogging.logger {} 在控制台看不到输出啊，只好改成最朴素的 System.out.println 了
-    private val logger = KotlinLogging.logger {
-
-//        override val name: String = "TranstationLog"
-//
-//        override fun at(level: Level, marker: Marker?, block: KLoggingEventBuilder.() -> Unit) {
-//            KLoggingEventBuilder().apply(block).run {
-//                if (BuildConfig.DEBUG) {
-//                    println("[$level] $message")
-//                }
-//            }
-//        }
-//
-//        override fun isLoggingEnabledFor(level: Level, marker: Marker?): Boolean {
-//            return true
+//        if (BuildConfig.DEBUG) {
+//            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "debug")
+//            System.setProperty(org.slf4j.simple.SimpleLogger.SHOW_DATE_TIME_KEY, "true")
+//            System.setProperty(org.slf4j.simple.SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss:SSS")
+//            System.setProperty(org.slf4j.simple.SimpleLogger.SHOW_THREAD_NAME_KEY, "false")
+//            System.setProperty(org.slf4j.simple.SimpleLogger.SHOW_LOG_NAME_KEY, "false")
+//            // 同时输出到控制台
+//        } else {
+//            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "warn")
 //        }
     }
 
