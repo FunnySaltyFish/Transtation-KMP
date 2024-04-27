@@ -2,8 +2,6 @@ package com.funny.translation.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,7 +42,7 @@ actual fun MarkdownText(
     onTextLayout: ((numLines: Int) -> Unit)?
 )  {
     Markdown(
-        modifier = modifier.padding(8.dp).verticalScroll(rememberScrollState()),
+        modifier = modifier.padding(8.dp),
         content = markdown,
         colors = markdownColor(
             text = color

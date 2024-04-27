@@ -96,6 +96,7 @@ private var showAnim: Boolean = true
 @Composable
 fun TransProScreen(){
     if (showAnim) {
+        // TODO: fix Desktop 动画没放
         TextFlashCanvas(
             modifier = Modifier.fillMaxSize(),
             state = remember { TextFlashCanvasState() },
