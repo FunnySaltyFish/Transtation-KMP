@@ -12,7 +12,6 @@ import java.io.FileReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.security.MessageDigest
-import java.util.Arrays
 import java.util.Properties
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
@@ -39,6 +38,7 @@ class DataSaverProperties(private val filePath: String, private val encryptionKe
             // Handle file not found exception
         } catch (e: Exception) {
             // Handle other exceptions
+            e.printStackTrace()
         }
     }
 
@@ -48,13 +48,14 @@ class DataSaverProperties(private val filePath: String, private val encryptionKe
             properties.store(encryptedWriter, null)
         } catch (e: Exception) {
             // Handle file write exception
+            e.printStackTrace()
         }
     }
 
     private fun createCipher(mode: Int): Cipher {
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        val cipher = Cipher.getInstance("AES/CBC/NoPadding")
         val keySpec = SecretKeySpec(hashedKey, "AES")
-        val ivParameterSpec = IvParameterSpec(Arrays.copyOfRange(hashedKey, 0, 16))
+        val ivParameterSpec = IvParameterSpec(hashedKey.copyOfRange(0, 16))
         cipher.init(mode, keySpec, ivParameterSpec)
         return cipher
     }
