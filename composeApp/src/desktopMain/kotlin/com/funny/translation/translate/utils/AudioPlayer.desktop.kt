@@ -37,10 +37,10 @@ actual object AudioPlayer {
                     val urlStr = TTSConfManager.getURL(word, language) ?: return@thread
                     currentPlayingText = word
                     playbackState = PlaybackState.LOADING
+                    Log.d(TAG, "playOrPause: $urlStr")
 
                     val resp = OkHttpUtils.getResponse(urlStr)
                     val stream = resp.body?.byteStream() ?: return@thread
-                    Log.d(TAG, "playOrPause: $urlStr")
 
                     player = AdvancedPlayer(stream)
 
