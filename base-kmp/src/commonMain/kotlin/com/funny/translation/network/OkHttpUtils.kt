@@ -156,6 +156,7 @@ object OkHttpUtils {
                 .request()
                 .response()
                 .excludePath(TRANS_PATH + "ai/ask_stream")
+                .excludePath(TRANS_PATH + "ai/tts/generate_stream")
                 .build()
         )
 
