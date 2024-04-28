@@ -6,6 +6,7 @@ import com.funny.translation.bean.Price
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.LazyMutableState
 import com.funny.translation.helper.get
+import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.allLanguages
@@ -124,6 +125,18 @@ object OpenAIProvider: ServerTTSProvider("openai") {
     @Composable
     override fun Settings(conf: TTSConf, onSettingSpeedFinish: (Float) -> Unit) {
         SpeedSettings(conf = conf, valueRange = 50f..200f, steps = 12, onFinish = onSettingSpeedFinish)
+    }
+
+    override fun getUrl(
+        word: String,
+        language: Language,
+        voice: String,
+        speed: Int,
+        volume: Int
+    ): String {
+        val url = super.getUrl(word, language, voice, speed, volume)
+        // 由于 Desktop 使用的播放器不支持默认的 opus 格式，转为使用 mp3 格式响应
+        return if (currentPlatform.isDesktop) "$url&response_format=mp3" else url
     }
 
     val defaultSpeaker = Speaker(

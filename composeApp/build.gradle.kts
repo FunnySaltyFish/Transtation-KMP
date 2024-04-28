@@ -163,19 +163,49 @@ fun KotlinDependencyHandler.addProjectDependencies() {
 
 compose.desktop {
     application {
+        // 下面的注释是我踩的坑
+        // 这个 MainClass 一定要写到类全名，如果有包名一定要写全，否则打包后会找不到入口，运行直接无效果
         mainClass = "MainKt"
         javaHome = "D:/Environment/jdk17"
+
+        val now = System.currentTimeMillis()
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "Transtation"
             packageVersion = libs.versions.project.versionName.get()
+            // Description 中如果有中文，需要指定字符集为 UTF-8; Java 17 以上默认字符集为 UTF-8
             description = "译站 | Transtation"
             copyright = "©2024 FunnySaltyFish. All rights reserved."
             outputBaseDir.set(projectDir.resolve("release"))
+            // 如果运行报错 java.lang.ClassNotFoundException: java.sql.DriverManager
+            // 你需要下面这行
+            modules("java.sql")
+            // 加上 -Dfile.encoding=UTF-8，这样 slf4j 输出的日志就不会乱码了
+            jvmArgs += listOf("-Dfile.encoding=UTF-8")
 
             windows {
                 iconFile.set(rootDir.resolve("composeApp/src/desktopMain/kotlin/resources/icon.ico"))
+                // 是否创建桌面快捷方式
+                shortcut = true
+                // 是否创建开始菜单
+                menu = true
+                // 升级的 UUID，注意必须要满足 UUID 格式，不能乱起
+                upgradeUuid = "6968d1f5-ff2e-11ee-a22d-b07d64123c7e"
+                // Windows 下的版本号需要满足
+                // MAJOR.MINOR.BUILD
+                // 其中 MAJOR 和 MINOR 必须是 0-255，BUILD 必须是 0-65535
+                // 这里加上了当前时间的毫秒数是因为，如果版本号一样，打包后会提示已经安装了，无法安装
+                packageVersion = "${libs.versions.project.versionName.get()}${now%1000}"
+            }
+        }
+
+        buildTypes {
+            release {
+                // 配置 proguard 的规则
+                proguard {
+                    configurationFiles.setFrom(files("proguard-rules.pro"))
+                }
             }
         }
     }

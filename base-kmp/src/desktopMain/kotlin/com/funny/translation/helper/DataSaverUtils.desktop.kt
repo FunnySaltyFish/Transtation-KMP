@@ -1,27 +1,68 @@
 package com.funny.translation.helper
 
 import com.funny.data_saver.core.DataSaverInterface
+import com.funny.translation.BuildConfig
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.io.FileReader
-import java.io.FileWriter
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.security.MessageDigest
 import java.util.Properties
+import javax.crypto.Cipher
+import javax.crypto.CipherInputStream
+import javax.crypto.CipherOutputStream
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
-class DataSaverProperties(private val filePath: String) : DataSaverInterface() {
+class DataSaverProperties(private val filePath: String, private val encryptionKey: String) : DataSaverInterface() {
     private val properties = Properties()
+    private val hashedKey = hashKey(encryptionKey)
 
     init {
         try {
-            FileReader(filePath).use { reader ->
-                properties.load(reader)
+            val f = File(filePath)
+            if (!f.exists()) {
+                f.parentFile.mkdirs()
+                f.createNewFile()
             }
+            FileReader(filePath).use { reader ->
+                val decryptedReader = BufferedReader(InputStreamReader(CipherInputStream(FileInputStream(filePath), createCipher(Cipher.DECRYPT_MODE))))
+                properties.load(decryptedReader)
+            }
+        } catch (e: FileNotFoundException) {
+            // Handle file not found exception
         } catch (e: Exception) {
-            // 处理文件不存在等异常
+            // Handle other exceptions
+            e.printStackTrace()
         }
     }
 
     private fun saveProperties() {
-        FileWriter(filePath).use { writer ->
-            properties.store(writer, null)
+        try {
+            val encryptedWriter = BufferedWriter(OutputStreamWriter(CipherOutputStream(FileOutputStream(filePath), createCipher(Cipher.ENCRYPT_MODE))))
+            properties.store(encryptedWriter, null)
+        } catch (e: Exception) {
+            // Handle file write exception
+            e.printStackTrace()
         }
+    }
+
+    private fun createCipher(mode: Int): Cipher {
+        val cipher = Cipher.getInstance("AES/CBC/NoPadding")
+        val keySpec = SecretKeySpec(hashedKey, "AES")
+        val ivParameterSpec = IvParameterSpec(hashedKey.copyOfRange(0, 16))
+        cipher.init(mode, keySpec, ivParameterSpec)
+        return cipher
+    }
+
+    private fun hashKey(key: String): ByteArray {
+        val md = MessageDigest.getInstance("SHA-256")
+        return md.digest(key.toByteArray())
     }
 
     override fun <T> saveData(key: String, data: T) {
@@ -52,6 +93,11 @@ class DataSaverProperties(private val filePath: String) : DataSaverInterface() {
     }
 }
 
+
 actual val DataSaverUtils: DataSaverInterface by lazy {
-    DataSaverProperties(CacheManager.baseDir.resolve("data_saver.properties").absolutePath)
+    // 读取 dotenv
+    DataSaverProperties(
+        filePath = CacheManager.baseDir.resolve("data_saver.properties").absolutePath,
+        encryptionKey = BuildConfig.MAGIC_KEY
+    )
 }

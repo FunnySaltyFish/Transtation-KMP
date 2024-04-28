@@ -61,6 +61,7 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.assetsStringLocalized
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
+import com.funny.translation.kmp.desktopOnly
 import com.funny.translation.kmp.navigateUp
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.kmp.rememberCreateFileLauncher
@@ -97,7 +98,10 @@ fun LongTextTransDetailScreen(
         openDialog = showHelpDialog,
         updateOpenDialog = { showHelpDialog = it },
         content = {
-            MarkdownText(markdown = assetsStringLocalized(name = "long_text_trans_help.md"))
+            MarkdownText(
+                modifier = Modifier.desktopOnly(Modifier.verticalScroll(rememberScrollState())),
+                markdown = assetsStringLocalized(name = "long_text_trans_help.md")
+            )
         }
     )
 

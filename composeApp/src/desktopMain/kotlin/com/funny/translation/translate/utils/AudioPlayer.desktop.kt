@@ -4,12 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.funny.translation.helper.Log
+import com.funny.translation.network.OkHttpUtils
 import com.funny.translation.translate.Language
 import javazoom.jl.decoder.JavaLayerException
 import javazoom.jl.player.advanced.AdvancedPlayer
 import javazoom.jl.player.advanced.PlaybackEvent
 import javazoom.jl.player.advanced.PlaybackListener
-import java.net.URL
+import kotlin.concurrent.thread
 
 actual object AudioPlayer {
     private const val TAG = "AudioPlayer"
@@ -32,40 +33,45 @@ actual object AudioPlayer {
                 pause()
                 onInterrupt()
             } else {
-                val urlStr = TTSConfManager.getURL(word, language) ?: return
-                val url = URL(urlStr)
-                val inputStream = url.openStream()
-                player = AdvancedPlayer(inputStream)
+                thread {
+                    val urlStr = TTSConfManager.getURL(word, language) ?: return@thread
+                    currentPlayingText = word
+                    playbackState = PlaybackState.LOADING
+                    Log.d(TAG, "playOrPause: $urlStr")
 
-                player?.playBackListener = object : PlaybackListener() {
-                    override fun playbackStarted(evt: PlaybackEvent?) {
-                        super.playbackStarted(evt)
-                        Log.d(TAG, "playbackStarted: ${evt?.id}")
-                        playbackState = PlaybackState.PLAYING
-                    }
+                    val resp = OkHttpUtils.getResponse(urlStr)
+                    val stream = resp.body?.byteStream() ?: return@thread
 
-                    override fun playbackFinished(evt: PlaybackEvent?) {
-                        Log.d(TAG, "playbackFinished: ${evt?.id}")
-                        if (evt?.id == PlaybackEvent.STOPPED) {
-                            currentPlayingText = ""
-                            playbackState = PlaybackState.IDLE
-                            onComplete()
+                    player = AdvancedPlayer(stream)
+
+                    player?.playBackListener = object : PlaybackListener() {
+                        override fun playbackStarted(evt: PlaybackEvent?) {
+                            super.playbackStarted(evt)
+                            Log.d(TAG, "playbackStarted: ${evt?.id}")
+                            playbackState = PlaybackState.PLAYING
+                        }
+
+                        override fun playbackFinished(evt: PlaybackEvent?) {
+                            Log.d(TAG, "playbackFinished: ${evt?.id}")
+                            if (evt?.id == PlaybackEvent.STOPPED) {
+                                currentPlayingText = ""
+                                playbackState = PlaybackState.IDLE
+                                onComplete()
+                            }
                         }
                     }
-                }
 
-                Thread {
                     try {
                         onStartPlay()
-                        currentPlayingText = word
-                        playbackState = PlaybackState.LOADING
+
                         player?.play()
                     } catch (e: JavaLayerException) {
+                        e.printStackTrace()
                         onError(e)
                         currentPlayingText = ""
                         playbackState = PlaybackState.IDLE
                     }
-                }.start()
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

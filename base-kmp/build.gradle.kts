@@ -75,6 +75,8 @@ kotlin {
                 implementation("com.github.fengzhizi715.okhttp-logging-interceptor:core:v1.1.4")
 
                 implementation(libs.rhino)
+
+                implementation("ca.gosyer:kotlin-multiplatform-appdirs:1.1.1")
             }
         }
 
@@ -119,7 +121,8 @@ kotlin {
             dependencies {
                 api(compose.desktop.currentOs)
 
-                implementation("org.slf4j:slf4j-simple:2.0.3")
+                implementation("org.slf4j:slf4j-simple:2.0.4")
+
                 implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
                 implementation("com.github.Dansoftowner:jSystemThemeDetector:3.6")

@@ -20,6 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 # 禁用混淆
+-ignorewarnings
 -dontobfuscate
 
 #有关JS全部保留
@@ -248,3 +249,26 @@
 -dontwarn sun.reflect.CallerSensitive
 -dontwarn javax.script.ScriptException
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# For Compose Desktop
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn javax.annotation.concurrent.GuardedBy
+-dontwarn javax.annotation.meta.TypeQualifierDefault
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn android.os.Build
+-dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+-dontwarn android.security.NetworkSecurityPolicy
+-dontwarn javax.annotation.Nonnull
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn android.os.Handler
+-dontwarn org.openjsse.net.ssl.OpenJSSE
+-dontwarn android.net.http.X509TrustManagerExtensions
+-dontwarn android.os.Looper
+-dontwarn android.util.Log
+-dontwarn javax.annotation.Nullable
+-dontwarn android.net.ssl.SSLSockets
+-dontwarn org.bouncycastle.jsse.BCSSLSocket
+-dontwarn org.bouncycastle.jsse.BCSSLParameters
+-dontwarn android.os.Build$VERSION
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.conscrypt.Conscrypt
