@@ -58,6 +58,7 @@ import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
+import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ui.ai.componets.ChatInputTextField
@@ -65,6 +66,7 @@ import com.funny.translation.translate.ui.ai.componets.MessageItem
 import com.funny.translation.translate.ui.long_text.Category
 import com.funny.translation.translate.ui.long_text.ModelListPart
 import com.funny.translation.translate.ui.long_text.components.AIPointText
+import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.floatingActionBarModifier
@@ -144,8 +146,13 @@ fun ChatContent(
             AIPointText()
         },
         navigationIcon = {
-            IconButton(onClick = expandDrawerAction) {
-                FixedSizeIcon(Icons.Filled.Menu, contentDescription = "Menu")
+            Row {
+                if (currentPlatform.isDesktop) {
+                    CommonNavBackIcon()
+                }
+                IconButton(onClick = expandDrawerAction) {
+                    FixedSizeIcon(Icons.Filled.Menu, contentDescription = "Menu")
+                }
             }
         }
     ) {

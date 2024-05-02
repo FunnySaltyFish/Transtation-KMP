@@ -3,6 +3,7 @@ package com.funny.translation.translate.ui.buy
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -227,7 +228,9 @@ private fun VipCard(
             )
         },
         supportingContent = {
-            FlowRow {
+            FlowRow(
+                verticalArrangement = Arrangement.Center
+            ) {
                 if (vipConfig.discount_end_time >= Date())
                     RealTimeCountdown(dueTime = vipConfig.discount_end_time)
                 else
@@ -301,7 +304,6 @@ private fun RealTimeCountdown(
     NumberChangeAnimatedText(
         text = remainingTime,
         textSize = 12.sp,
-        textColor = Color.White,
     )
 }
 

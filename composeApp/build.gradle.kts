@@ -127,7 +127,7 @@ android {
         val variant = this
         variant.outputs.all {
             val output = this
-            println("output: $output")
+            // println("output: $output")
             if (output is ApkVariantOutputImpl) {
                 // 确定输出文件名
                 val today = Date()

@@ -143,7 +143,9 @@ class MainViewModel : ViewModel() {
                         }
                     }
                 }.let { engines ->
-                    modelEngines = engines
+                    withContext(Dispatchers.Main) {
+                        modelEngines = engines
+                    }
                 }
             } catch (e: Exception) {
                 appCtx.toastOnUi(e.displayMsg(ResStrings.load_llm_models))
