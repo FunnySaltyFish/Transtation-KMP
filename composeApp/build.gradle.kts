@@ -76,18 +76,19 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            // 如果需要打 release 包，请在项目根目录下自行添加此文件
-            /**
-             *  STORE_FILE=yourAppStroe.keystore
-             *  STORE_PASSWORD=yourStorePwd
-             *  KEY_ALIAS=yourKeyAlias
-             *  KEY_PASSWORD=yourAliasPwd
-             */
-            val props = Properties()
-            val propFile = File("signing.properties")
-            if (propFile.exists()) {
-                val reader = BufferedReader(InputStreamReader(FileInputStream(propFile), "utf-8"))
+        val propFile = File("signing.properties")
+        if (propFile.exists()) {
+            create("release") {
+                // 如果需要打 release 包，请在项目根目录下自行添加此文件
+                /**
+                 *  STORE_FILE=yourAppStroe.keystore
+                 *  STORE_PASSWORD=yourStorePwd
+                 *  KEY_ALIAS=yourKeyAlias
+                 *  KEY_PASSWORD=yourAliasPwd
+                 */
+                val props = Properties()
+                val reader =
+                    BufferedReader(InputStreamReader(FileInputStream(propFile), "utf-8"))
                 props.load(reader)
 
                 storeFile = file(props["STORE_FILE"] as String)
@@ -100,9 +101,12 @@ android {
                 enableV3Signing = true
             }
         }
+
     }
 
     buildTypes {
+        val usedSigningConfig = kotlin.runCatching { signingConfigs.getByName("release") }
+            .getOrDefault(signingConfigs.getByName("debug"))
         getByName("release") {
             // 临时可调试
             isDebuggable = true
@@ -113,12 +117,12 @@ android {
             // 移除无用的 resource 文件
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = usedSigningConfig
         }
         getByName("debug") {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = usedSigningConfig
         }
     }
 

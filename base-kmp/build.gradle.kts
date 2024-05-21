@@ -162,15 +162,12 @@ buildkonfig {
     packageName = "com.funny.translation"
 }
 
-// 定义函数，用于输出 Hello, FunnyTranslation Open Source
+// 定义函数，用于输出 Hello, Transtation-OpenSource
 fun printHello(exec: Exec) {
-    // just print FunnyTranslation OpenSource
-    // windows: cmd /c echo FunnyTranslation OpenSource
-    // linux: sh -c echo FunnyTranslation OpenSource
     if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")) {
-        exec.commandLine("cmd", "/c", "echo", "Hello FunnyTranslation-OpenSource")
+        exec.commandLine("cmd", "/c", "echo", "Hello Transtation-OpenSource")
     } else {
-        exec.commandLine("sh", "-c", "echo", "Hello FunnyTranslation-OpenSource")
+        exec.commandLine("sh", "-c", "echo", "Hello Transtation-OpenSource")
     }
 }
 
