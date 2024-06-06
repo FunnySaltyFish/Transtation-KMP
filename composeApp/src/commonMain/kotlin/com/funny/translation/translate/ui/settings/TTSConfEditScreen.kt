@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,6 +61,7 @@ import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.TTSProvider
 import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.CommonPage
+import com.funny.translation.ui.navPaddingItem
 import com.funny.translation.ui.slideIn
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModel
@@ -178,7 +180,7 @@ private fun ColumnScope.ConfListPager(
             loadingList(
                 listState,
                 retry = { vm.loadProviderList(provider) },
-                key = { it.fullName },
+                key = { it.fullName + "_" + it.locale },
                 successHeader = {
                     if (provider.price1kChars > Price.ZERO) {
                         HintText(
@@ -196,6 +198,7 @@ private fun ColumnScope.ConfListPager(
             ) { speaker ->
                 ConfItem(vm, speaker, provider)
             }
+            navPaddingItem()
         }
 
     }
@@ -239,8 +242,9 @@ private fun RowScope.SelectGender(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ConfItem(
+private fun LazyItemScope.ConfItem(
     vm: TTSConfEditViewModel,
     speaker: Speaker,
     provider: TTSProvider
@@ -249,6 +253,7 @@ private fun ConfItem(
         modifier = Modifier.padding(horizontal = 0.dp, vertical = 4.dp)
             .background(MaterialTheme.colorScheme.primaryContainer , RoundedCornerShape(4.dp))
             .slideIn()
+            .animateItemPlacement()
     ) {
         val selected = vm.speaker == speaker
         val onClick = {
@@ -285,6 +290,9 @@ private fun ConfItem(
                 conf = vm.conf,
                 onSettingSpeedFinish = {
                     vm.updateSpeed(it.toInt())
+                },
+                onSettingVolumeFinish = {
+                    vm.updateVolume(it.toInt())
                 }
             )
         }

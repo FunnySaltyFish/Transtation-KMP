@@ -31,8 +31,6 @@ class TTSConfEditViewModel(
     val speaker by derivedStateOf {  conf.speaker }
     var speaking by mutableStateOf(false)
 
-    private val locale = conf.speaker.locale
-
     val filteredTTSProviders = ttsProviders.filter { it.supportLanguages.contains(conf.language) }
 
     val providerListMap: Map<TTSProvider, MutableState<LoadingState<List<Speaker>>>> = filteredTTSProviders.associateWith {
@@ -60,6 +58,11 @@ class TTSConfEditViewModel(
         speakExampleText()
     }
 
+    fun updateVolume(volume: Int) {
+        conf = conf.copy(extraConf = conf.extraConf.copy(volume = volume))
+        speakExampleText()
+    }
+
     fun queryAllSpeakers() {
         filteredTTSProviders.forEach {
             loadProviderList(it)
@@ -71,7 +74,7 @@ class TTSConfEditViewModel(
             Log.d(TAG, "Start to get speakers of provider: ${provider.name}")
             runCatching {
                 val res = provider.getSpeakers(
-                    gender, locale
+                    gender, provider.languageToLocale(language = initialConf.language)
                 )
                 providerListMap[provider]?.value = LoadingState.Success(res)
             }.onFailure {
