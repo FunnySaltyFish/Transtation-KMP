@@ -1,4 +1,4 @@
-package com.funny.translation.translate.network
+package com.funny.translation.translate.utils
 
 import com.azhon.appupdate.base.BaseHttpDownloadManager
 import com.azhon.appupdate.listener.OnDownloadListener
@@ -63,6 +63,7 @@ class UpdateDownloadManager(private val downloadPath: String) :
                     var progress = 0
                     val buffer = ByteArray(1024 * 2)
                     val file: File = FileUtil.createFile(downloadPath, apkName)
+                    file.createParentDirIfNotExist()
                     val stream = FileOutputStream(file)
                     while (inputStream.read(buffer).also { len = it } != -1 && !shutdown) {
                         //将获取到的流写入文件中

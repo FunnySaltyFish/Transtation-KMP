@@ -18,3 +18,11 @@ fun File.createFileIfNotExist(): Boolean {
     }
     return true
 }
+
+fun File.createParentDirIfNotExist(): Boolean {
+    val parentFile = this.parentFile
+    if (!parentFile.exists()) {
+        return parentFile.mkdirs()
+    }
+    return true
+}

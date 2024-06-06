@@ -6,13 +6,14 @@ import com.azhon.appupdate.manager.DownloadManager
 import com.funny.translation.AppConfig
 import com.funny.translation.Consts
 import com.funny.translation.R
+import com.funny.translation.bean.show
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.translate.network.TransNetwork
-import com.funny.translation.translate.network.UpdateDownloadManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 
 object UpdateUtils {
     private var hasCheckedUpdate = false
@@ -45,7 +46,7 @@ object UpdateUtils {
                         .setApkVersionCode(updateInfo.version_code!!)
                         .setApkDescription(updateInfo.update_log)
                         .setApkVersionName(updateInfo.version_name)
-                        .setApkSize(StringUtil.convertIntToSize(updateInfo.apk_size!!))
+                        .setApkSize((BigDecimal(updateInfo.apk_size!!).divide(BigDecimal.valueOf(1024L*1024L))).show(1))
                     withContext(Dispatchers.Main) {
                         manager.download()
                     }
