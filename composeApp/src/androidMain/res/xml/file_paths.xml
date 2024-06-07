@@ -3,4 +3,10 @@
     <external-cache-path
         name="cache"
         path="." />
+
+<!--    java.lang.IllegalArgumentException: Failed to find configured root that contains /storage/emulated/0/Android/data/com.funny.translation.debug/files/emo_public/emo_photo/emo_photo_565032722336590.jpeg-->
+
+    <external-files-path
+        name="emo_public"
+        path="emo_public" />
 </paths>
