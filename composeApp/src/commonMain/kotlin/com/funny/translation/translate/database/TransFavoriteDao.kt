@@ -37,7 +37,7 @@ interface TransFavoriteDao {
     fun insertTransFavorite(transFavoriteBean: TransFavoriteBean)
 
     @Delete
-    fun deleteTransFavorite(transFavoriteBean: TransFavoriteBean)
+    fun deleteTransFavorite(id: Long)
 
     @Query("""select count(1) from table_trans_favorite where 
         sourceString=:sourceString and resultText=:resultText and sourceLanguageId=:sourceLanguageId 

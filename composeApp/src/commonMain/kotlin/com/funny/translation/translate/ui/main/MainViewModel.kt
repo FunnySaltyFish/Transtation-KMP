@@ -206,7 +206,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val favoriteBean = fromTransResult(result, translateText, sourceLanguage.id)
             if(favourited){
-                appDB.transFavoriteDao.deleteTransFavorite(favoriteBean)
+                appDB.transFavoriteDao.deleteTransFavorite(favoriteBean.id)
             }else{
                 appDB.transFavoriteDao.insertTransFavorite(favoriteBean)
             }

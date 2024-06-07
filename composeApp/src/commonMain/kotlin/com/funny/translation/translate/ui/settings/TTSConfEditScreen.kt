@@ -286,15 +286,19 @@ private fun LazyItemScope.ConfItem(
             visible = selected,
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            provider.Settings(
-                conf = vm.conf,
-                onSettingSpeedFinish = {
-                    vm.updateSpeed(it.toInt())
-                },
-                onSettingVolumeFinish = {
-                    vm.updateVolume(it.toInt())
+            Column {
+                with(provider) {
+                    Settings(
+                        conf = vm.conf,
+                        onSettingSpeedFinish = {
+                            vm.updateSpeed(it.toInt())
+                        },
+                        onSettingVolumeFinish = {
+                            vm.updateVolume(it.toInt())
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 

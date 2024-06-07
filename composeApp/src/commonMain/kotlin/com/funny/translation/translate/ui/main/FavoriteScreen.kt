@@ -92,7 +92,7 @@ private fun TransHistoryList(
             }
         }
         items(transFavorites, key = { it.id }) { transFavorite ->
-            SwipeToDismissItem(modifier = Modifier.fillMaxWidth(), onDismissed = {
+            SwipeToDismissItem(modifier = Modifier.fillMaxWidth().animateItemPlacement(), onDismissed = {
                 onDeleteFavorite(transFavorite)
             }) {
                 FavoriteItem(
@@ -186,6 +186,7 @@ fun SwipeToDismissItem(
         modifier = modifier,
         // 允许滑动删除的方向
         enableDismissFromStartToEnd = true,
+        enableDismissFromEndToStart = false,
         // "背景 "，即原来显示的内容被划走一部分时显示什么
         backgroundContent = {
             val direction = dismissState.dismissDirection

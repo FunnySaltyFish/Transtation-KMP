@@ -1,6 +1,6 @@
 package com.funny.translation.translate.tts
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.bean.Price
@@ -49,7 +49,7 @@ abstract class TTSProvider {
     }
 
     @Composable
-    abstract fun Settings(
+    abstract fun ColumnScope.Settings(
         conf: TTSConf,
         onSettingSpeedFinish: (Float) -> Unit,
         onSettingVolumeFinish: (Float) -> Unit
@@ -86,7 +86,7 @@ object BaiduTransTTSProvider: TTSProvider() {
     override suspend fun getSpeakers(gender: Gender, locale: String): List<Speaker> = arrayListOf(defaultSpeaker)
 
     @Composable
-    override fun Settings(
+    override fun ColumnScope.Settings(
         conf: TTSConf,
         onSettingSpeedFinish: (Float) -> Unit,
         onSettingVolumeFinish: (Float) -> Unit
@@ -144,7 +144,7 @@ object OpenAIProvider: ServerTTSProvider("openai") {
     override fun languageToLocale(language: Language): String = "all"
 
     @Composable
-    override fun Settings(
+    override fun ColumnScope.Settings(
         conf: TTSConf,
         onSettingSpeedFinish: (Float) -> Unit,
         onSettingVolumeFinish: (Float) -> Unit
@@ -202,25 +202,23 @@ object SambertProvider: ServerTTSProvider("sambert") {
     }
 
     @Composable
-    override fun Settings(
+    override fun ColumnScope.Settings(
         conf: TTSConf,
         onSettingSpeedFinish: (Float) -> Unit,
         onSettingVolumeFinish: (Float) -> Unit
     ) {
-        Column {
-            SpeedSettings(
-                conf = conf,
-                valueRange = 50f..200f,
-                steps = 12,
-                onFinish = onSettingSpeedFinish
-            )
-            VolumeSettings(
-                conf = conf,
-                valueRange = 50f..200f,
-                steps = 20,
-                onFinish = onSettingVolumeFinish
-            )
-        }
+        SpeedSettings(
+            conf = conf,
+            valueRange = 50f..200f,
+            steps = 12,
+            onFinish = onSettingSpeedFinish
+        )
+        VolumeSettings(
+            conf = conf,
+            valueRange = 50f..200f,
+            steps = 20,
+            onFinish = onSettingVolumeFinish
+        )
     }
 
     override val name: String = "Sambert"

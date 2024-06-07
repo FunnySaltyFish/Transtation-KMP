@@ -1,5 +1,6 @@
 package com.funny.translation.translate.tts
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.funny.translation.AppConfig
@@ -51,11 +52,11 @@ abstract class ServerTTSProvider(private val modelName: String) : TTSProvider() 
     }
 
     @Composable
-    override fun Settings(
+    override fun ColumnScope.Settings(
         conf: TTSConf,
         onSettingSpeedFinish: (Float) -> Unit,
         onSettingVolumeFinish: (Float) -> Unit
     ) {
-        Text("Settings Area for $id")
+        Text("Settings Area for ${this@ServerTTSProvider.id}")
     }
 }

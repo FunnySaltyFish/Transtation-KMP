@@ -33,7 +33,7 @@ class FavoriteViewModel: ViewModel() {
 
     fun deleteTransFavorite(bean: TransFavoriteBean){
         viewModelScope.launch(Dispatchers.IO) {
-            appDB.transFavoriteDao.deleteTransFavorite(bean)
+            appDB.transFavoriteDao.deleteTransFavorite(bean.id)
         }
     }
 }
