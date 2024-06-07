@@ -34,4 +34,6 @@ data class Model(
     companion object {
         val Empty = Model(0, BigDecimal.ZERO, "Test", "", "", 0, 0, "default")
     }
+
+    val isFree = cost1kTokens.compareTo(BigDecimal.ZERO) == 0
 }

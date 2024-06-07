@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BadgedBox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
@@ -84,13 +86,13 @@ import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.navigateSingleTop
+import com.funny.translation.translate.task.ModelTranslationTask
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.translate.ui.widget.SimpleNavigation
-import com.funny.translation.ui.safeMain
-import com.funny.translation.ui.safeMainPadding
 import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.safeMain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler
@@ -361,19 +363,37 @@ private fun EnginePart(
             .padding(vertical = 4.dp, horizontal = 4.dp),
         horizontalArrangement = spacedBy(8.dp),
     ) {
-        engines.forEach { task ->
-            var taskSelected by rememberDataSaverState(
-                key = task.selectKey,
-                default = task.selected
+        engines.forEach { engine ->
+            var taskSelected by rememberDataSaverState<Boolean>(
+                key = engine.selectKey,
+                initialValue = engine.selected
             )
-            FilterChip(selected = taskSelected, onClick = {
-                if (!taskSelected) { // 选中了
-                    updateSelectEngine.add(task)
-                } else updateSelectEngine.remove(task)
-                taskSelected = !taskSelected
-            }, label = {
-                Text(text = task.name)
-            })
+            BadgedBox(
+                badge = {
+                    if (engine is ModelTranslationTask) {
+                        if (engine.model.isFree) {
+                            Badge(
+                                Modifier.offset(x = (-18).dp, y = 8.dp)
+                            ) {
+                                Text(text = ResStrings.limited_time_free)
+                            }
+                        }
+                    }
+                }
+            ) {
+                FilterChip(
+                    selected = taskSelected,
+                    onClick = {
+                        if (!taskSelected) { // 选中了
+                            updateSelectEngine.add(engine)
+                        } else updateSelectEngine.remove(engine)
+                        taskSelected = !taskSelected
+                    },
+                    label = {
+                        Text(text = engine.name)
+                    },
+                )
+            }
         }
     }
 }

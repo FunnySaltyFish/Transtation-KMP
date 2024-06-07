@@ -351,4 +351,5 @@
     <string name="current_config">当前配置：</string>
     <string name="ai_trans_explain">大模型输出解释</string>
     <string name="ai_trans_explain_desc">当输入文本较短时，使用大模型翻译额外给出详细解释（这会导致花费更多时间）</string>
+    <string name="limited_time_free">限免</string>
 </resources>
