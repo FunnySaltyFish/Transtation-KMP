@@ -2,7 +2,6 @@ package com.funny.trans.login.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -13,7 +12,6 @@ import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.rememberNavController
 import com.funny.translation.translate.LocalNavController
-import com.funny.translation.ui.animatedGradientBackground
 
 sealed class LoginRoute(val route: String) {
     object LoginPage: LoginRoute("login_page")
@@ -34,10 +32,6 @@ fun LoginNavigation(
             startDestination = LoginRoute.LoginPage.route,
             modifier = Modifier
                 .fillMaxSize()
-                .animatedGradientBackground(
-                    MaterialTheme.colorScheme.surface,
-                    MaterialTheme.colorScheme.tertiaryContainer,
-                )
                 .statusBarsPadding(),
         ) {
             addLoginRoutes(navController, onLoginSuccess = onLoginSuccess)
