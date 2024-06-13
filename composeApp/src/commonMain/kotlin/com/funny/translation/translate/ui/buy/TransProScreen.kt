@@ -3,6 +3,7 @@ package com.funny.translation.translate.ui.buy
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -53,6 +54,7 @@ import com.funny.translation.AppConfig
 import com.funny.translation.bean.Price
 import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
@@ -309,6 +311,7 @@ private fun RealTimeCountdown(
 
 @Composable
 private fun VipExpireTip(user: UserInfoBean) {
+    var singleLine by rememberStateOf(true)
     NoticeBar(
         modifier = Modifier
             .fillMaxWidth(0.95f)
@@ -316,9 +319,10 @@ private fun VipExpireTip(user: UserInfoBean) {
                 MaterialTheme.colorScheme.primaryContainer,
                 RoundedCornerShape(8.dp)
             )
+            .clickable { singleLine = !singleLine }
             .padding(8.dp),
         text = ResStrings.vip_soon_expire_tip.format(user.vipEndTimeStr()),
-        singleLine = true,
+        singleLine = singleLine,
         showClose = true,
     )
 }

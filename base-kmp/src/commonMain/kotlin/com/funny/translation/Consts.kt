@@ -42,8 +42,8 @@ object Consts {
     var BAIDU_SECURITY_KEY = DEFAULT_BAIDU_SECURITY_KEY
     var BAIDU_SLEEP_TIME = DEFAULT_BAIDU_SLEEP_TIME
 
-    const val KEY_SOURCE_LANGUAGE = "sourceLanguage"
-    const val KEY_TARGET_LANGUAGE = "targetLanguage"
+    const val KEY_SOURCE_LANGUAGE = "key_source_lang"
+    const val KEY_TARGET_LANGUAGE = "key_target_lang"
     const val KEY_APP_CHANNEL = "app_channel"
 
     const val KEY_HIDE_NAVIGATION_BAR = "hide_nav_bar"
@@ -53,6 +53,8 @@ object Consts {
     const val KEY_SORT_RESULT = "sort_result"
     const val KEY_CUSTOM_NAVIGATION = "custom_nav"
     const val KEY_FIRST_OPEN_APP = "first_open_app_v2"
+    const val KEY_FLOAT_WINDOW_ENGINE = "float_window_engine"
+
 
     val MAX_SELECT_ENGINES get() = if (AppConfig.isMembership()) 8 else 5
 }

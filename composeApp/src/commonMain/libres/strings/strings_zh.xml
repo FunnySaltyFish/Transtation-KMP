@@ -352,4 +352,6 @@
     <string name="ai_trans_explain">大模型输出解释</string>
     <string name="ai_trans_explain_desc">当输入文本较短时，使用大模型翻译额外给出详细解释（这会导致花费更多时间）</string>
     <string name="limited_time_free">限免</string>
+    <string name="translate_engine_hint">【翻译引擎：${engine}】</string>
+    <string name="float_window_translate_engine">悬浮窗翻译引擎</string>
 </resources>

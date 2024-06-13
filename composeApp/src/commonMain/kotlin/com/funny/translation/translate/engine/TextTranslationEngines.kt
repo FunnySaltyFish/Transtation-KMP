@@ -18,12 +18,6 @@ import kotlin.reflect.full.createInstance
 
 abstract class TextTranslationEngine: TranslationEngine {
     abstract override val taskClass: KClass<out CoreTextTranslationTask>
-}
-
-sealed class TextTranslationEngines : TextTranslationEngine() {
-    override var selected: Boolean = false
-    override val supportLanguages: List<Language>
-        get() = languageMapping.map { it.key }
 
     fun createTask(
         sourceString: String = "",
@@ -36,6 +30,12 @@ sealed class TextTranslationEngines : TextTranslationEngine() {
         instance.targetLanguage = targetLanguage
         return instance
     }
+
+}
+
+sealed class TextTranslationEngines : TextTranslationEngine() {
+    override val supportLanguages: List<Language>
+        get() = languageMapping.map { it.key }
 
     object BaiduNormal : TextTranslationEngines() {
         override val name: String = ResStrings.engine_baidu

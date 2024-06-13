@@ -11,19 +11,16 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import app.cash.sqldelight.paging3.QueryPagingSource
-import com.funny.compose.ai.utils.ModelManager
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.AppConfig
+import com.funny.translation.Consts
 import com.funny.translation.GlobalTranslationConfig
+import com.funny.translation.helper.BaseViewModel
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
-import com.funny.translation.helper.displayMsg
 import com.funny.translation.helper.now
-import com.funny.translation.helper.toastOnUi
-import com.funny.translation.js.JsEngine
 import com.funny.translation.js.core.JsTranslateTaskText
-import com.funny.translation.kmp.appCtx
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.TranslationEngine
@@ -39,6 +36,8 @@ import com.funny.translation.translate.database.transHistoryDao
 import com.funny.translation.translate.engine.TextTranslationEngines
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.task.ModelTranslationTask
+import com.funny.translation.translate.utils.EngineManager
+import com.funny.translation.translate.utils.ModelManagerAction
 import com.funny.translation.translate.utils.SortResultUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -47,20 +46,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
-class MainViewModel : ViewModel() {
+class MainViewModel : BaseViewModel() {
     // 全局UI状态
     var currentState: MainScreenState by mutableStateOf(MainScreenState.Normal)
 
@@ -68,8 +62,8 @@ class MainViewModel : ViewModel() {
     val actualTransText: String
         get() = translateText.trim().replace("#","").replace("&", "")
 
-    var sourceLanguage by mutableDataSaverStateOf(DataSaverUtils, "key_source_lang", Language.ENGLISH)
-    var targetLanguage by mutableDataSaverStateOf(DataSaverUtils, "key_target_lang", Language.CHINESE)
+    var sourceLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_SOURCE_LANGUAGE, Language.ENGLISH)
+    var targetLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_TARGET_LANGUAGE, Language.CHINESE)
     val resultList = mutableStateListOf<TranslationResult>()
     var startedProgress by mutableFloatStateOf(1f)
     var finishedProgress by mutableFloatStateOf(1f)
@@ -77,7 +71,7 @@ class MainViewModel : ViewModel() {
 
     // 一些私有变量
     private var translateJob: Job? = null
-    private var jsEngineInitialized = false
+    private var engineInitialized = false
     private var initialSelected = 0
     private val updateProgressMutex by lazy(LazyThreadSafetyMode.PUBLICATION) { Mutex() }
     private val evalJsMutex by lazy(LazyThreadSafetyMode.PUBLICATION) { Mutex() }
@@ -86,31 +80,6 @@ class MainViewModel : ViewModel() {
     var modelEngines by mutableStateOf(listOf<TranslationEngine>())
 
     // 下面是一些需要计算的变量，比如流和列表
-    val jsEnginesFlow : Flow<List<JsTranslateTaskText>> = appDB.jsDao.getEnabledJs().distinctUntilChanged().mapLatest { list ->
-        Log.d(TAG, "jsEngineFlow was re-triggered")
-        list.map {
-            JsTranslateTaskText(jsEngine = JsEngine(jsBean = it)).apply {
-                this.selected = DataSaverUtils.readData(this.selectKey, false)
-                if(this.selected){
-                    addSelectedEngines(this)
-                    initialSelected++
-                }
-                Log.d(TAG, "${this.jsEngine.jsBean.fileName} selected:$selected ")
-            }
-        }.sortedBy(SortResultUtils.defaultEngineSort).also { jsEngineInitialized = true }
-    }
-
-    val bindEnginesFlow = DefaultData.bindEngines.map {
-        it.selected = DataSaverUtils.readData(it.selectKey, false)
-        if(it.selected) {
-            addSelectedEngines(it)
-            initialSelected++
-        }
-        it
-    }.sortedBy(SortResultUtils.defaultEngineSort).let {
-        MutableStateFlow(it)
-    }
-
 
     val transHistories by lazy {
         Pager(PagingConfig(pageSize = 10)) {
@@ -129,38 +98,30 @@ class MainViewModel : ViewModel() {
             // 随应用升级，有一些插件可能后续转化为内置引擎，旧的插件需要删除
             appDB.jsDao.getAllJs().forEach { jsBean ->
                 if(DefaultData.isPluginBound(jsBean)) {
-                    appDB.jsDao.deleteJs(jsBean)
+                    appDB.jsDao.deleteJsByName(jsBean.fileName)
                 }
             }
 
-            try {
-                ModelManager.models.await().map {
-                    ModelTranslationTask(model = it).apply {
-                        this.selected = DataSaverUtils.readData(this.selectKey, false)
-                        if(this.selected) {
-                            addSelectedEngines(this)
+            // 等待所有引擎加载完毕
+            EngineManager.addObserver { action ->
+                Log.d(TAG, "EngineManager action: $action")
+                when (action) {
+                    is ModelManagerAction.OneEngineInitialized -> {
+                        if (DataSaverUtils.readData(action.engine.selectKey, false)) {
+                            addSelectedEngines(action.engine)
                             initialSelected++
                         }
                     }
-                }.let { engines ->
-                    withContext(Dispatchers.Main) {
-                        modelEngines = engines
+
+                    is ModelManagerAction.AllEnginesInitialized -> {
+                        Log.d(TAG, "initial selected: $initialSelected")
+                        if(initialSelected == 0) {
+                            // 默认选两个
+                            addDefaultEngines(TextTranslationEngines.BaiduNormal, TextTranslationEngines.Tencent)
+                        }
+                        engineInitialized = true
                     }
                 }
-            } catch (e: Exception) {
-                appCtx.toastOnUi(e.displayMsg(ResStrings.load_llm_models))
-            }
-
-            // 延时，等待插件加载完
-            while (!jsEngineInitialized) {
-                Log.d(TAG, "init: wait jsEngineInitialized")
-                delay(100)
-            }
-
-            Log.d(TAG, "initial selected: $initialSelected")
-            if(initialSelected == 0) {
-                // 默认选两个
-                addDefaultEngines(TextTranslationEngines.BaiduNormal, TextTranslationEngines.Tencent)
             }
         }
     }
@@ -189,16 +150,15 @@ class MainViewModel : ViewModel() {
     private fun addDefaultEngines(vararg engines: TextTranslationEngines) {
         selectedEngines.addAll(engines)
         engines.forEach {
-            it.selected = true
             DataSaverUtils.saveData(it.selectKey, true)
         }
-        viewModelScope.launch {
-            val oldBindEngines = bindEnginesFlow.value
-            val newBindEngines = oldBindEngines.map {
-                engines.find { engine -> engine.name == it.name } ?: it
-            }
-            bindEnginesFlow.emit(newBindEngines)
-        }
+//        viewModelScope.launch {
+//            val oldBindEngines = bindEnginesFlow.last()
+//            val newBindEngines = oldBindEngines.map {
+//                engines.find { engine -> engine.name == it.name } ?: it
+//            }
+//            bindEnginesFlow.emit(newBindEngines)
+//        }
     }
 
     // 收藏与取消收藏，参数 favourited 为 false 时收藏，为 true 时取消收藏
@@ -241,7 +201,7 @@ class MainViewModel : ViewModel() {
         updateMainScreenState(MainScreenState.Translating)
         translateJob = viewModelScope.launch {
             // 延时，等待插件加载完
-            while (!jsEngineInitialized) {
+            while (!engineInitialized) {
                 delay(100)
             }
 

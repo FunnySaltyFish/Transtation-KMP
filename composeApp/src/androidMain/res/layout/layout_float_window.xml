@@ -14,8 +14,8 @@
         android:id="@+id/float_window_spinner_source"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:hint="@string/source_language"
-
         />
 
     <ImageButton
@@ -69,28 +69,29 @@
             android:id="@+id/float_window_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-
+            android:layout_marginHorizontal="4dp"
             android:layout_weight="6"
-
             android:background="@drawable/bg_edittext"
             android:maxLines="2"
             android:textColor="@color/white"
             android:textCursorDrawable="@drawable/item_white_cursor"
+            android:textColorHint="#d0ffffff"
+            android:textSize="14sp"
+            tools:text="红红火火恍恍惚惚或"
             app:clearButtonDrawable="@drawable/ic_clear_button"
             app:clearButtonMode="whileEditing"
             />
 
         <TextView
             android:id="@+id/float_window_translate"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_weight="1"
             android:background="@drawable/bg_trans_button"
             android:text="@string/single_translate_text"
             android:textColor="@color/white"
             android:gravity="center"
-            android:textSize="18sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -103,7 +104,7 @@
         android:paddingHorizontal="8dp"
         android:textColor="@color/white"
         android:layout_marginBottom="4dp"
-        app:autoSizeMaxTextSize="18sp"
+        app:autoSizeMaxTextSize="14sp"
         app:autoSizeMinTextSize="10sp"
         app:autoSizeTextType="uniform"
         tools:text = "红红火火恍恍惚惚或\nasdasda dsasd\nasdsaddasda"

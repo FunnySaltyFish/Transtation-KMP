@@ -21,7 +21,6 @@ interface ImageTranslationEngine: TranslationEngine {
 }
 
 sealed class ImageTranslationEngines: ImageTranslationEngine {
-    override var selected: Boolean = false
     override val supportLanguages: List<Language>
         get() = languageMapping.map { it.key }
 

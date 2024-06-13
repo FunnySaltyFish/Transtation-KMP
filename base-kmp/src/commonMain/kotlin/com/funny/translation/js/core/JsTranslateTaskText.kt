@@ -20,8 +20,6 @@ class JsTranslateTaskText(
     override val languageMapping: Map<Language, String>
         get() = mapOf()
 
-    override var selected: Boolean = false
-
     override val supportLanguages: List<Language>
         get() = allLanguages
 

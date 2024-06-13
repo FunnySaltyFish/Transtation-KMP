@@ -20,8 +20,6 @@ class ModelTranslationTask(val model: Model): ServerTextTranslationTask() {
     override val supportLanguages: List<Language> = allLanguages
     override val languageMapping: Map<Language, String> get() = englishNamesMapping
 
-    override var selected: Boolean = false
-
     override val taskClass: KClass<out CoreTranslationTask>
         get() = this::class
 

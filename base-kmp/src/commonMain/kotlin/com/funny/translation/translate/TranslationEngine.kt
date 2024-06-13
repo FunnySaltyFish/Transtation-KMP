@@ -14,7 +14,6 @@ interface TranslationEngine {
     val name : String
     val supportLanguages: List<Language>
     val languageMapping : Map<Language , String>
-    var selected : Boolean
 
     val taskClass : KClass<out CoreTranslationTask>
 }

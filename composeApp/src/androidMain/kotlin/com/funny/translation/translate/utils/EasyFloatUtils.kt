@@ -15,10 +15,12 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import com.funny.translation.AppConfig
+import com.funny.translation.Consts
 import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.R
 import com.funny.translation.bean.TranslationConfig
 import com.funny.translation.helper.ClipBoardUtil
+import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.VibratorUtils
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.strings.ResStrings
@@ -27,7 +29,6 @@ import com.funny.translation.translate.Language
 import com.funny.translation.translate.TransActivityIntent
 import com.funny.translation.translate.activity.StartCaptureScreenActivity
 import com.funny.translation.translate.enabledLanguages
-import com.funny.translation.translate.engine.TextTranslationEngines
 import com.funny.translation.translate.findLanguageById
 import com.funny.translation.translate.service.CaptureScreenService
 import com.lzf.easyfloat.EasyFloat
@@ -59,14 +60,22 @@ object EasyFloatUtils {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private var translateConfigFlow =
-        MutableStateFlow(TranslationConfig("", Language.AUTO, Language.CHINESE))
+        MutableStateFlow(TranslationConfig("", readLanguage(Consts.KEY_SOURCE_LANGUAGE, Language.AUTO), readLanguage(Consts.KEY_TARGET_LANGUAGE, Language.CHINESE)))
+
     private var translateJob: Job? = null
 
     private var inputTextFlow = MutableStateFlow("")
 
+    private val translateEngineFlow = EngineManager.floatWindowTranslateEngineStateFlow
+
     fun initScreenSize() {
         AppConfig.SCREEN_WIDTH = ScreenUtils.getScreenWidth()
         AppConfig.SCREEN_HEIGHT = ScreenUtils.getScreenHeight()
+    }
+
+    private fun readLanguage(key: String, default: Language): Language {
+        val language = DataSaverUtils.readData(key, default.name)
+        return Language.valueOf(language)
     }
 
     private fun initTransWindow(view: View){
@@ -79,6 +88,14 @@ object EasyFloatUtils {
                 withContext(Dispatchers.Main){
                     edittext.setText(it)
                     edittext.setSelection(it.length)
+                }
+            }
+        }
+
+        coroutineScope.launch {
+            translateEngineFlow.collect {
+                withContext(Dispatchers.Main){
+                    edittext.setHint(ResStrings.translate_engine_hint.format(it.name))
                 }
             }
         }
@@ -201,7 +218,7 @@ object EasyFloatUtils {
                         val sourceLanguage = enabledLanguages.value[spinnerSource.selectedItemPosition]
                         val targetLanguage = enabledLanguages.value[spinnerTarget.selectedItemPosition]
                         val task = TranslateUtils.createTask(
-                            TextTranslationEngines.BaiduNormal,
+                            translateEngineFlow.value,
                             it.sourceString!!,
                             sourceLanguage,
                             targetLanguage

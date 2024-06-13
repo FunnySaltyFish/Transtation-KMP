@@ -4,11 +4,8 @@ package com.funny.translation.translate.ui.main
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,9 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BadgedBox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
@@ -43,10 +37,8 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Badge
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -69,9 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.AppConfig
 import com.funny.translation.NeedToTransConfig
@@ -86,11 +76,11 @@ import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.navigateSingleTop
-import com.funny.translation.translate.task.ModelTranslationTask
 import com.funny.translation.translate.ui.TranslateScreen
-import com.funny.translation.translate.ui.widget.HintText
+import com.funny.translation.translate.ui.main.components.EngineSelectDialog
+import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.SimpleNavigation
-import com.funny.translation.ui.AnyPopDialog
+import com.funny.translation.translate.utils.EngineManager
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.safeMain
 import kotlinx.coroutines.delay
@@ -99,12 +89,6 @@ import moe.tlaster.precompose.navigation.BackHandler
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 private const val TAG = "MainScreen"
-
-// 用于选择引擎时的回调
-private interface UpdateSelectedEngine {
-    fun add(engine: TranslationEngine)
-    fun remove(engine: TranslationEngine)
-}
 
 // 当前主页面正处在什么状态
 enum class MainScreenState {
@@ -136,9 +120,11 @@ fun TextTransScreen() {
     val vm: MainViewModel = viewModel()
 
     // 内置引擎
-    val bindEngines by vm.bindEnginesFlow.collectAsState(emptyList())
+    val bindEngines by EngineManager.bindEnginesStateFlow.collectAsState(emptyList())
     // 插件
-    val jsEngines by vm.jsEnginesFlow.collectAsState(emptyList())
+    val jsEngines by EngineManager.jsEnginesStateFlow.collectAsState(emptyList())
+    val modelEngines by EngineManager.modelEnginesState
+
     val scope = rememberCoroutineScope()
     // 使用 staticCompositionLocal 传递主页面 scaffold 的 snackbarHostState
     // 方便各个页面展示 snackBar
@@ -165,7 +151,7 @@ fun TextTransScreen() {
         }
     }
 
-    // Compose函数会被反复重新调用（重组），所以变量要remember
+    // Compose函数会被反复重新调用（重组），所以变量要 remember
     val updateSelectedEngine = remember {
         object : UpdateSelectedEngine {
             override fun add(engine: TranslationEngine) {
@@ -186,32 +172,21 @@ fun TextTransScreen() {
         }
     }
 
-    var showEngineSelect by rememberStateOf(value = false)
-    if (showEngineSelect) {
-        AnyPopDialog(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    MaterialTheme.colorScheme.surface,
-                    RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-                )
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-            onDismissRequest = { showEngineSelect = false },
-            isActiveClose = false
-        ) {
-            EngineSelect(
-                modifier = Modifier,
-                bindEngines,
-                jsEngines,
-                vm.modelEngines,
-                updateSelectedEngine
-            )
-        }
-    }
+    val showEngineSelectDialogState = rememberStateOf(value = false)
+    EngineSelectDialog(
+        showEngineSelectDialogState,
+        bindEngines,
+        jsEngines,
+        modelEngines,
+        selectStateProvider = { engine ->
+            rememberDataSaverState<Boolean>(key = engine.selectKey, initialValue = false)
+        },
+        updateSelectedEngine
+    )
 
     val showEngineSelectAction = remember {
         {
-            showEngineSelect = true
+            showEngineSelectDialogState.value = true
         }
     }
 
@@ -305,98 +280,6 @@ private fun MainPart(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
-@ExperimentalAnimationApi
-@Composable
-private fun EngineSelect(
-    modifier: Modifier,
-    bindEngines: List<TranslationEngine> = arrayListOf(),
-    jsEngines: List<TranslationEngine> = arrayListOf(),
-    modelEngines: List<TranslationEngine> = arrayListOf(),
-    updateSelectEngine: UpdateSelectedEngine
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.Start,
-    ) {
-        EnginePart(
-            title = ResStrings.bind_engine,
-            engines = bindEngines,
-            updateSelectEngine = updateSelectEngine
-        )
-
-        if (jsEngines.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(4.dp))
-            EnginePart(
-                title = ResStrings.plugin_engine,
-                engines = jsEngines,
-                updateSelectEngine = updateSelectEngine
-            )
-        }
-
-        if (modelEngines.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(4.dp))
-            EnginePart(
-                title = ResStrings.model_engine,
-                engines = modelEngines,
-                updateSelectEngine = updateSelectEngine
-            )
-            HintText(text = ResStrings.llm_engine_tip, fontSize = 8.sp)
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun EnginePart(
-    title: String,
-    engines: List<TranslationEngine>,
-    updateSelectEngine: UpdateSelectedEngine
-) {
-    Text(
-        text = title,
-        fontWeight = W600
-    )
-    FlowRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 4.dp),
-        horizontalArrangement = spacedBy(8.dp),
-    ) {
-        engines.forEach { engine ->
-            var taskSelected by rememberDataSaverState<Boolean>(
-                key = engine.selectKey,
-                initialValue = engine.selected
-            )
-            BadgedBox(
-                badge = {
-                    if (engine is ModelTranslationTask) {
-                        if (engine.model.isFree) {
-                            Badge(
-                                Modifier.offset(x = (-18).dp, y = 8.dp)
-                            ) {
-                                Text(text = ResStrings.limited_time_free)
-                            }
-                        }
-                    }
-                }
-            ) {
-                FilterChip(
-                    selected = taskSelected,
-                    onClick = {
-                        if (!taskSelected) { // 选中了
-                            updateSelectEngine.add(engine)
-                        } else updateSelectEngine.remove(engine)
-                        taskSelected = !taskSelected
-                    },
-                    label = {
-                        Text(text = engine.name)
-                    },
-                )
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -439,7 +322,7 @@ private fun Drawer(
     }
 
     val divider = @Composable {
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp),

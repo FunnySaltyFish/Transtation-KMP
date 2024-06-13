@@ -17,7 +17,7 @@ abstract class ModelViewModel: BaseViewModel() {
     var modelList by mutableStateOf<ImmutableList<Model>>(persistentListOf())
     var chatBot by mutableStateOf<ModelChatBot>(ModelChatBot.Empty)
 
-    fun onModelListLoaded(currentSelectBotId: Int, models: List<Model>) {
+    open fun onModelListLoaded(currentSelectBotId: Int, models: List<Model>) {
         modelList = models.toImmutableList()
         chatBot = (modelList.find { it.chatBotId == currentSelectBotId } ?: modelList[0]).let {
             ModelChatBot(it)

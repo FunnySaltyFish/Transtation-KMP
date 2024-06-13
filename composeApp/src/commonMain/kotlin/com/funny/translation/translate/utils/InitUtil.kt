@@ -30,6 +30,7 @@ internal suspend fun InitUtil.initCommon() {
 
     initTypeConverters()
     initLanguageDisplay()
+    EngineManager.loadEngines()
 }
 
 private fun addJobs() {
