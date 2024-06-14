@@ -25,8 +25,10 @@ enum class WindowSizeState {
     /**
      * 水平状态
      */
-    HORIZONTAL
+    HORIZONTAL;
 
+    val isVertical get() = this == VERTICAL
+    val isHorizontal get() = this == HORIZONTAL
 }
 
 @Composable

@@ -37,9 +37,9 @@ SELECT * FROM plugin WHERE enabled > 0;
 getJsCount:
 SELECT COUNT(*) FROM plugin;
 
--- Query to select a JsBean by name
+-- Query to select a JsBean by name, if there are multiple, the last one will be returned
 queryJsByName:
-SELECT * FROM plugin WHERE fileName = ?;
+SELECT * FROM plugin WHERE fileName = ? ORDER BY id DESC LIMIT 1;
 
 -- Insert a JsBean
 insertJs:

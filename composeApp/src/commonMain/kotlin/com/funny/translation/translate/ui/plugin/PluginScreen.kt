@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Arrangement.spacedBy
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,14 +19,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -54,6 +52,7 @@ import com.funny.compose.loading.rememberRetryableLoadingState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.WebViewActivity
 import com.funny.translation.codeeditor.CodeEditorActivity
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.js.bean.JsBean
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.readText
@@ -61,6 +60,8 @@ import com.funny.translation.kmp.rememberOpenFileLauncher
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalSnackbarState
+import com.funny.translation.translate.ui.main.LocalWindowSizeState
+import com.funny.translation.translate.ui.main.WindowSizeState
 import com.funny.translation.translate.utils.expandableStickyRow
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
@@ -85,6 +86,8 @@ fun PluginScreen() {
 
     val showDeleteDialogState = remember { mutableStateOf(false) }
     var showAddPluginMenu by remember { mutableStateOf(false) }
+
+    val windowSizeState = LocalWindowSizeState.current
 
     val localPlugins by vm.plugins.collectAsState(initial = arrayListOf())
 
@@ -119,7 +122,8 @@ fun PluginScreen() {
         }
     )
 
-    var expandLocalPlugins by remember { mutableStateOf(false) }
+    // 横屏状态下，分为两部分，左边为本地插件，右边为在线插件，默认展开
+    var expandLocalPlugins by rememberStateOf(windowSizeState.isHorizontal)
     val localPluginPartWrapper: LazyListScope.() -> Unit = remember {
         {
             expandableStickyRow(
@@ -211,9 +215,32 @@ fun PluginScreen() {
         },
         addNavPadding = false
     ) {
-        BoxWithConstraints(Modifier.fillMaxSize()) {
-            // Desktop will throw java.lang.IllegalStateException: Vertically scrollable component was measured with an infinity maximum height constraints, which is disallowed. One of the common reasons is nesting layouts like LazyColumn and Column(Modifier.verticalScroll()). If you want to add a header before the list of items please add a header as a separate item() before the main items() inside the LazyColumn scope. There are could be other reasons for this to happen: your ComposeView was added into a LinearLayout with some weight, you applied Modifier.wrapContentSize(unbounded = true) or wrote a custom layout. Please try to remove the source of infinite constraints in the hierarchy above the scrolling container.
-            if (maxWidth > 720.dp) { //宽屏
+        when (windowSizeState) {
+            WindowSizeState.VERTICAL -> {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 12.dp),
+                    verticalArrangement = Arrangement.SpaceAround
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        verticalArrangement = spacedBy(8.dp),
+                        contentPadding = PaddingValues(bottom = 8.dp)
+                    ) {
+                        localPluginPartWrapper()
+                        item {
+                            HorizontalDivider()
+                        }
+                        onlinePluginListWrapper()
+                        item {
+                            NavPaddingItem()
+                        }
+                    }
+                }
+            }
+            WindowSizeState.HORIZONTAL -> {
                 Row(
                     Modifier
                         .fillMaxSize()
@@ -236,27 +263,6 @@ fun PluginScreen() {
                         contentPadding = PaddingValues(bottom = 8.dp)
                     ) {
                         onlinePluginListWrapper()
-                    }
-                }
-
-            } else {
-                val lazyListState = rememberSaveable(saver = LazyListState.Saver) {
-                    LazyListState()
-                }
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = spacedBy(8.dp),
-                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp),
-                    state = lazyListState
-                ) {
-                    localPluginPartWrapper()
-                    item {
-                        Divider()
-                    }
-                    onlinePluginListWrapper()
-                    item {
-                        NavPaddingItem()
                     }
                 }
             }
