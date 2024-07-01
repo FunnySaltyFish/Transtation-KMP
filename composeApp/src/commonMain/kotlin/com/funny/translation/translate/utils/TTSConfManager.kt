@@ -22,9 +22,9 @@ object TTSConfManager {
     private var confProvider: (language: Language) -> TTSConf = ::findByLanguage
     private var speakingExample: Boolean = false
 
-    fun getURL(word: String, language: Language): String? {
-        val playConf = confProvider(language)
+    fun getURL(word: String, playConf: TTSConf): String? {
         val speaker = playConf.speaker
+        val language = playConf.language
         val provider = findTTSProviderById(playConf.ttsProviderId)
         if (!provider.supportLanguages.contains(language)) {
             appCtx.toastOnUi("此引擎（${provider.name}）不支持朗读 ${language.displayText}，请前往设置修改！")
@@ -67,12 +67,13 @@ object TTSConfManager {
             }
     }
 
+
     /**
      * 根据语言获取配置（内存 -> 数据库），如果没有，则创建默认配置
      * @param language Language
      * @return TTSConf
      */
-    private fun findByLanguage(language: Language): TTSConf {
+    fun findByLanguage(language: Language): TTSConf {
         return confMap.getOrPut(language) {
             appDB.tTSConfQueries.getByLanguage(language).executeAsOneOrNull() ?: createDefaultConf(language)
         }

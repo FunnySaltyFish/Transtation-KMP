@@ -9,17 +9,16 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +74,7 @@ internal fun EngineSelectDialog(
 
 @ExperimentalAnimationApi
 @Composable
-internal fun EngineSelect(
+private fun EngineSelect(
     modifier: Modifier = Modifier,
     bindEngines: List<TranslationEngine> = arrayListOf(),
     jsEngines: List<TranslationEngine> = arrayListOf(),
@@ -136,20 +135,8 @@ private fun EnginePart(
         horizontalArrangement = spacedBy(8.dp),
     ) {
         engines.forEach { engine ->
-            var taskSelected by selectStateProvider(engine)
-            BadgedBox(
-                badge = {
-                    if (engine is ModelTranslationTask) {
-                        if (engine.model.isFree) {
-                            Badge(
-                                Modifier.offset(x = (-18).dp, y = 8.dp)
-                            ) {
-                                Text(text = ResStrings.limited_time_free)
-                            }
-                        }
-                    }
-                }
-            ) {
+            key(engine.name) {
+                var taskSelected by selectStateProvider(engine)
                 FilterChip(
                     selected = taskSelected,
                     onClick = {
@@ -160,7 +147,17 @@ private fun EnginePart(
                     },
                     label = {
                         Text(text = engine.name)
+
                     },
+                    leadingIcon = {
+                        if (engine is ModelTranslationTask) {
+                            if (engine.model.isFree) {
+                                Badge {
+                                    Text(text = ResStrings.limited_time_free)
+                                }
+                            }
+                        }
+                    }
                 )
             }
         }

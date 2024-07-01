@@ -2,8 +2,8 @@
 androidxPaging3Extensions = "2.0.1"
 jtokkit = "0.6.1"
 precompose = "1.6.0"
-project-versionCode = "63"
-project-versionName = "2.8.0"
+project-versionCode = "64"
+project-versionName = "2.8.1"
 agp = "8.1.4"
 android-compileSdk = "34"
 android-minSdk = "24"
@@ -17,15 +17,15 @@ androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
 compose = "1.6.2"
-compose-bom = "2024.04.01"
+compose-bom = "2024.06.00"
 compose-compiler = "1.5.6"
 junit = "4.13.2"
-kotlin = "1.9.21"
+kotlin = "1.9.23"
 kotlinxSerialization = "1.5.1"
-kotlinCoroutines = "1.7.3"
-sqlDelight = "2.0.1"
+kotlinCoroutines = "1.8.0"
+sqlDelight = "2.0.2"
 sqliteJdbcDriver = "3.36.0"
-androidxLifecycle = "2.7.0"
+androidxLifecycle = "2.8.2"
 libres = "1.2.2"
 buildKonfig = "0.15.1"
 
@@ -116,6 +116,9 @@ libres = { id = "io.github.skeptick.libres", version.ref = "libres" }
 # 'com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version'
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+# org.jetbrains.kotlin.plugin.compose
+kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
 
 # Plugins defined by this project
 transtation-kmp-thirdpartyplugins = { id = "transtation.kmp.thirdpartyplugins", version = "unspecified" }

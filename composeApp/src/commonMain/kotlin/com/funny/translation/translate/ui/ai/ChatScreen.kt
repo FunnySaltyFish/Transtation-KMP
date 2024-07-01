@@ -66,6 +66,7 @@ import com.funny.translation.translate.ui.ai.componets.MessageItem
 import com.funny.translation.translate.ui.long_text.Category
 import com.funny.translation.translate.ui.long_text.ModelListPart
 import com.funny.translation.translate.ui.long_text.components.AIPointText
+import com.funny.translation.translate.ui.main.LocalWindowSizeState
 import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
@@ -109,8 +110,21 @@ fun ChatScreen() {
             )
         },
         drawerContent = {
+//            Box(
+//                modifier = Modifier
+//                    //.width(if (LocalWindowSizeState.current.isVertical) 360.dp else 600.dp)
+//                    .width(360.dp)
+//                    .fillMaxHeight()
+//                    .background(
+//                        MaterialTheme.colorScheme.primaryContainer,
+//                        RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
+//                    )
+//                    .statusBarsPadding()
+//                    .padding(12.dp),
+//            )
             Settings(
                 modifier = Modifier
+                    // .width(if (LocalWindowSizeState.current.isVertical) 360.dp else 600.dp)
                     .width(360.dp)
                     .fillMaxHeight()
                     .background(
@@ -126,7 +140,7 @@ fun ChatScreen() {
 }
 
 @Composable
-fun ChatContent(
+private fun ChatContent(
     modifier: Modifier,
     chatBot: ChatBot,
     currentMessageProvider: () -> ChatMessage?,
@@ -184,7 +198,7 @@ fun ChatContent(
 
 @Composable
 //@Preview
-fun ChatBottomBar(
+private fun ChatBottomBar(
     text: String = "",
     onTextChanged: (String) -> Unit = {},
     sendAction: () -> Unit = {},
@@ -212,7 +226,7 @@ fun ChatBottomBar(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChatMessageList(
+private fun ChatMessageList(
     modifier: Modifier,
     lazyListState: LazyListState,
     currentMessageProvider: () -> ChatMessage?,
@@ -225,6 +239,7 @@ fun ChatMessageList(
     val msgItem: @Composable LazyItemScope.(msg: ChatMessage, refreshAction: SimpleAction?) -> Unit = @Composable {  msg, refreshAction ->
         MessageItem(
             modifier = Modifier.animateItemPlacement(),
+            maxWidth = if (LocalWindowSizeState.current.isVertical) 300.dp else 600.dp,
             chatMessage = msg,
             copyAction = {
                 ClipBoardUtil.copy(msg.content)
@@ -286,7 +301,7 @@ private fun Settings(
         // Prompt
         Category(title = "Prompt", helpText = ResStrings.chat_prompt_help) {
             var text by rememberStateOf(value = vm.systemPrompt)
-            TextField(value = text, onValueChange = { text = it })
+            TextField(value = text, onValueChange = { text = it }, maxLines = 8)
             val showConfirmButton by remember {
                 derivedStateOf { text != vm.systemPrompt }
             }

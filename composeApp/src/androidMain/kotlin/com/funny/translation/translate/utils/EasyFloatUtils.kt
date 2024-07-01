@@ -189,7 +189,8 @@ object EasyFloatUtils {
             setOnClickListener {
                 val txt = resultText.text
                 if (txt.isNotEmpty()){
-                    AudioPlayer.playOrPause(txt.toString(), findLanguageById(spinnerTarget.selectedItemPosition)){
+                    val language = findLanguageById(spinnerTarget.selectedItemPosition)
+                    AudioPlayer.playOrPause(txt.toString(), TTSConfManager.findByLanguage(language)){
                         context.toastOnUi(ResStrings.err_speaking)
                     }
                 }

@@ -12,7 +12,7 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.network.ServiceCreator
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.Language
+import com.funny.translation.translate.tts.TTSConf
 import java.io.IOException
 
 actual object AudioPlayer {
@@ -32,7 +32,7 @@ actual object AudioPlayer {
 
     actual fun playOrPause(
         word: String,
-        language: Language,
+        conf: TTSConf,
         onStartPlay: () -> Unit,
         onComplete: () -> Unit,
         onInterrupt: () -> Unit,
@@ -42,7 +42,7 @@ actual object AudioPlayer {
             appCtx.toastOnUi(ResStrings.speak_device_mute_tip)
             return
         }
-        val url = TTSConfManager.getURL(word, language) ?: return
+        val url = TTSConfManager.getURL(word, conf) ?: return
         Log.d(TAG, "play: url:$url")
 
         try {

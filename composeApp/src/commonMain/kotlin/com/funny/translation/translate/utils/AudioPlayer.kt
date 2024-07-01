@@ -1,6 +1,6 @@
 package com.funny.translation.translate.utils
 
-import com.funny.translation.translate.Language
+import com.funny.translation.translate.tts.TTSConf
 
 enum class PlaybackState {
     IDLE, PLAYING, LOADING
@@ -12,7 +12,7 @@ expect object AudioPlayer {
 
     fun playOrPause(
         word: String,
-        language: Language,
+        conf: TTSConf,
         onStartPlay: () -> Unit = {},
         onComplete: () -> Unit = {},
         onInterrupt: () -> Unit = {},

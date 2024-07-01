@@ -174,6 +174,7 @@ object OpenAIProvider: ServerTTSProvider("openai") {
 
 object SambertProvider: ServerTTSProvider("sambert") {
     // {'美式英文', '印尼语', '法语', '英文', '德语', '中文', '西班牙语', '泰语', '意大利语'}
+    override val price1kChars = Price("0.03")
     override val languageMapping by lazy {
         mapOf(
             Language.CHINESE to "中文",

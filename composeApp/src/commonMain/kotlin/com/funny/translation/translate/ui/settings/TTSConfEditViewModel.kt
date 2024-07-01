@@ -105,7 +105,7 @@ class TTSConfEditViewModel(
             speaking = true
             AudioPlayer.playOrPause(
                 exampleSpeakText[conf.language] ?: "",
-                conf.language,
+                conf,
                 onStartPlay = {
 
                 },

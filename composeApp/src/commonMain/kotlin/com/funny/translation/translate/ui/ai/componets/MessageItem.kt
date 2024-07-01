@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.ChatMessageTypes
@@ -36,8 +37,9 @@ import com.funny.translation.translate.ui.widget.AsyncImage
 import com.funny.translation.ui.MarkdownText
 
 @Composable
-fun MessageItem(
+internal fun MessageItem(
     modifier: Modifier = Modifier,
+    maxWidth: Dp,
     chatMessage: ChatMessage,
     copyAction: SimpleAction,
     deleteAction: SimpleAction,
@@ -53,7 +55,7 @@ fun MessageItem(
     ) {
         Column(
             modifier = Modifier
-                .requiredWidthIn(0.dp, 300.dp),
+                .requiredWidthIn(0.dp, maxWidth),
             horizontalAlignment = if (sendByMe) Alignment.End else Alignment.Start
         ) {
             Box(

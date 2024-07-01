@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -85,7 +83,6 @@ import com.funny.translation.translate.utils.AudioPlayer
 import com.funny.translation.translate.utils.PlaybackState
 import com.funny.translation.translate.utils.TTSConfManager
 import com.funny.translation.ui.CommonNavBackIcon
-import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.NavPaddingItem
@@ -284,16 +281,16 @@ internal fun SpeakButton(
                             } else {
                                 AudioPlayer.playOrPause(
                                     text,
-                                    language,
-                                    onError = {
-                                        appCtx.toastOnUi(ResStrings.snack_speak_error)
+                                    TTSConfManager.findByLanguage(language),
+                                    onStartPlay = {
+                                        speakerState.play()
+                                        onStartPlay?.invoke()
                                     },
                                     onComplete = {
                                         speakerState.reset()
                                     },
-                                    onStartPlay = {
-                                        speakerState.play()
-                                        onStartPlay?.invoke()
+                                    onError = {
+                                        appCtx.toastOnUi(ResStrings.snack_speak_error)
                                     }
                                 )
                             }

@@ -40,6 +40,8 @@ fun Project.setupCommonKMP(
     with(pluginManager) {
         apply("kotlin-multiplatform")
         apply("org.jetbrains.compose")
+        // Since Compose 1.6.10, Kotlin 2.0.0
+        // apply("org.jetbrains.kotlin.plugin.compose")
     }
 
     val kotlin = extensions.getByType(KotlinMultiplatformExtension::class.java)

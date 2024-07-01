@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.funny.translation.helper.Log
 import com.funny.translation.network.OkHttpUtils
-import com.funny.translation.translate.Language
+import com.funny.translation.translate.tts.TTSConf
 import javazoom.jl.decoder.JavaLayerException
 import javazoom.jl.player.advanced.AdvancedPlayer
 import javazoom.jl.player.advanced.PlaybackEvent
@@ -22,7 +22,7 @@ actual object AudioPlayer {
 
     actual fun playOrPause(
         word: String,
-        language: Language,
+        conf: TTSConf,
         onStartPlay: () -> Unit,
         onComplete: () -> Unit,
         onInterrupt: () -> Unit,
@@ -34,7 +34,7 @@ actual object AudioPlayer {
                 onInterrupt()
             } else {
                 thread {
-                    val urlStr = TTSConfManager.getURL(word, language) ?: return@thread
+                    val urlStr = TTSConfManager.getURL(word, conf) ?: return@thread
                     currentPlayingText = word
                     playbackState = PlaybackState.LOADING
                     Log.d(TAG, "playOrPause: $urlStr")

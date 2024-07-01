@@ -241,3 +241,10 @@ afterEvaluate {
         }
     }
 }
+
+//tasks.whenTaskAdded {
+//    val task = this
+//    if(task.name == "jsLegacyBrowserTest" || task.name == "jsLegacyNodeTest") {
+//        task.enabled = false
+//    }
+//}
