@@ -35,7 +35,7 @@ class JsEngine(val code: String) : JsInterface {
     }
 
     @Throws(ScriptException::class)
-    fun eval() {
+    suspend fun eval() {
         with(scriptEngine) {
             put("funny", this@JsEngine)
             put("http", OkHttpUtils)

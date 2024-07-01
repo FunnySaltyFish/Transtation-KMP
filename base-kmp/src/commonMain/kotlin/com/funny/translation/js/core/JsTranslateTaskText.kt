@@ -83,13 +83,13 @@ class JsTranslateTaskText(
             doWithMutex { result.setBasicResult("翻译错误：${exception.message}") }
             return
         } catch (e: Exception) {
-            Debug.log("出错:${e.message}")
+            Debug.log("出错:${e.stackTraceToString()}")
             doWithMutex { result.setBasicResult("翻译错误：${e.message}") }
             return
         }
     }
 
-    private fun eval() {
+    private suspend fun eval() {
         with(jsEngine.scriptEngine){
             put("sourceLanguage", sourceLanguage)
             put("targetLanguage", targetLanguage)

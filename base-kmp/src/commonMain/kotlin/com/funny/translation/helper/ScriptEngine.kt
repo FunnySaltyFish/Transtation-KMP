@@ -1,5 +1,7 @@
 package com.funny.translation.helper
 
+import kotlinx.coroutines.ThreadContextElement
+import kotlinx.coroutines.withContext
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ContextFactory
 import org.mozilla.javascript.Function
@@ -9,17 +11,51 @@ import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.WrapFactory
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
-
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 
 private const val DefaultID = "default"
+
+// 此类来自 GPT-4-Turbo，用于在协程作用域中管理 Rhino 的 Context
+class RhinoContextElement(private val scriptId: String) : AbstractCoroutineContextElement(RhinoContextElement), ThreadContextElement<Context> {
+    companion object Key : CoroutineContext.Key<RhinoContextElement>
+    // 通过 ThreadLocal 保证在多线程环境下有正确的 Context
+    private val threadLocal = ThreadLocal<Context>()
+
+    override fun updateThreadContext(context: CoroutineContext): Context {
+        val oldState = threadLocal.get()
+        if (oldState == null) {
+            threadLocal.set(ScriptEngine.getContext(scriptId))
+        }
+        return oldState ?: Context.enter()
+    }
+
+    override fun restoreThreadContext(context: CoroutineContext, oldState: Context) {
+        Context.exit()
+        threadLocal.remove()
+    }
+}
 
 object ScriptEngine {
     private val contexts = ConcurrentHashMap<String, Context>()
     private val scopes = ConcurrentHashMap<String, ScriptableObject>()
-
     private val contextFactory = ContextFactory()
 
-    private fun getContext(scriptId: String = DefaultID): Context {
+//    fun getContext(scriptId: String = DefaultID): Context {
+//        var context = contextThreadLocal.get()
+//        if (context == null) {
+//            context = contextFactory.enterContext().apply {
+//                optimizationLevel = -1
+//                languageVersion = Context.VERSION_ES6
+//                setLocale(Locale.getDefault())
+//                wrapFactory = WrapFactory()
+//            }
+//            contextThreadLocal.set(context)
+//        }
+//        return context
+//    }
+
+    internal fun getContext(scriptId: String = DefaultID): Context {
         return contextFactory.enterContext().apply {
             optimizationLevel = -1
             languageVersion = Context.VERSION_ES6
@@ -28,6 +64,14 @@ object ScriptEngine {
         }.also {
             contexts[scriptId] = it
         }
+    }
+
+    fun cleanUp(scriptId: String) {
+        contexts[scriptId]?.let {
+            Context.exit()
+            contexts.remove(scriptId)
+        }
+        scopes.remove(scriptId)
     }
 
 //    private fun getContext(scriptId: String = DefaultID): Context {
@@ -54,10 +98,12 @@ object ScriptEngine {
         return getContext(scriptId) to getScope(scriptId)
     }
 
-    fun eval(script: String, scriptId: String = DefaultID): Any? {
-        return getContext(scriptId).let { cx ->
-            getScope(scriptId).let { scope ->
-                cx.evaluateString(scope, script, scriptId, 1, null).unwrap()
+    suspend fun eval(script: String, scriptId: String = DefaultID): Any? {
+        return withContext(RhinoContextElement(scriptId)) {
+            getContext(scriptId).let { cx ->
+                getScope(scriptId).let { scope ->
+                    cx.evaluateString(scope, script, scriptId, 1, null).unwrap()
+                }
             }
         }
     }
@@ -88,19 +134,11 @@ object ScriptEngine {
 
     fun put(key: String, value: Any?, scriptId: String = DefaultID) {
         val scope = getScope(scriptId)
-        ScriptableObject.putProperty(scope, key, Context.javaToJS(value, scope))
-    }
-
-    fun cleanUp(scriptId: String) {
-        contexts[scriptId]?.let {
-            Context.exit()
-            contexts.remove(scriptId)
-        }
-        scopes.remove(scriptId)
+        scope.put(key, scope, value)
     }
 
     // 将一些常见的包装类型转化为原生类型
-    fun Any?.unwrap() = when(this) {
+    private fun Any?.unwrap() = when(this) {
         is NativeJavaObject -> this.unwrap()
         else -> this
     }
@@ -108,7 +146,7 @@ object ScriptEngine {
 
 // call `ScriptEngine` with scriptId conveniently
 class ScriptEngineDelegate(private val scriptId: String) {
-    fun eval(script: String): Any? {
+    suspend fun eval(script: String): Any? {
         return ScriptEngine.eval(script, scriptId)
     }
 
