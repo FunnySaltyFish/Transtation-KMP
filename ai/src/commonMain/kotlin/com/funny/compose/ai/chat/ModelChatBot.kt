@@ -56,4 +56,5 @@ open class ModelChatBot(
     companion object {
         val Empty = ModelChatBot(Model.Empty)
     }
+
 }

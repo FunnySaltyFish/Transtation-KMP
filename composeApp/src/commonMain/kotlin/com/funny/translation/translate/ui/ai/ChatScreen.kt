@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +43,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -50,23 +52,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastJoinToString
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.sendByMe
-import com.funny.compose.ai.chat.ChatBot
+import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.currentPlatform
+import com.funny.translation.kmp.rememberTakePhotoLauncher
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.ui.ai.componets.AddFilePanel
 import com.funny.translation.translate.ui.ai.componets.ChatInputTextField
 import com.funny.translation.translate.ui.ai.componets.MessageItem
 import com.funny.translation.translate.ui.long_text.Category
 import com.funny.translation.translate.ui.long_text.ModelListPart
 import com.funny.translation.translate.ui.long_text.components.AIPointText
 import com.funny.translation.translate.ui.main.LocalWindowSizeState
+import com.funny.translation.translate.utils.rememberSelectImageLauncher
 import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
@@ -75,6 +82,8 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler
 
 // Modified From https://github.com/prafullmishra/JetComposer/tree/master
+
+private const val TAG = "ChatScreen"
 
 @Composable
 fun ChatScreen() {
@@ -142,7 +151,7 @@ fun ChatScreen() {
 @Composable
 private fun ChatContent(
     modifier: Modifier,
-    chatBot: ChatBot,
+    chatBot: ModelChatBot,
     currentMessageProvider: () -> ChatMessage?,
     chatMessages: List<ChatMessage>,
     inputText: String,
@@ -191,19 +200,28 @@ private fun ChatContent(
                 }
                 sendAction()
             },
-            clearAction = clearAction
+            clearAction = clearAction,
+            chatBot = chatBot,
+            onImagesSelected = {
+                // 打印
+                Log.d(TAG, "Selected Images: ${it.fastJoinToString()}")
+            }
         )
     }
 }
 
 @Composable
 //@Preview
-private fun ChatBottomBar(
+private fun ColumnScope.ChatBottomBar(
     text: String = "",
     onTextChanged: (String) -> Unit = {},
-    sendAction: () -> Unit = {},
-    clearAction: () -> Unit = {}
+    sendAction: () -> Unit,
+    clearAction: () -> Unit,
+    chatBot: ModelChatBot,
+    onImagesSelected: (List<String>) -> Unit
 ) {
+    var showAddFilePanel by rememberStateOf(false)
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -219,7 +237,42 @@ private fun ChatBottomBar(
             input = text,
             onValueChange = onTextChanged,
             sendAction = sendAction,
-            clearAction = clearAction
+            clearAction = clearAction,
+            chatBot = chatBot,
+            showAddFilePanel = showAddFilePanel,
+            updateShowAddFilePanel = { showAddFilePanel = it }
+        )
+    }
+
+
+    val inputTypes = chatBot.model.inputFileTypes
+    val pickedItems = remember { mutableStateListOf<String>() }
+    val imageSelectLauncher = rememberSelectImageLauncher(
+        maxNum = inputTypes.maxImageNum,
+        pickedItems = pickedItems,
+        onResult = onImagesSelected
+    )
+    var photoUri = remember {
+        getPhotoUri()
+    }
+
+    val takePhotoLauncher = rememberTakePhotoLauncher { saved ->
+        if (saved) onImagesSelected(listOf(photoUri))
+    }
+
+    AnimatedVisibility(
+        visible = showAddFilePanel,
+    ) {
+        AddFilePanel(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            selectImageAction = {
+                // 调用系统 API，选择图片
+                imageSelectLauncher.launch(inputTypes.imageMimeList)
+            },
+            takePhotoAction = {
+                photoUri = getPhotoUri()
+                takePhotoLauncher.launch(photoUri)
+            }
         )
     }
 }
@@ -367,3 +420,5 @@ fun TaskButton(
         content()
     }
 }
+
+expect fun getPhotoUri(): String

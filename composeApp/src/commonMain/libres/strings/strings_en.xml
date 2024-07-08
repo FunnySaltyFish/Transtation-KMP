@@ -353,4 +353,8 @@
     <string name="limited_time_free">Free</string>
     <string name="translate_engine_hint">[Translate Engine: ${engine}]</string>
     <string name="float_window_translate_engine">Float Window Engine</string>
+
+    <string name="add_file">Add File</string>
+    <string name="image">Image</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

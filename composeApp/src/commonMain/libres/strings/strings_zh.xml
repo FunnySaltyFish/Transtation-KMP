@@ -354,4 +354,8 @@
     <string name="limited_time_free">限免</string>
     <string name="translate_engine_hint">【翻译引擎：${engine}】</string>
     <string name="float_window_translate_engine">悬浮窗翻译引擎</string>
+
+    <string name="add_file">添加文件</string>
+    <string name="image">图片</string>
+    <string name="take_photo">拍摄</string>
 </resources>

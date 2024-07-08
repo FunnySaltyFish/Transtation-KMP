@@ -2,11 +2,13 @@ package com.funny.translation.translate.ui.ai.componets
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Send
@@ -21,8 +23,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.strings.ResStrings
@@ -35,6 +39,9 @@ fun ChatInputTextField(
     onValueChange: (String) -> Unit,
     sendAction: () -> Unit,
     clearAction: () -> Unit,
+    chatBot: ModelChatBot,
+    showAddFilePanel: Boolean,
+    updateShowAddFilePanel: (Boolean) -> Unit
 ) {
     val color = MaterialTheme.colorScheme.surface
     TextField(
@@ -95,6 +102,23 @@ fun ChatInputTextField(
                             Icons.Filled.CleaningServices, ResStrings.clear_content
                         ) {
                             clearAction()
+                        }
+                        if (chatBot.model.inputFileTypes.supportImage) {
+                            // Add
+                            val rotateDegree by animateFloatAsState(targetValue = if (showAddFilePanel) 45f else 0f)
+                            IconButton(
+                                onClick = {
+                                    updateShowAddFilePanel(!showAddFilePanel)
+                                }
+                            ) {
+                                FixedSizeIcon(
+                                    modifier = Modifier.size(24.dp).graphicsLayer {
+                                        rotationZ = rotateDegree
+                                    },
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = ResStrings.add_file
+                                )
+                            }
                         }
                     }
                 }

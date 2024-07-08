@@ -88,6 +88,15 @@ interface AIService {
         @Query("max_length") maxLength: Int,
     ): CommonData<String>
 
+    // 根据模型id和原始图片尺寸，获取到压缩后的图片大小
+    // 格式为 Pair<width, height>
+    @GET("ai/get_image_compressed_size")
+    suspend fun getImageCompressedSize(
+        @Query("model_id") modelId: Int,
+        @Query("width") width: Int,
+        @Query("height") height: Int,
+        @Query("args") args: JSONObject = EmptyJsonObject,
+    ): CommonData<Pair<Int, Int>>
 }
 
 val aiService by lazy {

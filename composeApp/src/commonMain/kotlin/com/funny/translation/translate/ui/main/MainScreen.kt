@@ -77,6 +77,7 @@ import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.ui.ai.ChatScreen
 import com.funny.translation.translate.ui.main.components.EngineSelectDialog
 import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.SimpleNavigation
@@ -107,9 +108,10 @@ enum class MainScreenState {
 @Composable
 fun MainScreen(
 ) {
-    TextTransScreen()
+//    TextTransScreen()
 //    TTSScreen()
 //    ImageTransScreen()
+    ChatScreen()
 }
 
 @ExperimentalComposeUiApi

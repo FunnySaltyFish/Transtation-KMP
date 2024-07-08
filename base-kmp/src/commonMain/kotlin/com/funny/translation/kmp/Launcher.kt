@@ -15,6 +15,11 @@ expect class FileLauncher<Input>: Launcher<Input, Uri?> {
     override fun launch(input: Input)
 }
 
+expect class MultiFileLauncher<Input>: Launcher<Input, List<String>> {
+    override fun launch(input: Input)
+}
+
+
 @Composable
 expect fun rememberCreateFileLauncher(
     mimeType: String = "*/*",
@@ -25,6 +30,13 @@ expect fun rememberCreateFileLauncher(
 expect fun rememberOpenFileLauncher(
     onResult: (Uri?) -> Unit = {},
 ): FileLauncher<Array<String>>
+
+@Composable
+expect fun rememberTakePhotoLauncher(
+    onResult: (Boolean) -> Unit = {},
+): Launcher<String, Boolean>
+
+
 
 //@Composable
 //expect fun <Input> rememberSelectPhotoUriLauncher(

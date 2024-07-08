@@ -20,9 +20,7 @@ fun File.createFileIfNotExist(): Boolean {
 }
 
 fun File.createParentDirIfNotExist(): Boolean {
-    val parentFile = this.parentFile
-    if (!parentFile.exists()) {
-        return parentFile.mkdirs()
-    }
-    return true
+    val parentFile = this.parentFile ?: return false
+    // mkdirs 中已经判断过 exists 了
+    return parentFile.mkdirs()
 }

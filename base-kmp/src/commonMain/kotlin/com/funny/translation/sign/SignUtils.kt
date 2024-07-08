@@ -1,5 +1,6 @@
 package com.funny.translation.sign
 
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.ScriptEngine
 import com.funny.translation.helper.readAssets
 import com.funny.translation.kmp.appCtx
@@ -20,6 +21,7 @@ object SignUtils {
             scriptId = SCRIPT_ID
         ).toString()
     } catch (e: Exception) {
+        Log.e("SignUtils", "Unable to encodeSign", e)
         e.printStackTrace()
         ""
     }

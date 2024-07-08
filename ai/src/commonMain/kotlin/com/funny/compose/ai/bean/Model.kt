@@ -30,6 +30,8 @@ data class Model(
     val maxOutputTokens: Int,
     @SerialName("token_counter_id")
     val tokenCounterId: String,
+    @SerialName("input_file_types")
+    val inputFileTypes: ModelFileTypes = ModelFileTypes.IMAGE
 ) {
     companion object {
         val Empty = Model(0, BigDecimal.ZERO, "Test", "", "", 0, 0, "default")
