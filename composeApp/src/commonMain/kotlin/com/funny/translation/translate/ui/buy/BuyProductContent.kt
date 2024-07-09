@@ -38,12 +38,12 @@ import com.funny.compose.loading.loadingList
 import com.funny.compose.loading.rememberRetryableLoadingState
 import com.funny.translation.WebViewActivity
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.NAV_ANIM_DURATION
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.bean.Product
 import com.funny.translation.translate.ui.buy.manager.BuyProductManager
 import com.funny.translation.translate.ui.buy.manager.TradeStatusStore.Companion.STATUS_CANCEL_OR_FINISHED

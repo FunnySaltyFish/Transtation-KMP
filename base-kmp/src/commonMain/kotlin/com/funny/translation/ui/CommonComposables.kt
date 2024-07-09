@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -26,12 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.Platform
 import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.kmp.currentPlatform
-import com.funny.translation.translate.LocalNavController
 
 /**
  * CommonPage，有一个 TopBar 以及剩余内容，被 Column 包裹

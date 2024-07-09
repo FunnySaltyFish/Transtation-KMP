@@ -65,13 +65,13 @@ import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
 import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.helper.ClipBoardUtil
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.lerp
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.TranslationResult
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transFavoriteDao

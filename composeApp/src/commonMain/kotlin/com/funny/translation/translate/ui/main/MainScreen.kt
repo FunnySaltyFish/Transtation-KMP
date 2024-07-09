@@ -65,13 +65,13 @@ import androidx.compose.ui.unit.dp
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.AppConfig
 import com.funny.translation.NeedToTransConfig
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.UserUtils
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.network.api
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.engine.selectKey

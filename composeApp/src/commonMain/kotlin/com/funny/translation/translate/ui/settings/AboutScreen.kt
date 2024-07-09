@@ -38,13 +38,13 @@ import com.funny.jetsetting.core.ui.SettingItemCategory
 import com.funny.translation.AppConfig
 import com.funny.translation.WebViewActivity
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.rememberFastClickHandler
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.BuildConfig
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.RegionConfig
 import com.funny.translation.translate.bean.OpenSourceLibraryInfo
 import com.funny.translation.translate.ui.TranslateScreen

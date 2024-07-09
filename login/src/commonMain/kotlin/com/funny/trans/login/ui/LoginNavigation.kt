@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.funny.translation.bean.UserInfoBean
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.kmp.NavGraphBuilder
 import com.funny.translation.kmp.NavHost
 import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.rememberNavController
-import com.funny.translation.translate.LocalNavController
 
 sealed class LoginRoute(val route: String) {
     object LoginPage: LoginRoute("login_page")

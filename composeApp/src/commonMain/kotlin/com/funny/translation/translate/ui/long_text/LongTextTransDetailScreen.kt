@@ -57,6 +57,7 @@ import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.assetsStringLocalized
 import com.funny.translation.helper.rememberStateOf
@@ -68,7 +69,6 @@ import com.funny.translation.kmp.rememberCreateFileLauncher
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.kmp.writeText
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.long_text.components.AIPointText
 import com.funny.translation.translate.ui.long_text.components.RemarkDialog

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.token.TokenCounters
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.helper.DataHolder
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.TimeUtils
 import com.funny.translation.helper.formatQueryStyle
@@ -38,7 +39,6 @@ import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.kmpImeNestedScroll
 import com.funny.translation.kmp.navOptions
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.database.Draft
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.draftDao

@@ -1,8 +1,12 @@
 package com.funny.translation.translate.ui.ai
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,49 +20,57 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastJoinToString
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.sendByMe
 import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.LocalContext
-import com.funny.translation.helper.Log
+import com.funny.translation.helper.LocalNavAnimatedVisibilityScope
+import com.funny.translation.helper.LocalSharedTransitionScope
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
@@ -73,6 +85,8 @@ import com.funny.translation.translate.ui.long_text.Category
 import com.funny.translation.translate.ui.long_text.ModelListPart
 import com.funny.translation.translate.ui.long_text.components.AIPointText
 import com.funny.translation.translate.ui.main.LocalWindowSizeState
+import com.funny.translation.translate.ui.widget.AsyncImage
+import com.funny.translation.translate.ui.widget.TaskButton
 import com.funny.translation.translate.utils.rememberSelectImageLauncher
 import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonPage
@@ -93,6 +107,7 @@ fun ChatScreen() {
     val chatMessages = vm.messages
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    var previewImageUri: String? by rememberStateOf(null)
 
     BackHandler(drawerState.currentValue == DrawerValue.Open) {
         scope.launch { drawerState.close() }
@@ -115,7 +130,8 @@ fun ChatScreen() {
                 sendAction = { vm.ask(inputText) },
                 clearAction = vm::clearMessages,
                 removeMessageAction = vm::removeMessage,
-                doRefreshAction = vm::doRefresh
+                doRefreshAction = vm::doRefresh,
+                previewImageAction = { previewImageUri = it }
             )
         },
         drawerContent = {
@@ -146,8 +162,30 @@ fun ChatScreen() {
             )
         }
     )
+
+    AnimatedVisibility(
+        visible = previewImageUri != null,
+        modifier = Modifier,
+        enter = expandIn(expandFrom = Alignment.Center),
+        exit = shrinkOut(shrinkTowards = Alignment.Center)
+    ) {
+        CompositionLocalProvider(
+            LocalNavAnimatedVisibilityScope provides this@AnimatedVisibility
+        ) {
+            if (previewImageUri == null) return@CompositionLocalProvider
+            ImagePreviewScreen(
+                imageUri = previewImageUri!!,
+                modifier = Modifier.fillMaxSize(),
+                animatedContentScope = this@AnimatedVisibility,
+                goBackAction = {
+                    previewImageUri = null
+                }
+            )
+        }
+    }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ChatContent(
     modifier: Modifier,
@@ -160,8 +198,10 @@ private fun ChatContent(
     sendAction: () -> Unit,
     clearAction: () -> Unit,
     removeMessageAction: (ChatMessage) -> Unit,
-    doRefreshAction: SimpleAction
+    doRefreshAction: SimpleAction,
+    previewImageAction: (String) -> Unit
 ) {
+
     CommonPage(
         modifier = modifier,
         title = chatBot.name,
@@ -202,14 +242,14 @@ private fun ChatContent(
             },
             clearAction = clearAction,
             chatBot = chatBot,
-            onImagesSelected = {
-                // 打印
-                Log.d(TAG, "Selected Images: ${it.fastJoinToString()}")
-            }
+            previewImageAction = previewImageAction
         )
     }
+
+
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 //@Preview
 private fun ColumnScope.ChatBottomBar(
@@ -218,35 +258,24 @@ private fun ColumnScope.ChatBottomBar(
     sendAction: () -> Unit,
     clearAction: () -> Unit,
     chatBot: ModelChatBot,
-    onImagesSelected: (List<String>) -> Unit
+    previewImageAction: (String) -> Unit,
+//    onImagesSelected: (List<String>) -> Unit
 ) {
     var showAddFilePanel by rememberStateOf(false)
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(50)
-            )
-            .padding(6.dp)
-    ) {
-        ChatInputTextField(
-            modifier = Modifier.weight(1f),
-            input = text,
-            onValueChange = onTextChanged,
-            sendAction = sendAction,
-            clearAction = clearAction,
-            chatBot = chatBot,
-            showAddFilePanel = showAddFilePanel,
-            updateShowAddFilePanel = { showAddFilePanel = it }
-        )
-    }
-
-
     val inputTypes = chatBot.model.inputFileTypes
     val pickedItems = remember { mutableStateListOf<String>() }
+    val context = LocalContext.current
+    val onImagesSelected: (List<String>) -> Unit = { list ->
+        list.forEach {
+            if (pickedItems.size < inputTypes.maxImageNum && !pickedItems.contains(it)) {
+                pickedItems.add(it)
+            } else {
+                context.toastOnUi("您已超出最大图片数量限制")
+            }
+        }
+    }
+
     val imageSelectLauncher = rememberSelectImageLauncher(
         maxNum = inputTypes.maxImageNum,
         pickedItems = pickedItems,
@@ -259,6 +288,39 @@ private fun ColumnScope.ChatBottomBar(
     val takePhotoLauncher = rememberTakePhotoLauncher { saved ->
         if (saved) onImagesSelected(listOf(photoUri))
     }
+
+    AnimatedVisibility(
+        visible = pickedItems.isNotEmpty()
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            tonalElevation = 4.dp,
+            shadowElevation = 0.dp
+        ) {
+            Column {
+                CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this@AnimatedVisibility) {
+                    UploadFilePreviewPanel(
+                        modifier = Modifier.padding(12.dp),
+                        selectedItems = pickedItems,
+                        previewImageAction = previewImageAction
+                    )
+                }
+                HorizontalDivider()
+            }
+        }
+    }
+
+    ChatInputTextField(
+        modifier = Modifier.fillMaxWidth(),
+        input = text,
+        onValueChange = onTextChanged,
+        sendAction = sendAction,
+        clearAction = clearAction,
+        chatBot = chatBot,
+        showAddFilePanel = showAddFilePanel,
+        updateShowAddFilePanel = { showAddFilePanel = it }
+    )
 
     AnimatedVisibility(
         visible = showAddFilePanel,
@@ -277,6 +339,56 @@ private fun ColumnScope.ChatBottomBar(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun UploadFilePreviewPanel(
+    modifier: Modifier,
+    selectedItems: SnapshotStateList<String>,
+    sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current,
+    animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current,
+    previewImageAction: (String) -> Unit
+) {
+    LazyRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(selectedItems, key = { it }) {
+            Box {
+                with(sharedTransitionScope) {
+                    // 显示图片
+                    AsyncImage(
+                        model = it,
+                        modifier = Modifier.height(128.dp).clickable {
+                            previewImageAction(it)
+                        },
+//                        .sharedElement(
+//                            state = rememberSharedContentState(it),
+//                            animatedVisibilityScope = animatedVisibilityScope
+//                        ),
+                        contentDescription = "Image",
+                        contentScale = ContentScale.FillHeight
+                    )
+                }
+
+
+                // 删除按钮
+                IconButton(
+                    modifier = Modifier.align(Alignment.TopEnd).offset(x = 12.dp, y = (-12).dp),
+                    onClick = {
+                        selectedItems.remove(it)
+                    }
+                ) {
+                    FixedSizeIcon(
+                        Icons.Filled.Cancel,
+                        contentDescription = "Clear",
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ChatMessageList(
@@ -289,21 +401,22 @@ private fun ChatMessageList(
 ) {
     val currentMessage = currentMessageProvider()
     val context = LocalContext.current
-    val msgItem: @Composable LazyItemScope.(msg: ChatMessage, refreshAction: SimpleAction?) -> Unit = @Composable {  msg, refreshAction ->
-        MessageItem(
-            modifier = Modifier.animateItemPlacement(),
-            maxWidth = if (LocalWindowSizeState.current.isVertical) 300.dp else 600.dp,
-            chatMessage = msg,
-            copyAction = {
-                ClipBoardUtil.copy(msg.content)
-                context.toastOnUi(ResStrings.copied_to_clipboard)
-            },
-            deleteAction = {
-                removeMessageAction(msg)
-            },
-            refreshAction = refreshAction
-        )
-    }
+    val msgItem: @Composable LazyItemScope.(msg: ChatMessage, refreshAction: SimpleAction?) -> Unit =
+        @Composable { msg, refreshAction ->
+            MessageItem(
+                modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                maxWidth = if (LocalWindowSizeState.current.isVertical) 300.dp else 600.dp,
+                chatMessage = msg,
+                copyAction = {
+                    ClipBoardUtil.copy(msg.content)
+                    context.toastOnUi(ResStrings.copied_to_clipboard)
+                },
+                deleteAction = {
+                    removeMessageAction(msg)
+                },
+                refreshAction = refreshAction
+            )
+        }
 
     Box(modifier = modifier) {
         LazyColumn(
@@ -383,41 +496,11 @@ private fun Settings(
             }
         }
 
-        ModelListPart(maxHeight = 600.dp, onModelLoaded = vm::onModelListLoaded, onModelSelected = vm::updateChatBot)
-    }
-}
-
-// 做某项任务的 button，点击后前面加上圈圈，并且不可点击，直至任务完成或者失败
-@Composable
-fun TaskButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    loading: Boolean = false,
-    enabled: Boolean = true,
-    loadingColor: Color = MaterialTheme.colorScheme.primary,
-    loadingContent: @Composable () -> Unit = {
-        CircularProgressIndicator(
-            color = loadingColor,
-            strokeWidth = 2.dp,
-            modifier = Modifier.size(16.dp)
+        ModelListPart(
+            maxHeight = 600.dp,
+            onModelLoaded = vm::onModelListLoaded,
+            onModelSelected = vm::updateChatBot
         )
-    },
-    content: @Composable () -> Unit
-) {
-    val loadingModifier = Modifier
-        .clickable(enabled = enabled, onClick = onClick)
-        .animateContentSize()
-        .then(modifier)
-
-    Button(
-        onClick = onClick,
-        enabled = enabled and !loading,
-        modifier = loadingModifier
-    ) {
-        AnimatedVisibility(visible = loading) {
-            loadingContent()
-        }
-        content()
     }
 }
 

@@ -58,6 +58,7 @@ import com.funny.translation.helper.ApplicationUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.DateUtils
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
@@ -68,7 +69,6 @@ import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.network.ServiceCreator
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.allLanguages
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transHistoryDao

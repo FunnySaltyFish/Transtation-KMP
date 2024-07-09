@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.DataHolder
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.formatBraceStyle
@@ -54,7 +55,6 @@ import com.funny.translation.kmp.readText
 import com.funny.translation.kmp.rememberOpenFileLauncher
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon

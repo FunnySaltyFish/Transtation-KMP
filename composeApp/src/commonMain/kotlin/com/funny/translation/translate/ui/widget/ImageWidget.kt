@@ -24,6 +24,7 @@ fun AsyncImage(
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
     placeholder: Painter = painterDrawableRes("ic_loading"),
+    contentScale: ContentScale = ContentScale.Fit,
     onError: (Throwable) -> Unit = {
         it.printStackTrace()
     }
@@ -31,11 +32,11 @@ fun AsyncImage(
     AutoSizeImage(
         request = ImageRequest {
             data(model)
-
         },
         contentDescription = contentDescription,
         modifier = modifier,
         placeholderPainter = { placeholder },
+        contentScale = contentScale,
         errorPainter = { rememberVectorPainter(Icons.Default.Error) }
     )
 }

@@ -30,12 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.funny.jetsetting.core.ui.SimpleDialog
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.formatBraceStyle
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.TTSProvider
 import com.funny.translation.translate.tts.findTTSProviderById

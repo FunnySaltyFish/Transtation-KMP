@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.funny.translation.AppConfig
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.formatBraceStyle
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen

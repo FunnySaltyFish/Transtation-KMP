@@ -74,6 +74,7 @@ import com.funny.trans.login.LoginActivity
 import com.funny.translation.AppConfig
 import com.funny.translation.WebViewActivity
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.ActivityManager
@@ -83,7 +84,6 @@ import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.LocalActivityVM
-import com.funny.translation.translate.LocalNavController
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
@@ -96,7 +96,6 @@ import com.funny.translation.translate.ui.widget.SwipeShowType
 import com.funny.translation.translate.ui.widget.UpperPartBackground
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.safeMain
-import com.funny.translation.ui.safeMainPadding
 import com.funny.translation.ui.touchToScale
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.lifecycle.Lifecycle

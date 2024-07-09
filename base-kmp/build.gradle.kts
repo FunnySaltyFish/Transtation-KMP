@@ -58,8 +58,8 @@ kotlin {
                 api(libs.sqldelight.androidx.paging3.extensions)
 
                 // androidx.paging
-                implementation("androidx.paging:paging-runtime:$pagingVersion")
-                implementation("androidx.paging:paging-common:$pagingVersion")
+                implementation(libs.androidx.paging.runtime)
+                implementation(libs.androidx.paging.common)
 
                 api(libs.precompose)
                 api(libs.precompose.viewmodel) // For ViewModel intergration
@@ -147,8 +147,8 @@ android {
     namespace = NAMESPACE
 
     dependencies {
-        androidTestImplementation("androidx.test.ext:junit:1.1.3")
-        androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+        androidTestImplementation(libs.androidx.test.junit)
+        androidTestImplementation(libs.androidx.espresso.core)
     }
 }
 

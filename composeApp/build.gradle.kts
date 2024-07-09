@@ -22,6 +22,7 @@ kotlin {
                 addProjectDependencies()
                 implementation("org.burnoutcrew.composereorderable:reorderable:0.7.4")
                 implementation(compose.components.resources)
+                implementation("me.saket.telephoto:zoomable:0.11.2")
             }
         }
 
@@ -31,7 +32,11 @@ kotlin {
 
             // 图片选择器
             implementation(project.dependencies.platform("cn.qhplus.emo:bom:2024.03.00"))
-            implementation("cn.qhplus.emo:photo-coil")
+            implementation("cn.qhplus.emo:photo-coil") {
+                exclude("androidx.compose.ui", "ui-test-junit4")
+//                ui-test-android
+                exclude("androidx.compose.ui", "ui-test-android")
+            }
             // 图片裁剪
             implementation("com.github.yalantis:ucrop:2.2.6")
 
