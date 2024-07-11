@@ -36,7 +36,7 @@ sealed class ImageTranslationEngines: ImageTranslationEngine {
         return instance
     }
 
-object Baidu: ImageTranslationEngines() {
+    object Baidu: ImageTranslationEngines() {
         override val name: String = ResStrings.engine_baidu
         override val supportLanguages: List<Language> = TextTranslationEngines.BaiduNormal.supportLanguages
         override val languageMapping: Map<Language, String> = TextTranslationEngines.BaiduNormal.languageMapping
@@ -45,6 +45,7 @@ object Baidu: ImageTranslationEngines() {
 
         override fun getPoint() = 1.0f
     }
+
 
     object Tencent: ImageTranslationEngines() {
         override val name: String = ResStrings.engine_tencent

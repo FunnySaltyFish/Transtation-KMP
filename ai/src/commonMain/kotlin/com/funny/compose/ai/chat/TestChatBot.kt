@@ -27,8 +27,6 @@ class TestChatBot() : ChatBot() {
     override val args: HashMap<String, Any?> = hashMapOf()
 
     override suspend fun chat(
-        conversationId: String?,
-        currentMessage: String,
         messages: List<ChatMessage>,
         systemPrompt: String,
         memory: ChatMemory,

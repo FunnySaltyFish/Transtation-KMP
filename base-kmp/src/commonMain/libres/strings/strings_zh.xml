@@ -50,4 +50,5 @@
     <string name="app_name">译站</string>
     <string name="login_or_register">登录/注册</string>
     <string name="crash">崩溃了</string>
+    <string name="default_ai_image_trans_system_prompt">你是一位优秀的翻译家，根据内容将图片翻译成{{target}}，你的输出应条理有序、结构清晰。</string>
 </resources>

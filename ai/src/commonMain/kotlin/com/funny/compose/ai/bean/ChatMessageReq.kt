@@ -1,17 +1,22 @@
 package com.funny.compose.ai.bean
 
-import com.funny.translation.helper.JsonX
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ChatMessageReq(
-    val role: String,
-    val content: String
-) {
+sealed interface ChatMessageReq {
+    val role: String
+    val content: Any
+
     companion object {
-        fun text(content: String, role: String = "user") = ChatMessageReq(role, content)
-        fun vision(content: Vision, role: String = "user") = ChatMessageReq(role, JsonX.toJson(content))
+        fun text(content: String, role: String = "user") = Text(role, content)
+        fun vision(content: Vision, role: String = "user") = Vision(role, content.content)
     }
+
+    @Serializable
+    data class Text(
+        override val role: String,
+        override val content: String,
+    ): ChatMessageReq
 
     /*
     "content": [
@@ -24,9 +29,11 @@ data class ChatMessageReq(
         },
       ],
      */
-    class Vision(
-        val content: List<Content>,
-    ) {
+    @Serializable
+    data class Vision(
+        override val role: String,
+        override val content: List<Content>,
+    ): ChatMessageReq {
         @Serializable
         class Content(
             val type: String,
@@ -40,8 +47,3 @@ data class ChatMessageReq(
         }
     }
 }
-
-fun ChatMessage.toChatMessageReq() = ChatMessageReq(
-    role = if (sendByMe) "user" else "assistant",
-    content = content
-)

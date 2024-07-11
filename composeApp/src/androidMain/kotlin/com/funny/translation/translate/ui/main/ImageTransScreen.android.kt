@@ -75,7 +75,6 @@ import cn.qhplus.emo.photo.activity.getPhotoPickResult
 import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
 import cn.qhplus.emo.photo.ui.GestureContent
 import cn.qhplus.emo.photo.ui.GestureContentState
-import com.eygraber.uri.toUri
 import com.funny.compose.loading.LoadingState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
@@ -202,7 +201,7 @@ private fun ImageTransMain(
         // 如果不需要裁剪，那么直接翻译
         if (!doClipFirst) {
             vm.imageUri = androidImageUri
-            val imageSize = BitmapUtil.getImageSizeFromUri(appCtx, androidImageUri.toUri())
+            val imageSize = BitmapUtil.getImageSizeFromUri(appCtx, androidImageUri.toString())
             if (imageSize == (-1 to -1)) return@LaunchedEffect
             vm.updateImgSize(imageSize.first, imageSize.second)
             vm.sourceLanguage = sourceId?.let { findLanguageById(it) } ?: Language.AUTO

@@ -32,7 +32,7 @@ import retrofit2.http.Query
 import retrofit2.http.Streaming
 
 private const val TAG = "AIService"
-private val EmptyJsonObject = JSONObject()
+val EmptyJsonObject = JSONObject()
 
 @Serializable
 data class AskStreamRequest(
@@ -96,7 +96,7 @@ interface AIService {
         @Query("width") width: Int,
         @Query("height") height: Int,
         @Query("args") args: JSONObject = EmptyJsonObject,
-    ): CommonData<Pair<Int, Int>>
+    ): CommonData<List<Int>>
 }
 
 val aiService by lazy {

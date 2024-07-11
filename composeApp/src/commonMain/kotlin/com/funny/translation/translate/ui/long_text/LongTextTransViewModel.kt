@@ -287,9 +287,9 @@ class LongTextTransViewModel: ModelViewModel() {
 
         val systemPrompt = prompt.toPrompt()
         val maxOutputTokens = chatBot.model.maxOutputTokens
-        val chatMessages = messages.map { newChatMessage(it.role, it.content) }
+        val chatMessages = messages.map { newChatMessage(it.role, it.content.toString()) }
         val args = mapOf("max_tokens" to maxOutputTokens)
-        chatBot.chat(transId, part, chatMessages, systemPrompt, memory, args).collect { streamMsg ->
+        chatBot.chat(chatMessages, systemPrompt, memory, args).collect { streamMsg ->
             when(streamMsg) {
                 is StreamMessage.Start -> {
                     if (record) {

@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.eygraber.uri.toUri
 import com.funny.compose.ai.bean.ChatMessageReq
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.bean.StreamMessage
@@ -101,7 +100,7 @@ class ImageTransViewModel : ModelViewModel() {
                     4096,
                     4096,
                     2 * 1024 * 1024,
-                    imageUri!!.toUri()
+                    imageUri!!.toString()
                 )
                 bytes ?: return@launch
                 Log.d(TAG, "translate: imageSize: ${bytes.size}")

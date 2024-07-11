@@ -24,9 +24,13 @@ import com.funny.translation.kmp.appCtx
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.chatHistoryDao
+import com.funny.translation.translate.task.ModelImageChatTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
 private const val TAG = "ChatViewModel"
@@ -86,17 +90,55 @@ class ChatViewModel: ModelViewModel() {
         )
     }
 
-    fun ask(message: String){
+    fun ask(message: String, inputImageUriList: List<String>, onFinishPreprocessing: () -> Unit){
         if (message.isEmpty()) return
         convId.value ?: return
-        addMessage(SENDER_ME, message)
-        inputText.value = ""
-        startAsk(message)
+        viewModelScope.launch {
+            try {
+                val processedImgList = preprocessImageUriList(inputImageUriList)
+                processedImgList.forEach {
+                    addMessage(
+                        ChatMessage(
+                            botId = chatBot.id,
+                            conversationId = convId.value!!,
+                            sender = SENDER_ME,
+                            content = it,
+                            type = ChatMessageTypes.IMAGE
+                        )
+                    )
+                }
+                addMessage(SENDER_ME, message)
+                inputText.value = ""
+                startAsk(message)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                appCtx.toastOnUi(e.displayMsg())
+            } finally {
+                onFinishPreprocessing()
+            }
+        }
+    }
+
+    private suspend fun preprocessImageUriList(inputImageUriList: List<String>): List<String> = withContext(Dispatchers.IO){
+        val tasks = inputImageUriList.map {
+            viewModelScope.async {
+                ModelImageChatTask(
+                    chatBot = chatBot,
+                    fileUri = it,
+                    otherHistoryMessages = emptyList(),
+                    systemPrompt = systemPrompt,
+                    coroutineScope = viewModelScope
+                ).run {
+                    processImage()
+                }
+            }
+        }
+        tasks.awaitAll()
     }
 
     private fun startAsk(message: String) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            chatBot.chat(convId.value, message, messages, systemPrompt, memory).collect {
+            chatBot.chat(messages, systemPrompt, memory).collect {
                 Log.d(TAG, "received stream msg: $it")
                 when (it) {
                     is StreamMessage.Start -> {
@@ -133,7 +175,7 @@ class ChatViewModel: ModelViewModel() {
                 val txt = aiService.askAndProcess(
                     AskStreamRequest(
                         chatBot.id,
-                        listOf(ChatMessageReq("user", newPrompt)),
+                        listOf(ChatMessageReq.text("user", newPrompt)),
                         CHECK_PROMPT_PROMPT,
                     )
                 ).lowercase()

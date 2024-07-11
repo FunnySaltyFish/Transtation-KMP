@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import cn.qhplus.emo.photo.activity.PhotoPickerActivity
 import cn.qhplus.emo.photo.activity.getPhotoPickResult
 import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
-import com.eygraber.uri.toUri
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.BitmapUtil
 import com.funny.translation.helper.Context
@@ -91,7 +90,7 @@ actual fun SelectDynamicTheme(modifier: Modifier) {
 }
 
 private fun changeThemeFromImageUri(context: Context, uri: Uri) {
-    val bytes = BitmapUtil.getBitmapFromUri(context, 400, 600, 1024*1024, uri.toUri())
+    val bytes = BitmapUtil.getBitmapFromUri(context, 400, 600, 1024*1024, uri.toString())
     bytes ?: return
     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     val color = bitmap.getKeyColors(1).firstOrNull() ?: return

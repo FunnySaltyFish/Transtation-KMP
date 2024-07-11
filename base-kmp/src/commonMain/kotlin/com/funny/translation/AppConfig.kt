@@ -6,9 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.funny.data_saver.core.mutableDataSaverStateOf
+import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.bean.TranslationConfig
 import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.DataSaverUtils
+import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.translate.Language
 import com.funny.translation.ui.theme.ThemeConfig
 import java.math.BigDecimal
@@ -45,6 +47,12 @@ object AppConfig {
     val sDefaultSourceLanguage = mutableDataSaverStateOf(DataSaverUtils, "KEY_DEFAULT_SOURCE_LANGUAGE", Language.AUTO)
     val sDefaultTargetLanguage = mutableDataSaverStateOf(DataSaverUtils, "KEY_DEFAULT_TARGET_LANGUAGE", Language.CHINESE)
     val sAITransExplain = mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_AI_TRANS_EXPLAIN, true)
+    val sAIImageTransSystemPrompt = mutableDataSaverStateOf(DataSaverUtils, "KEY_AI_IMAGE_TRANS_SYSTEM_PROMPT",
+        EditablePrompt(
+            prefix = ResStrings.default_ai_image_trans_system_prompt,
+            suffix = "\n\nYour output must be a valid JSON with two keys: `source` indicates the source text and `target` indicates the translated result.\nExample output: {\"source\":\"Hello World\",\"target\":\"你好，世界\"}"
+        )
+    )
 
     // 以下为Pro专享
     val sParallelTrans = mutableDataSaverStateOf(DataSaverUtils, "KEY_PARALLEL_TRANS", false)

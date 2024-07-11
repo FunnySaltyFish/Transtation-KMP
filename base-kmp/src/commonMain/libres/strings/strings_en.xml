@@ -50,4 +50,5 @@
     <string name="app_name">Transtation</string>
     <string name="login_or_register">Login/Register</string>
     <string name="crash">Crash</string>
+    <string name="default_ai_image_trans_system_prompt">You're an excellent translator, translate the image into {{target}} based on the content. Your output should be well-organized.</string>
 </resources>

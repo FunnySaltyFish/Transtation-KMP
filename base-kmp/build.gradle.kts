@@ -13,7 +13,7 @@ plugins {
 kotlin {
     sourceSets {
         // 指定 androidx.paging 的版本为 3.2.0
-        val pagingVersion = "3.2.0"
+        val pagingVersion = libs.versions.pagingVersion.get()
         configurations.all {
             resolutionStrategy {
                 force("androidx.paging:paging-runtime:$pagingVersion")

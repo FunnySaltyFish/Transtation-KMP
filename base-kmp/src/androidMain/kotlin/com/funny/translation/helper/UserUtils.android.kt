@@ -14,7 +14,7 @@ actual suspend fun UserUtils.uploadUserAvatar(
     uid: Int
 ): String {
     try {
-        val data = BitmapUtil.getBitmapFromUri(context, TARGET_AVATAR_SIZE, TARGET_AVATAR_SIZE, 1024 * 100, imgUri)
+        val data = BitmapUtil.getBitmapFromUri(context, TARGET_AVATAR_SIZE, TARGET_AVATAR_SIZE, 1024 * 100, imgUri.toString())
             ?: return ""
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)

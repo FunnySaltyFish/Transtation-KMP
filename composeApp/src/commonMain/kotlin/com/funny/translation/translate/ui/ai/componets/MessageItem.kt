@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -30,6 +32,7 @@ import com.funny.compose.ai.bean.ChatMessageTypes
 import com.funny.compose.ai.bean.sendByMe
 import com.funny.jetsetting.core.ui.FunnyIcon
 import com.funny.jetsetting.core.ui.IconWidget
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.ui.main.SpeakButton
@@ -43,7 +46,8 @@ internal fun MessageItem(
     chatMessage: ChatMessage,
     copyAction: SimpleAction,
     deleteAction: SimpleAction,
-    refreshAction: SimpleAction? = null
+    refreshAction: SimpleAction? = null,
+    previewImageAction: (String) -> Unit,
 ) {
     val sendByMe = chatMessage.sendByMe
 
@@ -91,8 +95,14 @@ internal fun MessageItem(
                         }
                     }
 
-                    ChatMessageTypes.IMAGE ->
-                        AsyncImage(model = chatMessage.content, modifier = Modifier.size(200.dp))
+                    ChatMessageTypes.IMAGE -> {
+                        val (image, size) = remember(chatMessage.content) {
+                            chatMessage.content.split("@").also {
+                                Log.d("MessageItem", "image: ${it[0]}")
+                            }
+                        }
+                        AsyncImage(model = image, modifier = Modifier.width(200.dp).clickable { previewImageAction(image) })
+                    }
 
                     ChatMessageTypes.ERROR ->
                         Text(

@@ -43,3 +43,23 @@ fun String.formatQueryStyle(vararg items: Pair<String, Any>): String {
     }
     return txt
 }
+
+/** 从字符串中提取JSON
+ *
+ * @receiver String
+ * @return String
+ */
+fun String.extractJSON(): String {
+    val start = indexOf("{")
+    val end = lastIndexOf("}")
+    return safeSubstring(start, end + 1)
+}
+
+/**
+ * 获取 uri 或者 filepath 的 suffix，不带 .
+ * 找不到则返回空字符串
+ */
+fun String.extractSuffix(): String {
+    val index = lastIndexOf(".")
+    return if (index == -1) "" else safeSubstring(index + 1)
+}

@@ -30,7 +30,7 @@ abstract class TokenCounter {
 
     open suspend fun countMessages(messages: List<ChatMessageReq>) =
         messages.sumOf {
-            count(it.content) + count(it.role)
+            count(it.content.toString()) + count(it.role)
         }
 }
 
@@ -55,7 +55,7 @@ class OpenAITokenCounter(encodingName: String = "cl100k_base"): TokenCounter() {
         var numToken = 0
         for(msg in messages) {
             numToken += TOKENS_PER_MESSAGE
-            numToken += count(msg.content)
+            numToken += count(msg.content.toString())
             numToken += count(msg.role)
         }
         numToken += 3 // every reply is primed with <|start|>assistant<|message|>

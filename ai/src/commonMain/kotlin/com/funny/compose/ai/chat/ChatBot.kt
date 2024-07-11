@@ -4,7 +4,7 @@ import com.funny.compose.ai.bean.ChatMemory
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.ChatMessageReq
 import com.funny.compose.ai.bean.StreamMessage
-import com.funny.compose.ai.bean.sendByMe
+import com.funny.compose.ai.bean.toReq
 import com.funny.compose.ai.service.asStreamMessageFlow
 import com.funny.compose.ai.token.TokenCounter
 import com.funny.compose.ai.token.TokenCounters
@@ -29,20 +29,13 @@ abstract class ChatBot {
     ): Flow<String>
 
     open suspend fun chat(
-        conversationId: String?,
-        currentMessage: String,
         messages: List<ChatMessage>,
         systemPrompt: String,
         memory: ChatMemory,
         args: Map<String, Any?> = emptyMap(),
     ): Flow<StreamMessage> {
         val includedMessages = memory.getIncludedMessages(messages)
-        val chatMessageReqList = includedMessages.map {
-            ChatMessageReq.text(
-                role = if (it.sendByMe) "user" else "assistant",
-                content = it.content
-            )
-        }
+        val chatMessageReqList = includedMessages.map(ChatMessage::toReq)
         return sendRequest(systemPrompt, chatMessageReqList, args).asStreamMessageFlow()
     }
 }

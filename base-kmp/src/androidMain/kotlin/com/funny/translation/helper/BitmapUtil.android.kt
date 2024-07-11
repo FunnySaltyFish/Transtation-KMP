@@ -4,8 +4,8 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import com.eygraber.uri.Uri
-import com.eygraber.uri.toAndroidUri
+import androidx.core.net.toUri
+import com.funny.translation.kmp.appCtx
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -14,46 +14,36 @@ import java.nio.ByteBuffer
 
 private const val TAG = "BitmapUtil"
 actual object BitmapUtil {
-    actual fun compressImage(bytes: ByteArray?, width: Int, height: Int, maxSize: Long): ByteArray {
+    actual fun compressImage(bytes: ByteArray?, maxWidth: Int, maxHeight: Int, maxSize: Long): ByteArray {
         bytes ?: return byteArrayOf()
-        val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val image = Bitmap.createBitmap(maxWidth, maxHeight, Bitmap.Config.ARGB_8888)
         val buffer = ByteBuffer.wrap(bytes)
         buffer.position(0)
         image.copyPixelsFromBuffer(buffer)
         return compressImage(image, maxSize)
     }
 
-    actual fun getBitmapFromUri(ctx: Context, targetWidth: Int, targetHeight: Int, maxSize: Long, uri: Uri): ByteArray? {
+    actual fun getBitmapFromUri(ctx: Context, targetWidth: Int, targetHeight: Int, maxSize: Long, uri: String): ByteArray? {
         val (originalWidth, originalHeight) = getImageSizeFromUri(ctx, uri)
         if (originalWidth == -1 || originalHeight == -1) return null
-        //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
-        var be = 1 // be=1表示不缩放
-        if (originalWidth > originalHeight && originalWidth > targetWidth) { //如果宽度大的话根据宽度固定大小缩放
-            be = (originalWidth / targetWidth)
-        } else if (originalWidth < originalHeight && originalHeight > targetHeight) { //如果高度高的话根据宽度固定大小缩放
-            be = (originalHeight / targetHeight)
-        }
-        if (be <= 0) be = 1
         //比例压缩
         val bitmapOptions = BitmapFactory.Options()
-        bitmapOptions.inSampleSize = be //设置缩放比例
+        bitmapOptions.inSampleSize = calculateInSampleSize(originalWidth, originalHeight, targetWidth, targetHeight)
         bitmapOptions.inDither = true //optional
         bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888 //optional
-        ctx.contentResolver.openInputStream(uri.toAndroidUri())?.use {
+        ctx.contentResolver.openInputStream(uri.toUri())?.use {
             return compressImage(BitmapFactory.decodeStream(it, null, bitmapOptions), maxSize) //再进行质量压缩
         }
         return null
     }
 
     // 获取图片的宽高，如果获取失败则返回 -1, -1
-    actual fun getImageSizeFromUri(ctx: Context, uri: Uri): Pair<Int, Int> {
-        Log.d(TAG, "getImageSizeFromUri: $uri, toAndroidUri: ${uri.toAndroidUri()}")
-        val input = ctx.contentResolver.openInputStream(uri.toAndroidUri())
+    actual fun getImageSizeFromUri(ctx: Context, uri: String): Pair<Int, Int> {
+        Log.d(TAG, "getImageSizeFromUri: $uri, toAndroidUri: ${uri.toUri()}")
+        val input = ctx.contentResolver.openInputStream(uri.toUri())
         input?.use {
             val onlyBoundsOptions = BitmapFactory.Options()
             onlyBoundsOptions.inJustDecodeBounds = true
-            onlyBoundsOptions.inDither = true //optional
-            onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888 //optional
             BitmapFactory.decodeStream(input, null, onlyBoundsOptions)
             val originalWidth = onlyBoundsOptions.outWidth
             val originalHeight = onlyBoundsOptions.outHeight
@@ -139,8 +129,9 @@ actual object BitmapUtil {
      * @return
      */
     fun compressImage(image: Bitmap?, maxSize: Long): ByteArray {
+        image ?: return byteArrayOf()
         val baos = ByteArrayOutputStream()
-        image!!.compress(Bitmap.CompressFormat.JPEG, 100, baos) //质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos) //质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         var options = 100
         var bytes: ByteArray
         while (baos.toByteArray()
@@ -155,4 +146,23 @@ actual object BitmapUtil {
         return bytes
     }
 
+    private fun calculateInSampleSize(width: Int, height: Int, reqWidth: Int, reqHeight: Int): Int {
+        var inSampleSize = 1
+        if (height > reqHeight || width > reqWidth) {
+            val halfHeight: Int = height / 2
+            val halfWidth: Int = width / 2
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+        return inSampleSize
+    }
+
+    actual fun getBitmapFromUri(uri: String): ByteArray? {
+        return appCtx.contentResolver.openInputStream(uri.toUri())?.use {
+            val baos = ByteArrayOutputStream()
+            it.copyTo(baos)
+            baos.toByteArray()
+        }
+    }
 }

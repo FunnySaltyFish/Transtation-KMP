@@ -97,7 +97,7 @@ class ChatMemoryMaxToken(val model: Model, var systemPrompt: String): ChatMemory
         var idx = list.size - 1
         var curInputTokens = 0
         while (curInputTokens < remainingInputTokens && idx >= 0) {
-            curInputTokens += tokenCounter.countMessages(listOf(list[idx].toChatMessageReq()))
+            curInputTokens += tokenCounter.countMessages(listOf(list[idx].toReq()))
             idx--
         }
         return list.subList(idx + 1, list.size)

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,6 +40,7 @@ import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -108,6 +110,8 @@ fun ChatScreen() {
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var previewImageUri: String? by rememberStateOf(null)
+    var isPreProcessing by rememberStateOf(false)
+    val pickedItems = remember { mutableStateListOf<String>() }
 
     BackHandler(drawerState.currentValue == DrawerValue.Open) {
         scope.launch { drawerState.close() }
@@ -126,8 +130,16 @@ fun ChatScreen() {
                 chatMessages = chatMessages,
                 inputText = inputText,
                 onInputTextChanged = vm::updateInputText,
+                pickedItems = pickedItems,
                 expandDrawerAction = { scope.launch { drawerState.open() } },
-                sendAction = { vm.ask(inputText) },
+                sendAction = {
+                    // 选择图片时，不直接发送消息，而是等待图片选择完成后再发送
+                    if (pickedItems.isNotEmpty()) isPreProcessing = true
+                    vm.ask(inputText, pickedItems, onFinishPreprocessing = {
+                        isPreProcessing = false
+                        pickedItems.clear()
+                    })
+                },
                 clearAction = vm::clearMessages,
                 removeMessageAction = vm::removeMessage,
                 doRefreshAction = vm::doRefresh,
@@ -183,6 +195,20 @@ fun ChatScreen() {
             )
         }
     }
+
+    if (isPreProcessing) {
+        // Show a loading indicator
+        Column (
+            modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.8f)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(64.dp),
+                color = Color.White
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -191,9 +217,10 @@ private fun ChatContent(
     modifier: Modifier,
     chatBot: ModelChatBot,
     currentMessageProvider: () -> ChatMessage?,
-    chatMessages: List<ChatMessage>,
+    chatMessages: SnapshotStateList<ChatMessage>,
     inputText: String,
     onInputTextChanged: (String) -> Unit,
+    pickedItems: SnapshotStateList<String>,
     expandDrawerAction: () -> Unit,
     sendAction: () -> Unit,
     clearAction: () -> Unit,
@@ -201,7 +228,6 @@ private fun ChatContent(
     doRefreshAction: SimpleAction,
     previewImageAction: (String) -> Unit
 ) {
-
     CommonPage(
         modifier = modifier,
         title = chatBot.name,
@@ -227,7 +253,8 @@ private fun ChatContent(
             chats = chatMessages,
             lazyListState = lazyListState,
             removeMessageAction = removeMessageAction,
-            doRefreshAction = doRefreshAction
+            doRefreshAction = doRefreshAction,
+            previewImageAction = previewImageAction
         )
         ChatBottomBar(
             text = inputText,
@@ -242,6 +269,7 @@ private fun ChatContent(
             },
             clearAction = clearAction,
             chatBot = chatBot,
+            pickedItems = pickedItems,
             previewImageAction = previewImageAction
         )
     }
@@ -255,23 +283,26 @@ private fun ChatContent(
 private fun ColumnScope.ChatBottomBar(
     text: String = "",
     onTextChanged: (String) -> Unit = {},
-    sendAction: () -> Unit,
+    sendAction: (pickedItems: List<String>) -> Unit,
     clearAction: () -> Unit,
     chatBot: ModelChatBot,
+    pickedItems: SnapshotStateList<String>,
     previewImageAction: (String) -> Unit,
 //    onImagesSelected: (List<String>) -> Unit
 ) {
     var showAddFilePanel by rememberStateOf(false)
 
     val inputTypes = chatBot.model.inputFileTypes
-    val pickedItems = remember { mutableStateListOf<String>() }
     val context = LocalContext.current
-    val onImagesSelected: (List<String>) -> Unit = { list ->
-        list.forEach {
-            if (pickedItems.size < inputTypes.maxImageNum && !pickedItems.contains(it)) {
-                pickedItems.add(it)
-            } else {
-                context.toastOnUi("您已超出最大图片数量限制")
+    val onImagesSelected: (List<String>) -> Unit = remember {
+        { list ->
+            list.forEach {
+                if (pickedItems.size < inputTypes.maxImageNum) {
+                    if (!pickedItems.contains(it)) pickedItems.add(it)
+                } else {
+                    context.toastOnUi("您已到达此模型单次最大图片数量限制（${inputTypes.maxImageNum}张）")
+                    return@forEach
+                }
             }
         }
     }
@@ -281,6 +312,7 @@ private fun ColumnScope.ChatBottomBar(
         pickedItems = pickedItems,
         onResult = onImagesSelected
     )
+
     var photoUri = remember {
         getPhotoUri()
     }
@@ -315,7 +347,9 @@ private fun ColumnScope.ChatBottomBar(
         modifier = Modifier.fillMaxWidth(),
         input = text,
         onValueChange = onTextChanged,
-        sendAction = sendAction,
+        sendAction = {
+            sendAction(pickedItems)
+        },
         clearAction = clearAction,
         chatBot = chatBot,
         showAddFilePanel = showAddFilePanel,
@@ -397,7 +431,8 @@ private fun ChatMessageList(
     currentMessageProvider: () -> ChatMessage?,
     chats: List<ChatMessage>,
     removeMessageAction: (ChatMessage) -> Unit,
-    doRefreshAction: SimpleAction
+    doRefreshAction: SimpleAction,
+    previewImageAction: (String) -> Unit
 ) {
     val currentMessage = currentMessageProvider()
     val context = LocalContext.current
@@ -414,7 +449,8 @@ private fun ChatMessageList(
                 deleteAction = {
                     removeMessageAction(msg)
                 },
-                refreshAction = refreshAction
+                refreshAction = refreshAction,
+                previewImageAction = previewImageAction
             )
         }
 

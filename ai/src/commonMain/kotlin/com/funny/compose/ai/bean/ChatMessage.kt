@@ -6,9 +6,18 @@ import java.util.UUID
 
 const val SENDER_ME = "Me"
 
+/**
+ * 一条聊天消息
+ * 特殊规则：
+ * content:
+ * - 当 Type 为 Text 时，content 为文本内容
+ * - 当 Type 为 Image 时，content 为图片的 Base84@width*height
+ * -
+ */
 typealias ChatMessage = ChatHistory
 
-// 自定义 constructor
+/* 自定义 constructor
+ */
 fun ChatMessage(
     botId: Int,
     conversationId: String,
@@ -27,6 +36,32 @@ fun ChatMessage(
         error = error,
         timestamp = now()
     )
+}
+
+fun ChatMessage.toReq(): ChatMessageReq {
+    val role = if (sendByMe) "user" else "assistant"
+    return when (type) {
+        ChatMessageTypes.TEXT, ChatMessageTypes.ERROR -> ChatMessageReq.text(
+            role = role,
+            content = content
+        )
+        ChatMessageTypes.IMAGE -> ChatMessageReq.vision(
+            content = ChatMessageReq.Vision(
+                content = listOf(
+                    ChatMessageReq.Vision.Content(
+                        type = "image_url",
+                        image_url = ChatMessageReq.Vision.Content.ImageUrl(
+                            url = content
+                        )
+                    )
+                ),
+                role = role
+            ),
+        )
+
+        else -> error("Invalid type of ChatMessage: $type")
+    }
+
 }
 
 val ChatMessage.sendByMe: Boolean
