@@ -35,8 +35,8 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -54,6 +54,7 @@ import com.funny.translation.bean.Price
 import com.funny.translation.bean.showWithUnit
 import com.funny.translation.helper.rememberDerivedStateOf
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.tts.DashScopeProvider
 import com.funny.translation.translate.tts.Gender
 import com.funny.translation.translate.tts.OpenAIProvider
 import com.funny.translation.translate.tts.Speaker
@@ -143,10 +144,11 @@ private fun ColumnScope.ConfListPager(
         pagerState.animateScrollToPage(index)
     }
 
-    TabRow(
+    ScrollableTabRow(
         selectedTabIndex = pagerState.currentPage,
 //        containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.primary,
+        edgePadding = 0.dp
 //        indicator = { tabPositions ->
 //            SecondaryIndicator(
 //                modifier = Modifier.height(2.dp),
@@ -189,7 +191,7 @@ private fun ColumnScope.ConfListPager(
                     }
                 },
                 successFooter = {
-                    if (provider is OpenAIProvider) {
+                    if (provider is OpenAIProvider || provider is DashScopeProvider) {
                         HintText(
                             text = ResStrings.tts_generated_by_ai_note,
                         )

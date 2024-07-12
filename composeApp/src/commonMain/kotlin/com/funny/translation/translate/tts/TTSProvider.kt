@@ -137,7 +137,7 @@ object OpenAIProvider: ServerTTSProvider("openai") {
     override val name: String = "OpenAI"
     override val supportLanguages: Set<Language> = allLanguages.toSet()
     override val defaultExtraConf: TTSExtraConf = TTSExtraConf(speed = 80)
-    override val price1kChars = Price("0.03")
+    override val price1kChars = Price("0.1")
 
 
     // OpenAI 智能判断语言
@@ -172,25 +172,8 @@ object OpenAIProvider: ServerTTSProvider("openai") {
     )
 }
 
-object SambertProvider: ServerTTSProvider("sambert") {
-    // {'美式英文', '印尼语', '法语', '英文', '德语', '中文', '西班牙语', '泰语', '意大利语'}
-    override val price1kChars = Price("0.03")
-    override val languageMapping by lazy {
-        mapOf(
-            Language.CHINESE to "中文",
-            Language.ENGLISH to "美式英文",
-            Language.FRENCH to "法语",
-            Language.GERMANY to "德语",
-            Language.SPANISH to "西班牙语",
-            Language.ITALIAN to "意大利语",
-            Language.THAI to "泰语",
-        )
-    }
-
-    override fun languageToLocale(language: Language): String {
-        return languageMapping.get(language, "英文")
-    }
-
+// Ali 魔搭
+abstract class DashScopeProvider(modelName: String): ServerTTSProvider(modelName) {
     override fun getUrl(
         word: String,
         language: Language,
@@ -222,7 +205,46 @@ object SambertProvider: ServerTTSProvider("sambert") {
         )
     }
 
+}
+
+object SambertProvider: DashScopeProvider("sambert") {
+    // {'美式英文', '印尼语', '法语', '英文', '德语', '中文', '西班牙语', '泰语', '意大利语'}
+    override val price1kChars = Price("0.3")
+    override val languageMapping by lazy {
+        mapOf(
+            Language.CHINESE to "中文",
+            Language.ENGLISH to "美式英文",
+            Language.FRENCH to "法语",
+            Language.GERMANY to "德语",
+            Language.SPANISH to "西班牙语",
+            Language.ITALIAN to "意大利语",
+            Language.THAI to "泰语",
+        )
+    }
+
+    override fun languageToLocale(language: Language): String {
+        return languageMapping.get(language, "英文")
+    }
+
     override val name: String = "Sambert"
+    override val defaultExtraConf: TTSExtraConf = TTSExtraConf(volume = 125)
+}
+
+object CosyVoiceProvider: DashScopeProvider("cosy_voice") {
+    // {'美式英文', '印尼语', '法语', '英文', '德语', '中文', '西班牙语', '泰语', '意大利语'}
+    override val price1kChars = Price("0.5")
+    override val languageMapping by lazy {
+        mapOf(
+            Language.CHINESE to "中文",
+            Language.ENGLISH to "英文",
+        )
+    }
+
+    override fun languageToLocale(language: Language): String {
+        return languageMapping.get(language, "英文")
+    }
+
+    override val name: String = "CosyVoice"
     override val defaultExtraConf: TTSExtraConf = TTSExtraConf(volume = 125)
 }
 
@@ -230,6 +252,7 @@ val ttsProviders: List<TTSProvider> = persistentListOf(
     BaiduTransTTSProvider,
     OpenAIProvider,
     SambertProvider,
+    CosyVoiceProvider
 //    EdgeTTSProvider
 )
 
