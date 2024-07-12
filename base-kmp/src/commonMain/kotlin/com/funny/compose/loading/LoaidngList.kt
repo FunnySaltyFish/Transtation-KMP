@@ -38,12 +38,15 @@ fun <T : Any> LazyListScope.loadingList(
     successFooter: @Composable (LazyItemScope.() -> Unit)? = null,
     onSuccess: ((List<T>) -> Unit)? = null,
     onFail: ((Throwable) -> Unit)? = null,
+    successDataProvider: () -> List<T> = {
+      value.value.getOrDefault(emptyList())
+    },
     success: @Composable LazyItemScope.(data: T) -> Unit,
 ) {
     when (value.value) {
         is LoadingState.Loading -> item(contentType = "loading") { loading() }
         is LoadingState.Success<*> -> {
-            val data = (value.value as LoadingState.Success<List<T>>).data
+            val data = successDataProvider()
             if (data.isEmpty()) {
                 item(contentType = "empty") { empty() }
             } else {
@@ -62,15 +65,14 @@ fun <T : Any> LazyListScope.loadingList(
                     }
                 }
             }
-            onSuccess?.invoke(data)
+            onSuccess?.invoke(value.value.getOrNull()!!)
         }
         is LoadingState.Failure -> {
+            val error = (value.value as LoadingState.Failure).error
             item {
-                failure(
-                    (value.value as LoadingState.Failure).error
-                )
+                failure(error)
             }
-            onFail?.invoke((value.value as LoadingState.Failure).error)
+            onFail?.invoke(error)
         }
     }
 }

@@ -357,4 +357,5 @@
     <string name="add_file">Add File</string>
     <string name="image">Image</string>
     <string name="take_photo">Take Photo</string>
+    <string name="search_model">Search Model</string>
 </resources>

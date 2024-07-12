@@ -89,6 +89,12 @@ fun initTypeConverters() {
         save = { JsonX.toJson(it) },
         restore = { JsonX.fromJson(it) }
     )
+
+    // MutableList<String>
+    DataSaverConverter.registerTypeConverters<MutableList<String>>(
+        save = { JsonX.toJson(it) },
+        restore = { JsonX.fromJson(it) }
+    )
 }
 
 private val OLD_VIP_START_TIME = """("vip_start_time"):(-?\d+)""".toRegex()
