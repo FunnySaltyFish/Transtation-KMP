@@ -43,7 +43,8 @@ class ChatViewModel: ModelViewModel() {
     var currentMessage: ChatMessage? by mutableStateOf(null)
     val convId: MutableState<String?> = mutableStateOf(null)
     var systemPrompt by mutableDataSaverStateOf(DataSaverUtils, "key_chat_base_prompt", ResStrings.chat_system_prompt)
-    val memory = ChatMemoryFixedMsgLength(3)
+    var maxHistoryMsgNum by mutableDataSaverStateOf(DataSaverUtils, "key_chat_max_history_msg_num", 3)
+    private val memory get() = ChatMemoryFixedMsgLength(maxHistoryMsgNum)
 
     var checkingPrompt by mutableStateOf(false)
     
@@ -107,9 +108,15 @@ class ChatViewModel: ModelViewModel() {
                         )
                     )
                 }
-                addMessage(SENDER_ME, message)
+                if (message.isNotEmpty()) {
+                    addMessage(SENDER_ME, message)
+                }
+                // 如果最大上下文长度甚至不够，那么扩充一下
+                if (processedImgList.size > maxHistoryMsgNum) {
+                    maxHistoryMsgNum = processedImgList.size + 1
+                }
                 inputText.value = ""
-                startAsk(message)
+                startAsk()
             } catch (e: Exception) {
                 e.printStackTrace()
                 appCtx.toastOnUi(e.displayMsg())
@@ -136,7 +143,7 @@ class ChatViewModel: ModelViewModel() {
         tasks.awaitAll()
     }
 
-    private fun startAsk(message: String) {
+    private fun startAsk() {
         job = viewModelScope.launch(Dispatchers.IO) {
             chatBot.chat(messages, systemPrompt, memory).collect {
                 Log.d(TAG, "received stream msg: $it")
@@ -214,8 +221,7 @@ class ChatViewModel: ModelViewModel() {
         } else {
             currentMessage = null
         }
-        val lastMyMsg = messages.last()
-        startAsk(lastMyMsg.content)
+        startAsk()
     }
 
     

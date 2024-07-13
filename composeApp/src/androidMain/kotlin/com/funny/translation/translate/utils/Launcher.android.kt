@@ -8,7 +8,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.core.app.ActivityOptionsCompat
 import cn.qhplus.emo.photo.activity.PhotoPickerActivity
 import cn.qhplus.emo.photo.activity.getPhotoPickResult
@@ -34,6 +36,7 @@ actual fun rememberSelectImageLauncher(
         }
 
     val context = LocalContext.current
+    val currentMaxNum by rememberUpdatedState(maxNum)
     val launcher: ActivityResultLauncher<Array<String>> = remember(pickLauncher) {
         object : ActivityResultLauncher<Array<String>>() {
             override fun launch(input: Array<String>) {
@@ -60,7 +63,7 @@ actual fun rememberSelectImageLauncher(
                             pickedItems = arrayListOf<Uri>().apply {
                                 pickedItems.mapTo(this, Uri::parse)
                             },
-                            pickLimitCount = maxNum,
+                            pickLimitCount = currentMaxNum,
                         )
                     }
 

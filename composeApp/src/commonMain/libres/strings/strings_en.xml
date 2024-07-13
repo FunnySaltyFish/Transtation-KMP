@@ -358,4 +358,6 @@
     <string name="image">Image</string>
     <string name="take_photo">Take Photo</string>
     <string name="search_model">Search Model</string>
+    <string name="max_history_msg_num">Context Window Length</string>
+    <string name="max_history_msg_num_help">The maximum number of messages that will be submitted to the model, including current message. The larger the value, the more context the model can refer to, but the more expensive it will be. Each message, including text and image, will be counted as one message.</string>
 </resources>

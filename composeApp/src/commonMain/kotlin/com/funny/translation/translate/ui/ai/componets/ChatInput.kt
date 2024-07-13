@@ -40,6 +40,7 @@ fun ChatInputTextField(
     sendAction: () -> Unit,
     clearAction: () -> Unit,
     chatBot: ModelChatBot,
+    pickedItems: List<String>,
     showAddFilePanel: Boolean,
     updateShowAddFilePanel: (Boolean) -> Unit
 ) {
@@ -71,7 +72,6 @@ fun ChatInputTextField(
                 label = ""
             ) { visible ->
                 Row {
-
                     val context = LocalContext.current
                     val showComing = {
                         context.toastOnUi(ResStrings.comming_soon)
@@ -102,6 +102,14 @@ fun ChatInputTextField(
                             Icons.Filled.CleaningServices, ResStrings.clear_content
                         ) {
                             clearAction()
+                        }
+                        if (pickedItems.isNotEmpty()) {
+                            // send
+                            button(
+                                Icons.Default.Send, ResStrings.send
+                            ) {
+                                sendAction()
+                            }
                         }
                         if (chatBot.model.inputFileTypes.supportImage) {
                             // Add

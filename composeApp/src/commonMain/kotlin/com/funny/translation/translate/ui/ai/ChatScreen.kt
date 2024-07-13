@@ -10,6 +10,7 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -42,11 +44,16 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -65,6 +72,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.sendByMe
@@ -294,15 +302,13 @@ private fun ColumnScope.ChatBottomBar(
 
     val inputTypes = chatBot.model.inputFileTypes
     val context = LocalContext.current
-    val onImagesSelected: (List<String>) -> Unit = remember {
-        { list ->
-            list.forEach {
-                if (pickedItems.size < inputTypes.maxImageNum) {
-                    if (!pickedItems.contains(it)) pickedItems.add(it)
-                } else {
-                    context.toastOnUi("您已到达此模型单次最大图片数量限制（${inputTypes.maxImageNum}张）")
-                    return@forEach
-                }
+    val onImagesSelected: (List<String>) -> Unit = { list ->
+        list.forEach {
+            if (pickedItems.size < inputTypes.maxImageNum) {
+                if (!pickedItems.contains(it)) pickedItems.add(it)
+            } else {
+                context.toastOnUi("您已到达此模型单次最大图片数量限制（${inputTypes.maxImageNum}张）")
+                return@forEach
             }
         }
     }
@@ -352,6 +358,7 @@ private fun ColumnScope.ChatBottomBar(
         },
         clearAction = clearAction,
         chatBot = chatBot,
+        pickedItems = pickedItems,
         showAddFilePanel = showAddFilePanel,
         updateShowAddFilePanel = { showAddFilePanel = it }
     )
@@ -494,6 +501,7 @@ private fun ChatMessageList(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Settings(
     modifier: Modifier,
@@ -530,6 +538,35 @@ private fun Settings(
                     }
                 }
             }
+        }
+
+        Category(title = ResStrings.max_history_msg_num, helpText = ResStrings.max_history_msg_num_help) {
+            var v by rememberStateOf(vm.maxHistoryMsgNum.toFloat())
+            val startInteractionSource = remember { MutableInteractionSource() }
+            Slider(
+                value = v,
+                onValueChange = { v = it },
+                valueRange = 2f..16f,
+                onValueChangeFinished = { vm.maxHistoryMsgNum = v.toInt() },
+                steps = 14,
+                interactionSource = startInteractionSource,
+                thumb = {
+                    Label(
+                        label = {
+                            PlainTooltip(
+                                modifier = Modifier.wrapContentWidth()
+                            ) {
+                                Text(text = v.toInt().toString(), textAlign = TextAlign.Center)
+                            }
+                        },
+                        interactionSource = startInteractionSource,
+                    ) {
+                        SliderDefaults.Thumb(
+                            interactionSource = startInteractionSource,
+                        )
+                    }
+                }
+            )
         }
 
         ModelListPart(

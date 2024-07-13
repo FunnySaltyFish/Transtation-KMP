@@ -31,7 +31,7 @@ data class Model(
     @SerialName("token_counter_id")
     val tokenCounterId: String,
     @SerialName("input_file_types")
-    val inputFileTypes: ModelFileTypes = ModelFileTypes.IMAGE
+    val inputFileTypes: ModelFileTypes = ModelFileTypes.TEXT
 ) {
     companion object {
         val Empty = Model(0, BigDecimal.ZERO, "Test", "", "", 0, 0, "default")

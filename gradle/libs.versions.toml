@@ -1,7 +1,7 @@
 [versions]
 jtokkit = "0.6.1"
 pagingVersion = "3.2.0"
-precompose = "1.6.0"
+precompose = "1.6.1"
 project-versionCode = "64"
 project-versionName = "2.8.1"
 agp = "8.1.4"
