@@ -83,6 +83,7 @@ kotlin {
         androidMain.dependencies {
             api(libs.compose.ui.tooling.preview)
             api(libs.androidx.activity.compose)
+            api(libs.androidx.appcompat)
             api(libs.compose.ui.android)
 
 //            implementation(libs.rhino.android)

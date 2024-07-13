@@ -49,12 +49,8 @@ actual fun rememberSelectImageLauncher(
                 }
             }
 
-            override fun unregister() {
-                // pickLauncher.unregister()
-            }
-
-            override fun getContract(): ActivityResultContract<Array<String>, *> {
-                return object : ActivityResultContract<Array<String>, List<String>>() {
+            override val contract: ActivityResultContract<Array<String>, *>
+                get() = object : ActivityResultContract<Array<String>, List<String>>() {
                     override fun createIntent(context: android.content.Context, input: Array<String>): Intent {
                         return PhotoPickerActivity.intentOf(
                             context,
@@ -71,6 +67,9 @@ actual fun rememberSelectImageLauncher(
                         return intent?.getPhotoPickResult()?.list?.map { it.uri.toString() } ?: emptyList()
                     }
                 }
+
+            override fun unregister() {
+                // pickLauncher.unregister()
             }
         }
     }

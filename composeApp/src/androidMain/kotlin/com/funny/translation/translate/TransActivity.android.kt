@@ -100,7 +100,7 @@ actual class TransActivity : BaseActivity() {
         EasyFloatUtils.resetFloatBallPlace()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         getIntentData(intent)
     }
