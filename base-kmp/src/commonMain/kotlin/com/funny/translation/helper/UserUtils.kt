@@ -7,6 +7,8 @@ import com.funny.translation.network.ServiceCreator
 import com.funny.translation.network.api
 import com.funny.translation.network.apiNoCall
 import com.funny.translation.network.service.UserService
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 
 object UserUtils {
@@ -108,9 +110,34 @@ object UserUtils {
             }
         }
     }
-}
 
-expect suspend fun UserUtils.uploadUserAvatar(context: KMPContext, imgUri: Uri, filename: String, width: Int, height: Int, uid: Int) : String
+    suspend fun uploadUserAvatar(
+        context: KMPContext,
+        imgUri: Uri,
+        filename: String,
+        width: Int,
+        height: Int,
+        uid: Int
+    ): String {
+        try {
+            val data = BitmapUtil.getBitmapFromUri(context, TARGET_AVATAR_SIZE, TARGET_AVATAR_SIZE, 1024 * 100, imgUri.toString())
+                ?: return ""
+            val body = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("uid", uid.toString())
+                .addFormDataPart("avatar", filename, data.toRequestBody())
+                .build()
+            val response = userService.uploadAvatar(body)
+            if (response.code == 50){
+                return response.data ?: ""
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+
+        return ""
+    }
+}
 
 class SignInException(s: String) : Exception(s)
 class SignUpException(s: String) : Exception(s)

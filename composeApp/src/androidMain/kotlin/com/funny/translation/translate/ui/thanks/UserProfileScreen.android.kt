@@ -30,7 +30,6 @@ import com.eygraber.uri.toUri
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.UserUtils
 import com.funny.translation.helper.toastOnUi
-import com.funny.translation.helper.uploadUserAvatar
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
