@@ -32,6 +32,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -144,7 +145,14 @@ fun MainPartTranslating(vm: MainViewModel) {
             SourceTextPart(
                 modifier = Modifier.fillMaxWidth(0.88f),
                 sourceText = vm.translateText,
-                sourceLanguage = vm.sourceLanguage
+                sourceLanguage = vm.sourceLanguage,
+                clearAndGoBackAction = {
+                    goBack()
+                    if (!vm.isTranslating()) {
+                        vm.translateText = ""
+                    }
+                }
+
             )
             Spacer(modifier = Modifier.height(8.dp))
             ResultList(
@@ -178,6 +186,7 @@ private fun SourceTextPart(
     modifier: Modifier,
     sourceText: String,
     sourceLanguage: Language,
+    clearAndGoBackAction: SimpleAction
 ) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         val state = rememberSwipeableState(2)
@@ -187,6 +196,14 @@ private fun SourceTextPart(
                 modifier = Modifier.weight(1f),
                 text = ResStrings.source_text + "(${sourceLanguage.displayText})"
             )
+            IconButton(onClick = clearAndGoBackAction) {
+                // GoBack And Clear
+                FixedSizeIcon(
+                    imageVector = Icons.AutoMirrored.Filled.Backspace,
+                    contentDescription = "Clear",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+            }
             SpeakButton(
                 text = sourceText,
                 language = sourceLanguage,
