@@ -152,7 +152,7 @@ open class ModelImageTranslationTask(
     suspend fun processImage() = withContext(Dispatchers.IO) {
         val (width, height) = BitmapUtil.getImageSizeFromUri(appCtx, fileUri)
         val compressedSize =
-            api(aiService::getImageCompressedSize, chatBot.id, width, height, EmptyJsonObject, rethrowErr = true) ?: throw Exception("Failed to get compressed size")
+            api(aiService::getImageCompressedSize, chatBot.id, width, height, EmptyJsonObject, rethrowErr = true) { success {  } } ?: throw Exception("Failed to get compressed size")
         compressedWidth = compressedSize[0]
         compressedHeight = compressedSize[1]
         val compressedBytes: ByteArray = if (compressedWidth < width || compressedHeight < height) {

@@ -60,17 +60,22 @@ actual class MultiFileLauncher<Input>(
 
         if (input is Array<*> && input.isArrayOf<String>()) {
             val mimes = input.filterIsInstance<String>()
+            val fileSuffixes = mimes.flatMap { mimeToSuffixList(it) }.distinct()
+            Log.d("MultiFileLauncher", "mimes: $mimes, suffixes: $fileSuffixes")
             dialog.filenameFilter = FilenameFilter { file, s ->
                 if (file != null) {
                     val fileName = file.name
-                    val fileSuffixes = mimes.flatMap { mimeToSuffixList(it) }.distinct()
-                    Log.d("MultiFileLauncher", "mimes: $mimes, suffixes: $fileSuffixes")
+
                     return@FilenameFilter fileSuffixes.any { suffix ->
                         return@any fileName.endsWith(".$suffix")
                     }
                 }
                 return@FilenameFilter false
             }
+
+            // 显示一个提示框，告知用户当前正在过滤的文件类型
+            val message = "可选择文件类型: ${fileSuffixes.joinToString(", ")}"
+            javax.swing.JOptionPane.showMessageDialog(null, message, "文件类型过滤", javax.swing.JOptionPane.INFORMATION_MESSAGE)
         }
 
         dialog.isMultipleMode = true

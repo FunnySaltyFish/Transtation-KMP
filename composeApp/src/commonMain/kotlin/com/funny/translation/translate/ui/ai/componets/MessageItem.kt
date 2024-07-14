@@ -32,7 +32,6 @@ import com.funny.compose.ai.bean.ChatMessageTypes
 import com.funny.compose.ai.bean.sendByMe
 import com.funny.jetsetting.core.ui.FunnyIcon
 import com.funny.jetsetting.core.ui.IconWidget
-import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.ui.main.SpeakButton
@@ -97,9 +96,7 @@ internal fun MessageItem(
 
                     ChatMessageTypes.IMAGE -> {
                         val (image, size) = remember(chatMessage.content) {
-                            chatMessage.content.split("@").also {
-                                Log.d("MessageItem", "image: ${it[0]}")
-                            }
+                            chatMessage.content.split("@")
                         }
                         AsyncImage(model = image, modifier = Modifier.width(200.dp).clickable { previewImageAction(image) })
                     }

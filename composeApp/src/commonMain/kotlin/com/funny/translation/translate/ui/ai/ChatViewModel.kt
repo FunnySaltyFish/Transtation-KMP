@@ -92,7 +92,7 @@ class ChatViewModel: ModelViewModel() {
     }
 
     fun ask(message: String, inputImageUriList: List<String>, onFinishPreprocessing: () -> Unit){
-        if (message.isEmpty()) return
+        if (message.isEmpty() && inputImageUriList.isEmpty()) return
         convId.value ?: return
         viewModelScope.launch {
             try {
