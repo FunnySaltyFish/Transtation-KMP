@@ -2,8 +2,6 @@ package com.funny.translation.translate
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
@@ -27,9 +25,11 @@ import com.funny.translation.AppConfig
 import com.funny.translation.Consts
 import com.funny.translation.NeedToTransConfig
 import com.funny.translation.bean.TranslationConfig
+import com.funny.translation.helper.ExperimentalSharedTransitionApi
 import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.LocalSharedTransitionScope
 import com.funny.translation.helper.Log
+import com.funny.translation.helper.SharedTransitionLayout
 import com.funny.translation.kmp.NAV_ANIM_DURATION
 import com.funny.translation.kmp.NavGraphBuilder
 import com.funny.translation.kmp.NavHost

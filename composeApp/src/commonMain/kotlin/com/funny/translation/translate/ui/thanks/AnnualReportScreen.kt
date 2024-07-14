@@ -88,7 +88,7 @@ fun AnnualReport(vm : AnnualReportViewModel) {
     val state = rememberPagerState {
         6
     }
-    VerticalPager(state = state, beyondViewportPageCount = 0, modifier = Modifier
+    VerticalPager(state = state, beyondBoundsPageCount = 0, modifier = Modifier
         .fillMaxSize()
         .animatedGradientBackground(
             MaterialColors.DeepPurple800, Color.Black

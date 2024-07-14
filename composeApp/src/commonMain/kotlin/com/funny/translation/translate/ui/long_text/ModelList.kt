@@ -1,6 +1,7 @@
 package com.funny.translation.translate.ui.long_text
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,7 +49,9 @@ import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun ColumnScope.ModelListPart(
     onModelLoaded: (currentSelectBotId: Int, models: List<Model>) -> Unit,
@@ -168,7 +171,7 @@ fun ColumnScope.ModelListPart(
                     },
                 ) {
                     ListItem(
-                        modifier = Modifier.clickable { onClick(it) }.animateItem(),
+                        modifier = Modifier.clickable { onClick(it) }.animateItemPlacement(),
                         headlineContent = {
                             // 根据 searchQuery 高亮显示
 //                            Text(text = it.name)

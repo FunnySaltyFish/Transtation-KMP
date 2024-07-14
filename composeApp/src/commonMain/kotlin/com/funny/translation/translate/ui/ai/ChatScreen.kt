@@ -2,8 +2,6 @@ package com.funny.translation.translate.ui.ai
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
@@ -36,7 +34,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.Cancel
@@ -78,9 +78,11 @@ import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.sendByMe
 import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.translation.helper.ClipBoardUtil
+import com.funny.translation.helper.ExperimentalSharedTransitionApi
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.LocalNavAnimatedVisibilityScope
 import com.funny.translation.helper.LocalSharedTransitionScope
+import com.funny.translation.helper.SharedTransitionScope
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
@@ -177,7 +179,8 @@ fun ChatScreen() {
                         RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
                     )
                     .statusBarsPadding()
-                    .padding(12.dp),
+                    .padding(12.dp)
+                    .verticalScroll(rememberScrollState()),
                 vm = vm
             )
         }
@@ -446,7 +449,7 @@ private fun ChatMessageList(
     val msgItem: @Composable LazyItemScope.(msg: ChatMessage, refreshAction: SimpleAction?) -> Unit =
         @Composable { msg, refreshAction ->
             MessageItem(
-                modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                modifier = Modifier.animateItemPlacement(),
                 maxWidth = if (LocalWindowSizeState.current.isVertical) 300.dp else 600.dp,
                 chatMessage = msg,
                 copyAction = {

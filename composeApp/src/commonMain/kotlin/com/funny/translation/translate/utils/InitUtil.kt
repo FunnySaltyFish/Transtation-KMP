@@ -26,11 +26,12 @@ internal suspend fun InitUtil.initCommon() {
     CoroutineScope(Dispatchers.IO).launch {
         SignUtils.loadJs()
         SortResultUtils.init()
+
+        EngineManager.loadEngines()
     }
 
     initTypeConverters()
     initLanguageDisplay()
-    EngineManager.loadEngines()
 }
 
 private fun addJobs() {

@@ -5,7 +5,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.InternalResourceApi
-import org.jetbrains.compose.resources.ResourceItem
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -21,16 +20,16 @@ fun painterResource(resource: String): Painter {
 }
 
 
-/**
- * Adapted from v1.6.2
- * Creates an [DrawableResource] object with the specified path.
- *
- * @param path The path of the drawable resource.
- * @return An [DrawableResource] object.
- */
-@OptIn(InternalResourceApi::class)
-@ExperimentalResourceApi
-fun DrawableResource(path: String): DrawableResource = DrawableResource(
-    id = "DrawableResource:$path",
-    items = setOf(ResourceItem(emptySet(), path, -1, -1))
-)
+///**
+// * Adapted from v1.6.2
+// * Creates an [DrawableResource] object with the specified path.
+// *
+// * @param path The path of the drawable resource.
+// * @return An [DrawableResource] object.
+// */
+//@OptIn(InternalResourceApi::class)
+//@ExperimentalResourceApi
+//fun DrawableResource(path: String): DrawableResource = DrawableResource(
+//    id = "DrawableResource:$path",
+//    items = setOf(ResourceItem(emptySet(), path, -1, -1))
+//)
