@@ -57,9 +57,9 @@ kotlin {
                 api(libs.sqldelight.coroutines.extensions)
                 api(libs.sqldelight.androidx.paging3.extensions)
 
-                // androidx.paging
-                implementation(libs.androidx.paging.runtime)
-                implementation(libs.androidx.paging.common)
+                // kmp paging
+                api(libs.kmp.paging.common)
+                api(libs.kmp.paging.compose.common)
 
                 api(libs.precompose)
                 api(libs.precompose.viewmodel) // For ViewModel intergration
@@ -85,6 +85,10 @@ kotlin {
             api(libs.androidx.activity.compose)
             api(libs.androidx.appcompat)
             api(libs.compose.ui.android)
+
+            // androidx.paging
+//            implementation(libs.androidx.paging.runtime)
+//            implementation(libs.androidx.paging.common)
 
 //            implementation(libs.rhino.android)
             implementation("com.github.getActivity:ToastUtils:12.0")

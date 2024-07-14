@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.eygraber.uri.Uri
 import com.funny.translation.helper.Log
+import com.funny.translation.helper.toastOnUi
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
@@ -63,6 +64,7 @@ actual class MultiFileLauncher<Input>(
                 if (file != null) {
                     val fileName = file.name
                     val fileSuffixes = mimes.flatMap { mimeToSuffixList(it) }.distinct()
+                    Log.d("MultiFileLauncher", "mimes: $mimes, suffixes: $fileSuffixes")
                     return@FilenameFilter fileSuffixes.any { suffix ->
                         return@any fileName.endsWith(".$suffix")
                     }
@@ -75,7 +77,7 @@ actual class MultiFileLauncher<Input>(
         dialog.isVisible = true
         val files = dialog.files
         if (files != null) {
-            val filePaths = files.map { it.absolutePath }
+            val filePaths = files.map { "file://" + it.absolutePath }
             Log.d("MultiFileLauncher", "selected filePaths: $filePaths")
             onResult(filePaths)
         } else {
@@ -113,5 +115,10 @@ private fun mimeToSuffixList(mimeType: String) = when (mimeType) {
 
 @Composable
 actual fun rememberTakePhotoLauncher(onResult: (Boolean) -> Unit): Launcher<String, Boolean> {
-    error("Taking photo is not implemented on Desktop")
+//    error("Taking photo is not implemented on Desktop")
+    return object : Launcher<String, Boolean>() {
+        override fun launch(input: String) {
+            appCtx.toastOnUi("Taking photo is not implemented on Desktop")
+        }
+    }
 }

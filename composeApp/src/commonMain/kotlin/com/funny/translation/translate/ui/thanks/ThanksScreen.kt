@@ -40,11 +40,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.funny.compose.loading.DefaultFailure
 import com.funny.compose.loading.DefaultLoading
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.Log
-import com.funny.translation.kmp.paging.collectAsLazyPagingItems
 import com.funny.translation.kmp.paging.items
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings

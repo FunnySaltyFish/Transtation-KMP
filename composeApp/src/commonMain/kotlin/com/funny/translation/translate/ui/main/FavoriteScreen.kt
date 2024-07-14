@@ -34,9 +34,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.funny.translation.helper.LocalNavController
-import com.funny.translation.kmp.paging.LazyPagingItems
-import com.funny.translation.kmp.paging.collectAsLazyPagingItems
 import com.funny.translation.kmp.paging.items
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings

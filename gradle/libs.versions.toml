@@ -1,6 +1,7 @@
 [versions]
 jtokkit = "0.6.1"
 pagingVersion = "3.2.0"
+kmpPagingVersion = "3.3.0-alpha02-0.5.1"
 precompose = "1.6.1"
 project-versionCode = "64"
 project-versionName = "2.8.1"
@@ -81,6 +82,9 @@ sqldelight-android-driver = { group = "app.cash.sqldelight", name = "android-dri
 sqldelight-native-driver = { group = "app.cash.sqldelight", name = "native-driver", version.ref = "sqlDelight" }
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 sqldelight-androidx-paging3-extensions = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqlDelight" }
+
+kmp-paging-common = { module = "app.cash.paging:paging-common", version.ref = "kmpPagingVersion" }
+kmp-paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "kmpPagingVersion" }
 
 # Thirld-party
 rhino = { group = "org.mozilla", name = "rhino", version = "1.7.13" } # 1.7.14 is not compatible with Android, see https://github.com/mozilla/rhino/issues/1149

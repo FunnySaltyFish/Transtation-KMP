@@ -3,6 +3,9 @@ package com.funny.translation.kmp.paging
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 
 fun <T: Any> LazyListScope.items(
     items: LazyPagingItems<T>,

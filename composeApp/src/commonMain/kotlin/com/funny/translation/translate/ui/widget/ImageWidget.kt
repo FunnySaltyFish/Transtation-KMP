@@ -31,6 +31,12 @@ fun AsyncImage(
 ) {
     AutoSizeImage(
         request = ImageRequest {
+//            if (model is String && model.startsWith("file://")) {
+//                Log.d("AsyncImage", "Load image from file: $model")
+//                data(model.removePrefix("file://").toPath())
+//            } else {
+//                data(model)
+//            }
             data(model)
         },
         contentDescription = contentDescription,

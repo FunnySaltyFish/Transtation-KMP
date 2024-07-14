@@ -28,3 +28,5 @@ _sign_new_key.py
 
 composeApp/release/main/app
 composeApp/release/main-release/app
+
+/get_recent_commit.py

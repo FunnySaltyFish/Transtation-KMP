@@ -10,5 +10,5 @@ actual fun rememberSelectImageLauncher(
     pickedItems: List<String>,
     onResult: (List<String>) -> Unit
 ): MultiFileLauncher<Array<String>> {
-    return remember(mimeTypes, maxNum, pickedItems) { MultiFileLauncher(onResult) }
+    return remember(maxNum, pickedItems) { MultiFileLauncher(onResult) }
 }
