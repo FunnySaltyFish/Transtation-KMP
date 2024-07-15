@@ -5,8 +5,8 @@ import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.openAssetsFile
 import com.funny.translation.translate.TranslationException
 
+
 object FunnyBiggerText {
-    private const val ENCODE = "GB2312"
     private const val ZK16 = "HZK16"
     private lateinit var arr: Array<BooleanArray>
     var fillChar = ""
@@ -164,7 +164,13 @@ object FunnyBiggerText {
     internal fun getByteCode(str: String): IntArray {
         val byteCode = IntArray(2)
         try {
-            val data = str.toByteArray(charset(ENCODE))
+//            val charsets = java.nio.charset.Charset.availableCharsets()
+//            Log.d("FunnyBiggerText", "charsets: $charsets")
+            val data = str.toByteArray(
+                kotlin.runCatching {
+                    charset("GBK")
+                }.getOrDefault(charset("GB2312"))
+            )
             byteCode[0] = if (data[0] < 0) 256 + data[0] else data[0].toInt()
             byteCode[1] = if (data[1] < 0) 256 + data[1] else data[1].toInt()
         } catch (ex: Exception) {
