@@ -28,7 +28,7 @@ abstract class ServerTextTranslationTask: BasicTextTranslationTask() {
         )
         // 超时时间设置为 20s 连接超时，60s 读取超时，30s 写入超时
         // 主要是针对长文本翻译，避免超时
-        return OkHttpUtils.get(url, headersMap, params, timeout = intArrayOf(20, 60, 30))
+        return OkHttpUtils.get(url, headersMap, params, timeout = intArrayOf(15, 80, 30))
     }
 
     @Throws(TranslationException::class)
