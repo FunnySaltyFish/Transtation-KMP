@@ -55,7 +55,6 @@ VALUES ?;
 deleteJsByName:
 DELETE FROM plugin WHERE fileName = ?;
 
--- Update a JsBean
-updateJs:
-INSERT OR REPLACE INTO plugin (fileName, code, author, version, description, enabled, minSupportVersion, maxSupportVersion, targetSupportVersion, isOffline, debugMode, supportLanguages)
-VALUES ?;
+-- update by name
+updateJsByName:
+UPDATE plugin SET code = ?, author = ?, version = ?, description = ?, enabled = ?, minSupportVersion = ?, maxSupportVersion = ?, targetSupportVersion = ?, isOffline = ?, debugMode = ?, supportLanguages = ? WHERE fileName = ?;

@@ -5,6 +5,8 @@ import com.codingfeline.buildkonfig.gradle.BuildKonfigExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+var debug = true
+
 fun configureBuildKonfigFlavorFromTasks(project: Project) {
     val configuredKey = "TranstationConfiguredBuildKonfigFlavor"
     if (System.getProperty(configuredKey, "false") == "true") {
@@ -25,18 +27,17 @@ fun configureBuildKonfigFlavorFromTasks(project: Project) {
 
     val m = pattern.find(matchingTask) ?: return
 
-    val flavor = m.groupValues[2]
-    val buildType = m.groupValues[3]
+    val flavor = m.groupValues[3]
+    val buildType = m.groupValues[2]
     // println("module: ${project.name}, match task=$matchingTask, flavor=$flavor, buildType=$buildType")
-    val envKey = "TranslationDebug"
     when (buildType) {
-        "Release" -> System.setProperty(envKey, "false")
-        "Debug" -> System.setProperty(envKey, "true")
+        "Release" -> debug = false
+        "Debug" -> debug = true
         // packageExe, packageDmg, packageDeb, packageMsi
-        else -> System.setProperty(envKey, "true")
+        else -> debug = true
     }
     val buildkonfigFlavor = "common"
-    println("module: ${project.name}, flavor=$flavor, buildType=$buildType; final buildkonfig.flavor=$buildkonfigFlavor")
+    println("module: ${project.name}, flavor=$flavor, buildType=$buildType, debug=$debug; final buildkonfig.flavor=$buildkonfigFlavor")
     project.setProperty("buildkonfig.flavor", buildkonfigFlavor)
     System.setProperty(configuredKey, "true")
 }
@@ -54,7 +55,6 @@ fun Project.setupBuildKonfig() {
             buildConfigField(FieldSpec.Type.STRING, "VERSION_NAME", libs.findVersion("project.versionName").get().toString())
             buildConfigField(FieldSpec.Type.INT, "VERSION_CODE", libs.findVersion("project.versionCode").get().toString())
             // DEBUG
-            val debug = System.getProperty("TranslationDebug", "true") == "true"
             println("module: ${project.name}, TranslationDebug=$debug")
             buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", debug.toString())
             val buildType = if (debug) "Debug" else "Release"

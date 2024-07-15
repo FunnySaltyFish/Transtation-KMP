@@ -190,6 +190,8 @@ compose.desktop {
             // 如果运行报错 java.lang.ClassNotFoundException: java.sql.DriverManager
             // 你需要下面这行
             modules("java.sql")
+            // javax.script
+            modules("java.scripting")
             // 加上 -Dfile.encoding=UTF-8，这样 slf4j 输出的日志就不会乱码了
             jvmArgs += listOf("-Dfile.encoding=UTF-8")
 

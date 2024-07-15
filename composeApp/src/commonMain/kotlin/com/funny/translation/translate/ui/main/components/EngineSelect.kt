@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -61,7 +63,7 @@ internal fun EngineSelectDialog(
             isActiveClose = false
         ) {
             EngineSelect(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 bindEngines,
                 jsEngines,
                 modelEngines,
@@ -131,8 +133,9 @@ private fun EnginePart(
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 4.dp),
+            .padding(vertical = 0.dp, horizontal = 4.dp),
         horizontalArrangement = spacedBy(8.dp),
+        verticalArrangement = spacedBy(0.dp)
     ) {
         engines.forEach { engine ->
             key(engine.name) {
@@ -147,7 +150,6 @@ private fun EnginePart(
                     },
                     label = {
                         Text(text = engine.name)
-
                     },
                     leadingIcon = {
                         if (engine is ModelTranslationTask) {

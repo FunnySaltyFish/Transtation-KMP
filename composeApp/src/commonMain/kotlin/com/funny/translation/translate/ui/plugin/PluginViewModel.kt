@@ -54,11 +54,20 @@ class PluginViewModel : BaseViewModel() {
 
     fun updatePlugin(jsBean: JsBean){
         viewModelScope.launch(Dispatchers.IO) {
-            val origin = appDB.jsDao.queryJsByName(jsBean.fileName)
-            if(origin != null){
-                val new = jsBean.copy(id = origin.id)
-                appDB.jsQueries.updateJs(new)
-            }
+            appDB.jsQueries.updateJsByName(
+                fileName = jsBean.fileName,
+                code = jsBean.code,
+                author = jsBean.author,
+                version = jsBean.version,
+                description = jsBean.description,
+                enabled = jsBean.enabled,
+                minSupportVersion = jsBean.minSupportVersion,
+                maxSupportVersion = jsBean.maxSupportVersion,
+                targetSupportVersion = jsBean.targetSupportVersion,
+                isOffline = jsBean.isOffline,
+                debugMode = jsBean.debugMode,
+                supportLanguages = jsBean.supportLanguages,
+            )
         }
     }
 
