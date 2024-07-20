@@ -22,11 +22,10 @@ base-kmp/src/commonMain/resources/assets/funny_sign_v1_release.js
 funny_sign_v1_release_template.js
 encrypt_funny_js.js
 signing.properties
-_sign_new_key.py
+sign_new_key.py
 
 .env
 
-composeApp/release/main/app
-composeApp/release/main-release/app
+composeApp/release/
 
 /get_recent_commit.py
