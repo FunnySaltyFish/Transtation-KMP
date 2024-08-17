@@ -13,5 +13,6 @@ data class UpdateInfo(
     val should_update: Boolean = false,
     val update_log: String? = null,
     val version_code: Int? = null,
-    val version_name: String? = null
+    val version_name: String? = null,
+    val file_suffix: String? = null,
 )

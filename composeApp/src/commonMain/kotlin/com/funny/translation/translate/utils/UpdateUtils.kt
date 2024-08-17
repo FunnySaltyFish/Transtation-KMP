@@ -66,4 +66,5 @@ object UpdateUtils {
     }
 }
 
-expect val UpdateUtils.downloadedFile: File
+expect fun getInstallApkFile(updateInfo: UpdateInfo): File?
+

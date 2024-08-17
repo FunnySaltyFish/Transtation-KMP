@@ -23,10 +23,12 @@ import com.funny.translation.helper.Log
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.rememberNavController
+import com.funny.translation.translate.bean.UpdateInfo
 import com.funny.translation.translate.network.NetworkReceiver
 import com.funny.translation.translate.utils.DeepLinkManager
 import com.funny.translation.translate.utils.EasyFloatUtils
 import com.funny.translation.translate.utils.UpdateUtils
+import com.funny.translation.translate.utils.getInstallApkFile
 import com.funny.translation.ui.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -56,8 +58,9 @@ actual class TransActivity : BaseActivity() {
             // 做一些耗时的后台任务
             lifecycleScope.launch(Dispatchers.IO) {
                 // MobileAds.initialize(context) {}
-                activityViewModel.refreshUserInfo()
-                UpdateUtils.checkUpdate()
+                launch { activityViewModel.refreshUserInfo() }
+                launch { deleteOldApk() }
+                launch { UpdateUtils.checkUpdate() }
             }
 
             // 显示悬浮窗
@@ -110,6 +113,18 @@ actual class TransActivity : BaseActivity() {
         EasyFloatUtils.dismissAll()
         unregisterReceiver(netWorkReceiver)
         super.onDestroy()
+    }
+
+    private fun deleteOldApk() {
+        val versionCode = AppConfig.versionCode
+        val versionName = AppConfig.versionName
+        val updateInfo = UpdateInfo(version_code = versionCode, version_name = versionName)
+        val apkFile = getInstallApkFile(updateInfo)
+        if (apkFile != null && apkFile.exists()) {
+            if (apkFile.delete()) {
+                Log.d(TAG, "deleteOldApk: delete old apk success")
+            }
+        }
     }
 
     /**
