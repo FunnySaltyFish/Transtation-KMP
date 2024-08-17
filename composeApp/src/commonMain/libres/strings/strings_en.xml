@@ -360,4 +360,8 @@
     <string name="search_model">Search Model</string>
     <string name="max_history_msg_num">Context Window Length</string>
     <string name="max_history_msg_num_help">The maximum number of messages that will be submitted to the model, including current message. The larger the value, the more context the model can refer to, but the more expensive it will be. Each message, including text and image, will be counted as one message.</string>
+    <string name="new_version_detected">New Version Is Comming!</string>
+    <string name="download">Download Now</string>
+    <string name="install_now">Install Now</string>
+    <string name="install_failed">Install new version failed. Please retry or report the bug~</string>
 </resources>

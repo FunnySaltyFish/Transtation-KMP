@@ -1,7 +1,6 @@
 package com.funny.translation.translate.ui.main.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -11,11 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -32,6 +29,7 @@ import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.task.ModelTranslationTask
 import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.AnyPopDialog
+import com.funny.translation.ui.popDialogShape
 
 // 用于选择引擎时的回调
 internal interface UpdateSelectedEngine {
@@ -52,13 +50,7 @@ internal fun EngineSelectDialog(
     var showEngineSelect by showDialog
     if (showEngineSelect) {
         AnyPopDialog(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    MaterialTheme.colorScheme.surface,
-                    RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-                )
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            modifier = Modifier.popDialogShape(),
             onDismissRequest = { showEngineSelect = false },
             isActiveClose = false
         ) {

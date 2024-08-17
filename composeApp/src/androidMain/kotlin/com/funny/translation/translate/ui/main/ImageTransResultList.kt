@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,14 +18,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -71,6 +68,7 @@ import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.popDialogShape
 import kotlinx.collections.immutable.toImmutableList
 import moe.tlaster.precompose.navigation.BackHandler
 
@@ -202,13 +200,8 @@ private fun AIOptimizationSheet(
     val loadingStateState = vm.optimizeByAITask?.loadingState
     AnyPopDialog(
         modifier = Modifier
-            .fillMaxWidth()
             .heightIn(min = 200.dp, max = 600.dp)
-            .background(
-                MaterialTheme.colorScheme.surface,
-                RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-            )
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            .popDialogShape()
             .navigationBarsPadding(),
         onDismissRequest = onDismissRequest
     ) {

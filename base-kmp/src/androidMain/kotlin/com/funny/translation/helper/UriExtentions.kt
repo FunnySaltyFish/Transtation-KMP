@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.net.Uri
 import com.funny.translation.kmp.base.strings.ResStrings
-import java.io.*
+import java.io.BufferedReader
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStreamReader
 
 private const val TAG = "UriExtensions"
 
@@ -50,4 +53,3 @@ fun Uri.writeText(context: Context, text: String) {
         }
     }
 }
-

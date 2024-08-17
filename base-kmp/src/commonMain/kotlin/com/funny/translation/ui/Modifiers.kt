@@ -1,10 +1,15 @@
 package com.funny.translation.ui
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.listSaver
@@ -20,6 +25,7 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.node.LayoutModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.rememberSaveableStateOf
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -41,6 +47,16 @@ fun Modifier.floatingActionBarModifier(
                 offset += dragAmount
             }
         }
+}
+
+@Stable
+fun Modifier.popDialogShape() = composed {
+    this.fillMaxWidth()
+        .background(
+            MaterialTheme.colorScheme.surface,
+            RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
+        )
+        .padding(start = 16.dp, end = 16.dp, top = 16.dp)
 }
 
 private val OffsetSaver = listSaver<Offset, Float>(

@@ -22,13 +22,15 @@ value class FileSize(val size: Long) {
     }
 
     override fun toString(): String {
-        val unit = when {
-            size < 1024 -> "bytes"
-            size < 1048576 -> "KB"
-            size < 1073741824 -> "MB"
-            else -> "GB"
+        return when {
+            size < 1024 -> "$size B"
+            size < 1024 * 1024 -> "${size / 1024} KB"
+            size < 1024 * 1024 * 1024 -> "${size / 1024 / 1024} MB"
+            else -> "${size / 1024 / 1024 / 1024} GB"
         }
-
-        return unit
     }
+}
+
+fun Int.bytes(): FileSize {
+    return FileSize.fromBytes(this.toLong())
 }

@@ -1,7 +1,9 @@
 package com.funny.translation.translate.utils
 
 import androidx.compose.runtime.Composable
+import com.funny.translation.kmp.Launcher
 import com.funny.translation.kmp.MultiFileLauncher
+import java.io.File
 
 data class LocalPhoto(
     val uri: String,
@@ -16,3 +18,10 @@ expect fun rememberSelectImageLauncher(
     pickedItems: List<String>,
     onResult: (List<String>) -> Unit = {},
 ): MultiFileLauncher<Array<String>>
+
+expect class InstallApkLauncher: Launcher<File, Boolean>
+
+@Composable
+expect fun rememberInstallApkLauncher(
+    onResult: (Boolean) -> Unit = {},
+): InstallApkLauncher

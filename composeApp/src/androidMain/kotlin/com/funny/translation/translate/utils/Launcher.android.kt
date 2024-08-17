@@ -16,8 +16,11 @@ import cn.qhplus.emo.photo.activity.PhotoPickerActivity
 import cn.qhplus.emo.photo.activity.getPhotoPickResult
 import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.toAndroidUri
+import com.funny.translation.kmp.Launcher
 import com.funny.translation.kmp.MultiFileLauncher
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
+import java.io.File
 
 
 @Composable
@@ -76,5 +79,29 @@ actual fun rememberSelectImageLauncher(
 
     return remember(onResult) {
         MultiFileLauncher(launcher)
+    }
+}
+
+actual class InstallApkLauncher(
+    private val activityResultLauncher: ActivityResultLauncher<Intent>
+) : Launcher<File, Boolean>() {
+    override fun launch(input: File) {
+        val apkUri = input.toAndroidUri()
+        activityResultLauncher.launch(
+            Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(apkUri, "application/vnd.android.package-archive")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        )
+    }
+}
+
+@Composable
+actual fun rememberInstallApkLauncher(onResult: (Boolean) -> Unit): InstallApkLauncher {
+    val activityResultLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        onResult(false)
+    }
+    return remember(onResult) {
+        InstallApkLauncher(activityResultLauncher)
     }
 }

@@ -57,7 +57,7 @@ actual class TransActivity : BaseActivity() {
             lifecycleScope.launch(Dispatchers.IO) {
                 // MobileAds.initialize(context) {}
                 activityViewModel.refreshUserInfo()
-                UpdateUtils.checkUpdate(this@TransActivity)
+                UpdateUtils.checkUpdate()
             }
 
             // 显示悬浮窗

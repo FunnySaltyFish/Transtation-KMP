@@ -16,6 +16,7 @@ import com.funny.translation.helper.DataHolder
 import com.funny.translation.helper.JsonX
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.TextSplitter
+import com.funny.translation.helper.createFileIfNotExist
 import com.funny.translation.helper.displayMsg
 import com.funny.translation.helper.now
 import com.funny.translation.helper.safeSubstring
@@ -27,7 +28,6 @@ import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.longTextTransDao
 import com.funny.translation.translate.ui.ai.ModelViewModel
 import com.funny.translation.translate.ui.long_text.bean.TermList
-import com.funny.translation.translate.utils.createFileIfNotExist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

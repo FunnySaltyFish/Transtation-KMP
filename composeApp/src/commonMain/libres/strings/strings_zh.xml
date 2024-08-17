@@ -354,14 +354,14 @@
     <string name="limited_time_free">限免</string>
     <string name="translate_engine_hint">【翻译引擎：${engine}】</string>
     <string name="float_window_translate_engine">悬浮窗翻译引擎</string>
-
     <string name="add_file">添加文件</string>
     <string name="image">图片</string>
     <string name="take_photo">拍摄</string>
     <string name="search_model">搜索模型</string>
-<!--    <string name="max_history_msg_num">Context Window Length</string>
-    <string name="max_history_msg_num_help">The maximum number of messages that will be submitted to the model, including current message. The larger the value, the more context the model can refer to, but the more expensive it will be. Each message, including text and image, will be counted as one message.</string>
--->
     <string name="max_history_msg_num">上下文窗口长度</string>
     <string name="max_history_msg_num_help">将提交给模型的最大消息数量，包括当前消息。值越大，模型可以参考的上下文越多，但相应消耗也会更高（因为同时上传的文本多了）。每条消息，包括文本和图片，都将计为一条。譬如，当此值为3时，当前消息和前两条消息将被提交给模型。</string>
+    <string name="new_version_detected">有新版本啦！</string>
+    <string name="download">立刻下载</string>
+    <string name="install_now">已下载，点击安装</string>
+    <string name="install_failed">安装新版本失败，请重试或反馈问题~</string>
 </resources>

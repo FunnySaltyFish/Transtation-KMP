@@ -29,7 +29,6 @@ kotlin {
         androidMain.dependencies {
             // sqldelight
             implementation(libs.sqldelight.android.driver)
-
             // 图片选择器
             implementation(project.dependencies.platform("cn.qhplus.emo:bom:2024.03.00"))
             implementation("cn.qhplus.emo:photo-coil") {
@@ -50,9 +49,6 @@ kotlin {
 
             implementation("com.github.princekin-f:EasyFloat:2.0.4")
             implementation("com.github.thomhurst:RoundImageView:1.0.2")
-
-            // 应用更新
-            implementation("com.github.azhon:AppUpdate:3.0.6")
         }
 
         val desktopMain by getting {
@@ -208,6 +204,7 @@ compose.desktop {
                 // 其中 MAJOR 和 MINOR 必须是 0-255，BUILD 必须是 0-65535
                 // 这里加上了当前时间的毫秒数是因为，如果版本号一样，打包后会提示已经安装了，无法安装
                 packageVersion = "${libs.versions.project.versionName.get()}${now%1000}"
+
             }
         }
 

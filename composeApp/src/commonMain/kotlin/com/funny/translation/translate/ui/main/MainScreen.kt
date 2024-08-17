@@ -81,6 +81,7 @@ import com.funny.translation.translate.ui.main.components.EngineSelectDialog
 import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.SimpleNavigation
 import com.funny.translation.translate.utils.EngineManager
+import com.funny.translation.translate.utils.UpdateUtils
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.safeMain
 import kotlinx.coroutines.delay
@@ -111,6 +112,7 @@ fun MainScreen(
 //    TTSScreen()
 //    ImageTransScreen()
 //    ChatScreen()
+    UpdateUtils.updateInfo?.let { AppUpdateDialog(modifier = Modifier.fillMaxWidth(), updateInfo = it) }
 }
 
 @ExperimentalComposeUiApi

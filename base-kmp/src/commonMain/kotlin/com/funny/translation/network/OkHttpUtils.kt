@@ -12,6 +12,7 @@ import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.helper.Log
+import com.funny.translation.helper.createParentDirIfNotExist
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.ActivityManager
 import com.funny.translation.kmp.appCtx
@@ -22,6 +23,8 @@ import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -157,6 +160,7 @@ object OkHttpUtils {
                 .response()
                 .excludePath(TRANS_PATH + "ai/ask_stream")
                 .excludePath(TRANS_PATH + "ai/tts/generate_stream")
+                .excludePath(TRANS_PATH + "app_update/get_apk")
                 .build()
         )
 
@@ -226,6 +230,74 @@ object OkHttpUtils {
         val client = getClient(timeout)
         return client.newCall(requestBuilder.build()).execute()
     }
+
+    /**
+     * 支持断点续传的下载，如果文件已存在，则会在文件末尾追加数据。
+     * 需要由外部处理错误
+     * @param url String
+     * @param file File
+     * @param headersMap HashMap<String, String>?
+     * @param timeout IntArray?
+     * @param progressCallback Function2<[@kotlin.ParameterName] Long, [@kotlin.ParameterName] Long, Unit>?
+     */
+    @JvmOverloads
+    fun downloadWithResume(
+        url: String,
+        file: File,
+        expectedLength: Long,
+        headersMap: HashMap<String, String>? = null,
+        timeout: IntArray? = null,
+        progressCallback: ((downloadedBytes: Long, totalBytes: Long) -> Unit)? = null
+    ) {
+        val existingFileLength = if (file.exists()) file.length() else 0L
+        if (existingFileLength >= expectedLength) {
+            progressCallback?.invoke(existingFileLength, existingFileLength)
+            return
+        }
+        // Create request with Range header if the file already exists
+        val requestBuilder = Request.Builder().url(url)
+        if (existingFileLength > 0) {
+            requestBuilder.addHeader("Range", "bytes=$existingFileLength-")
+        }
+        headersMap?.let {
+            requestBuilder.addHeaders(it)
+        }
+
+        val request = requestBuilder.build()
+        val client = getClient(timeout)
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use { resp ->
+                    if (!resp.isSuccessful) throw IOException("${resp.message}(code=${resp.code})")
+
+                    val totalBytes = resp.body?.contentLength() ?: 0L
+                    file.createParentDirIfNotExist()
+                    val outputStream = FileOutputStream(file, existingFileLength > 0)
+
+                    resp.body?.byteStream()?.use { inputStream ->
+                        val buffer = ByteArray(8192)
+                        var bytesRead: Int
+                        var downloadedBytes = existingFileLength
+
+                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            outputStream.write(buffer, 0, bytesRead)
+                            downloadedBytes += bytesRead
+                            progressCallback?.invoke(downloadedBytes, totalBytes)
+                            Log.d(TAG, "downloadWithResume: $downloadedBytes / $totalBytes")
+                        }
+                    }
+                    outputStream.flush()
+                    outputStream.close()
+                }
+            }
+        })
+    }
+
 
     @Throws(IOException::class)
     @JvmOverloads
