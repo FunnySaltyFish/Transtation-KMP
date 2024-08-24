@@ -127,6 +127,22 @@ android {
         }
     }
 
+    // variants
+    productFlavors {
+        flavorDimensions.add("default")
+
+        create("common") {
+            dimension = "default"
+
+        }
+        // google
+        create("google") {
+            dimension = "default"
+            versionNameSuffix = "-google"
+            applicationIdSuffix = ".google"
+        }
+    }
+
     // 其他配置...
     applicationVariants.all {
         val variant = this

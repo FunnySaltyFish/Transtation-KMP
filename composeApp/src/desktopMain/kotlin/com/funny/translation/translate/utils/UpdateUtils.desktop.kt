@@ -10,3 +10,5 @@ actual fun getInstallApkFile(updateInfo: UpdateInfo): File? {
     val fileSuffix = updateInfo.file_suffix ?: "exe"
     return CacheManager.cacheDir.resolve("update/${versionName}_$versionCode.$fileSuffix")
 }
+
+actual val allowCheckUpdate: Boolean = true

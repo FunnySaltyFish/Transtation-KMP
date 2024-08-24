@@ -1,4 +1,4 @@
-package com.funny.translation.translate.utils
+package kotlin.com.funny.translation.translate.utils
 
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.translate.bean.UpdateInfo
@@ -10,3 +10,5 @@ actual fun getInstallApkFile(updateInfo: UpdateInfo): File? {
     val fileSuffix = updateInfo.file_suffix ?: "apk"
     return CacheManager.cacheDir.resolve("update/${versionName}_$versionCode.$fileSuffix")
 }
+
+actual val allowCheckUpdate: Boolean = true

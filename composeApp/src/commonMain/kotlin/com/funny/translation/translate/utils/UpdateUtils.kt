@@ -21,6 +21,7 @@ object UpdateUtils {
     private const val TAG = "UpdateUtils"
 
     suspend fun checkUpdate() {
+        if (!allowCheckUpdate) return
         if (hasCheckedUpdate) return
         kotlin.runCatching {
             withContext(Dispatchers.IO) {
@@ -66,5 +67,6 @@ object UpdateUtils {
     }
 }
 
+expect val allowCheckUpdate: Boolean
 expect fun getInstallApkFile(updateInfo: UpdateInfo): File?
 

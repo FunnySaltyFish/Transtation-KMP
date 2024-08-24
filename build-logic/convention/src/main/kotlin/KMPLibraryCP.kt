@@ -65,8 +65,8 @@ fun Project.setupCommonKMP(
         namespace = "com.funny.translation.kmp"
 
 
-        sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        sourceSets["main"].res.srcDirs("src/androidMain/res")
+//        sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+//        sourceSets["main"].res.srcDirs("src/androidMain/res")
         sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
         defaultConfig {
