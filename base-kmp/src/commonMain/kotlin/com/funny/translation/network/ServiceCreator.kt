@@ -1,6 +1,7 @@
 package com.funny.translation.network
 
 import com.funny.translation.AppConfig
+import com.funny.translation.BuildConfig
 import com.funny.translation.helper.ApplicationUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.JsonX
@@ -24,7 +25,8 @@ import java.lang.reflect.Type
 
 object ServiceCreator {
     const val TRANS_PATH = "/trans/v1/"
-    private const val DEFAULT_BASE_URL = "https://api.funnysaltyfish.fun/trans/v1/"
+    private val DEFAULT_BASE_URL = if (BuildConfig.FLAVOR == "google")
+        "https://api.funnysaltyfish.top/trans/v1/" else "https://api.funnysaltyfish.fun/trans/v1/"
 
     var BASE_URL = readBaseURL()
         set(value) {
