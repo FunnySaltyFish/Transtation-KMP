@@ -105,16 +105,12 @@ object TTSConfManager {
      * @param language Language
      */
     fun jumpToEdit(navController: NavController, language: Language) {
-        val conf = confMap[language]
-        if (conf == null) {
-            createNewAndJump(navController, language)
-        } else {
-            navController.navigate(
-                TranslateScreen.TTSEditConfScreen.route.formatBraceStyle(
-                    "id" to conf.id
-                )
+        val conf = findByLanguage(language)
+        navController.navigate(
+            TranslateScreen.TTSEditConfScreen.route.formatBraceStyle(
+                "id" to conf.id
             )
-        }
+        )
     }
 
     fun createDefaultConf(language: Language): TTSConf {
