@@ -17,11 +17,11 @@ androidx-core-ktx = "1.12.0"
 androidx-espresso-core = "3.6.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.2.1"
-compose = "1.6.2"
-compose-bom = "2024.06.00"
+compose = "1.7.0-beta02"
+compose-bom = "2024.09.02"
 compose-compiler = "1.5.6"
 junit = "4.13.2"
-kotlin = "1.9.23"
+kotlin = "2.0.20"
 kotlinxSerialization = "1.5.1"
 kotlinCoroutines = "1.8.0"
 sqlDelight = "2.0.2"
@@ -110,6 +110,8 @@ gradle-plugin-buildKonfig-compiler = { group = "com.codingfeline.buildkonfig", n
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 mokoResourcesGenerator = { id = "dev.icerock.mobile.multiplatform-resources", version = "0.23.0" }
@@ -118,9 +120,6 @@ libres = { id = "io.github.skeptick.libres", version.ref = "libres" }
 # 'com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version'
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
-# org.jetbrains.kotlin.plugin.compose
-kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
 
 # Plugins defined by this project
 transtation-kmp-thirdpartyplugins = { id = "transtation.kmp.thirdpartyplugins", version = "unspecified" }
