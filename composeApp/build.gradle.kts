@@ -221,6 +221,8 @@ compose.desktop {
                 // 这里加上了当前时间的毫秒数是因为，如果版本号一样，打包后会提示已经安装了，无法安装
                 packageVersion = "${libs.versions.project.versionName.get()}${now%1000}"
 
+                exePackageVersion = packageVersion
+
             }
         }
 

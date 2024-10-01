@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.jetbrains.compose.resources.decodeToImageVector
-import org.jetbrains.compose.resources.decodeToSvgPainter
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -23,7 +22,7 @@ fun painterDrawableRes(name: String, suffix: String = "png"): Painter {
 internal fun painterResource(
     resourcePath: String
 ): Painter = when (resourcePath.substringAfterLast(".")) {
-    "svg" -> rememberSvgResource(resourcePath)
+    // "svg" -> rememberSvgResource(resourcePath)
     "xml" -> rememberVectorXmlResource(resourcePath)
     else -> rememberBitmapResource(resourcePath)
 }
@@ -42,12 +41,12 @@ internal fun rememberVectorXmlResource(path: String): Painter {
     return rememberVectorPainter(imageVector)
 }
 
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-internal fun rememberSvgResource(path: String): Painter {
-    val density = LocalDensity.current
-    return remember(density, path) { readResourceBytes(path).decodeToSvgPainter(density) }
-}
+//@OptIn(ExperimentalResourceApi::class)
+//@Composable
+//internal fun rememberSvgResource(path: String): Painter {
+//    val density = LocalDensity.current
+//    return remember(density, path) { readResourceBytes(path).decodeToSvgPainter(density) }
+//}
 
 private object ResourceLoader
 private fun readResourceBytes(resourcePath: String) =
