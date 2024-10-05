@@ -4,6 +4,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.JsonX
 import com.funny.translation.helper.Log
@@ -17,14 +22,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import moe.tlaster.precompose.lifecycle.Lifecycle
-import moe.tlaster.precompose.lifecycle.LifecycleObserver
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 import java.util.Date
 
 
-class ActivityViewModel : ViewModel(), LifecycleObserver {
+class ActivityViewModel : ViewModel(), LifecycleEventObserver {
 
     var lastBackTime: Long = 0
     var noticeInfo: MutableState<NoticeInfo?> = mutableStateOf(null)
@@ -34,7 +35,7 @@ class ActivityViewModel : ViewModel(), LifecycleObserver {
     val token by derivedStateOf { userInfo.jwt_token }
 
     // 用于 Composable 跨层级直接观察 Activity 生命周期，实现方法有点奇特
-    val activityLifecycleState = MutableSharedFlow<Lifecycle.State>()
+    val activityLifecycleState = MutableSharedFlow<Lifecycle.Event>()
 
     companion object {
         const val TAG = "ActivityVM"
@@ -78,14 +79,14 @@ class ActivityViewModel : ViewModel(), LifecycleObserver {
         }
     }
 
-    override fun onStateChanged(state: Lifecycle.State) {
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         viewModelScope.launch {
-            Log.d(TAG, "onStateChanged: emit $state")
+            Log.d(TAG, "onStateChanged: emit $event")
             // 等待 Composable 订阅，以避免 Composable 未订阅时发送的事件丢失
             while (activityLifecycleState.subscriptionCount.value == 0) {
                 delay(100)
             }
-            activityLifecycleState.emit(state)
+            activityLifecycleState.emit(event)
         }
     }
 }

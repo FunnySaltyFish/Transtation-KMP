@@ -69,6 +69,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import com.funny.compose.loading.LoadingContent
 import com.funny.trans.login.LoginActivity
 import com.funny.translation.AppConfig
@@ -98,7 +99,6 @@ import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.safeMain
 import com.funny.translation.ui.touchToScale
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.lifecycle.Lifecycle
 import moe.tlaster.precompose.navigation.BackHandler
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.math.roundToInt
@@ -148,7 +148,7 @@ internal fun MainPartNormal(
         activityVM.activityLifecycleState.collect {
             Log.d("MainPartNormal", "activityLifecycleEvent: $it")
             when (it) {
-                Lifecycle.State.Active -> {
+                Lifecycle.Event.ON_RESUME -> {
                     if (AppConfig.sAutoFocus.value && swipeableState.currentValue == SwipeShowType.Main) {
                         vm.updateMainScreenState(MainScreenState.Inputting)
                     }

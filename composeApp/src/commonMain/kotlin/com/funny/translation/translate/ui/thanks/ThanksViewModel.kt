@@ -1,13 +1,13 @@
 package com.funny.translation.translate.ui.thanks
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.funny.translation.translate.network.TransNetwork
 import com.funny.translation.translate.network.service.SponsorPagingSource
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class ThanksViewModel : ViewModel() {
     private val sponsorService = TransNetwork.sponsorService

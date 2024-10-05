@@ -3,6 +3,7 @@ package com.funny.translation.translate.ui.settings
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 import com.funny.translation.Consts
 import com.funny.translation.helper.BaseViewModel
 import com.funny.translation.helper.DataSaverUtils
@@ -17,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class FloatWindowScreenModel: BaseViewModel() {
     private val localSelectEngineName = DataSaverUtils.readData(Consts.KEY_FLOAT_WINDOW_ENGINE, TextTranslationEngines.BaiduNormal.name)

@@ -4,6 +4,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.funny.translation.AppConfig
 import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.Context
@@ -16,8 +18,6 @@ import com.funny.translation.kmp.appCtx
 import com.funny.translation.login.strings.ResStrings
 import com.funny.translation.network.api
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 const val PASSWORD_TYPE_FINGERPRINT = "1"
 const val PASSWORD_TYPE_PASSWORD = "2"

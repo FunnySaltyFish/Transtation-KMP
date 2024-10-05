@@ -14,6 +14,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.eygraber.uri.toAndroidUri
 import com.funny.translation.AppConfig
@@ -93,7 +94,7 @@ actual class TransActivity : BaseActivity() {
         if (initialized) {
             // 由于 PreCompose 的 ViewModel 不支持 Activity 生命周期的分发，手动分发一个 Active 事件
             // 供实现“打开应用自动打开软键盘”的功能
-            activityViewModel.onStateChanged(moe.tlaster.precompose.lifecycle.Lifecycle.State.Active)
+            activityViewModel.onStateChanged(this, Lifecycle.Event.ON_RESUME)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.funny.translation.codeeditor.ui.runner
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewModelScope
 import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.codeeditor.vm.ActivityCodeViewModel
 import com.funny.translation.debug.Debug
@@ -10,7 +11,6 @@ import com.funny.translation.js.core.JsTranslateTaskText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class CodeRunnerViewModel : BaseViewModel(),
     Debug.DebugTarget {

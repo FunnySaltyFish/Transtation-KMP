@@ -53,6 +53,7 @@ import com.funny.data_saver.core.getLocalDataSaverInterface
 import com.funny.translation.bean.Price
 import com.funny.translation.bean.showWithUnit
 import com.funny.translation.helper.rememberDerivedStateOf
+import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.tts.DashScopeProvider
 import com.funny.translation.translate.tts.Gender
@@ -65,13 +66,12 @@ import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.navPaddingItem
 import com.funny.translation.ui.slideIn
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.viewModel
 
 @Composable
 fun TTSConfEditScreen(
     conf: TTSConf
 ) {
-    val vm: TTSConfEditViewModel = viewModel(keys = listOf(conf)) {
+    val vm: TTSConfEditViewModel = viewModel {
         TTSConfEditViewModel(conf)
     }
 

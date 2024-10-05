@@ -1,6 +1,7 @@
 package com.funny.translation.codeeditor.vm
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewModelScope
 import com.eygraber.uri.Uri
 import com.funny.translation.codeeditor.bean.Content
 import com.funny.translation.helper.BaseViewModel
@@ -9,7 +10,6 @@ import com.funny.translation.helper.readAssets
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.translate.Language
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class ActivityCodeViewModel : BaseViewModel() {
     private val TAG = "ActivityCodeVM"

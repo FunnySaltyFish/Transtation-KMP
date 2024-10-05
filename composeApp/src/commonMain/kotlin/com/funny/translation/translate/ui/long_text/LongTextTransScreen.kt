@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.DataHolder
 import com.funny.translation.helper.LocalContext
@@ -59,7 +60,6 @@ import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.delay
-import moe.tlaster.precompose.lifecycle.Lifecycle
 import moe.tlaster.precompose.navigation.NavOptions
 import java.util.UUID
 
@@ -99,7 +99,7 @@ fun LongTextTransScreen() {
         LaunchedEffect(key1 = lifeCycleEvent) {
             lifeCycleEvent.collect {
                 if (showClipboardCard) return@collect
-                if (it == Lifecycle.State.Active) {
+                if (it == Lifecycle.Event.ON_RESUME) {
                     delay(500) // Android 高版本仅在获取到焦点后才能读取剪切板
                     clipboardText = ClipBoardUtil.read()
                     Log.d(

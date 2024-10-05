@@ -1,13 +1,13 @@
 package com.funny.translation.translate.ui.long_text
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.funny.translation.helper.Log
 import com.funny.translation.translate.database.LongTextTransTaskMini
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.longTextTransDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 private const val TAG = "LongTextTransListVM"
 class LongTextTransListViewModel: ViewModel() {

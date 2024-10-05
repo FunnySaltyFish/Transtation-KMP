@@ -3,6 +3,7 @@ package com.funny.translation.translate.ui.thanks
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
 import com.funny.compose.loading.LoadingState
 import com.funny.data_saver.core.mutableDataSaverListStateOf
 import com.funny.translation.helper.DataSaverUtils
@@ -15,7 +16,6 @@ import com.funny.translation.translate.database.transHistoryDao
 import com.funny.translation.translate.findLanguageById
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import moe.tlaster.precompose.viewmodel.ViewModel
 import java.util.Calendar
 import java.util.Date
 import kotlin.time.Duration
