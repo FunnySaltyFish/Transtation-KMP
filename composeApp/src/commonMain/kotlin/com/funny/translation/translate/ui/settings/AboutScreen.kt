@@ -43,6 +43,7 @@ import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.rememberFastClickHandler
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.network.ServiceCreator
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.BuildConfig
 import com.funny.translation.translate.RegionConfig
@@ -129,8 +130,7 @@ fun AboutScreen() {
                 text = ResStrings.privacy
             ) {
                 WebViewActivity.start(
-                    context,
-                    "https://api.funnysaltyfish.fun/trans/v1/api/privacy"
+                    context, ServiceCreator.getPrivacyUrl()
                 )
             }
             // 用户协议
@@ -139,8 +139,7 @@ fun AboutScreen() {
                 text = ResStrings.user_agreement
             ) {
                 WebViewActivity.start(
-                    context,
-                    "https://api.funnysaltyfish.fun/trans/v1/api/user_agreement"
+                    context,ServiceCreator.getUserAgreementUrl()
                 )
             }
             if (RegionConfig.beianNumber.isNotEmpty()) {

@@ -56,6 +56,7 @@ import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
+import com.funny.translation.network.ServiceCreator
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.bean.VipConfig
@@ -163,7 +164,7 @@ fun TransProContent() {
                         modifier = Modifier
                             .fillParentMaxWidth(1f)
                             .padding(top = 4.dp, bottom = 4.dp, start = 16.dp, end = 16.dp),
-                        markdown = ResStrings.markdown_agree_vip_privacy,
+                        markdown = ResStrings.markdown_agree_vip_privacy.format(ServiceCreator.getVIPAgreementUrl()),
                         fontSize = 12.sp,
                         color = LocalContentColor.current.copy(0.9f),
                         textAlign = TextAlign.Center

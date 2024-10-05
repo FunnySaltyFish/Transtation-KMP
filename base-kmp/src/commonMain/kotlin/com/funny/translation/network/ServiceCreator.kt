@@ -5,6 +5,8 @@ import com.funny.translation.BuildConfig
 import com.funny.translation.helper.ApplicationUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.JsonX
+import com.funny.translation.helper.LocaleUtils
+import com.funny.translation.helper.getLanguageCode
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -36,6 +38,13 @@ object ServiceCreator {
             DataSaverUtils.saveData("BASE_URL", value)
             ApplicationUtil.restartApp()
         }
+
+    fun getPrivacyUrl() = "${BASE_URL}api/privacy".addArgsSuffix()
+    fun getUserAgreementUrl() = "${BASE_URL}api/user_agreement".addArgsSuffix()
+    fun getVIPAgreementUrl() = "${BASE_URL}api/vip_agreement".addArgsSuffix()
+
+    private fun String.addArgsSuffix() =
+        "$this?locale=${LocaleUtils.getLanguageCode()}&flavor=${BuildConfig.FLAVOR}"
 
     private val retrofit by lazy {
         val okHttpClient = OkHttpUtils.okHttpClient

@@ -9,7 +9,7 @@
     <string name="warning">Warning</string>
     <string name="cancel_account_tip">Please note that you are attempting to cancel your account. Once the cancellation is completed, the account will no longer be usable and cannot be undone. Proceed with caution and ensure that you have backed up, transferred, or saved all important information and data related to this account. If you confirm the cancellation, please proceed with the operation. If you have any questions, please feel free to contact us!</string>
     <string name="tip_confirm_privacy_first">Please agree to the privacy policy and user agreement first!</string>
-    <string name="tip_agree_privacy">I have read and agree to the [privacy policy](https://api.funnysaltyfish.fun/trans/v1/api/privacy) and [user agreement](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement)</string>
+    <string name="tip_agree_privacy">I have read and agree to the [privacy policy](${privacy}) and [user agreement](${user_agreement})</string>
     <string name="error_sending_email">Failed to send email!</string>
     <string name="fingerprint_not_support">Your Android version is too low to support fingerprint authentication! Password authentication will be used instead~</string>
     <string name="validate_fingerprint">Validate Fingerprint</string>

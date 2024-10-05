@@ -19,4 +19,4 @@ expect object LocaleUtils {
     fun getLocaleDirectly(): Locale
 }
 
-fun LocaleUtils.getLanguageCode() = getAppLanguage().toLocale().isO3Language
+fun LocaleUtils.getLanguageCode() = getAppLanguage().toLocale().toLanguageTag()

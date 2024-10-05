@@ -62,6 +62,7 @@ import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.login.strings.ResStrings
+import com.funny.translation.network.ServiceCreator
 import com.funny.translation.network.api
 import com.funny.translation.ui.MarkdownText
 import kotlinx.coroutines.delay
@@ -165,7 +166,7 @@ fun LoginPage(
         ) {
             Checkbox(checked = privacyGranted, onCheckedChange = { privacyGranted = it })
             MarkdownText(
-                ResStrings.tip_agree_privacy,
+                ResStrings.tip_agree_privacy.format(privacy = ServiceCreator.getPrivacyUrl(), userAgreement = ServiceCreator.getUserAgreementUrl()),
                 color = contentColorFor(backgroundColor = MaterialTheme.colorScheme.background).copy(
                     0.8f
                 ),
@@ -382,7 +383,7 @@ private fun RegisterForm(
                                         errorCode.toString(), errorMsg.toString()
                                     )
                                 )
-                          },
+                            },
                             onUsePassword = {
                                 vm.passwordType = PASSWORD_TYPE_PASSWORD
                                 vm.password = ""

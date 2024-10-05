@@ -242,7 +242,7 @@
     <string name="custom_theme_desc">Highly customizable themes, define your own Transtation</string>
     <string name="exclusive_engine">Exclusive engines</string>
     <string name="exclusive_engine_desc">Use engines exclusively available to members</string>
-    <string name="markdown_agree_vip_privacy">Purchasing membership indicates that you have read and agreed to the [Transtation Membership Agreement](https://api.funnysaltyfish.fun/trans/v1/api/vip_agreement?locale=en)\nThe price of the membership will be adjusted daily, with the base price of the annual card being 19.99 yuan and the daily increase being 0.04 yuan; the base price of the monthly card being 1.99 yuan and the daily increase being 0.004 yuan</string>
+    <string name="markdown_agree_vip_privacy">Purchasing membership indicates that you have read and agreed to the [Transtation Membership Agreement](${vip_agreement})\nThe price of the membership will be adjusted daily, with the base price of the annual card being 19.99 yuan and the daily increase being 0.04 yuan; the base price of the monthly card being 1.99 yuan and the daily increase being 0.004 yuan</string>
     <string name="long_text_trans">Long Text Translation</string>
     <string name="translate_result">Translation Result</string>
     <string name="all_corpus">All Terms</string>
@@ -334,7 +334,7 @@
     <string name="failed_to_take_photo">Failed to take photo!</string>
     <string name="failed_to_show_float_window">Failed to show float window, please check if you have granted the permission correctly!</string>
     <string name="restart_app_tip">Due to the limit of Desktop, please restart by yourself.</string>
-    <string name="tip_privacy_policy">Please read and agree to our [Privacy Policy](https://api.funnysaltyfish.fun/trans/v1/api/privacy?locale=en) and [User Agreement](https://api.funnysaltyfish.fun/trans/v1/api/user_agreement?locale=en) before using the application.</string>
+    <string name="tip_privacy_policy">Please read and agree to our [privacy policy](${privacy}) and [user agreement](${user_agreement}) before using the application.</string>
     <string name="speak_speed">Reading Speed</string>
     <string name="speak_volume">Reading Volume</string>
     <string name="speak_voice">Reading Voice</string>

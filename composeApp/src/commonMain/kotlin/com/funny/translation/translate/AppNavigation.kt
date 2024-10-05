@@ -45,6 +45,7 @@ import com.funny.translation.kmp.navigation
 import com.funny.translation.kmp.slideIntoContainer
 import com.funny.translation.kmp.slideOutOfContainer
 import com.funny.translation.kmp.viewModel
+import com.funny.translation.network.ServiceCreator
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.TranslateScreen
@@ -264,7 +265,9 @@ fun AppNavigation(
                 AlertDialog(
                     onDismissRequest = { },
                     text = {
-                        MarkdownText(markdown = ResStrings.tip_privacy_policy)
+                        MarkdownText(markdown = ResStrings.tip_privacy_policy.format(
+                            ServiceCreator.getPrivacyUrl(), ServiceCreator.getUserAgreementUrl()
+                        ))
                     },
                     confirmButton = {
                         Button(onClick = { firstOpenApplication = false }) {
