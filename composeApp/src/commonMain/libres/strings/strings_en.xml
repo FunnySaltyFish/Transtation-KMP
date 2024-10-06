@@ -364,4 +364,7 @@
     <string name="download">Download Now</string>
     <string name="install_now">Install Now</string>
     <string name="install_failed">Install new version failed. Please retry or report the bug~</string>
+    <string name="capture_screen">Capture Screen</string>
+    <string name="capture_screen_desc">To translate the selected area, long click to stop</string>
+    <string name="stop_capture_screen">Stop Capturing</string>
 </resources>

@@ -364,4 +364,7 @@
     <string name="download">立刻下载</string>
     <string name="install_now">已下载，点击安装</string>
     <string name="install_failed">安装新版本失败，请重试或反馈问题~</string>
+    <string name="capture_screen">屏幕截图</string>
+    <string name="capture_screen_desc">译站将在您选取区域后截屏并翻译，长按停止</string>
+    <string name="stop_capture_screen">停止截屏</string>
 </resources>

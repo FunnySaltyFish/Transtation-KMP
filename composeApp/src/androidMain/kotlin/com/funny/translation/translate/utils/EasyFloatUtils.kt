@@ -366,6 +366,7 @@ object EasyFloatUtils {
                                 EasyFloat.dismiss(TAG_FLOAT_BALL)
                                 AppConfig.sShowFloatWindow.value = false
                                 initFloatBall = false
+                                CaptureScreenService.stop()
                             }
                         }, showPattern = ShowPattern.ALL_TIME)
                     }
@@ -407,6 +408,7 @@ object EasyFloatUtils {
         EasyFloat.dismiss(TAG_FLOAT_BALL)
         FloatScreenCaptureUtils.dismiss()
         translateJob?.cancel()
+        CaptureScreenService.stop()
     }
 
     fun isShowingFloatBall() = EasyFloat.isShow(TAG_FLOAT_BALL)
