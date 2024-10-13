@@ -110,7 +110,7 @@ android {
             .getOrDefault(signingConfigs.getByName("debug"))
         getByName("release") {
             // 临时可调试
-            isDebuggable = true
+            isDebuggable = false
             // 开启代码混淆
             isMinifyEnabled = true
             // Zipalign 优化
