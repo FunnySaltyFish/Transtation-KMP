@@ -1,4 +1,4 @@
-package kotlin.com.funny.translation.translate.utils
+package com.funny.translation.translate.utils
 
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.translate.bean.UpdateInfo

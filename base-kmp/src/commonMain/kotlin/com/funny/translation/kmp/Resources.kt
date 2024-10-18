@@ -50,7 +50,7 @@ internal fun rememberVectorXmlResource(path: String): Painter {
 
 private object ResourceLoader
 private fun readResourceBytes(resourcePath: String) =
-    ResourceLoader.javaClass.classLoader.getResourceAsStream(resourcePath)?.readAllBytes() ?: byteArrayOf()
+    ResourceLoader.javaClass.classLoader?.getResourceAsStream(resourcePath)?.use { it.readBytes() } ?: byteArrayOf()
 
 ///**
 // * Adapted from v1.6.2
