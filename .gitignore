@@ -29,4 +29,6 @@ sign_new_key.py
 composeApp/release/
 
 /get_recent_commit.py
-*/ic_launcher.psd
+*.psd
+/google_private_key.pem
+composeApp/google/release/composeApp-google-release.aab

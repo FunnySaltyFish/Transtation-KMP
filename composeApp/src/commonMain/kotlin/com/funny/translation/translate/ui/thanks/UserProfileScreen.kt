@@ -15,7 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -112,20 +113,14 @@ fun UserProfileSettings(navHostController: NavHostController) {
         }) {
             Text(text = "%.3f".format(userInfo.ai_text_point))
         }
-        // 剩余 AI 语音点数
-//        Tile(text = ResStrings.ai_remaining_voice_points, onClick = {
-//            navHostController.navigate(
-//                TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(
-//                    "planName" to AI_VOICE_POINT
-//                )
-//            )
-//        }) {
-//            Text(text = "%.3f".format(userInfo.ai_voice_point))
-//        }
+        // AI点数消耗
+        Tile(text = com.funny.translation.login.strings.ResStrings.ai_cost_title, onClick = {
+            navHostController.navigate(LoginRoute.AIPointCostPage.route)
+        })
         Tile(text = ResStrings.vip_end_time) {
             Text(text = userInfo.vipEndTimeStr())
         }
-        Divider()
+        HorizontalDivider()
         // 生成邀请码
         Tile(text = ResStrings.invite_code, onClick = {
             if (userInfo.invite_code.isBlank()) {
@@ -152,12 +147,12 @@ fun UserProfileSettings(navHostController: NavHostController) {
         }) {
             InvitedUserAlertDialog(show = showInviteUserDialog, updateShow = update)
         }
-        Divider()
+        HorizontalDivider()
         Tile(text = ResStrings.disable_account, onClick = {
             navHostController.navigate(LoginRoute.CancelAccountPage.route)
         })
-        Divider()
-        Spacer(modifier = Modifier.height(64.dp))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(40.dp))
         Button(modifier = Modifier.align(CenterHorizontally), onClick = {
             AppConfig.logout()
             navHostController.popBackStack()
@@ -206,18 +201,11 @@ internal fun Tile(
         FixedSizeIcon(imageVector = Icons.Default.ArrowRight, "")
     }
 ) {
-    Row(
-        Modifier
-            .height(66.dp)
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = text)
-        endIcon()
-    }
+    ListItem(
+        headlineContent = { Text(text) },
+        trailingContent = endIcon,
+        modifier = Modifier.clickable(onClick = onClick)
+    )
 }
 
 @Composable

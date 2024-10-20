@@ -20,3 +20,4 @@ expect object LocaleUtils {
 }
 
 fun LocaleUtils.getLanguageCode() = getAppLanguage().toLocale().toLanguageTag()
+fun LocaleUtils.getLocale() = getAppLanguage().toLocale()

@@ -115,3 +115,11 @@ val GlobalTranslationConfig = TranslationConfig()
 // 外部 intent 导致，表示待会儿需要做翻译
 // 不用 DeepLink
 var NeedToTransConfig by mutableStateOf(TranslationConfig())
+
+val isGooglePlayBuild by lazy {
+    BuildConfig.FLAVOR == "google"
+}
+
+val isCommonBuild by lazy {
+    BuildConfig.FLAVOR == "common"
+}

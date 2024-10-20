@@ -14,11 +14,12 @@ import com.funny.translation.kmp.animateComposable
 import com.funny.translation.kmp.rememberNavController
 
 sealed class LoginRoute(val route: String) {
-    object LoginPage: LoginRoute("login_page")
-    object ResetPasswordPage: LoginRoute("reset_password")
-    object FindUsernamePage: LoginRoute("find_user_name")
-    object ChangeUsernamePage: LoginRoute("change_user_name")
-    object CancelAccountPage: LoginRoute("cancel_account")
+    data object LoginPage: LoginRoute("login_page")
+    data object ResetPasswordPage: LoginRoute("reset_password")
+    data object FindUsernamePage: LoginRoute("find_user_name")
+    data object ChangeUsernamePage: LoginRoute("change_user_name")
+    data object CancelAccountPage: LoginRoute("cancel_account")
+    data object AIPointCostPage: LoginRoute("ai_point_cost")
 }
 
 @Composable
@@ -57,5 +58,8 @@ fun NavGraphBuilder.addLoginRoutes(
     }
     animateComposable(LoginRoute.CancelAccountPage.route){
         CancelAccountPage(navController = navController)
+    }
+    animateComposable(LoginRoute.AIPointCostPage.route) {
+        AIPointCostPage()
     }
 }

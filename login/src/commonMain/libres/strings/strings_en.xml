@@ -54,4 +54,27 @@
     <string name="new_password">New Password</string>
     <string name="reset_fingerprint">Reset Fingerprint</string>
     <string name="reset_fingerprint_success">Local fingerprint data has been cleared, please reset later.</string>
+
+    <!-- AI Cost Screen -->
+    <string name="ai_cost_title">AI Point Usage Records</string>
+    <string name="select_date">Select Date Range</string>
+    <string name="search">Search</string>
+    <string name="search_model_name">Search model name</string>
+    <string name="sort">Sort</string>
+
+    <!-- Sort Options -->
+    <string name="sort_by_date">Date</string>
+    <string name="sort_by_cost">Cost</string>
+    <string name="sort_by_tokens">Tokens</string>
+    <string name="sort_ascending">Ascending</string>
+    <string name="sort_descending">Descending</string>
+    <string name="sort_pattern">Sort by ${sortType} ${order}</string>
+
+    <!-- Cost Record Items -->
+    <string name="token_count">Input: ${input} | Output: ${output}</string>
+    <string name="cost_type">Type: ${type}</string>
+
+    <!-- States -->
+    <string name="load_failed">Failed to load</string>
+    <string name="retry">Retry</string>
 </resources>

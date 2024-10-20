@@ -1,5 +1,6 @@
 package com.funny.translation.helper
 
+import com.funny.translation.network.service.AICostType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -122,5 +123,19 @@ object JSONObjectSerializer: KSerializer<JSONObject> {
 
     override fun serialize(encoder: Encoder, value: JSONObject) {
         return encoder.encodeString(value.toString())
+    }
+}
+
+// AICostType
+object AICostTypeSerializer: KSerializer<AICostType> {
+    override val descriptor: SerialDescriptor
+            = PrimitiveSerialDescriptor("AICostType", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): AICostType {
+        return AICostType.valueOf(decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: AICostType) {
+        return encoder.encodeString(value.name)
     }
 }

@@ -31,9 +31,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +40,7 @@ import com.funny.compose.ai.utils.ModelManager
 import com.funny.compose.loading.loadingList
 import com.funny.compose.loading.rememberRetryableLoadingState
 import com.funny.data_saver.core.rememberDataSaverState
+import com.funny.translation.helper.buildSearchAnnotatedString
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
@@ -107,52 +105,6 @@ fun ColumnScope.ModelListPart(
                     }
                 }
             )
-//            var query by rememberStateOf("")
-//            var active by rememberStateOf(false)
-//            SearchBar(
-//                query = query,
-//                onQueryChange = { query = it },
-//                modifier = Modifier.fillMaxWidth(),
-//                onSearch = {
-//                    searchQuery = it
-//                    searchHistory = searchHistory.apply {
-//                        if (!contains(it)) {
-//                            add(it)
-//                        } else {
-//                            remove(it)
-//                            add(it)
-//                        }
-//                    }
-//                },
-//                active = active,
-//                onActiveChange = { active = it }
-//            ) {
-//                FlowRow(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-//                ) {
-//                    searchHistory.forEach {
-//                        InputChip(
-//                            selected = false,
-//                            onClick = {
-//                                query = it
-//                            },
-//                            label = {
-//                                Text(text = it)
-//                            },
-//                            trailingIcon = {
-//                                FixedSizeIcon(
-//                                    imageVector = Icons.Default.Close,
-//                                    contentDescription = "Delete",
-//                                    modifier = Modifier.size(24.dp).clickable {
-//                                        searchHistory -= it
-//                                    }
-//                                )
-//                            }
-//                        )
-//                    }
-//                }
-//            }
             Spacer(modifier = Modifier.height(8.dp))
             LazyColumn(
                 modifier = Modifier
@@ -174,33 +126,8 @@ fun ColumnScope.ModelListPart(
                         modifier = Modifier.clickable { onClick(it) }.animateItemPlacement(),
                         headlineContent = {
                             // 根据 searchQuery 高亮显示
-//                            Text(text = it.name)
                             Text(
-                                text = buildAnnotatedString {
-                                    val name = it.name
-                                    val query = searchQuery
-                                    if (query.isEmpty()) {
-                                        append(name)
-                                        return@buildAnnotatedString
-                                    }
-                                    var start = 0
-                                    var end = 0
-                                    while (end < name.length) {
-                                        end = name.indexOf(query, start, ignoreCase = true)
-                                        if (end == -1) {
-                                            append(name.substring(start))
-                                            break
-                                        }
-                                        append(name.substring(start, end))
-                                        withStyle(LocalTextStyle.current.copy(
-                                            color = MaterialColors.OrangeA400,
-                                            fontWeight = FontWeight.Bold,
-                                        ).toSpanStyle()) {
-                                            append(name.substring(end, end + query.length))
-                                        }
-                                        start = end + query.length
-                                    }
-                                },
+                                text = buildSearchAnnotatedString(content = it.name, search = searchQuery)
                             )
                         },
                         supportingContent = {

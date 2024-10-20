@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="download_from_browser">浏览器下载</string>
+    <!-- 从 v2.8.2开始，从上面排，不然每次都让鼠标滚半天到最下面  -->
     <string name="clear_content">清空</string>
     <string name="app_name">译站</string>
     <string name="exchange">语言互换</string>
@@ -314,7 +316,7 @@
     <string name="buy_ai_point">点数购买</string>
     <string name="vip_only">会员专享</string>
     <string name="ai_point_hint">Token 数目为预估值，以 0.016/k 计算</string>
-    <string name="ai_remaining_text_points">AI点数：</string>
+    <string name="ai_remaining_text_points">AI点数</string>
     <string name="ai_remaining_voice_points">AI 语音点数：</string>
     <string name="buy_ai_text_point">购买AI点数</string>
     <string name="buy_ai_voice_point">购买AI语言点数</string>

@@ -1,5 +1,11 @@
 package com.funny.translation.helper
 
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import com.funny.cmaterialcolors.MaterialColors
 import java.security.MessageDigest
 
 val String.md5: String
@@ -62,4 +68,37 @@ fun String.extractJSON(): String {
 fun String.extractSuffix(): String {
     val index = lastIndexOf(".")
     return if (index == -1) "" else safeSubstring(index + 1)
+}
+
+/**
+ * 根据 search 构建 AnnotatedString
+ */
+@Composable
+fun buildSearchAnnotatedString(
+    content: String,
+    search: String,
+) = buildAnnotatedString {
+    if (search.isEmpty()) {
+        append(content)
+        return@buildAnnotatedString
+    }
+    var start = 0
+    var end = 0
+    while (end < content.length) {
+        end = content.indexOf(search, start, ignoreCase = true)
+        if (end == -1) {
+            append(content.substring(start))
+            break
+        }
+        append(content.substring(start, end))
+        withStyle(
+            LocalTextStyle.current.copy(
+                color = MaterialColors.OrangeA400,
+                fontWeight = FontWeight.Bold,
+            ).toSpanStyle()
+        ) {
+            append(content.substring(end, end + search.length))
+        }
+        start = end + search.length
+    }
 }

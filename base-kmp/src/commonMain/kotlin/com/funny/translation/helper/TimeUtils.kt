@@ -1,7 +1,11 @@
 package com.funny.translation.helper
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+import kotlin.concurrent.getOrSet
 
 object TimeUtils {
     fun formatTime(
@@ -34,3 +38,18 @@ object TimeUtils {
 }
 
 fun now() = System.currentTimeMillis()
+
+fun Date.format(template: String = "%4d-%02d-%02d %02d:%02d:%02d"): String {
+    return TimeUtils.formatTime(this.time, template)
+}
+
+private val isoDateFormat = ThreadLocal<SimpleDateFormat>()
+fun Date.toISOString(): String {
+    return isoDateFormat.getOrSet {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        return@getOrSet dateFormat
+    }.format(this)
+}
+
+fun Long.toDate() = Date(this)

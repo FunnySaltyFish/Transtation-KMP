@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="download_from_browser">Browser</string>
+    <!-- 从 v2.8.2开始，从上面排，不然每次都让鼠标滚半天到最下面  -->
     <string name="app_name">Transtation</string>
     <string name="clear_content">Clear input</string>
     <string name="exchange">Exchange</string>
@@ -314,7 +316,7 @@
     <string name="buy_ai_point">Buy Points</string>
     <string name="vip_only">VIP Only</string>
     <string name="ai_point_hint">The token count is an estimated value, calculated at 0.016/k</string>
-    <string name="ai_remaining_text_points">AI Text Points:</string>
+    <string name="ai_remaining_text_points">AI Text Points</string>
     <string name="ai_remaining_voice_points">AI Voice Points:</string>
     <string name="buy_ai_text_point">Buy AI Text Points</string>
     <string name="buy_ai_voice_point">Buy AI Voice Points</string>
@@ -367,4 +369,5 @@
     <string name="capture_screen">Capture Screen</string>
     <string name="capture_screen_desc">To translate the selected area, long click to stop</string>
     <string name="stop_capture_screen">Stop Capturing</string>
+
 </resources>

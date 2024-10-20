@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -31,14 +33,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.funny.translation.AppConfig
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.createFileIfNotExist
 import com.funny.translation.helper.displayMsg
 import com.funny.translation.helper.fileMD5
+import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.rememberSaveableStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.BuildConfig
 import com.funny.translation.translate.bean.UpdateInfo
 import com.funny.translation.translate.bean.bytes
 import com.funny.translation.translate.utils.InstallApkLauncher
@@ -153,13 +158,16 @@ private fun ButtonLine(
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.End
+        horizontalArrangement = Arrangement.Start
     ) {
         val color = MaterialTheme.colorScheme.primary
 
         // button
         if (!forceUpdate && progress == 0f) {
-            TextButton(onClick = closeDialogAction) {
+            TextButton(
+                onClick = closeDialogAction,
+                modifier = Modifier
+            ) {
                 Text(text = ResStrings.cancel)
             }
         }
@@ -173,26 +181,41 @@ private fun ButtonLine(
             }
         }
 
-        TextButton(onClick = {
-            UpdateUtils.downloadUpdate(
-                updateInfo = updateInfo,
-                file = file,
-                onProgressChanged = updateProgress,
-                onDownloadFinished = {
-                    if (file.fileMD5() != updateInfo.apk_md5) {
-                        onError(Exception("MD5 is incorrect"))
-                    } else {
-                        try {
-                            installLauncher.launch(file)
-                        } catch (e: Exception) {
-                            onError(e)
+        Row(
+            modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)
+        ) {
+            TextButton(
+                onClick = {
+                    val url = if (updateInfo.apk_url != null) {
+                        updateInfo.apk_url + "&from_source=app_${BuildConfig.FLAVOR}_${AppConfig.versionCode}"
+                    } else "https://www.funnytraslation.fun/trans"
+                    context.openUrl(url)
+                }
+            ) {
+                Text(text = ResStrings.download_from_browser)
+            }
+            Spacer(Modifier.width(4.dp))
+            TextButton(onClick = {
+                UpdateUtils.downloadUpdate(
+                    updateInfo = updateInfo,
+                    file = file,
+                    onProgressChanged = updateProgress,
+                    onDownloadFinished = {
+                        if (file.fileMD5() != updateInfo.apk_md5) {
+                            onError(Exception("MD5 is incorrect"))
+                        } else {
+                            try {
+                                installLauncher.launch(file)
+                            } catch (e: Exception) {
+                                onError(e)
+                            }
                         }
-                    }
-                },
-                onError = onError
-            )
-        }) {
-            ProgressText(progress, color)
+                    },
+                    onError = onError
+                )
+            }) {
+                ProgressText(progress, color)
+            }
         }
     }
 }

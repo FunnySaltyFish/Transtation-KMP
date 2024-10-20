@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import com.eygraber.uri.Uri
 import com.funny.compose.ai.bean.ChatMemory
 import com.funny.data_saver.core.DataSaverConverter
+import com.funny.trans.login.ui.AICostSortType
 import com.funny.translation.bean.AppLanguage
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.bean.UserInfoBean
@@ -94,6 +95,12 @@ fun initTypeConverters() {
     DataSaverConverter.registerTypeConverters<MutableList<String>>(
         save = { JsonX.toJson(it) },
         restore = { JsonX.fromJson(it) }
+    )
+
+    // CostSortType
+    DataSaverConverter.registerTypeConverters<AICostSortType>(
+        save = { it.name },
+        restore = { AICostSortType.valueOf(it) }
     )
 }
 

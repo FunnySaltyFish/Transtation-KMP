@@ -2,11 +2,23 @@ package com.funny.translation.ui
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
+import com.funny.translation.helper.SimpleAction
+import com.funny.translation.kmp.base.strings.ResStrings
 
 // Adapted from https://github.com/TheMelody/AnyPopDialog-Compose/blob/main/any_pop_dialog_library/src/main/java/com/melody/dialog/any_pop/AnyPopDialog.kt
 
@@ -46,6 +58,55 @@ fun AnyPopDialog(
         }
     }
 }
+
+@Composable
+fun AnyPopDialog(
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    isActiveClose: Boolean = false,
+    properties: AnyPopDialogProperties = AnyPopDialogProperties(direction = DirectionState.BOTTOM),
+    onConfirm: SimpleAction? = onDismissRequest,
+    confirmButton: @Composable () -> Unit = {
+        if (onConfirm != null) {
+            TextButton(onClick = onConfirm) {
+                Text(ResStrings.confirm)
+            }
+        }
+    },
+    onDismiss: SimpleAction? = onDismissRequest,
+    dismissButton: @Composable () -> Unit = {
+        if (onDismiss != null) {
+            TextButton(onClick = onDismiss) {
+                Text(ResStrings.cancel)
+            }
+        }
+    },
+    text: @Composable () -> Unit
+) {
+    AnyPopDialog(
+        modifier = modifier,
+        isActiveClose = isActiveClose,
+        properties = properties,
+        onDismissRequest = onDismissRequest,
+        content = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                text()
+                Row(
+                    modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End),
+                ) {
+                    dismissButton()
+                    if (confirmButton != {}) {
+                        Spacer(Modifier.width(4.dp))
+                        confirmButton()
+                    }
+                }
+            }
+        }
+    )
+}
+
 
 /**
  * @param dismissOnBackPress 是否支持返回关闭Dialog

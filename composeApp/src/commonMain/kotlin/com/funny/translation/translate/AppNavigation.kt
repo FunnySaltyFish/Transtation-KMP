@@ -50,6 +50,7 @@ import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.ai.ChatScreen
+import com.funny.translation.translate.ui.ai.VoiceChatScreen
 import com.funny.translation.translate.ui.buy.BuyAIPointScreen
 import com.funny.translation.translate.ui.buy.TransProScreen
 import com.funny.translation.translate.ui.long_text.DraftScreen
@@ -241,6 +242,9 @@ fun AppNavigation(
                         }
                         animateComposable(TranslateScreen.AnnualReportScreen.route) {
                             AnnualReportScreen()
+                        }
+                        animateComposable(TranslateScreen.VoiceChatScreen.route) {
+                            VoiceChatScreen()
                         }
                         addLongTextTransNavigation()
                         addSettingsNavigation()

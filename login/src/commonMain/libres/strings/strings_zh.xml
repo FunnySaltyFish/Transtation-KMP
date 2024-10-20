@@ -54,4 +54,27 @@
     <string name="new_password">新密码</string>
     <string name="reset_fingerprint">重设指纹</string>
     <string name="reset_fingerprint_success">已清空本地指纹数据，请重新录入</string>
+
+    <!-- AI Cost Screen -->
+    <string name="ai_cost_title">AI点数消耗记录</string>
+    <string name="select_date">选择日期范围</string>
+    <string name="search">搜索</string>
+    <string name="search_model_name">搜索模型名称</string>
+    <string name="sort">排序</string>
+
+    <!-- Sort Options -->
+    <string name="sort_by_date">时间</string>
+    <string name="sort_by_cost">花费</string>
+    <string name="sort_by_tokens">Token数</string>
+    <string name="sort_ascending">升序</string>
+    <string name="sort_descending">降序</string>
+    <string name="sort_pattern">按${sortType}${order}</string>
+
+    <!-- Cost Record Items -->
+    <string name="token_count">输入：${input} | 输出：${output}</string>
+    <string name="cost_type">类型: ${type}</string>
+
+    <!-- States -->
+    <string name="load_failed">加载失败</string>
+    <string name="retry">重试</string>
 </resources>
