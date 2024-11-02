@@ -32,3 +32,8 @@ composeApp/release/
 *.psd
 /google_private_key.pem
 composeApp/google/release/composeApp-google-release.aab
+
+/node_modules/
+/package-lock.json
+/package.json
+/composeApp/common/release/output-metadata.json
