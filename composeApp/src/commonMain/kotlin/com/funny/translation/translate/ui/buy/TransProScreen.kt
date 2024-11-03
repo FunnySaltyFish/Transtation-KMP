@@ -3,7 +3,6 @@ package com.funny.translation.translate.ui.buy
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -65,6 +64,7 @@ import com.funny.translation.translate.ui.widget.NoticeBar
 import com.funny.translation.translate.ui.widget.NumberChangeAnimatedText
 import com.funny.translation.translate.ui.widget.TextFlashCanvas
 import com.funny.translation.translate.ui.widget.TextFlashCanvasState
+import com.funny.translation.translate.ui.widget.noticeBarModifier
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
@@ -316,12 +316,7 @@ private fun VipExpireTip(user: UserInfoBean) {
     NoticeBar(
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .background(
-                MaterialTheme.colorScheme.primaryContainer,
-                RoundedCornerShape(8.dp)
-            )
-            .clickable { singleLine = !singleLine }
-            .padding(8.dp),
+            .noticeBarModifier { singleLine = !singleLine },
         text = ResStrings.vip_soon_expire_tip.format(user.vipEndTimeStr()),
         singleLine = singleLine,
         showClose = true,

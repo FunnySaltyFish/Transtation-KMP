@@ -2,10 +2,8 @@
 
 package com.funny.translation.translate.ui.main
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -95,6 +93,7 @@ import com.funny.translation.translate.ui.widget.ShadowedAsyncRoundImage
 import com.funny.translation.translate.ui.widget.SwipeCrossFadeLayout
 import com.funny.translation.translate.ui.widget.SwipeShowType
 import com.funny.translation.translate.ui.widget.UpperPartBackground
+import com.funny.translation.translate.ui.widget.noticeBarModifier
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.safeMain
 import com.funny.translation.ui.touchToScale
@@ -282,16 +281,10 @@ private fun Notice(modifier: Modifier) {
     notice?.let {
         NoticeBar(
             modifier = modifier
-                .clickable {
+                .noticeBarModifier {
                     if (it.url.isNullOrEmpty()) singleLine = !singleLine
                     else WebViewActivity.start(context, it.url)
-                }
-                .background(
-                    MaterialTheme.colorScheme.primaryContainer,
-                    RoundedCornerShape(8.dp)
-                )
-                .padding(8.dp)
-                .animateContentSize(),
+                },
             text = it.message,
             singleLine = singleLine,
             showClose = true,
