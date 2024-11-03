@@ -10,7 +10,7 @@ internal actual fun getDid(): String {
 }
 
 internal actual fun getVersionName(): String {
-    return appCtx.packageManager.getPackageInfo(appCtx.packageName, 0).versionName
+    return appCtx.packageManager.getPackageInfo(appCtx.packageName, 0).versionName ?: ""
 }
 
 internal actual fun getVersionCode(): Int {

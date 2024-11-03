@@ -30,7 +30,7 @@ kotlin {
             // sqldelight
             implementation(libs.sqldelight.android.driver)
             // 图片选择器
-            implementation(project.dependencies.platform("cn.qhplus.emo:bom:2024.03.00"))
+            implementation(project.dependencies.platform("cn.qhplus.emo:bom:2024.09.00"))
             implementation("cn.qhplus.emo:photo-coil") {
                 exclude("androidx.compose.ui", "ui-test-junit4")
 //                ui-test-android

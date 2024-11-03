@@ -82,7 +82,7 @@ object WebViewResourceHelper {
             val pi = context.packageManager.getPackageInfo(
                 webViewPackageName!!, PackageManager.GET_SHARED_LIBRARY_FILES
             )
-            return pi.applicationInfo.sourceDir
+            return pi.applicationInfo?.sourceDir
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         } catch (e: Exception) {
