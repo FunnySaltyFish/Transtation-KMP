@@ -69,7 +69,6 @@ import com.funny.translation.kmp.rememberCreateFileLauncher
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.kmp.writeText
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.long_text.components.AIPointText
 import com.funny.translation.translate.ui.long_text.components.RemarkDialog
 import com.funny.translation.translate.ui.long_text.components.ResultTextPart
@@ -116,7 +115,7 @@ fun LongTextTransDetailScreen(
     CommonPage(
         title = null,
         actions = {
-            AIPointText(planName = AI_TEXT_POINT)
+            AIPointText()
             IconButton(onClick = { showHelpDialog = true }) {
                 FixedSizeIcon(Icons.Default.Help, contentDescription = "Help")
             }

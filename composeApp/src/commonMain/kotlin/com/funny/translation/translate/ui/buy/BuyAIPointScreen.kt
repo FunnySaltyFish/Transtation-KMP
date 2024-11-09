@@ -34,14 +34,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.funny.translation.AppConfig
 import com.funny.translation.bean.Price
 import com.funny.translation.bean.showWithUnit
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.bean.AIPointPlan
 import com.funny.translation.translate.bean.AI_TEXT_POINT
-import com.funny.translation.translate.bean.AI_VOICE_POINT
 import com.funny.translation.translate.ui.buy.manager.BuyAIPointManager
+import com.funny.translation.translate.ui.long_text.components.AIPointText
 import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
@@ -53,18 +52,10 @@ fun BuyAIPointScreen(
     planName: String = AI_TEXT_POINT,
 ) {
     val manager = BuyAIPointManager.find(planName)
-    val user = AppConfig.userInfo.value
-    val (title, point) = when (planName) {
-        AI_TEXT_POINT -> ResStrings.buy_ai_text_point to user.ai_text_point
-        AI_VOICE_POINT -> ResStrings.buy_ai_voice_point to user.ai_voice_point
-        else -> ResStrings.buy_ai_point to 0f
-    }
     CommonPage(
-        title = title,
+        title = ResStrings.buy_ai_text_point,
         actions = {
-            Text(
-                text = "%.3f".format(point),
-            )
+            AIPointText()
         }
     ) {
         BuyProductContent(

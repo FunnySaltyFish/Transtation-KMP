@@ -25,9 +25,7 @@ class BuyAIPointManager(val name: String): BuyProductManager<AIPointPlan>() {
     fun addToUser(num: Int) {
         val user = AppConfig.userInfo.value
         if (name == AI_TEXT_POINT) {
-            AppConfig.userInfo.value = user.copy(ai_text_point = user.ai_text_point + num.toBigDecimal())
-        } else if (name == AI_VOICE_POINT) {
-            AppConfig.userInfo.value = user.copy(ai_voice_point = user.ai_voice_point + num.toBigDecimal())
+            AppConfig.addAITextPoint(num.toBigDecimal())
         }
     }
 

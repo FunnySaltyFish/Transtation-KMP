@@ -66,17 +66,31 @@ object AppConfig {
         userInfo.value = userInfo.value.copy(jwt_token = newToken)
     }
 
+    /**
+     * 减去点数，优先从 vip_free_ai_point 中扣，没有就从 ai_point 中扣
+     *
+     * @param amount
+     */
     fun subAITextPoint(amount: BigDecimal) {
         if (amount == BigDecimal.ZERO) return
         val user = userInfo.value
-        userInfo.value = user.copy(ai_text_point = user.ai_text_point - amount)
+
+        if (user.vip_free_ai_point >= amount) {
+            userInfo.value = user.copy(vip_free_ai_point = user.vip_free_ai_point - amount)
+        } else {
+            userInfo.value = user.copy(
+                ai_point = user.ai_point - amount + user.vip_free_ai_point,
+                vip_free_ai_point = BigDecimal.ZERO
+            )
+        }
     }
 
-    fun subAIVoicePoint(amount: BigDecimal) {
+    fun addAITextPoint(amount: BigDecimal) {
         if (amount == BigDecimal.ZERO) return
         val user = userInfo.value
-        userInfo.value = user.copy(ai_voice_point = user.ai_voice_point - amount)
+        userInfo.value = user.copy(ai_point = user.ai_point + amount)
     }
+
 
     // 强制内联此方法，避免被反编译绕过
     inline fun isMembership() = userInfo.value.isValidVip()

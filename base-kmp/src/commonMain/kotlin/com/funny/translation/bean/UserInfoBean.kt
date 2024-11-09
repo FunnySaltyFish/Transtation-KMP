@@ -28,10 +28,12 @@ data class UserInfoBean(
     val invite_code: String = "",
     val inviter_uid: Int = -1,
     @Serializable(with = BigDecimalSerializer::class)
-    val ai_text_point: BigDecimal = BigDecimal.ZERO,
+    val ai_point: BigDecimal = BigDecimal.ZERO,
     @Serializable(with = BigDecimalSerializer::class)
-    val ai_voice_point: BigDecimal = BigDecimal.ZERO,
+    val vip_free_ai_point: BigDecimal = BigDecimal.ZERO,
 ) {
+    val ai_text_point get() = ai_point + vip_free_ai_point
+
     fun isValid() = uid >= 0 && jwt_token != ""
 
     inline fun isValidVip() =

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="self_bought">自购</string>
+    <string name="vip_give">会员赠送</string>
+    <string name="vip_free_point_tip">会员赠送点数每月一号重置，重置时剩余会员点数需大于7天</string>
     <string name="download_from_browser">浏览器下载</string>
     <!-- 从 v2.8.2开始，从上面排，不然每次都让鼠标滚半天到最下面  -->
     <string name="clear_content">清空</string>
