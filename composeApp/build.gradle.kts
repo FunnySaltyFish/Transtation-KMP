@@ -113,8 +113,6 @@ android {
             isDebuggable = false
             // 开启代码混淆
             isMinifyEnabled = true
-            // Zipalign 优化
-            isZipAlignEnabled = true
             // 移除无用的 resource 文件
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")

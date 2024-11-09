@@ -8,7 +8,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 class KMPLibraryCP: Plugin<Project> {
     override fun apply(target: Project) {
@@ -35,7 +38,7 @@ class KMPLibraryCP: Plugin<Project> {
 
 
 fun Project.setupCommonKMP(
-    android: CommonExtension<*, *, *, *, *>
+    android: CommonExtension<*, *, *, *, *, *>
 ) {
     with(pluginManager) {
         apply("kotlin-multiplatform")
@@ -46,20 +49,19 @@ fun Project.setupCommonKMP(
 
     val kotlin = extensions.getByType(KotlinMultiplatformExtension::class.java)
     kotlin.apply {
-        androidTarget {
-            compilations.all {
-                kotlinOptions {
-                    jvmTarget = "11"
-                }
-            }
-        }
-
-        compilerOptions {
-            freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
-        }
+        androidTarget { }
 
         jvm("desktop")
     }
+
+    tasks.withType<KotlinJvmCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+
+            freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
+        }
+    }
+
 
     android.apply {
         namespace = "com.funny.translation.kmp"
