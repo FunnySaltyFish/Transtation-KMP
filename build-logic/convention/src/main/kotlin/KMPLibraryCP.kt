@@ -52,13 +52,22 @@ fun Project.setupCommonKMP(
         androidTarget { }
 
         jvm("desktop")
+
+        // from https://youtrack.jetbrains.com/issue/KT-61573/Emit-the-compilation-warning-on-expect-actual-classes.-The-warning-must-mention-that-expect-actual-classes-are-in-Beta#focus=Comments-27-10358357.0-0
+        targets.configureEach {
+            compilations.configureEach {
+                compileTaskProvider.get().compilerOptions {
+                    freeCompilerArgs.addAll("-Xexpect-actual-classes")
+                }
+            }
+        }
     }
+
+
 
     tasks.withType<KotlinJvmCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
-
-            freeCompilerArgs.addAll("-Xmulti-platform", "-Xexpect-actual-classes")
         }
     }
 
