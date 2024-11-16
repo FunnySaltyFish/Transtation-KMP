@@ -32,6 +32,8 @@ kotlin {
                 api(compose.components.resources)
                 api(compose.materialIconsExtended)
 
+                api("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+
                 // JVM-specific dependencies like OkHttp and Retrofit
                 api("com.squareup.okhttp3:okhttp:4.12.0")
                 api("com.squareup.retrofit2:retrofit:2.9.0")
