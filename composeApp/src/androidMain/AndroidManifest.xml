@@ -67,7 +67,6 @@
 
         <activity
             android:name="com.funny.trans.login.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTask"
             android:exported="false" />
 
