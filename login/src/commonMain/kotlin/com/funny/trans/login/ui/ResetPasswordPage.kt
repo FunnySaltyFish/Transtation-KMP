@@ -34,7 +34,9 @@ fun ResetPasswordPage(
 ) {
     CommonPage(
         topBar = {
-            TransparentTopBar()
+            TransparentTopBar(
+                title = ResStrings.reset_password
+            )
         }
     ) {
         val vm = viewModel<LoginViewModel>()
@@ -54,7 +56,6 @@ fun ResetPasswordPage(
                 updateUsername = vm::updateUsername,
                 isValidUsernameProvider = vm::isValidUsername
             )
-            Spacer(modifier = Modifier.height(8.dp))
             InputEmail(
                 modifier = Modifier.fillMaxWidth(),
                 value = vm.email,
@@ -65,20 +66,17 @@ fun ResetPasswordPage(
                 initialSent = false,
                 onClick = { vm.sendResetPasswordEmail(context) }
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
             InputPassword(
                 passwordProvider = vm::password,
                 updatePassword = vm::updatePassword,
                 labelText = ResStrings.new_password
             )
+
             // 重复密码
             var repeatPassword by remember { mutableStateOf("") }
-
             val isRepeatPwdError by remember {
                 derivedStateOf { vm.password != repeatPassword }
             }
-            Spacer(modifier = Modifier.height(8.dp))
             ConcealableTextField(
                 value = repeatPassword,
                 onValueChange = { repeatPassword = it },

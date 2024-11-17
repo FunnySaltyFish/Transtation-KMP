@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -37,11 +38,12 @@ fun InputUsername(
 ) {
     val username = usernameProvider()
     val isValidUsername = isValidUsernameProvider()
+    val isError = username != "" && !isValidUsername
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = username,
         onValueChange = updateUsername,
-        isError = username != "" && !isValidUsername,
+        isError = isError,
         label = { Text(text = ResStrings.username) },
         placeholder = { Text(ResStrings.username_rule) },
         singleLine = true,
@@ -49,6 +51,11 @@ fun InputUsername(
             keyboardType = KeyboardType.Text,
             imeAction = imeAction
         ),
+        supportingText = {
+            if (isError) {
+                Text(text = ResStrings.username_rule, style = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.error))
+            }
+        }
     )
 }
 
@@ -62,7 +69,8 @@ fun InputPassword(
     val isPwdError by remember(password) {
         derivedStateOf { password != "" && !UserUtils.isValidPassword(password) }
     }
-    ConcealableTextField(modifier = Modifier.fillMaxWidth(),
+    ConcealableTextField(
+        modifier = Modifier.fillMaxWidth(),
         value = password,
         onValueChange = updatePassword,
         placeholder = {
@@ -74,6 +82,11 @@ fun InputPassword(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Next
         ),
+        supportingText = {
+            if (isPwdError) {
+                Text(text = ResStrings.password_rule, style = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.error))
+            }
+        }
     )
 }
 
@@ -90,6 +103,7 @@ fun ConcealableTextField(
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    supportingText: @Composable (() -> Unit)? = null
 ) {
     var hiddenInput by rememberStateOf(value = true)
     OutlinedTextField(
@@ -127,7 +141,8 @@ fun ConcealableTextField(
         isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        visualTransformation = if (hiddenInput) PasswordVisualTransformation('*') else VisualTransformation.None
+        visualTransformation = if (hiddenInput) PasswordVisualTransformation('*') else VisualTransformation.None,
+        supportingText = supportingText
     )
 }
 

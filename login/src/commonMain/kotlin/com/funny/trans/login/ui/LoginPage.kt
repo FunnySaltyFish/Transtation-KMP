@@ -26,6 +26,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
@@ -198,10 +199,9 @@ private fun LoginForm(
             vm,
             if (vm.passwordType == PASSWORD_TYPE_FINGERPRINT) ImeAction.Done else ImeAction.Next
         )
-        Spacer(modifier = Modifier.height(12.dp))
         if (vm.shouldVerifyEmailWhenLogin) {
             InputEmailWrapper(modifier = Modifier.fillMaxWidth(), vm = vm, initialSent = true)
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
         }
         if (vm.passwordType == PASSWORD_TYPE_PASSWORD) {
             InputPasswordWrapper(vm = vm)
@@ -341,10 +341,8 @@ private fun RegisterForm(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         InputUsernameWrapper(vm)
-        Spacer(modifier = Modifier.height(8.dp))
         InputEmailWrapper(modifier = Modifier.fillMaxWidth(), vm = vm)
         // 邀请码
-        Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = vm.inviteCode,
@@ -360,7 +358,6 @@ private fun RegisterForm(
         Spacer(modifier = Modifier.height(12.dp))
         if (vm.passwordType == PASSWORD_TYPE_PASSWORD) {
             InputPasswordWrapper(vm = vm)
-            Spacer(modifier = Modifier.height(8.dp))
         } else {
             CompletableButton(
                 onClick = {
@@ -533,9 +530,12 @@ fun InputEmail(
                     initialSent = initialSent // 当需要
                 )
             },
+            supportingText = {
+                if (isError) {
+                    Text(text = ResStrings.please_input_validate_email, style = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.error))
+                }
+            }
         )
-        Spacer(modifier = Modifier.height(8.dp))
-
         val isVerifyCodeError by remember(verifyCode) {
             derivedStateOf { verifyCode != "" && verifyCode.length != 6 }
         }
@@ -550,7 +550,12 @@ fun InputEmail(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next
-            )
+            ),
+            supportingText = {
+                if (isVerifyCodeError) {
+                    Text(text = ResStrings.please_input_verify_code)
+                }
+            }
         )
     }
 }

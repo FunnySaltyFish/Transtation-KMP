@@ -27,7 +27,9 @@ import com.funny.translation.ui.TransparentTopBar
 fun FindUsernamePage() {
     CommonPage(
         topBar = {
-            TransparentTopBar()
+            TransparentTopBar(
+                title = ResStrings.find_username
+            )
         }
     ) {
         val vm = viewModel<LoginViewModel>()
@@ -46,17 +48,15 @@ fun FindUsernamePage() {
                 onClick = { vm.sendFindUsernameEmail(context) }
             )
 
-
-            Spacer(modifier = Modifier.height(8.dp))
             val enable by remember {
                 derivedStateOf {
                     vm.isValidEmail && vm.verifyCode.length == 6
                 }
             }
-
             val usernameList = remember {
                 mutableStateListOf<String>()
             }
+
             Button(modifier = Modifier.fillMaxWidth(), onClick = {
                 vm.findUsername {
                     usernameList.clear()
