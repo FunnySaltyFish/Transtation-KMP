@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.LocalTextStyle
@@ -167,25 +168,27 @@ internal fun ColumnScope.ResultTextPart(
         val textStyle = LocalTextStyle.current.copy(fontSize = 12.sp, lineHeight = (14).sp)
         val highlightStyle = remember(textStyle) { textStyle.copy(color = translatingTextColor, fontWeight = FontWeight.Bold).toSpanStyle() }
         CompositionLocalProvider(LocalTextStyle provides textStyle) {
-            AutoScrollLongText(
-                textProvider = {
-                    buildAnnotatedString {
-                        if (currentResultStartOffset >= 0) {
-                            append(text.substring(0, currentResultStartOffset))
-                            withStyle(style = highlightStyle) {
-                                append(
-                                    text.substring(currentResultStartOffset)
-                                )
+            SelectionContainer {
+                AutoScrollLongText(
+                    textProvider = {
+                        buildAnnotatedString {
+                            if (currentResultStartOffset >= 0) {
+                                append(text.substring(0, currentResultStartOffset))
+                                withStyle(style = highlightStyle) {
+                                    append(
+                                        text.substring(currentResultStartOffset)
+                                    )
+                                }
+                            } else {
+                                append(text)
                             }
-                        } else {
-                            append(text)
                         }
-                    }
-                },
-                // 自动跳到最新的一行
-                autoScrollOffsetProvider = { text.lastIndexOf('\n') },
-                maxLines = if (expanded) 2 * maxLines else maxLines
-            )
+                    },
+                    // 自动跳到最新的一行
+                    autoScrollOffsetProvider = { text.lastIndexOf('\n') },
+                    maxLines = if (expanded) 2 * maxLines else maxLines
+                )
+            }
         }
     }
 }

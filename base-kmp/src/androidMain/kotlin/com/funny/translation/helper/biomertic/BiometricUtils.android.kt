@@ -3,7 +3,6 @@ package com.funny.translation.helper.biomertic
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import com.funny.translation.AppConfig
@@ -163,7 +162,6 @@ actual object BiometricUtils {
                     return@launch
                 }
 
-                if (activity !is AppCompatActivity) return@launch
                 if (awaitDialog(
                         activity,
                         ResStrings.hint,

@@ -16,9 +16,9 @@
 
 package com.funny.translation.helper.biomertic
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.funny.translation.helper.Log
 import com.funny.translation.kmp.KMPActivity
 import com.funny.translation.kmp.base.strings.ResStrings
@@ -32,7 +32,7 @@ object BiometricPromptUtils {
         authError: (errCode: Int, errString: String) -> Unit,
         authFail: () -> Unit
     ): BiometricPrompt? {
-        if (activity !is AppCompatActivity) return null
+        if (activity !is FragmentActivity) return null
         val executor = ContextCompat.getMainExecutor(activity)
 
         val callback = object : BiometricPrompt.AuthenticationCallback() {

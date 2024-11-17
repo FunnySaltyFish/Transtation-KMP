@@ -241,7 +241,7 @@ internal fun NavController.navigateToTextEdit(
     action: TextEditorAction,
     onResult: (String) -> Unit = {}
 ) {
-    CoroutineScope(Dispatchers.Default).launch {
+    CoroutineScope(Dispatchers.Main.immediate).launch {
         val result = navigateForResult(
             TranslateScreen.TextEditorScreen.route.formatQueryStyle(
                 "action" to action.toString()
