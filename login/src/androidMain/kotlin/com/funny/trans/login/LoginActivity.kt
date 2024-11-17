@@ -1,10 +1,10 @@
 package com.funny.trans.login
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import com.funny.trans.login.ui.LoginNavigation
+import com.funny.trans.login.ui.supportBiometric
 import com.funny.translation.AppConfig
 import com.funny.translation.BaseActivity
 import com.funny.translation.helper.Log
@@ -20,7 +20,7 @@ actual class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (supportBiometric) {
             BiometricUtils.init()
         }
 

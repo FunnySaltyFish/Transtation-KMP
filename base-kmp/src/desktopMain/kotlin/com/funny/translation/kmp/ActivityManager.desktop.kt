@@ -15,7 +15,6 @@ import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.ui.App
 import moe.tlaster.precompose.ProvidePreComposeLocals
-import moe.tlaster.precompose.navigation.NavOptions
 import java.util.LinkedList
 
 
@@ -39,7 +38,6 @@ actual object ActivityManager {
     actual fun start(
         targetClass: Class<out BaseActivity>,
         data: MutableMap<String, Any?>,
-        options: NavOptions,
         onBack: (result: Map<String, Any?>?) -> Unit
     ) {
         val activity = allActivities[targetClass] ?: return

@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import com.funny.translation.BaseActivity
 import com.funny.translation.helper.Log
-import moe.tlaster.precompose.navigation.NavOptions
 import java.util.LinkedList
 
 actual object ActivityManager {
@@ -29,7 +28,6 @@ actual object ActivityManager {
     actual fun start(
         targetClass: Class<out BaseActivity>,
         data: MutableMap<String, Any?>,
-        options: NavOptions,
         onBack: (result: Map<String, Any?>?) -> Unit
     ) {
         val activity = currentActivity() ?: return
