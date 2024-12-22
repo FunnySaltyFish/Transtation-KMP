@@ -1,5 +1,6 @@
 package com.funny.translation.translate.ui.main
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -39,17 +41,21 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -65,15 +71,20 @@ import androidx.compose.ui.unit.sp
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
 import com.funny.translation.GlobalTranslationConfig
+import com.funny.translation.bean.show
 import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.lerp
+import com.funny.translation.helper.rememberDerivedStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
+import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.LLMTranslationResult
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.TranslationResult
+import com.funny.translation.translate.TranslationStage
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transFavoriteDao
 import com.funny.translation.translate.ui.widget.ExpandMoreButton
@@ -87,6 +98,7 @@ import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.NavPaddingItem
+import com.funny.translation.ui.TwoTextWithTooltip
 import com.funny.translation.ui.safeMain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -400,15 +412,27 @@ private fun ResultItem(
             Text(
                 text = result.engineName,
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.W500
             )
 
             // 如果有详细释义，则显示展开按钮
             if (!result.detailText.isNullOrEmpty()) {
-                ExpandMoreButton(modifier = Modifier.offset(24.dp), expand = expandDetail, tint = MaterialTheme.colorScheme.primary) {
-                    expandDetail = it
+                Box(
+                    modifier = Modifier.offset(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ExpandMoreButton(
+                        modifier = Modifier,
+                        expand = expandDetail,
+                        tint = MaterialTheme.colorScheme.primary
+                    ) {
+                        expandDetail = it
+                    }
+                    if (result.stage == TranslationStage.PARTIAL_TRANSLATION) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    }
                 }
             }
             // 收藏、朗读、复制三个图标
@@ -426,24 +450,24 @@ private fun ResultItem(
             }
             SpeakButton(
                 modifier = Modifier.offset(8.dp),
-                text = result.basicResult.trans,
+                text = result.basic,
                 language = result.targetLanguage!!
             )
             CopyButton(
-                text = result.basicResult.trans,
+                text = result.basic,
                 tint = MaterialTheme.colorScheme.primary
             )
         }
 
         SelectionContainer {
             Text(
-                text = result.basicResult.trans,
+                text = result.basic,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = 16.sp,
             )
         }
-        if (expandDetail) {
-            Divider(modifier = Modifier.padding(top = 4.dp))
+        if (expandDetail && result.detailText != null) {
+            HorizontalDivider(modifier = Modifier.padding(top = 4.dp))
             MarkdownText(
                 markdown = result.detailText!!,
                 modifier = Modifier
@@ -452,7 +476,133 @@ private fun ResultItem(
                 selectable = true
             )
         }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            CompositionLocalProvider(LocalTextStyle provides LocalTextStyle.current.copy(
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.primary
+            )) {
+                if (AppConfig.sAITransExplain.value) {
+                    SmartTransIndicator(
+                        modifier = Modifier,
+                        result = result
+                    )
+                } else {
+                    Text(text = "未开启智能翻译")
+                }
+            }
+
+            if (result is LLMTranslationResult) {
+                val cost = result.cost
+                CostIndicator(
+                    modifier = Modifier,
+                    selectingPromptCost = cost.selectingPrompt.consumption.show(6),
+                    actualCost = cost.actualTrans.consumption.show(6),
+                    totalCost = cost.total.show(6),
+                    supportingString = ResStrings.llm_trans_template.format(
+                        input1 = cost.selectingPrompt.input_tokens.toString(),
+                        output1 = cost.selectingPrompt.output_tokens.toString(),
+                        input2 = cost.actualTrans.input_tokens.toString(),
+                        output2 = cost.actualTrans.output_tokens.toString()
+                    )
+                )
+            }
+
+        }
     }
+}
+
+sealed class SmartTransIndicatorShowType {
+    data object None : SmartTransIndicatorShowType()
+    data object Selecting : SmartTransIndicatorShowType()
+    data class Result(val type: String) : SmartTransIndicatorShowType() {
+        override fun toString(): String {
+            return "Result#$type"
+        }
+    }
+
+    companion object {
+        val Saver = Saver<SmartTransIndicatorShowType, String>(
+            save = { it.toString() },
+            restore = {
+                when (it) {
+                    "None" -> None
+                    "Selecting" -> Selecting
+                    else -> Result(it.substringAfter("#"))
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun SmartTransIndicator(
+    modifier: Modifier = Modifier,
+    result: TranslationResult,
+) {
+    val stage by rememberUpdatedState(result.stage)
+    val showType by rememberDerivedStateOf {
+        when {
+            stage == TranslationStage.IDLE -> SmartTransIndicatorShowType.None
+            stage == TranslationStage.SELECTING_PROMPT -> SmartTransIndicatorShowType.Selecting
+            stage >= TranslationStage.SELECTED_PROMPT && result.smartTransType != null ->
+                SmartTransIndicatorShowType.Result(result.smartTransType!!)
+
+            else -> SmartTransIndicatorShowType.None
+        }
+    }
+
+    AnimatedContent(modifier = modifier, targetState = showType) { type ->
+        when (type) {
+            SmartTransIndicatorShowType.None -> {}
+            SmartTransIndicatorShowType.Selecting -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("...")
+                }
+            }
+
+            is SmartTransIndicatorShowType.Result -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    FixedSizeIcon(
+                        painter = painterDrawableRes("ic_magic"),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(type.type)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CostIndicator(
+    modifier: Modifier = Modifier,
+    selectingPromptCost: String,
+    actualCost: String,
+    totalCost: String,
+    supportingString: String,
+) {
+    TwoTextWithTooltip(
+        modifier = modifier,
+        text = totalCost,
+        text1 = selectingPromptCost,
+        text1Desc = ResStrings.selecting_prompt_cost,
+        text2 = actualCost,
+        text2Desc = ResStrings.actual_cost,
+        style = LocalTextStyle.current.copy(
+            fontSize = 12.sp,
+        ),
+        supportingText = supportingString,
+    )
 }
 
 @Composable
@@ -461,15 +611,18 @@ private fun rememberFavoriteState(
 ): MutableState<Boolean> {
     val state = remember { mutableStateOf(false) }
     LaunchedEffect(key1 = Unit) {
+        if (!GlobalTranslationConfig.isValid()) return@LaunchedEffect
         withContext(Dispatchers.IO) {
-            if (!GlobalTranslationConfig.isValid()) return@withContext
-            state.value = appDB.transFavoriteDao.count(
+            val hasFavorited = appDB.transFavoriteDao.count(
                 GlobalTranslationConfig.sourceString!!,
-                result.basicResult.trans,
+                result.basic,
                 GlobalTranslationConfig.sourceLanguage!!.id,
                 GlobalTranslationConfig.targetLanguage!!.id,
                 result.engineName
             ) > 0
+            withContext(Dispatchers.Main) {
+                state.value = hasFavorited
+            }
         }
     }
     return state

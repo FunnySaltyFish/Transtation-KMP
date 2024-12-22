@@ -11,7 +11,7 @@ abstract class CoreTranslationTask(
 abstract class CoreTextTranslationTask(
     var sourceString: String = "",
 ) : CoreTranslationTask() {
-    val result by lazy { TranslationResult() }
+    open val result by lazy { TranslationResult() }
     var mutex: Mutex? = null
 
     @Throws(TranslationException::class)

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="llm_trans_template">- 智能策略选择阶段：输入${input1}，输出${output1}\n- 实际翻译阶段：输入${input2}，输出${output2}</string>
+    <string name="selecting_prompt_cost">智能策略选择消耗</string>
+    <string name="actual_cost">实际翻译消耗</string>
     <string name="self_bought">自购</string>
     <string name="vip_give">会员赠送</string>
     <string name="vip_free_point_tip">会员赠送点数每月一号重置，重置时剩余会员点数需大于7天</string>
@@ -354,8 +357,8 @@
     <string name="add_config">添加配置</string>
     <string name="apply_config_to">应用配置到...</string>
     <string name="current_config">当前配置：</string>
-    <string name="ai_trans_explain">大模型输出解释</string>
-    <string name="ai_trans_explain_desc">当输入文本较短时，使用大模型翻译额外给出详细解释（这会导致花费更多时间）</string>
+    <string name="ai_trans_explain">智能翻译</string>
+    <string name="ai_trans_explain_desc">【强烈推荐尝试】使用大模型翻译时，智能根据输入文本选择翻译类型，如单词查词、诗歌翻译、散文翻译、新闻翻译等（这会导致花费更多时间）</string>
     <string name="limited_time_free">限免</string>
     <string name="translate_engine_hint">【翻译引擎：${engine}】</string>
     <string name="float_window_translate_engine">悬浮窗翻译引擎</string>

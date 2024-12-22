@@ -26,8 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.translate.ui.widget.ExpandMoreButton
-import com.funny.translation.translate.ui.widget.RichTooltipCloseButton
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.RichTooltipCloseButton
 
 
 /**

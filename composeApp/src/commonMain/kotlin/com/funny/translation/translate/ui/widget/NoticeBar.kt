@@ -77,7 +77,7 @@ fun NoticeBar(
                 overflow = overflow,
                 maxLines = if (singleLine) 1 else Int.MAX_VALUE,
                 modifier = Modifier
-                    .ifThen(scrollable, Modifier.basicMarquee())
+                    .ifThen(scrollable) { basicMarquee() }
                     .weight(1f)
                     .padding(horizontal = 5.dp)
                     .verticalScroll(rememberScrollState()),

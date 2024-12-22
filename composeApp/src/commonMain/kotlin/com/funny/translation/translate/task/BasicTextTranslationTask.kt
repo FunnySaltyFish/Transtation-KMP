@@ -9,8 +9,7 @@ abstract class BasicTextTranslationTask() :
     @Throws(TranslationException::class)
     override suspend fun translate() {
         val url = madeURL()
-        result.engineName = name
-        result.sourceString = sourceString
+        result.reset(sourceString, name)
         try {
             if (sourceLanguage == targetLanguage) { //如果目标语言和源语言相同，跳过翻译
                 result.setBasicResult(sourceString)

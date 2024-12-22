@@ -14,7 +14,6 @@ import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.ui.App
-import moe.tlaster.precompose.ProvidePreComposeLocals
 import java.util.LinkedList
 
 
@@ -93,10 +92,8 @@ inline fun <reified T: BaseActivity> WindowHolderScope.addWindow(
                     onCloseRequest()
                     activity.windowShowState.value = false
                 }, title = title, icon = icon) {
-                    ProvidePreComposeLocals {
-                        App {
-                            content(activity)
-                        }
+                    App {
+                        content(activity)
                     }
                 }
             }

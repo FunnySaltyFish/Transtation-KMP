@@ -108,7 +108,9 @@ object OkHttpUtils {
                     })
 
                     // 对于文本翻译，如果是 vip 且开启了显示详细结果，那么加上 show_detail=true
-                    if (!newUrl.path.endsWith("translate_image") && AppConfig.isMembership() && AppConfig.sShowDetailResult.value) {
+                    if (!newUrl.path.endsWith("translate_image")
+                        && !newUrl.path.endsWith("translate_streaming")
+                        && AppConfig.isMembership() && AppConfig.sShowDetailResult.value) {
                         newUrl = URL("$newUrl&show_detail=true")
                     }
                 }
@@ -161,6 +163,7 @@ object OkHttpUtils {
                 .excludePath(TRANS_PATH + "ai/ask_stream")
                 .excludePath(TRANS_PATH + "ai/tts/generate_stream")
                 .excludePath(TRANS_PATH + "app_update/get_apk")
+                .excludePath(TRANS_PATH + "api/translate_streaming")
                 .build()
         )
 

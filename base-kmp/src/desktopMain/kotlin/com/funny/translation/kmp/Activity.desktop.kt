@@ -2,13 +2,13 @@ package com.funny.translation.kmp
 
 actual abstract class KMPActivity : KMPContext() {
     // Fragment related fields
-    actual protected val mFragments: Any = DesktopFragmentController()
-    actual protected val mFragmentLifecycleRegistry: Any = DesktopLifecycleRegistry()
-
-    // Lifecycle fields
-    actual protected val mCreated: Boolean = false
-    actual protected val mResumed: Boolean = false
-    actual protected val mStopped: Boolean = false
+//    actual protected val mFragments: Any = DesktopFragmentController()
+//    actual protected val mFragmentLifecycleRegistry: Any = DesktopLifecycleRegistry()
+//
+//    // Lifecycle fields
+//    actual protected val mCreated: Boolean = false
+//    actual protected val mResumed: Boolean = false
+//    actual protected val mStopped: Boolean = false
 
 //    // Window and view related fields
 //    actual protected val mDecor: Any? = null

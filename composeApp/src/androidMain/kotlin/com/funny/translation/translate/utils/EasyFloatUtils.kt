@@ -237,7 +237,7 @@ object EasyFloatUtils {
                         }
                         task.translate()
                         withContext(Dispatchers.Main) {
-                            resultText.text = task.result.basicResult.trans
+                            resultText.text = task.result.basic
                             if (speakBtn.visibility != View.VISIBLE){
                                 speakBtn.visibility = View.VISIBLE
                             }

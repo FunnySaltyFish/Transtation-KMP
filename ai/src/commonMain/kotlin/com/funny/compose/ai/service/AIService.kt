@@ -62,6 +62,22 @@ interface AIService {
     @DynamicTimeout(connectTimeout = 20, readTimeout = 80, writeTimeout = 30)
     suspend fun askStream(@Body req: AskStreamRequest): ResponseBody
 
+    /**
+     * 流式翻译
+     */
+    @POST("api/translate_streaming")
+    @FormUrlEncoded
+    @Streaming
+    @DynamicTimeout(connectTimeout = 20, readTimeout = 80, writeTimeout = 30)
+    suspend fun translateStream(
+        @Field("text") text: String,
+        @Field("source") source: String,
+        @Field("target") target: String,
+        @Field("model_id") modelId: Int,
+        @Field("explain") explain: Boolean = AppConfig.sAITransExplain.value
+    ): ResponseBody
+
+
     @GET("ai/get_models")
     suspend fun getChatModels(
         // 这个 lang 并不实际使用，主要是区分 url，避免 nginx 缓存带来的问题
@@ -133,7 +149,7 @@ suspend fun ResponseBody.asFlow() = withContext(Dispatchers.IO) {
     flow {
         val response = this@asFlow
         response.source().use { inputStream ->
-            val buffer = ByteArray(256)
+            val buffer = ByteArray(1024)
             try {
                 while (true) {
                     val read = inputStream.read(buffer)

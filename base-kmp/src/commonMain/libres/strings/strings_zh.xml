@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="close">关闭</string>
     <string name="please_select">请选择</string>
     <string name="language_auto">自动选择</string>
     <string name="language_chinese">中文</string>

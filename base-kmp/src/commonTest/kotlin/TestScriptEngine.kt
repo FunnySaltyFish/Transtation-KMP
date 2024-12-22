@@ -1,4 +1,7 @@
 import com.funny.translation.helper.ScriptEngine
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 
 class TestScriptEngine {
@@ -17,6 +20,8 @@ class TestScriptEngine {
                 println(msg)
             }
         })
-        engine.eval(script = code)
+        CoroutineScope(Dispatchers.IO).launch {
+            engine.eval(script = code)
+        }
     }
 }

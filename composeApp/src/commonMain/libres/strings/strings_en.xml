@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="llm_trans_template">- Smart Strategy Selection Phase: Input ${input1}, Output ${output1}\n- Actual Translation Phase: Input ${input2}, Output ${output2}</string>
+    <string name="selecting_prompt_cost">Selecting Prompt Cost</string>
+    <string name="actual_cost">Actual Cost</string>
     <string name="self_bought">Self-Bought</string>
     <string name="vip_give">VIP Give</string>
     <string name="vip_free_point_tip">VIP Give point is reset every month, your remaining points must be greater than 7 days when resetting</string>
@@ -353,8 +356,8 @@
     <string name="add_config">Add Config</string>
     <string name="apply_config_to">Apply config to...</string>
     <string name="current_config">Current Config: </string>
-    <string name="ai_trans_explain">Explain When Using LLMs</string>
-    <string name="ai_trans_explain_desc">When the input text is short, the large model will provide additional detailed explanations (this will take more time)</string>
+    <string name="ai_trans_explain">Smart Translation</string>
+    <string name="ai_trans_explain_desc">[Highly Recommended] Smartly translate text with LLM, select translation type based on input text, example: word lookup, poetry translation, novel translation, etc. (This will cost more time)</string>
     <string name="limited_time_free">Free</string>
     <string name="translate_engine_hint">[Translate Engine: ${engine}]</string>
     <string name="float_window_translate_engine">Float Window Engine</string>

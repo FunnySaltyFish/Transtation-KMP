@@ -20,7 +20,7 @@ fun fromTransResult(
     TransFavoriteBean(
         id = 0,
         sourceString = sourceString,
-        resultText = transResult.basicResult.trans,
+        resultText = transResult.basic,
         sourceLanguageId = sourceLanguageId,
         targetLanguageId = transResult.targetLanguage?.id ?: Language.AUTO.id,
         engineName = transResult.engineName,

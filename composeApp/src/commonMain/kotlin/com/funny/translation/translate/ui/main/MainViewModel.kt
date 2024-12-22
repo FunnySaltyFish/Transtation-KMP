@@ -236,11 +236,10 @@ class MainViewModel : BaseViewModel() {
             try {
                 task.result.targetLanguage = targetLanguage
                 startedProgress += 1f / totalProgress
+                addTranslateResultItem(task.result)
                 withContext(Dispatchers.IO) {
                     task.translate()
                 }
-
-                updateTranslateResult(task.result)
                 Log.d(TAG, "translate : $finishedProgress ${task.result}")
             } catch (e: TranslationException) {
                 e.printStackTrace()
@@ -248,15 +247,14 @@ class MainViewModel : BaseViewModel() {
                     setBasicResult(
                         "${ResStrings.error_result}\n${e.message}"
                     )
-                    updateTranslateResult(this)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 with(task.result) {
                     setBasicResult(ResStrings.error_result)
-                    updateTranslateResult(this)
                 }
             }
+            finishedProgress += 1f / totalProgress
         }
     }
 
@@ -264,6 +262,9 @@ class MainViewModel : BaseViewModel() {
         val tasks: ArrayList<Deferred<*>> = arrayListOf()
         createFlow(true).buffer().collect { task ->
             tasks.add(viewModelScope.async {
+                updateProgressMutex.withLock {
+                    addTranslateResultItem(task.result)
+                }
                 try {
                     updateProgressMutex.withLock {
                         task.result.targetLanguage = targetLanguage
@@ -272,7 +273,6 @@ class MainViewModel : BaseViewModel() {
                     withContext(Dispatchers.IO) {
                         task.translate()
                     }
-                    updateTranslateResultWithMutex(task.result)
                     Log.d(TAG, "translate : $finishedProgress ${task.result}")
                 } catch (e: TranslationException) {
                     e.printStackTrace()
@@ -281,7 +281,6 @@ class MainViewModel : BaseViewModel() {
                             setBasicResult(
                                 "${ResStrings.error_result}\n${e.message}"
                             )
-                            updateTranslateResult(this)
                         }
                     }
                 } catch (e: Exception) {
@@ -289,10 +288,10 @@ class MainViewModel : BaseViewModel() {
                     updateProgressMutex.withLock {
                         with(task.result) {
                             setBasicResult(ResStrings.error_result)
-                            updateTranslateResult(this)
                         }
                     }
                 }
+                finishedProgress += 1f / totalProgress
             })
         }
         // 等待所有任务完成再返回，使对翻译状态的判断正常
@@ -346,7 +345,7 @@ class MainViewModel : BaseViewModel() {
                         val result = TranslationResult(it.name).apply {
                             setBasicResult("当前引擎暂不支持该语种！")
                         }
-                        updateTranslateResult(result)
+                        addTranslateResultItem(result)
                     }
                     if (withMutex) {
                         updateProgressMutex.withLock {
@@ -359,8 +358,7 @@ class MainViewModel : BaseViewModel() {
             }
         }
 
-    private fun updateTranslateResult(result: TranslationResult) {
-        finishedProgress += 1f / totalProgress
+    private fun addTranslateResultItem(result: TranslationResult) {
         resultList.let {
             val currentKey = it.find { r -> r.engineName == result.engineName }
             // 绝大多数情况下应该是没有的
@@ -373,7 +371,7 @@ class MainViewModel : BaseViewModel() {
 
     private suspend fun updateTranslateResultWithMutex(result: TranslationResult) {
         updateProgressMutex.withLock {
-            updateTranslateResult(result)
+            addTranslateResultItem(result)
         }
     }
 

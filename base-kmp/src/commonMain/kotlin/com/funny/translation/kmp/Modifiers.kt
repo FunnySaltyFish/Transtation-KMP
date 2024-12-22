@@ -5,8 +5,8 @@ import androidx.compose.ui.Modifier
 
 expect fun Modifier.kmpImeNestedScroll(): Modifier
 
-fun Modifier.ifThen(condition: Boolean, then: Modifier, other: Modifier = this): Modifier {
-    return if (condition) then else other
+fun Modifier.ifThen(condition: Boolean, then: Modifier.() -> Modifier): Modifier {
+    return if (condition) this.then(then(this)) else this
 }
 
 @Stable
