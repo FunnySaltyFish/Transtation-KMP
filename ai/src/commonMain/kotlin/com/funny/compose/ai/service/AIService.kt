@@ -166,6 +166,31 @@ suspend fun ResponseBody.asFlow() = withContext(Dispatchers.IO) {
     }
 }
 
+suspend fun ResponseBody.asFlowByLines() = withContext(Dispatchers.IO) {
+    flow {
+        val response = this@asFlowByLines
+        response.source().use { inputStream ->
+            try {
+                val buffer = ByteArray(1024)
+                while (true) {
+                    val read = inputStream.read(buffer)
+                    if (read == -1) {
+                        break
+                    }
+                    val str = String(buffer, 0, read)
+                    val arr = str.split("\n")
+                    arr.forEach {
+                        if (it.isNotEmpty()) emit(it)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit("<<error>>" + e.message)
+            }
+        }
+    }
+}
+
 /**
  * 将一个字符串流转换为 StreamMessage 的流，并自动完成扣费
  * @receiver Flow<String>

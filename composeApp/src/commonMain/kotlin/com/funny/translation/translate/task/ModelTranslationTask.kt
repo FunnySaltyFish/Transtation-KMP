@@ -2,7 +2,7 @@ package com.funny.translation.translate.task
 
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.service.aiService
-import com.funny.compose.ai.service.asFlow
+import com.funny.compose.ai.service.asFlowByLines
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.JsonX
 import com.funny.translation.helper.Log
@@ -48,7 +48,7 @@ class ModelTranslationTask(val model: Model): ServerTextTranslationTask() {
                 target = languageMapping[targetLanguage] ?: "Simplified Chinese",
                 modelId = model.chatBotId,
                 explain = AppConfig.sAITransExplain.value
-            ).asFlow().map {
+            ).asFlowByLines().map {
                 try {
                     JsonX.fromJson<StreamingTranslation>(it)
                 } catch (e: SerializationException) {
