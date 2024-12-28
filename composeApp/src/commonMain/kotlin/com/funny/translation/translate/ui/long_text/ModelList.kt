@@ -45,7 +45,6 @@ import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.delay
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
     ExperimentalFoundationApi::class
@@ -170,4 +169,4 @@ fun ColumnScope.ModelListPart(
 }
 
 fun Model.description(): String
-    = "${ResStrings.context_length} ${ ((maxContextTokens)/1000f).roundToInt() }k | ${ResStrings.currency_symbol}${ cost1kTokens} / ${ResStrings.kilo_tokens} | $description"
+    = "${ResStrings.currency_symbol}${ cost1kTokens} / ${ResStrings.kilo_tokens} | $description"

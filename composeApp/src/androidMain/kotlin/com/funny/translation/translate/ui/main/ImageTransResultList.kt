@@ -298,10 +298,11 @@ private fun AIOptimizationSheet(
                                 ) {
                                     TextButton(
                                         onClick = {
+                                            vm.cancelOptimizeByAI()
                                             onDismissRequest()
                                         }, modifier = Modifier
                                     ) {
-                                        Text(text = "取消")
+                                        Text(text = "丢弃")
                                     }
                                     TextButton(
                                         onClick = {

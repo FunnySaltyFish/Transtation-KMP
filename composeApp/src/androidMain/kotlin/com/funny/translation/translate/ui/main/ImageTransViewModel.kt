@@ -19,6 +19,7 @@ import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.helper.BitmapUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
+import com.funny.translation.helper.extractJSON
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.translate.ImageTranslationPart
@@ -297,7 +298,7 @@ class OptimizeByAITask(
                     }
                     is StreamMessage.End -> {
                         loadingState.value = runCatching {
-                            val result = JSONArray(aiJobGeneratedText)
+                            val result = JSONArray(aiJobGeneratedText.extractJSON())
                             val list = mutableListOf<MultiIndexedImageTranslationPart>()
                             for (i in 0 until result.length()) {
                                 val each = result.getJSONObject(i)

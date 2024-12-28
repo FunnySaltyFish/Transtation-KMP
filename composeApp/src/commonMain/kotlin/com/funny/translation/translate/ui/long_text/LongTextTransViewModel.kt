@@ -167,10 +167,7 @@ class LongTextTransViewModel: ModelViewModel() {
                     lastResultText = lastResultText.removeSuffix("\n" + SEP)
                     // 前文的最后一小点，供上下文衔接
                     val prevEnd = if (lastResultText.isNotEmpty()) {
-                        val lastLine = lastResultText.lastIndexOf('\n')
-                        if (lastLine == -1 || lastLine == lastResultText.lastIndex)
-                            lastResultText.takeLast(50)
-                        else lastResultText.substring(lastLine + 1)
+                        "..." + lastResultText.takeLast(100)
                     } else ""
                     val (part, messages) = getNextPart(prevEnd)
                     Log.d(TAG, "startTranslate: nextPart: $part")

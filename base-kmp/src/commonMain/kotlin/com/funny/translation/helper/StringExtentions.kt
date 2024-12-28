@@ -56,9 +56,14 @@ fun String.formatQueryStyle(vararg items: Pair<String, Any>): String {
  * @return String
  */
 fun String.extractJSON(): String {
-    val start = indexOf("{")
-    val end = lastIndexOf("}")
-    return safeSubstring(start, end + 1)
+    val jsonRegex = """```(json)?([\s\S]*?)```""".toRegex()
+    val matchResult = jsonRegex.find(this)
+    return if (matchResult != null) {
+        matchResult.groupValues[2].trim()
+    } else {
+        val regex2 = """\[[\s\S]*]|\{[\s\S]*\}""".toRegex()
+        regex2.find(this)?.value ?: "{}"
+    }
 }
 
 /**
