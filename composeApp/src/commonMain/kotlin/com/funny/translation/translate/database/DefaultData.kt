@@ -12,7 +12,7 @@ object DefaultData {
     val bindEngines = listOf(
         TextTranslationEngines.BaiduNormal,
         TextTranslationEngines.Tencent,
-        TextTranslationEngines.Youdao,
+        // TextTranslationEngines.Youdao,
         TextTranslationEngines.Jinshan,
 
         TextTranslationEngines.BiggerText,

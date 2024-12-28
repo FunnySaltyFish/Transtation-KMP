@@ -23,6 +23,7 @@ import com.funny.translation.helper.Log
 import com.funny.translation.helper.now
 import com.funny.translation.js.core.JsTranslateTaskText
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.CoreTextTranslationTask
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.TranslationException
@@ -47,12 +48,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.util.LinkedList
 
 class MainViewModel : BaseViewModel() {
     // 全局UI状态
@@ -232,7 +231,7 @@ class MainViewModel : BaseViewModel() {
     }
 
     private suspend fun translateInSequence(){
-        createFlow().buffer().collect { task ->
+        createTasks().forEach { task ->
             try {
                 task.result.targetLanguage = targetLanguage
                 startedProgress += 1f / totalProgress
@@ -260,35 +259,28 @@ class MainViewModel : BaseViewModel() {
 
     private suspend fun translateInParallel() {
         val tasks: ArrayList<Deferred<*>> = arrayListOf()
-        createFlow(true).buffer().collect { task ->
+        createTasks(true).also { newTasks ->
+            resultList.addAll(newTasks.map { it.result }.sortedBy(SortResultUtils.defaultResultSort))
+            startedProgress = 1.0f
+        }.forEach { task ->
             tasks.add(viewModelScope.async {
-                updateProgressMutex.withLock {
-                    addTranslateResultItem(task.result)
-                }
                 try {
-                    updateProgressMutex.withLock {
-                        task.result.targetLanguage = targetLanguage
-                        startedProgress += 1f / totalProgress
-                    }
+                    task.result.targetLanguage = targetLanguage
                     withContext(Dispatchers.IO) {
                         task.translate()
                     }
                     Log.d(TAG, "translate : $finishedProgress ${task.result}")
                 } catch (e: TranslationException) {
                     e.printStackTrace()
-                    updateProgressMutex.withLock {
-                        with(task.result) {
-                            setBasicResult(
-                                "${ResStrings.error_result}\n${e.message}"
-                            )
-                        }
+                    with(task.result) {
+                        setBasicResult(
+                            "${ResStrings.error_result}\n${e.message}"
+                        )
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    updateProgressMutex.withLock {
-                        with(task.result) {
-                            setBasicResult(ResStrings.error_result)
-                        }
+                    with(task.result) {
+                        setBasicResult(ResStrings.error_result)
                     }
                 }
                 finishedProgress += 1f / totalProgress
@@ -298,80 +290,60 @@ class MainViewModel : BaseViewModel() {
         tasks.awaitAll()
     }
 
-    private fun createFlow(withMutex: Boolean = false) =
-        flow {
-            selectedEngines.forEach {
-                if (support(it.supportLanguages)) {
-                    val lambda = {
-                        val task = when (it) {
-                            is TextTranslationEngines -> {
-                                it.createTask(
-                                    actualTransText,
-                                    sourceLanguage,
-                                    targetLanguage
-                                )
-                            }
+    private suspend fun createTasks(withMutex: Boolean = false): List<CoreTextTranslationTask> {
+        val res = LinkedList<CoreTextTranslationTask>()
+        selectedEngines.forEach {
+            if (support(it.supportLanguages)) {
+                val task = when (it) {
+                    is TextTranslationEngines -> {
+                        it.createTask(
+                            actualTransText,
+                            sourceLanguage,
+                            targetLanguage
+                        )
+                    }
 
-                            is ModelTranslationTask -> {
-                                val modelTask = ModelTranslationTask(it.model)
-                                modelTask.result.engineName = modelTask.name
-                                modelTask.sourceString = actualTransText
-                                modelTask.sourceLanguage = sourceLanguage
-                                modelTask.targetLanguage = targetLanguage
-                                modelTask
-                            }
+                    is ModelTranslationTask -> {
+                        val modelTask = ModelTranslationTask(it.model)
+                        modelTask.result.engineName = modelTask.name
+                        modelTask.sourceString = actualTransText
+                        modelTask.sourceLanguage = sourceLanguage
+                        modelTask.targetLanguage = targetLanguage
+                        modelTask
+                    }
 
-                            else -> {
-                                val jsTask = it as JsTranslateTaskText
-                                jsTask.result.engineName = jsTask.name
-                                jsTask.sourceString = actualTransText
-                                jsTask.sourceLanguage = sourceLanguage
-                                jsTask.targetLanguage = targetLanguage
-                                jsTask
-                            }
-                        }
-                        if (withMutex) task.mutex = evalJsMutex
-                        task
-                    }
-                    if (withMutex) {
-                        updateProgressMutex.withLock {
-                            emit(lambda())
-                        }
-                    } else {
-                        emit(lambda())
-                    }
-                } else {
-                    val lambda = {
-                        val result = TranslationResult(it.name).apply {
-                            setBasicResult("当前引擎暂不支持该语种！")
-                        }
-                        addTranslateResultItem(result)
-                    }
-                    if (withMutex) {
-                        updateProgressMutex.withLock {
-                            lambda()
-                        }
-                    } else {
-                        lambda()
+                    else -> {
+                        val jsTask = it as JsTranslateTaskText
+                        jsTask.result.engineName = jsTask.name
+                        jsTask.sourceString = actualTransText
+                        jsTask.sourceLanguage = sourceLanguage
+                        jsTask.targetLanguage = targetLanguage
+                        jsTask
                     }
                 }
+                if (withMutex) task.mutex = evalJsMutex
+                res.add(task)
+            } else {
+                val result = TranslationResult(it.name).apply {
+                    setBasicResult("当前引擎暂不支持该语种！")
+                }
+                addTranslateResultItem(result)
             }
         }
-
-    private fun addTranslateResultItem(result: TranslationResult) {
-        resultList.let {
-            val currentKey = it.find { r -> r.engineName == result.engineName }
-            // 绝大多数情况下应该是没有的
-            // 但是线上的报错显示有时候会有，所以判断一下吧
-            if (currentKey != null) it.remove(currentKey)
-            it.add(result)
-            it.sortBy(SortResultUtils.defaultResultSort)
-        }
+        return res
     }
 
-    private suspend fun updateTranslateResultWithMutex(result: TranslationResult) {
-        updateProgressMutex.withLock {
-            addTranslateResultItem(result)
+    private suspend fun addTranslateResultItem(result: TranslationResult) {
+        withContext(Dispatchers.Main) {
+            resultList.let {
+                val currentKey = it.find { r -> r.engineName == result.engineName }
+                // 绝大多数情况下应该是没有的
+                // 但是线上的报错显示有时候会有，所以判断一下吧
+                if (currentKey != null) it.remove(currentKey)
+                it.add(result)
+                it.sortBy(SortResultUtils.defaultResultSort)
+                Log.d(TAG, "addTranslateResultItem: ${result.engineName}, now size: ${it.size}")
+            }
         }
     }
 

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -58,6 +59,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -87,9 +89,12 @@ import com.funny.translation.translate.TranslationResult
 import com.funny.translation.translate.TranslationStage
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transFavoriteDao
+import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.widget.ExpandMoreButton
 import com.funny.translation.translate.ui.widget.FrameAnimationIcon
+import com.funny.translation.translate.ui.widget.NoticeBar
 import com.funny.translation.translate.ui.widget.TwoProgressIndicator
+import com.funny.translation.translate.ui.widget.noticeBarModifier
 import com.funny.translation.translate.ui.widget.rememberFrameAnimIconState
 import com.funny.translation.translate.utils.AudioPlayer
 import com.funny.translation.translate.utils.PlaybackState
@@ -164,7 +169,6 @@ fun MainPartTranslating(vm: MainViewModel) {
                         vm.translateText = ""
                     }
                 }
-
             )
             Spacer(modifier = Modifier.height(8.dp))
             ResultList(
@@ -363,19 +367,28 @@ internal fun CopyButton(
 @Composable
 private fun ResultList(
     modifier: Modifier,
-    resultList: List<TranslationResult>,
-    doFavorite: (Boolean, TranslationResult) -> Unit
+    resultList: SnapshotStateList<TranslationResult>,
+    doFavorite: (Boolean, TranslationResult) -> Unit,
 ) {
+    val smartTransEnabled by AppConfig.sAITransExplain
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(start = 16.dp, top = 4.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        if (!smartTransEnabled && resultList.any { it is LLMTranslationResult }) {
+            item {
+                SmartTransEnableTip(
+                    modifier = Modifier.fillParentMaxWidth()
+                )
+            }
+        }
         itemsIndexed(resultList, key = { _, r -> r.engineName }) { _, result ->
             ResultItem(
                 modifier = Modifier.fillMaxWidth(),
                 result = result,
-                doFavorite = doFavorite
+                doFavorite = doFavorite,
+                smartTransEnabled = smartTransEnabled
             )
         }
         item {
@@ -389,6 +402,7 @@ private fun ResultItem(
     modifier: Modifier,
     result: TranslationResult,
     doFavorite: (Boolean, TranslationResult) -> Unit,
+    smartTransEnabled : Boolean = false
 ) {
     val offsetAnim = remember { Animatable(100f) }
     LaunchedEffect(Unit) {
@@ -400,12 +414,12 @@ private fun ResultItem(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(24.dp)
+                shape = RoundedCornerShape(8.dp)
             )
-            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp, top = 4.dp)
+            .padding(start = 16.dp, end = 8.dp, bottom = 8.dp, top = 0.dp)
             .animateContentSize()
     ) {
-        var expandDetail by rememberSaveable(key = AppConfig.sExpandDetailByDefault.value.toString()) {
+        var expandDetail by rememberSaveable {
             mutableStateOf(!result.detailText.isNullOrEmpty() && AppConfig.sExpandDetailByDefault.value)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -477,29 +491,26 @@ private fun ResultItem(
             )
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            CompositionLocalProvider(LocalTextStyle provides LocalTextStyle.current.copy(
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.primary
-            )) {
-                if (AppConfig.sAITransExplain.value) {
-                    SmartTransIndicator(
-                        modifier = Modifier,
-                        result = result
-                    )
-                } else {
-                    Text(text = "未开启智能翻译")
+        if (result is LLMTranslationResult) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (smartTransEnabled) {
+                    CompositionLocalProvider(LocalTextStyle provides LocalTextStyle.current.copy(
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )) {
+                        SmartTransIndicator(
+                            modifier = Modifier,
+                            result = result
+                        )
+                    }
                 }
-            }
 
-            if (result is LLMTranslationResult) {
                 val cost = result.cost
                 CostIndicator(
-                    modifier = Modifier,
+                    modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End),
                     selectingPromptCost = cost.selectingPrompt.consumption.show(6),
                     actualCost = cost.actualTrans.consumption.show(6),
                     totalCost = cost.total.show(6),
@@ -511,9 +522,22 @@ private fun ResultItem(
                     )
                 )
             }
-
         }
     }
+}
+
+@Composable
+private fun SmartTransEnableTip(
+    modifier: Modifier
+) {
+    val navController = LocalNavController.current
+    NoticeBar(
+        modifier = modifier.noticeBarModifier {
+            navController.navigate(TranslateScreen.SettingScreen.route)
+        },
+        text = ResStrings.smart_trans_enable_tip,
+        singleLine = true
+    )
 }
 
 sealed class SmartTransIndicatorShowType {
