@@ -316,7 +316,7 @@ fun FunctionsRow(
             iconName = "ic_star_filled",
             text = ResStrings.favorites
         ) {
-            navHostController.navigateSingleTop(TranslateScreen.FavoriteScreen.route)
+            navHostController.navigate(TranslateScreen.FavoriteScreen.route)
         }
     }
 }

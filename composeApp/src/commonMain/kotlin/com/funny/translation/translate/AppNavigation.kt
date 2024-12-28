@@ -398,6 +398,7 @@ fun NavHostController.navigateToTextTrans(
         route = TranslateScreen.MainScreen.route,
         navOptions {
             launchSingleTop = true
+            restoreState = true
             popUpTo(TranslateScreen.MainScreen.route) {
                 inclusive = false
             }

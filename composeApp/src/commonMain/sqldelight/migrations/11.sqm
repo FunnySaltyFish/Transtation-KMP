@@ -1,0 +1,4 @@
+
+-- 11：transFavorite 表新增 detailText
+
+ALTER TABLE transFavorite ADD COLUMN detailText TEXT DEFAULT '';

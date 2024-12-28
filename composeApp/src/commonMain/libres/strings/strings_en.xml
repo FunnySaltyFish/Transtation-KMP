@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="copy_source_text">Copy Source</string>
+    <string name="copy_target_text">Copy Target</string>
+    <string name="copy_detail_result">Copy Detail</string>
     <string name="smart_trans_enable_tip">✨Turning on "Smart Translation", the LLM gives translation even better!</string>
     <string name="llm_trans_template">- Smart Strategy Selection Phase: Input ${input1}, Output ${output1}\n- Actual Translation Phase: Input ${input2}, Output ${output2}</string>
     <string name="selecting_prompt_cost">Selecting Prompt Cost</string>

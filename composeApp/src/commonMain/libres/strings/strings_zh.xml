@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--    复制原文、复制译文、复制详细翻译、删除-->
+    <string name="copy_source_text">复制原文</string>
+    <string name="copy_target_text">复制译文</string>
+    <string name="copy_detail_result">复制详细翻译</string>
+
     <string name="smart_trans_enable_tip">✨开启“智能翻译”，大模型翻译体验更上一层楼！</string>
     <string name="llm_trans_template">- 智能策略选择阶段：输入${input1}，输出${output1}\n- 实际翻译阶段：输入${input2}，输出${output2}</string>
     <string name="selecting_prompt_cost">智能策略选择消耗</string>

@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS transFavorite (
     sourceLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
     targetLanguageId INTEGER AS Int NOT NULL DEFAULT 0,
     engineName TEXT NOT NULL DEFAULT '未知引擎',
-    time INTEGER NOT NULL
+    time INTEGER NOT NULL,
+    detailText TEXT DEFAULT ''
 );
 
 -- Queries for TransFavoriteDao
@@ -23,7 +24,7 @@ LIMIT :limit OFFSET :offset;
 
 -- Insert a TransFavoriteBean
 insertTransFavorite:
-INSERT INTO transFavorite (sourceString, resultText, sourceLanguageId, targetLanguageId, engineName, time)
+INSERT INTO transFavorite (sourceString, resultText, sourceLanguageId, targetLanguageId, engineName, time, detailText)
 VALUES ?;
 
 -- Delete a TransFavoriteBean

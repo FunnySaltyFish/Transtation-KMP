@@ -15,7 +15,7 @@ typealias TransFavoriteBean = TransFavorite
 fun fromTransResult(
     transResult: TranslationResult,
     sourceString: String,
-    sourceLanguageId: Int
+    sourceLanguageId: Int,
 ) =
     TransFavoriteBean(
         id = 0,
@@ -25,6 +25,7 @@ fun fromTransResult(
         targetLanguageId = transResult.targetLanguage?.id ?: Language.AUTO.id,
         engineName = transResult.engineName,
         time = System.currentTimeMillis(),
+        detailText = transResult.detailText ?: ""
     )
 
 
