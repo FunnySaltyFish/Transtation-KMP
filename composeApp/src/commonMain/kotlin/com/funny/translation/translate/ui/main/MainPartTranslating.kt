@@ -461,7 +461,7 @@ private fun ResultItem(
 
         SelectionContainer {
             Text(
-                text = result.basic,
+                text = result.basic.trim().ifEmpty { "正在翻译中……" },
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = 16.sp,
             )

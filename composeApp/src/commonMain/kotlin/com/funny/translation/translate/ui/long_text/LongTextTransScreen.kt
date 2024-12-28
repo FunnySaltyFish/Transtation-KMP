@@ -59,7 +59,11 @@ import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moe.tlaster.precompose.navigation.NavOptions
 import java.util.UUID
 
@@ -81,11 +85,15 @@ fun LongTextTransScreen() {
         val filePickerLauncher = rememberOpenFileLauncher {
             it ?: return@rememberOpenFileLauncher
             try {
-                val text = it.readText()
-                if (text.isNotBlank()) {
-                    navigateToDetailPage(null, text)
-                } else {
-                    context.toastOnUi(ResStrings.file_empty)
+                CoroutineScope(Dispatchers.IO).launch {
+                    val text = it.readText()
+                    withContext(Dispatchers.Main) {
+                        if (text.isNotBlank()) {
+                            navigateToDetailPage(null, text)
+                        } else {
+                            context.toastOnUi(ResStrings.file_empty)
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
