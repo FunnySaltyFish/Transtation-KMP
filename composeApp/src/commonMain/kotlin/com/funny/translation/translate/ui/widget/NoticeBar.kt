@@ -56,7 +56,6 @@ fun NoticeBar(
         mutableStateOf(true)
     }
 
-
     if (show) {
         Row(
             modifier = modifier,
@@ -72,7 +71,7 @@ fun NoticeBar(
             }
 
             Text(
-                text = text,
+                text = if (scrollable) text.replace('\n', '\t') else text,
                 color = color,
                 overflow = overflow,
                 maxLines = if (singleLine) 1 else Int.MAX_VALUE,

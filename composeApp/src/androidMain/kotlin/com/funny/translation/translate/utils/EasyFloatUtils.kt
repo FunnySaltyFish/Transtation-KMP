@@ -196,6 +196,17 @@ object EasyFloatUtils {
                 }
             }
         }
+        val speakSourceBtn = view.findViewById<TextView>(R.id.float_window_speak_source_btn).apply {
+            setOnClickListener {
+                val txt = edittext.text
+                if (txt.isNotEmpty()){
+                    val language = findLanguageById(spinnerSource.selectedItemPosition)
+                    AudioPlayer.playOrPause(txt.toString(), TTSConfManager.findByLanguage(language)){
+                        context.toastOnUi(ResStrings.err_speaking)
+                    }
+                }
+            }
+        }
         val copyBtn = view.findViewById<ImageButton>(R.id.float_window_copy_btn).apply {
             setOnClickListener {
                 val txt = resultText.text

@@ -83,15 +83,27 @@
             />
 
         <TextView
+            android:id="@+id/float_window_speak_source_btn"
+            android:layout_width="36dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_trans_button"
+            android:text="@string/single_speak_text"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="12sp" />
+
+        <TextView
             android:id="@+id/float_window_translate"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="36dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
             android:background="@drawable/bg_trans_button"
             android:text="@string/single_translate_text"
             android:textColor="@color/white"
             android:gravity="center"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:layout_marginStart="2dp"/>
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView

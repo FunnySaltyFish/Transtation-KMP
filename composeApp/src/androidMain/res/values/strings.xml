@@ -14,4 +14,5 @@
     <string name="speak">朗读</string>
     <string name="copy_content">复制</string>
     <string name="open_app">打开应用</string>
+    <string name="single_speak_text">读</string>
 </resources>
