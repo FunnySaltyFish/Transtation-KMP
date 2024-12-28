@@ -94,9 +94,9 @@ import com.funny.translation.translate.activity.CustomPhotoPickerActivity
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.ImageTranslationEngine
 import com.funny.translation.translate.findLanguageById
-import com.funny.translation.translate.ui.widget.AutoResizedText
 import com.funny.translation.translate.ui.widget.CustomCoilProvider
 import com.funny.translation.translate.ui.widget.ExchangeButton
+import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.floatingActionBarModifier
 import com.yalantis.ucrop.UCrop

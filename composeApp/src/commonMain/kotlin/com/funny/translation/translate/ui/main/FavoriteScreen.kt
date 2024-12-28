@@ -43,9 +43,9 @@ import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.TransFavoriteBean
 import com.funny.translation.translate.findLanguageById
 import com.funny.translation.translate.navigateToTextTrans
-import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.HintText
 
 @Composable
 fun FavoriteScreen(

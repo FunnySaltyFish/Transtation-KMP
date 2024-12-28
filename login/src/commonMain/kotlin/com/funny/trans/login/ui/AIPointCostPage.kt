@@ -29,10 +29,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,7 +54,9 @@ import com.funny.translation.kmp.viewModel
 import com.funny.translation.login.strings.ResStrings
 import com.funny.translation.network.service.AICostType
 import com.funny.translation.network.service.AIPointCost
+import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.DateRangePickerDialog
+import com.funny.translation.ui.HintText
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -86,9 +86,7 @@ fun AIPointCostPage() {
 
     val dateRangePickerState = rememberDateRangePickerState(
         initialDisplayMode = DisplayMode.Picker,
-        // Common: 2024-07-17 15:57:05.381
-        // Google: 2024-10-01 00:00:00
-        initialSelectedStartDateMillis = if (isCommonBuild) 1721203025381 else 1727712000000,
+        initialSelectedStartDateMillis = defaultStartTime,
         initialSelectedEndDateMillis = now.time,
         yearRange = 2023..(now.year + 1900),
         selectableDates = object : SelectableDates {
@@ -102,11 +100,11 @@ fun AIPointCostPage() {
         }
     )
 
-    var startDate by rememberStateOf(
+    var startDate: Long? by rememberStateOf(
         dateRangePickerState.selectedStartDateMillis
     )
 
-    var endDate by rememberStateOf(
+    var endDate: Long? by rememberStateOf(
         dateRangePickerState.selectedEndDateMillis
     )
 
@@ -121,79 +119,72 @@ fun AIPointCostPage() {
         costs.refresh()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(ResStrings.ai_cost_title) },
-                actions = {
-                    IconButton(onClick = { showDatePicker = true }) {
-                        Icon(Icons.Default.DateRange, ResStrings.select_date)
-                    }
-                    SortMenu(
-                        currentSort = sortType,
-                        currentOrder = sortOrder,
-                        onSortChange = { type, order ->
-                            sortType = type
-                            sortOrder = order
-                        }
-                    )
+    CommonPage(
+        title = ResStrings.ai_cost_title,
+        actions = {
+            IconButton(onClick = { showDatePicker = true }) {
+                Icon(Icons.Default.DateRange, ResStrings.select_date)
+            }
+            SortMenu(
+                currentSort = sortType,
+                currentOrder = sortOrder,
+                onSortChange = { type, order ->
+                    sortType = type
+                    sortOrder = order
                 }
             )
         }
-    ) { padding ->
-        Column(
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                placeholder = { Text(ResStrings.search_model_name) },
-                leadingIcon = { Icon(Icons.Default.Search, ResStrings.search) }
-            )
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            placeholder = { Text(ResStrings.search_model_name) },
+            leadingIcon = { Icon(Icons.Default.Search, ResStrings.search) }
+        )
 
-            if (showDatePicker) {
-                DateRangePickerDialog(
-                    state = dateRangePickerState,
-                    onDismissRequest = { showDatePicker = false },
-                    onDateSelected = { start, end ->
-                        showDatePicker = false
-                        startDate = start
-                        endDate = end
-                        // dateRangePickerState.setSelection(start, end)
-                    }
-                )
+        if (showDatePicker) {
+            DateRangePickerDialog(
+                state = dateRangePickerState,
+                onDismissRequest = { showDatePicker = false },
+                onDateSelected = { start, end ->
+                    showDatePicker = false
+                    startDate = start ?: defaultStartTime
+                    endDate = end ?: now.time
+                    // dateRangePickerState.setSelection(start, end)
+                }
+            )
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
+                HintText(ResStrings.ai_cost_hint, modifier = Modifier.fillParentMaxWidth())
+            }
+            items(
+                costs,
+                contentType = { it.cost_type }
+            ) { cost: AIPointCost ->
+                AIPointCostItem(cost = cost, filter = searchQuery)
             }
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(
-                    costs,
-                    contentType = { it.cost_type }
-                ) { cost: AIPointCost ->
-                    AIPointCostItem(cost = cost, filter = searchQuery)
+            when {
+                costs.loadState.refresh is LoadState.Loading -> {
+                    item { LoadingItem() }
                 }
-
-                when {
-                    costs.loadState.refresh is LoadState.Loading -> {
-                        item { LoadingItem() }
-                    }
-                    costs.loadState.refresh is LoadState.Error -> {
-                        item { ErrorItem { costs.refresh() } }
-                    }
-                    costs.loadState.append is LoadState.Loading -> {
-                        item { LoadingItem() }
-                    }
-                    costs.loadState.append is LoadState.Error -> {
-                        item { ErrorItem { costs.retry() } }
-                    }
+                costs.loadState.refresh is LoadState.Error -> {
+                    item { ErrorItem { costs.refresh() } }
+                }
+                costs.loadState.append is LoadState.Loading -> {
+                    item { LoadingItem() }
+                }
+                costs.loadState.append is LoadState.Error -> {
+                    item { ErrorItem { costs.retry() } }
                 }
             }
         }
@@ -318,3 +309,7 @@ private fun ErrorItem(onRetry: () -> Unit) {
         }
     }
 }
+
+// Common: 2024-07-17 15:57:05.381
+// Google: 2024-10-01 00:00:00
+private val defaultStartTime = if (isCommonBuild) 1721203025381 else 1727712000000

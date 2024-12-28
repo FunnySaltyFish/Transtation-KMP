@@ -27,11 +27,11 @@ import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.TransHistoryBean
 import com.funny.translation.translate.findLanguageById
-import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.translate.ui.widget.UpperPartBackground
 import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonTopBar
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.HintText
 import com.funny.translation.ui.touchToScale
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 

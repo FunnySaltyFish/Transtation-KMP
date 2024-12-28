@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="ai_cost_hint">数据最早至2024-07-17，仅记录消耗，不记录翻译内容。\n智能翻译单次会产生两笔消耗</string>
+
     <string name="find_username">找回用户名</string>
     <string name="finished">已完成</string>
     <string name="login">登录</string>

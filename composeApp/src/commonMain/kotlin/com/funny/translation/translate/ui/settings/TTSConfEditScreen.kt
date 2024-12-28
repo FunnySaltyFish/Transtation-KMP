@@ -61,8 +61,8 @@ import com.funny.translation.translate.tts.OpenAIProvider
 import com.funny.translation.translate.tts.Speaker
 import com.funny.translation.translate.tts.TTSConf
 import com.funny.translation.translate.tts.TTSProvider
-import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.CommonPage
+import com.funny.translation.ui.HintText
 import com.funny.translation.ui.navPaddingItem
 import com.funny.translation.ui.slideIn
 import kotlinx.coroutines.launch

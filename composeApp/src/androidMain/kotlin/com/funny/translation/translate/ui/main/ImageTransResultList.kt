@@ -64,10 +64,10 @@ import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationPart
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.ui.long_text.ModelListPart
-import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.HintText
 import com.funny.translation.ui.popDialogShape
 import kotlinx.collections.immutable.toImmutableList
 import moe.tlaster.precompose.navigation.BackHandler

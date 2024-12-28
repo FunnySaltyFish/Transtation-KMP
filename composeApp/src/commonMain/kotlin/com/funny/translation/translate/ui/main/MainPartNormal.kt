@@ -86,7 +86,6 @@ import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
-import com.funny.translation.translate.ui.widget.AutoResizedText
 import com.funny.translation.translate.ui.widget.ExchangeButton
 import com.funny.translation.translate.ui.widget.NoticeBar
 import com.funny.translation.translate.ui.widget.ShadowedAsyncRoundImage
@@ -94,6 +93,7 @@ import com.funny.translation.translate.ui.widget.SwipeCrossFadeLayout
 import com.funny.translation.translate.ui.widget.SwipeShowType
 import com.funny.translation.translate.ui.widget.UpperPartBackground
 import com.funny.translation.translate.ui.widget.noticeBarModifier
+import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.safeMain
 import com.funny.translation.ui.touchToScale

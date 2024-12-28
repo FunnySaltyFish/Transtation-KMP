@@ -1,4 +1,4 @@
-package com.funny.translation.translate.ui.widget
+package com.funny.translation.ui
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween

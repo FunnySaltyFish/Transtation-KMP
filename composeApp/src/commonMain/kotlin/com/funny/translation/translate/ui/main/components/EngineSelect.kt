@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.sp
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.task.ModelTranslationTask
-import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.AnyPopDialog
+import com.funny.translation.ui.HintText
 import com.funny.translation.ui.popDialogShape
 
 // 用于选择引擎时的回调

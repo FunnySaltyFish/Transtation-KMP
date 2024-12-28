@@ -35,9 +35,9 @@ import com.funny.translation.kmp.rememberSystemUiController
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ui.widget.AutoFadeInComposableColumn
-import com.funny.translation.translate.ui.widget.AutoIncreaseAnimatedNumber
 import com.funny.translation.translate.ui.widget.FadeInColumnScope
 import com.funny.translation.translate.ui.widget.rememberAutoFadeInColumnState
+import com.funny.translation.ui.AutoIncreaseAnimatedNumber
 import com.funny.translation.ui.animatedGradientBackground
 import java.util.Date
 import java.util.Locale

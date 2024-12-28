@@ -35,9 +35,9 @@ import com.funny.translation.translate.database.translatedProgress
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.long_text.components.RemarkDialog
 import com.funny.translation.translate.ui.main.SwipeToDismissItem
-import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.HintText
 import com.funny.translation.ui.NavPaddingItem
 import java.util.UUID
 

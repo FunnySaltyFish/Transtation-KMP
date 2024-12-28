@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="ai_cost_hint">Data earliest to 2024-07-17, only record consumption, not record translation content.\nThe cost of the single time intelligent translation will be generated two records.</string>
+
     <string name="find_username">Find Username</string>
     <string name="finished">Finished</string>
     <string name="login">Login</string>

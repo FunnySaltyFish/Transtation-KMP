@@ -41,9 +41,9 @@ import com.funny.translation.translate.bean.AIPointPlan
 import com.funny.translation.translate.bean.AI_TEXT_POINT
 import com.funny.translation.translate.ui.buy.manager.BuyAIPointManager
 import com.funny.translation.translate.ui.long_text.components.AIPointText
-import com.funny.translation.translate.ui.widget.HintText
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.HintText
 import com.funny.translation.ui.touchToScale
 import kotlin.math.roundToInt
 
