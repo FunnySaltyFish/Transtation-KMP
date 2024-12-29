@@ -6,14 +6,18 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.funny.compose.loading.LoadingState
 import com.funny.data_saver.core.mutableDataSaverListStateOf
+import com.funny.translation.AppConfig
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.get
+import com.funny.translation.network.api
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.database.TransHistoryBean
 import com.funny.translation.translate.database.TransHistoryDao
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transHistoryDao
 import com.funny.translation.translate.findLanguageById
+import com.funny.translation.translate.network.TransNetwork
+import com.funny.translation.translate.network.service.LLMAnalyzeResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar
@@ -23,11 +27,11 @@ import kotlin.time.measureTime
 
 class AnnualReportViewModel: ViewModel() {
     companion object{
-        private const val YEAR = 2023
+        private const val YEAR = 2024
         private val calendar by lazy {
             Calendar.getInstance()
         }
-        // 2023年全年，开始和结束对应的时间戳
+        // 2024年全年，开始和结束对应的时间戳
         val START_TIME by lazy(LazyThreadSafetyMode.PUBLICATION) {
             // 1月1日 0点
             calendar.apply {
@@ -56,8 +60,9 @@ class AnnualReportViewModel: ViewModel() {
     var mostCommonSourceLanguageTimes by mutableStateOf( 0)
     var mostCommonTargetLanguageTimes by mutableStateOf( 0)
     var enginesUsesList by mutableDataSaverListStateOf(DataSaverUtils, "annual_report_engines_uses_list", listOf<Pair<String, Int>>())
-
+    var llmAnalyzeResult by mutableStateOf( LLMAnalyzeResult() )
     private val transHistoryDao: TransHistoryDao = appDB.transHistoryDao
+    private val analyzeService = TransNetwork.analyzeService
 
     suspend fun loadAnnualReport() = withContext(Dispatchers.IO){
         if (loadingState is LoadingState.Success) {
@@ -106,6 +111,15 @@ class AnnualReportViewModel: ViewModel() {
                 // 计算引擎使用次数
                 val engineUsesList = usesEngineMap.toList().sortedByDescending { it.second }
                 enginesUsesList = engineUsesList
+
+                // LLM分析结果
+                if (AppConfig.uid > 0) {
+                    api(analyzeService::getLLMData, AppConfig.uid, START_TIME, END_TIME) {
+                        success {  }
+                    }?.let {
+                        llmAnalyzeResult = it
+                    }
+                }
             }
             loadingState = LoadingState.Success(Unit)
         }

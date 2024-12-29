@@ -390,7 +390,13 @@ private fun Drawer(
             drawerItem(Icons.Default.Favorite, TranslateScreen.ThanksScreen)
             divider()
             drawerItem(Icons.Default.Apps, TranslateScreen.AppRecommendationScreen)
-            drawerItem(Icons.Default.Redeem, TranslateScreen.AnnualReportScreen)
+            drawerItem(Icons.Default.Redeem, TranslateScreen.AnnualReportScreen) {
+                Badge(
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Text(text = "2024")
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
             Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeMain))
