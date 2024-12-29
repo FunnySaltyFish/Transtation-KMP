@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -112,7 +113,7 @@ fun MainScreen(
 //    TTSScreen()
 //    ImageTransScreen()
 //    ChatScreen()
-    UpdateUtils.updateInfo?.let { AppUpdateDialog(modifier = Modifier.fillMaxWidth(), updateInfo = it) }
+    UpdateUtils.updateInfo?.let { AppUpdateDialog(modifier = Modifier.fillMaxWidth().heightIn(max = 520.dp), updateInfo = it) }
 }
 
 @ExperimentalComposeUiApi
