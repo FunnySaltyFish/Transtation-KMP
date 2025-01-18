@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +32,7 @@ import com.funny.compose.loading.LoadingContent
 import com.funny.compose.loading.LoadingState
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.Log
+import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.kmp.rememberSystemUiController
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
@@ -40,6 +41,8 @@ import com.funny.translation.translate.ui.widget.AutoFadeInComposableColumn
 import com.funny.translation.translate.ui.widget.FadeInColumnScope
 import com.funny.translation.translate.ui.widget.rememberAutoFadeInColumnState
 import com.funny.translation.ui.AutoIncreaseAnimatedNumber
+import com.funny.translation.ui.CommonPage
+import com.funny.translation.ui.TransparentTopBar
 import com.funny.translation.ui.animatedGradientBackground
 import java.util.Date
 import java.util.Locale
@@ -80,21 +83,37 @@ fun AnnualReportScreen() {
             }
         }
     ) {
-        AnnualReport(vm = vm)
+        if (currentPlatform.isDesktop) {
+            CommonPage(
+                modifier = Modifier.animatedGradientBackground(
+                    MaterialColors.DeepPurple800, Color.Black
+                ),
+                topBar = {
+                    TransparentTopBar(title = ResStrings.annual_report, titleColor = Color.White)
+                }
+            ) {
+                AnnualReport(vm = vm)
+            }
+        } else {
+            AnnualReport(modifier = Modifier.animatedGradientBackground(
+                MaterialColors.DeepPurple800, Color.Black
+            ), vm = vm)
+        }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AnnualReport(vm : AnnualReportViewModel) {
+fun AnnualReport(
+    modifier: Modifier = Modifier,
+    vm : AnnualReportViewModel
+) {
     val state = rememberPagerState {
         12
     }
-    VerticalPager(state = state, beyondViewportPageCount = 0, modifier = Modifier
+    VerticalPager(state = state, beyondViewportPageCount = 0, modifier = modifier
         .fillMaxSize()
-        .animatedGradientBackground(
-            MaterialColors.DeepPurple800, Color.Black
-        )) { page ->
+    ) { page ->
         /**
          *
          * 总共六页

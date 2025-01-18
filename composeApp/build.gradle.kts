@@ -253,7 +253,7 @@ afterEvaluate {
     val signApkTask = project(":base-kmp").tasks.named("signApk")
 
     tasks.withType<Task> {
-        if (name.startsWith("assemble") && !name.endsWith("Test")) {
+        if (name.startsWith("assemble") && !name.endsWith("Test") && !name.contains("Desktop")) {
             // 打包前先加密下 Js
             dependsOn(":base-kmp:encryptFunnyJs")
             // 结束后签个名

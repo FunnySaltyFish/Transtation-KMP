@@ -1,5 +1,6 @@
 package com.funny.translation.translate.network.service
 
+import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.translate.bean.UpdateInfo
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -10,6 +11,7 @@ interface AppUpdateService {
     @POST("app_update/check_update")
     suspend fun getUpdateInfo(
         @Field("version_code") versionCode : Long,
-        @Field("channel") channel : String
+        @Field("channel") channel : String,
+        @Field("platform") platform: String = currentPlatform.name.lowercase()
     ) : UpdateInfo
 }

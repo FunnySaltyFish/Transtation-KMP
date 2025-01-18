@@ -21,7 +21,7 @@ actual object Logger {
             KLoggingEventBuilder().apply(block).run {
                 if (BuildConfig.DEBUG && level >= Level.DEBUG) {
                     val line = "[$level] $message"
-                    println(line)
+                    println(level.color + line + "\u001B[0m")
                     fileWriter.write(line + "\n")
                     fileWriter.flush()
                 } else if (!BuildConfig.DEBUG){
@@ -38,6 +38,14 @@ actual object Logger {
         override fun isLoggingEnabledFor(level: Level, marker: Marker?): Boolean {
             return true
         }
+    }
+
+    private val Level.color get() = when (this) {
+        Level.DEBUG -> "\u001B[36m"
+        Level.INFO -> "\u001B[32m"
+        Level.WARN -> "\u001B[33m"
+        Level.ERROR -> "\u001B[31m"
+        else -> ""
     }
 
     init {
