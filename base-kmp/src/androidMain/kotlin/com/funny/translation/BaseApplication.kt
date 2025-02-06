@@ -33,11 +33,6 @@ open class BaseApplication : Application() {
 
         ctx = this
 
-        if (DeviceUtils.is64Bit()) {
-            // 仅在 64 位时加载
-            System.loadLibrary("monet")
-        }
-
         Toaster.init(this)
         Toaster.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 260)
 

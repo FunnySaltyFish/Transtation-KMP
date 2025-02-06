@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme Screen -->
+    <string name="theme_type">Theme Type</string>
+    <string name="appearance">Appearance</string>
+
+    <!-- Theme Selection -->
+    <string name="image_theme">Image Theme</string>
+    <string name="image_theme_description">Extract theme colors from your images</string>
+    <string name="select_theme_image">Select Theme Image</string>
+    <string name="image_preview">Image Preview</string>
+    <string name="recent_images">Recent Images</string>
+    <string name="clear_history">Clear History</string>
+    <string name="no_recent_images">No recent images</string>
+
+    <!-- Theme Types -->
+    <string name="default_theme_description">Use the default app theme colors</string>
+    <string name="dynamic_theme_description">Follow system theme colors dynamically (Android 12+)</string>
+    <string name="custom_theme_description">Choose a color from presets as theme color</string>
+
+    <!-- Image Theme -->
+    <string name="select_theme_color">Select Theme Color</string>
+
+    <!-- Light/Dark Mode -->
+    <string name="always_light">Light Mode</string>
+    <string name="always_light_description">Always use light theme</string>
+    <string name="always_dark">Dark Mode</string>
+    <string name="always_dark_description">Always use dark theme</string>
+    <string name="follow_system">Follow System</string>
+    <string name="follow_system_description">Switch automatically based on system theme</string>
+
+    <!-- Color Preview -->
+    <string name="primary_color">Primary</string>
+    <string name="secondary_color">Secondary</string>
+    <string name="tertiary_color">Tertiary</string>
+    <string name="surface_color">Surface</string>
+    <string name="background_color">Background</string>
+
+    <!-- Messages -->
+    <string name="dynamic_theme_not_supported">Dynamic theme is not supported on this system</string>
+    <string name="requires_android_12">Requires Android 12 or above</string>
+    <string name="image_load_failed">Failed to load image</string>
+
     <string name="copy_source_text">Copy Source</string>
     <string name="copy_target_text">Copy Target</string>
     <string name="copy_detail_result">Copy Detail</string>

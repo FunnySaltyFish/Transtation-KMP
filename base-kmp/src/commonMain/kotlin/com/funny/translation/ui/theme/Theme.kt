@@ -10,7 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.funny.cmaterialcolors.MaterialColors
+import com.funny.data_saver.core.mutableDataSaverStateOf
+import com.funny.translation.helper.DataSaverUtils
+import com.funny.translation.helper.Log
 import com.funny.translation.kmp.base.strings.ResStrings
+import com.materialkolor.DynamicMaterialTheme
 
 
 val LightColors = lightColorScheme(
@@ -86,7 +90,7 @@ val SpringFestivalColorPalette = lightColorScheme(
 sealed class ThemeType(val id: Int) {
     object StaticDefault: ThemeType(-1)
     object DynamicNative : ThemeType(0)
-    class DynamicFromImage(val color: Color) : ThemeType(1)
+    class DynamicFromImage(val color: Color, val uri: String) : ThemeType(1)
     class StaticFromColor(val color: Color): ThemeType(2)
 
     val isDynamic get() = this is DynamicNative || this is DynamicFromImage
@@ -95,7 +99,7 @@ sealed class ThemeType(val id: Int) {
         return when(this){
             StaticDefault -> "StaticDefault"
             DynamicNative -> "DynamicNative"
-            is DynamicFromImage -> "DynamicFromImage#${this.color}"
+            is DynamicFromImage -> "DynamicFromImage#${this.uri}"
             is StaticFromColor -> "StaticFromColor${this.color}"
         }
     }
@@ -105,18 +109,22 @@ sealed class ThemeType(val id: Int) {
             when(themeType){
                 StaticDefault -> "-1#0"
                 DynamicNative -> "0#0"
-                is DynamicFromImage -> "1#${themeType.color.toArgb()}"
+                is DynamicFromImage -> "3#${themeType.color.toArgb()}#${themeType.uri}" // 旧版为 1#color，新版升级为 3#color#uri
                 is StaticFromColor -> "2#${themeType.color.toArgb()}"
             }
         }
 
         val Restorer = { str: String ->
-            val (id, color) = str.split("#")
+            val arr = str.split("#", limit = 2)
+            val id = arr[0]
+            val color = Color(arr[1].toInt())
+            val value = arr.last() // 仅用于 DynamicFromImage，表示 uri
             when(id){
                 "-1" -> StaticDefault
                 "0" -> DynamicNative
-                "1" -> DynamicFromImage(Color(color.toInt()))
-                "2" -> StaticFromColor(Color(color.toInt()))
+                "1" -> StaticDefault // 旧版 DynamicFromImage，回退到静态
+                "2" -> StaticFromColor(color)
+                "3" -> DynamicFromImage(color, value)
                 else -> throw IllegalArgumentException("Unknown ThemeType: $str")
             }
         }
@@ -131,13 +139,40 @@ enum class LightDarkMode(val desc: String) {
     }
 }
 
-expect object ThemeConfig {
-    val TAG: String
-    val defaultThemeType: ThemeType
-    val sThemeType: MutableState<ThemeType>
-    val lightDarkMode: MutableState<LightDarkMode>
-    fun updateThemeType(new: ThemeType)
-    fun updateLightDarkMode(new: LightDarkMode)
+object ThemeConfig {
+    const val TAG = "ThemeConfig"
+    val defaultThemeType: ThemeType = if (supportDynamicTheme()) {
+        ThemeType.DynamicNative
+    } else {
+        ThemeType.StaticDefault
+    }
+
+    val sThemeType: MutableState<ThemeType> =
+        mutableDataSaverStateOf(DataSaverUtils, "theme_type", defaultThemeType)
+    val lightDarkMode: MutableState<LightDarkMode> =
+        mutableDataSaverStateOf(DataSaverUtils, "light_dark_mode", LightDarkMode.System)
+
+    fun updateThemeType(new: ThemeType) {
+        if (new == ThemeType.DynamicNative && !supportDynamicTheme()) {
+            return
+        }
+
+        // 如果是 FromXXX，必须 64 位才行
+//        if (
+//            (new is ThemeType.DynamicFromImage || new is ThemeType.StaticFromColor)
+//            && !DeviceUtils.is64Bit()
+//        ) {
+//            appCtx.toastOnUi("抱歉，由于库底层限制，仅 64 位机型才支持自定义取色")
+//            return
+//        }
+
+        sThemeType.value = new
+        Log.d(TAG, "updateThemeType: $new")
+    }
+
+    fun updateLightDarkMode(new: LightDarkMode) {
+        lightDarkMode.value = new
+    }
 }
 
 @Composable
@@ -165,10 +200,19 @@ expect fun TransTheme(
     content: @Composable () -> Unit
 )
 
+expect fun supportDynamicTheme(): Boolean
+
 val ColorScheme.isLight: Boolean
     @Composable
     @ReadOnlyComposable
     get() = !calcDark()
 
-
+@Composable
+fun MonetTheme(color: Color, content: @Composable () -> Unit) {
+    DynamicMaterialTheme(
+        seedColor = color,
+        useDarkTheme = calcDark(),
+        content = content,
+    )
+}
 

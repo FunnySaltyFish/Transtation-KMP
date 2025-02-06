@@ -38,6 +38,6 @@ include(":android-code-editor:editor", ":android-code-editor:language-base", ":a
 include(":code-editor")
 
 // https://www.jianshu.com/p/a6a221e04d30
-include(":local_repo:monet")
+// include(":local_repo:monet")
 
 

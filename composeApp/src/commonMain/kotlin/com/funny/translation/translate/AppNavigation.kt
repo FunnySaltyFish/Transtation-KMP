@@ -72,7 +72,7 @@ import com.funny.translation.translate.ui.settings.SettingsScreen
 import com.funny.translation.translate.ui.settings.SortResultScreen
 import com.funny.translation.translate.ui.settings.TTSConfEditScreen
 import com.funny.translation.translate.ui.settings.TTSScreen
-import com.funny.translation.translate.ui.settings.ThemeScreen
+import com.funny.translation.translate.ui.settings.theme.ThemeScreen
 import com.funny.translation.translate.ui.thanks.AnnualReportScreen
 import com.funny.translation.translate.ui.thanks.AppRecommendationScreen
 import com.funny.translation.translate.ui.thanks.ThanksScreen

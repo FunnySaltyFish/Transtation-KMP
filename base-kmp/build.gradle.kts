@@ -79,6 +79,8 @@ kotlin {
                 implementation(libs.rhino)
 
                 implementation("ca.gosyer:kotlin-multiplatform-appdirs:1.1.1")
+
+                api("com.materialkolor:material-kolor:2.0.1")
             }
         }
 
@@ -97,9 +99,6 @@ kotlin {
 
             // mmkv
             api(libs.mmkv)
-
-            // libs/monet.aar
-            implementation(project(":local_repo:monet"))
 
             // Markwon
             val markwon_version = "4.6.2"

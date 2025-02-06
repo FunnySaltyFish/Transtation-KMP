@@ -26,7 +26,7 @@ fun RadioTile(
             Text(text)
         },
         trailingContent = {
-            RadioButton(selected = selected, onClick = {})
+            RadioButton(selected = selected, onClick = onClick)
         }
     )
 }

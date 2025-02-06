@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme Screen -->
+    <string name="theme_type">主题类型</string>
+    <string name="appearance">外观</string>
+
+    <string name="image_theme">图片主题</string>
+    <string name="image_theme_description">从图片中提取主题色</string>
+    <string name="select_theme_image">选择主题图片</string>
+    <string name="image_preview">图片预览</string>
+    <string name="recent_images">最近图片</string>
+    <string name="clear_history">清除历史</string>
+    <string name="no_recent_images">没有最近图片</string>
+
+    <!-- Theme Types -->
+    <string name="default_theme_description">使用应用默认的主题配色</string>
+    <string name="dynamic_theme_description">跟随系统主题色动态变化（Android 12及以上）</string>
+    <string name="custom_theme_description">从预设颜色中选择一个作为主题色</string>
+
+    <!-- Image Theme -->
+    <string name="select_theme_color">选择主题色</string>
+
+    <!-- Light/Dark Mode -->
+    <string name="always_light">浅色模式</string>
+    <string name="always_light_description">始终使用浅色主题</string>
+    <string name="always_dark">深色模式</string>
+    <string name="always_dark_description">始终使用深色主题</string>
+    <string name="follow_system">跟随系统</string>
+    <string name="follow_system_description">根据系统的明暗主题自动切换</string>
+
+    <!-- Color Preview -->
+    <string name="primary_color">主要颜色</string>
+    <string name="secondary_color">次要颜色</string>
+    <string name="tertiary_color">第三颜色</string>
+    <string name="surface_color">表面颜色</string>
+    <string name="background_color">背景颜色</string>
+
+    <!-- Messages -->
+    <string name="dynamic_theme_not_supported">当前系统不支持动态主题</string>
+    <string name="requires_android_12">需要 Android 12 及以上系统</string>
+    <string name="image_load_failed">图片加载失败</string>
+
 <!--    复制原文、复制译文、复制详细翻译、删除-->
     <string name="copy_source_text">复制原文</string>
     <string name="copy_target_text">复制译文</string>

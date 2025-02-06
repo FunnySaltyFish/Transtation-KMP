@@ -249,13 +249,11 @@ fun SettingsScreen() {
                 text = ResStrings.expand_detail_by_default,
                 resourceName = "ic_detail"
             )
-            if (currentPlatform == Platform.Android) {
-                JetSettingTile(
-                    resourceName = "ic_theme",
-                    text = ResStrings.theme
-                ) {
-                    navController.navigate(TranslateScreen.ThemeScreen.route)
-                }
+            JetSettingTile(
+                resourceName = "ic_theme",
+                text = ResStrings.theme
+            ) {
+                navController.navigate(TranslateScreen.ThemeScreen.route)
             }
         }
     }
