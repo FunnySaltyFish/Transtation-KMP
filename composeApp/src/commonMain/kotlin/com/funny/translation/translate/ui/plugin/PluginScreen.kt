@@ -55,7 +55,6 @@ import com.funny.translation.codeeditor.CodeEditorActivity
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.js.bean.JsBean
 import com.funny.translation.kmp.ActivityManager
-import com.funny.translation.kmp.readText
 import com.funny.translation.kmp.rememberOpenFileLauncher
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
@@ -93,16 +92,11 @@ fun PluginScreen() {
 
     val importPluginLauncher = rememberOpenFileLauncher {
         if (it == null) return@rememberOpenFileLauncher
-        try {
-            val text = it.readText()
-            vm.importPlugin(text, successCall = { str ->
-                showSnackbar(str)
-            }, failureCall = { str ->
-                showSnackbar(str)
-            })
-        } catch (e: Exception) {
-            showSnackbar("加载插件出错!")
-        }
+        vm.importPlugin(it, successCall = { str ->
+            showSnackbar(str)
+        }, failureCall = { str ->
+            showSnackbar(str)
+        })
     }
 
     val showDeleteDialogAction = remember {
@@ -200,7 +194,7 @@ fun PluginScreen() {
                     onDismissRequest = { updateShowAddPluginMenu(false) }) {
                     DropdownMenuItem(onClick = {
                         updateShowAddPluginMenu(false)
-                        importPluginLauncher.launch(arrayOf("application/javascript"))
+                        importPluginLauncher.launch(arrayOf("text/*"))
                     }, text = {
                         Text(ResStrings.import_plugin)
                     })

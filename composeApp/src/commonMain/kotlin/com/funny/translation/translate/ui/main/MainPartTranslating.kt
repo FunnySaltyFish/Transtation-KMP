@@ -64,8 +64,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+  import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -475,7 +478,15 @@ private fun ResultItem(
 
         SelectionContainer {
             Text(
-                text = result.basic.trim().ifEmpty { "正在翻译中……" },
+                text = buildAnnotatedString {
+                    append(result.basic.trim().ifEmpty { "正在翻译中……" })
+                    if (result.error.isNotEmpty()) {
+                        append(" ")
+                        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                            append(result.error)
+                        }
+                    }
+                },
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = 16.sp,
             )

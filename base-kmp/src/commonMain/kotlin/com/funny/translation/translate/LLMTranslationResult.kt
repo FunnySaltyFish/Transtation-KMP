@@ -23,6 +23,8 @@ enum class TranslationStage {
     PARTIAL_TRANSLATION,
     @SerialName("final_extra")
     FINAL_EXTRA,
+    @SerialName("error")
+    ERROR,
     @Transient
     FINISH;
 }

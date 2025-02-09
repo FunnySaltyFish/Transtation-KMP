@@ -1,8 +1,9 @@
 package com.funny.translation.codeeditor.ui.editor
 
-import com.funny.translation.js.core.JsInterface
+import com.funny.translation.network.OkHttpUtils
 import com.funny.translation.translate.Language
 import io.github.rosemoe.editor.langs.desc.JavaScriptDescription
+import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredMemberFunctions
 
 val FunnyPluginDescription = PluginDescription()
@@ -17,9 +18,10 @@ class PluginDescription : JavaScriptDescription() {
         originKeywords.add("funny")
         originKeywords.add("http")
         originKeywords.add("BASE_URL")
-        val clazz = JsInterface::class
+        originKeywords.addAll(arrayOf("sourceString", "targetString", "log"))
+        val clazz = OkHttpUtils::class
         val set = mutableSetOf<String>()
-        clazz.declaredMemberFunctions.forEach {
+        clazz.declaredMemberFunctions.filter { it.visibility == KVisibility.PUBLIC }.forEach {
             set.add(it.name)
         }
         originKeywords.addAll(set)

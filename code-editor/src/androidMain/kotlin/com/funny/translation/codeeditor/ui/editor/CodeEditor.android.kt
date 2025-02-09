@@ -75,6 +75,7 @@ import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.readText
 import com.funny.translation.helper.writeText
 import com.funny.translation.js.JsEngine
+import com.funny.translation.js.bean.toSerializableJsBean
 import com.funny.translation.kmp.NavController
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.translate.allLanguages
@@ -230,7 +231,7 @@ actual fun ComposeCodeEditor(
                         if (!viewModel.hasSaved) {
                             confirmOpenFile.value = true
                         } else {
-                            filePickerLauncher.launch(arrayOf("application/javascript"))
+                            filePickerLauncher.launch(arrayOf("application/x-javascript", "application/javascript"))
                         }
                     },
                     setArgumentsAction = {
@@ -245,7 +246,7 @@ actual fun ComposeCodeEditor(
                             jsEngine.loadBasicConfigurations(
                                 onSuccess = {
                                     val jsBean = jsEngine.jsBean
-                                    activityViewModel.exportText = JsonX.toJsonPretty(jsBean)
+                                    activityViewModel.exportText = JsonX.toJsonPretty(jsBean.toSerializableJsBean())
                                     exportLauncher.launch("${jsBean.fileName}.json")
                                     scope.launch {
                                         snackbarHostState.showSnackbar(

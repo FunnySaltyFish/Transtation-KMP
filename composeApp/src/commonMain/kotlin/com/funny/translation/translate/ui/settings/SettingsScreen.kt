@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.SettingsVoice
@@ -78,7 +77,6 @@ import com.funny.translation.translate.utils.SortResultUtils
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.theme.LightDarkMode
-import com.funny.translation.ui.theme.ThemeConfig
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -144,8 +142,13 @@ fun SettingsScreen() {
             // 设置应用显示的语言
             // 跟随系统、简体中文、英语
             SelectAppLanguage()
-            // 设置应用的深浅色模式
-            SelectLightDarkMode()
+            // 设置应用的主题
+            JetSettingTile(
+                resourceName = "ic_theme",
+                text = ResStrings.theme
+            ) {
+                navController.navigate(TranslateScreen.ThemeScreen.route)
+            }
         }
         SettingItemCategory(
             title = {
@@ -249,12 +252,6 @@ fun SettingsScreen() {
                 text = ResStrings.expand_detail_by_default,
                 resourceName = "ic_detail"
             )
-            JetSettingTile(
-                resourceName = "ic_theme",
-                text = ResStrings.theme
-            ) {
-                navController.navigate(TranslateScreen.ThemeScreen.route)
-            }
         }
     }
 }
@@ -288,21 +285,6 @@ private fun SelectAppLanguage() {
     )
 }
 
-@Composable
-private fun SelectLightDarkMode() {
-    var lightDarkMode by ThemeConfig.lightDarkMode
-
-    JetSettingListDialog(
-        list = lightDarkModes,
-        text = ResStrings.app_light_dark_mode,
-        description = lightDarkMode.desc,
-        imageVector = Icons.Default.DarkMode,
-        selected = lightDarkMode,
-        updateSelected = {
-            lightDarkMode = it
-        }
-    )
-}
 
 @Composable
 private fun DevSetBaseUrl() {

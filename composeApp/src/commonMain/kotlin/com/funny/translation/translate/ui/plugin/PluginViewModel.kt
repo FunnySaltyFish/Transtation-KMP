@@ -5,12 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.eygraber.uri.Uri
 import com.funny.translation.helper.BaseViewModel
+import com.funny.translation.helper.toastOnUi
 import com.funny.translation.js.JsEngine
 import com.funny.translation.js.bean.JsBean
 import com.funny.translation.js.bean.toJsBean
 import com.funny.translation.js.config.JsConfig
 import com.funny.translation.kmp.NAV_ANIM_DURATION
+import com.funny.translation.kmp.appCtx
+import com.funny.translation.kmp.readText
 import com.funny.translation.translate.database.DefaultData
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.jsDao
@@ -88,19 +92,24 @@ class PluginViewModel : BaseViewModel() {
     }
 
     fun importPlugin(
-        code: String,
+        fileUri: Uri,
         successCall: (String) -> Unit,
         failureCall: (String) -> Unit
     ){
-        val jsEngine = JsEngine(code)
         viewModelScope.launch(Dispatchers.IO) {
-            jsEngine.loadBasicConfigurations(
-                {
-                    // Log.d(TAG, "onActivityResult: min:${jsBean.minSupportVersion} max:${jsBean.maxSupportVersion}")
-                    installOrUpdatePlugin(jsEngine.jsBean, successCall, failureCall)
+            try {
+                val code = fileUri.readText()
+                val jsEngine = JsEngine(code)
+                jsEngine.loadBasicConfigurations(
+                    {
+                        // Log.d(TAG, "onActivityResult: min:${jsBean.minSupportVersion} max:${jsBean.maxSupportVersion}")
+                        installOrUpdatePlugin(jsEngine.jsBean, successCall, failureCall)
+                    }
+                ) {
+                    failureCall("插件加载时出错！请联系插件开发者解决！")
                 }
-            ) {
-                failureCall("插件加载时出错！请联系插件开发者解决！")
+            } catch (e: Exception) {
+                appCtx.toastOnUi("插件加载时出错！${e.message}")
             }
         }
     }

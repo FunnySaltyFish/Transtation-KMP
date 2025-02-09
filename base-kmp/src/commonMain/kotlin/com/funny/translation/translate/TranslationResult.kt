@@ -22,6 +22,7 @@ open class TranslationResult(
 ) {
     var basic: String by mutableStateOf("")
     var detailText: String? by mutableStateOf(null)
+    var error: String by mutableStateOf("")
     var stage: TranslationStage by mutableStateOf(TranslationStage.IDLE)
     var message: String by mutableStateOf("")
 

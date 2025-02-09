@@ -62,6 +62,22 @@ fun SerializableJsBean.toJsBean() = JsBean(
     supportLanguages = supportLanguages
 )
 
+fun JsBean.toSerializableJsBean() = SerializableJsBean(
+    id = id,
+    fileName = fileName,
+    code = code,
+    author = author,
+    version = version,
+    description = description,
+    enabled = enabled,
+    minSupportVersion = minSupportVersion,
+    maxSupportVersion = maxSupportVersion,
+    targetSupportVersion = targetSupportVersion,
+    isOffline = isOffline,
+    debugMode = debugMode,
+    supportLanguages = supportLanguages
+)
+
 //// https://github.com/Kotlin/kotlinx.serialization/blob/v1.6.2/docs/serializers.md#deriving-external-serializer-for-another-kotlin-class-experimental
 //@OptIn(ExperimentalSerializationApi::class)
 //@Serializer(forClass = JsBean::class)

@@ -87,6 +87,10 @@ class ModelTranslationTask(val model: Model): ServerTextTranslationTask() {
                     TranslationStage.SELECTED_PROMPT -> {
                         result.smartTransType = it.message
                     }
+                    TranslationStage.ERROR -> {
+                        curText.removeSuffix(it.message)
+                        result.error = it.message
+                    }
                     else -> {}
                 }
             }
