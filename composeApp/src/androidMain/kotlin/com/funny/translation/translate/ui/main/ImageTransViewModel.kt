@@ -286,7 +286,7 @@ class OptimizeByAITask(
                     )
                 )
             )
-            aiService.askAndParseStream(req).onStart {
+            aiService.askAndParseStream(req, model).onStart {
                 loadingState.value = LoadingState.Loading
             }.collect { it ->
                 when (it) {

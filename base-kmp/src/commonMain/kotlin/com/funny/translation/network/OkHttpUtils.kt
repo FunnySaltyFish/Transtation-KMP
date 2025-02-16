@@ -79,16 +79,6 @@ object OkHttpUtils {
                 builder.addHeader("Accept-Language", LocaleUtils.getAppLanguage().toLocale().language)
             }
 
-//            val invocation = request.tag(Invocation::class.java)
-//            if (invocation != null) {
-//                // 对 JwtTokenRequired 的注解加上请求头
-//                val shouldAddToken = invocation.method().getAnnotation(JwtTokenRequired::class.java) != null
-//                if (shouldAddToken) {
-//                    val jwt = AppConfig.jwtToken
-//                    if (jwt != "") builder.addHeader("Authorization", "Bearer $jwt")
-//                }
-//            }
-
             // 访问 trans/v1下的所有api均带上请求头-jwt
             if (newUrl.path.startsWith(TRANS_PATH)){
                 val jwt = AppConfig.jwtToken
@@ -150,11 +140,6 @@ object OkHttpUtils {
         }
 
         // 如果不是流式请求，才添加日志拦截器
-//        if (!response
-//        addInterceptor(LoggingInterceptor.Builder()
-//            .setLevel(if (BuildConfig.DEBUG) Level.BASIC else Level.NONE)
-//            .log(DEBUG)
-//            .build())
         addInterceptor(
             LoggingInterceptor.Builder()
                 .loggable(BuildConfig.DEBUG)

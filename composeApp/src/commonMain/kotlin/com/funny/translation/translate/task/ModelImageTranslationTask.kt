@@ -78,7 +78,8 @@ open class ModelImageTranslationTask(
                         AppConfig.sAIImageTransSystemPrompt.value.toPrompt()
                     },
                     args = JSONObject(args)
-                )
+                ),
+                model = chatBot.model
             ).catch { e ->
                 onStreamError(StreamMessage.Error(e.message ?: "Unknown error"))
             }.collect { part ->

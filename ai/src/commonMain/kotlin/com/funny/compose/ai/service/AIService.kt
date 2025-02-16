@@ -3,6 +3,7 @@ package com.funny.compose.ai.service
 import com.funny.compose.ai.bean.ChatMessageReq
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.bean.StreamMessage
+import com.funny.compose.ai.token.DefaultTokenCounter
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.JSONObjectSerializer
 import com.funny.translation.helper.JsonX
@@ -11,6 +12,10 @@ import com.funny.translation.helper.getLanguageCode
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.network.CommonData
+import com.funny.translation.network.DefaultModelExtractor.HEADER_BASE_READ_TIMEOUT
+import com.funny.translation.network.DefaultModelExtractor.HEADER_MODEL_ID
+import com.funny.translation.network.DefaultModelExtractor.HEADER_PER_CHAR_TIMEOUT
+import com.funny.translation.network.DefaultModelExtractor.HEADER_TEXT_LENGTH
 import com.funny.translation.network.DynamicTimeout
 import com.funny.translation.network.ServiceCreator
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +32,7 @@ import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 import retrofit2.http.Streaming
@@ -59,8 +65,14 @@ interface AIService {
     @POST("ai/ask_stream")
     // 设置超时时间
     @Streaming
-    @DynamicTimeout(connectTimeout = 20, readTimeout = 80, writeTimeout = 30)
-    suspend fun askStream(@Body req: AskStreamRequest): ResponseBody
+    @DynamicTimeout(connectTimeout = 20, readTimeout = 45, writeTimeout = 30)
+    suspend fun askStream(
+        @Body req: AskStreamRequest,
+        @Header(HEADER_MODEL_ID) modelId: Int,
+        @Header(HEADER_TEXT_LENGTH) textLength: Int,
+        @Header(HEADER_BASE_READ_TIMEOUT) baseReadTimeout: Int = 60,
+        @Header(HEADER_PER_CHAR_TIMEOUT) perCharTimeoutMillis: Int = 5
+    ): ResponseBody
 
     /**
      * 流式翻译
@@ -68,13 +80,17 @@ interface AIService {
     @POST("api/translate_streaming")
     @FormUrlEncoded
     @Streaming
-    @DynamicTimeout(connectTimeout = 20, readTimeout = 80, writeTimeout = 30)
+    @DynamicTimeout(connectTimeout = 20, readTimeout = 45, writeTimeout = 30)
     suspend fun translateStream(
         @Field("text") text: String,
         @Field("source") source: String,
         @Field("target") target: String,
         @Field("model_id") modelId: Int,
-        @Field("explain") explain: Boolean = AppConfig.sAITransExplain.value
+        @Field("explain") explain: Boolean = AppConfig.sAITransExplain.value,
+        @Header(HEADER_MODEL_ID) headerModelId: Int = modelId,
+        @Header(HEADER_TEXT_LENGTH) textLength: Int = text.length,
+        @Header(HEADER_BASE_READ_TIMEOUT) baseReadTimeout: Int = 60,
+        @Header(HEADER_PER_CHAR_TIMEOUT) perCharTimeoutMillis: Int = 5
     ): ResponseBody
 
 
@@ -119,8 +135,11 @@ val aiService by lazy {
     ServiceCreator.create(AIService::class.java)
 }
 
-suspend fun AIService.askAndParseStream(req: AskStreamRequest): Flow<StreamMessage> {
-    return askStream(req).asFlow().asStreamMessageFlow()
+suspend fun AIService.askAndParseStream(req: AskStreamRequest, model: Model): Flow<StreamMessage> {
+    return askStream(req, modelId = model.chatBotId,
+        textLength = DefaultTokenCounter.countMessages(req.messages),
+        baseReadTimeout = model.baseTimeout,
+        perCharTimeoutMillis = model.perCharTimeoutMillis).asFlow().asStreamMessageFlow()
 }
 
 /**
@@ -128,10 +147,11 @@ suspend fun AIService.askAndParseStream(req: AskStreamRequest): Flow<StreamMessa
  */
 suspend fun AIService.askAndProcess(
     req: AskStreamRequest,
+    model: Model,
     onError: (String) -> Unit = { appCtx.toastOnUi(it) },
 ): String {
     val output = StringBuilder()
-    askAndParseStream(req).collect {
+    askAndParseStream(req, model).collect {
         when (it) {
             is StreamMessage.Error -> {
                 onError(it.error)

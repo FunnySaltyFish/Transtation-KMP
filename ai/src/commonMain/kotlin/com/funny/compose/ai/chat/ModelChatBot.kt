@@ -5,6 +5,7 @@ import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.service.AskStreamRequest
 import com.funny.compose.ai.service.aiService
 import com.funny.compose.ai.service.asFlow
+import com.funny.compose.ai.token.DefaultTokenCounter
 import com.funny.compose.ai.token.TokenCounter
 import com.funny.compose.ai.token.TokenCounters
 import com.funny.translation.ai.BuildConfig
@@ -31,7 +32,11 @@ open class ModelChatBot(
                     messages = messages,
                     prompt = prompt,
                     args = JSONObject(args)
-                )
+                ),
+                modelId = model.chatBotId,
+                textLength = DefaultTokenCounter.countMessages(messages),
+                baseReadTimeout = model.baseTimeout,
+                perCharTimeoutMillis = model.perCharTimeoutMillis
             ).asFlow()
         } catch (e: Exception) {
             e.printStackTrace()

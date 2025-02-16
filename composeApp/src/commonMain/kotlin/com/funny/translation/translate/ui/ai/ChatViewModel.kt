@@ -184,12 +184,13 @@ class ChatViewModel: ModelViewModel() {
                         chatBot.id,
                         listOf(ChatMessageReq.text("user", newPrompt)),
                         CHECK_PROMPT_PROMPT,
-                    )
+                    ),
+                    model = chatBot.model
                 ).lowercase()
 
-                when (txt) {
-                    "true" -> systemPrompt = newPrompt
-                    "false" -> appCtx.toastOnUi(ResStrings.not_correct_prompt)
+                when {
+                    txt.contains("true", ignoreCase = true)-> systemPrompt = newPrompt
+                    txt.contains("false", ignoreCase = true) -> appCtx.toastOnUi(ResStrings.not_correct_prompt)
                     else -> appCtx.toastOnUi(ResStrings.unparseable_prompt)
                 }
             } catch (e: Exception) {
@@ -231,6 +232,5 @@ class ChatViewModel: ModelViewModel() {
     companion object {
         private const val BASE_PROMPT = "You're ChatGPT, a helpful AI assistant."
         private const val CHECK_PROMPT_PROMPT = "Please determine whether the following Prompt is related to foreign language learning, translation, or other language-related topics. You should only return a boolean value, true or false. You must return precisely."
-            // "请判定下面的Prompt是否和外语类学习、翻译类主题相关，你应该只返回一个布尔值，true或者false。必须精准的返回："
     }
 }

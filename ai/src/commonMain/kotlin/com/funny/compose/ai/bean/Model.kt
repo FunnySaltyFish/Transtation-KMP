@@ -31,7 +31,11 @@ data class Model(
     @SerialName("token_counter_id")
     val tokenCounterId: String,
     @SerialName("input_file_types")
-    val inputFileTypes: ModelFileTypes = ModelFileTypes.TEXT
+    val inputFileTypes: ModelFileTypes = ModelFileTypes.TEXT,
+    @SerialName("base_timeout")
+    val baseTimeout: Int = 60,
+    @SerialName("per_char_timeout")
+    val perCharTimeoutMillis: Int = 5
 ) {
     companion object {
         val Empty = Model(0, BigDecimal.ZERO, "Test", "", "", 0, 0, "default")

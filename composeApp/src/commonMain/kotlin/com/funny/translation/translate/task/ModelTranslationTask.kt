@@ -19,6 +19,7 @@ import com.funny.translation.translate.allLanguages
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
 import kotlin.reflect.KClass
+import kotlin.time.measureTime
 
 
 const val MODEL_NAME_PREFIX = "model_"
@@ -42,58 +43,68 @@ class ModelTranslationTask(val model: Model): ServerTextTranslationTask() {
             val curText = StringBuilder()
             var generatingDetail = false
 
-            aiService.translateStream(
-                text = sourceString,
-                source = languageMapping[sourceLanguage] ?: "English",
-                target = languageMapping[targetLanguage] ?: "Simplified Chinese",
-                modelId = model.chatBotId,
-                explain = AppConfig.sAITransExplain.value
-            ).asFlowByLines().map {
-                try {
-                    JsonX.fromJson<StreamingTranslation>(it)
-                } catch (e: SerializationException) {
-                    Log.d(TAG, "JSON: $it")
-                    throw TranslationException(e.displayMsg("JSON解析"))
-                }
-            }.collect {
-                Log.d(TAG, it.toString())
-                result.message = it.message
-                result.stage = it.stage
-                when (it.stage) {
-                    TranslationStage.SELECTING_PROMPT -> {
-                        result.basic = it.message
+            val costTime = measureTime {
+                aiService.translateStream(
+                    text = sourceString,
+                    source = languageMapping[sourceLanguage] ?: "English",
+                    target = languageMapping[targetLanguage] ?: "Simplified Chinese",
+                    modelId = model.chatBotId,
+                    explain = AppConfig.sAITransExplain.value,
+                    baseReadTimeout = model.baseTimeout,
+                    perCharTimeoutMillis = model.perCharTimeoutMillis
+                ).asFlowByLines().map {
+                    try {
+                        JsonX.fromJson<StreamingTranslation>(it)
+                    } catch (e: SerializationException) {
+                        Log.d(TAG, "JSON: $it")
+                        throw TranslationException(e.displayMsg("JSON解析"))
                     }
-                    TranslationStage.PARTIAL_TRANSLATION -> {
-                        curText.append(it.message)
-                        if (!generatingDetail) {
-                            val idx = curText.indexOf(SEP)
-                            if (idx < 0) {
-                                result.basic = curText.toString()
-                                return@collect
-                            }
-                            // 找到了 <|sep|>，开始分割
-                            result.basic = curText.substring(0, idx)
-                            curText.delete(0, idx + SEP.length)
-                            result.detailText = curText.toString()
-                            generatingDetail = true
-                        } else {
-                            // 目前生成的是详细翻译
-                            result.detailText = curText.toString()
+                }.collect {
+                    // Log.d(TAG, it.toString())
+                    result.message = it.message
+                    result.stage = it.stage
+                    when (it.stage) {
+                        TranslationStage.SELECTING_PROMPT -> {
+                            result.basic = it.message
                         }
+
+                        TranslationStage.PARTIAL_TRANSLATION -> {
+                            curText.append(it.message)
+                            if (!generatingDetail) {
+                                val idx = curText.indexOf(SEP)
+                                if (idx < 0) {
+                                    result.basic = curText.toString()
+                                    return@collect
+                                }
+                                // 找到了 <|sep|>，开始分割
+                                result.basic = curText.substring(0, idx)
+                                curText.delete(0, idx + SEP.length)
+                                result.detailText = curText.toString()
+                                generatingDetail = true
+                            } else {
+                                // 目前生成的是详细翻译
+                                result.detailText = curText.toString()
+                            }
+                        }
+
+                        TranslationStage.FINAL_EXTRA -> {
+                            result.cost = JsonX.fromJson<LLMTransCost>(result.message)
+                        }
+
+                        TranslationStage.SELECTED_PROMPT -> {
+                            result.smartTransType = it.message
+                        }
+
+                        TranslationStage.ERROR -> {
+                            curText.removeSuffix(it.message)
+                            result.error = it.message
+                        }
+
+                        else -> {}
                     }
-                    TranslationStage.FINAL_EXTRA -> {
-                        result.cost = JsonX.fromJson<LLMTransCost>(result.message)
-                    }
-                    TranslationStage.SELECTED_PROMPT -> {
-                        result.smartTransType = it.message
-                    }
-                    TranslationStage.ERROR -> {
-                        curText.removeSuffix(it.message)
-                        result.error = it.message
-                    }
-                    else -> {}
                 }
             }
+            Log.d(TAG, "costTime: $costTime")
         } catch (e: TranslationException) {
             e.printStackTrace()
             throw e

@@ -104,7 +104,7 @@ class ServerTokenCounter(override val id: String): TokenCounter() {
 /**
  * 默认的 TokenCounter，直接用文本长度作为 token 数量
  */
-class DefaultTokenCounter: TokenCounter() {
+object DefaultTokenCounter: TokenCounter() {
     override val online: Boolean = false
     override val id: String = "default"
 
@@ -122,7 +122,7 @@ class DefaultTokenCounter: TokenCounter() {
 }
 
 object TokenCounters {
-    val defaultTokenCounter = DefaultTokenCounter()
+    val defaultTokenCounter = DefaultTokenCounter
     private val tokenCounters = hashMapOf<String, TokenCounter>(
         "openai" to OpenAITokenCounter("cl100k_base"),
         "default" to defaultTokenCounter,
