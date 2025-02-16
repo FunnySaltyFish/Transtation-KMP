@@ -35,7 +35,10 @@ data class Model(
     @SerialName("base_timeout")
     val baseTimeout: Int = 60,
     @SerialName("per_char_timeout")
-    val perCharTimeoutMillis: Int = 5
+    val perCharTimeoutMillis: Int = 5,
+    val tag: String = "",
+    @SerialName("tag_desc")
+    val tagDescription: String = ""
 ) {
     companion object {
         val Empty = Model(0, BigDecimal.ZERO, "Test", "", "", 0, 0, "default")

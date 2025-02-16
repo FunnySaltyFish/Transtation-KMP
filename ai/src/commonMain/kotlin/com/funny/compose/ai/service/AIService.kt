@@ -97,7 +97,8 @@ interface AIService {
     @GET("ai/get_models")
     suspend fun getChatModels(
         // 这个 lang 并不实际使用，主要是区分 url，避免 nginx 缓存带来的问题
-        @Query("lang") lang: String = LocaleUtils.getLanguageCode()
+        @Query("lang") lang: String = LocaleUtils.getLanguageCode(),
+        @Query("uid") uid: Int = AppConfig.uid
     ) : List<Model>
 
     @POST("ai/count_tokens_text")
