@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="thinking_in_progress">深度思考中……</string>
+    <string name="thinking_completed">深度思考完成（用时 %.1f 秒）</string>
+    <string name="expand_think_content">展开/收起深度思考内容</string>
+
     <!-- Theme Screen -->
     <string name="theme_type">主题类型</string>
     <string name="appearance">外观</string>

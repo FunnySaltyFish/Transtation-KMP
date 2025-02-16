@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 英文资源 values/strings.xml -->
+    <string name="thinking_in_progress">Deep thinking in progress...</string>
+    <string name="thinking_completed">Deep thinking completed (%.1f seconds)</string>
+    <string name="expand_think_content">Expand/Collapse deep thinking content</string>
+
     <!-- Theme Screen -->
     <string name="theme_type">Theme Type</string>
     <string name="appearance">Appearance</string>

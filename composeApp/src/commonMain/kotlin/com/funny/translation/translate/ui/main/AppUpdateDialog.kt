@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -113,7 +114,11 @@ fun AppUpdateDialog(
                 Text(text = ResStrings.new_version_detected, style = MaterialTheme.typography.headlineSmall)
                 Text(text = "v${updateInfo.version_name}(${updateInfo.version_code}) | ${updateInfo.apk_size?.bytes()}", style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.height(4.dp))
-                MarkdownText(markdown = updateInfo.update_log ?: "", style = MaterialTheme.typography.bodySmall)
+                MarkdownText(
+                    markdown = updateInfo.update_log ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.heightIn(max = 520.dp).verticalScroll(rememberScrollState())
+                )
                 ButtonLine(
                     modifier = Modifier.fillMaxWidth(),
                     installLauncher = installLauncher,

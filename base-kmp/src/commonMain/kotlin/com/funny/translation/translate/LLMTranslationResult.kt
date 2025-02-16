@@ -19,14 +19,30 @@ enum class TranslationStage {
     SELECTED_PROMPT,
     @SerialName("starting_translation")
     STARTING_TRANSLATION,
+    @SerialName("start_think")
+    START_THINK,
+    @SerialName("end_think")
+    END_THINK,
     @SerialName("partial_translation")
     PARTIAL_TRANSLATION,
     @SerialName("final_extra")
     FINAL_EXTRA,
     @SerialName("error")
     ERROR,
-    @Transient
-    FINISH;
+    @SerialName("clear")
+    CLEAR
+}
+
+/**
+ * 清除文本
+ *
+ * @property what 清理什么
+ * @property startIdx 起始 id，默认为 0
+ * @property endIdx 结束 id，默认为 -1，表示最后
+ */
+@Serializable
+data class ClearDetail(val what: String, val startIdx: Int = 0, val endIdx: Int = -1) {
+    fun realEndIndex(obj: CharSequence) = if (endIdx < 0) obj.length + 1 + endIdx else endIdx
 }
 
 @Serializable

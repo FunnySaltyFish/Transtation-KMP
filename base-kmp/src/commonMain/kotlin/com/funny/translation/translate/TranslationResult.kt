@@ -5,6 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
+enum class ThinkingStage {
+    IDLE, THINKING, FINISH
+}
+
 /**
  *
  * @property engineName String 翻译引擎
@@ -26,6 +30,10 @@ open class TranslationResult(
     var stage: TranslationStage by mutableStateOf(TranslationStage.IDLE)
     var message: String by mutableStateOf("")
 
+    var think: String by mutableStateOf("")
+    var thinkStage: ThinkingStage by mutableStateOf(ThinkingStage.IDLE)
+    var thinkTime: Float by mutableStateOf(0f)
+
     var smartTransType: String? = null
 
     open fun setBasicResult(text: String) {
@@ -37,8 +45,15 @@ open class TranslationResult(
         this.sourceString = sourceString
         engineName = name
         basic = ""
+        think = ""
+        thinkStage = ThinkingStage.IDLE
+        thinkTime = 0f
         detailText = null
         smartTransType = null
+    }
+
+    fun updateThinkTime(deltaMills: Long) {
+        thinkTime = (deltaMills / 1000f)
     }
 
     override fun toString(): String {

@@ -150,10 +150,12 @@ fun LongTextTransDetailScreen(
             openDialogState = modelSelectDialog,
             title = ResStrings.model_select,
             content = {
-                ModelListPart(
-                    onModelLoaded = vm::onModelListLoaded,
-                    onModelSelected = vm::updateChatBot
-                )
+                Column {
+                    ModelListPart(
+                        onModelLoaded = vm::onModelListLoaded,
+                        onModelSelected = vm::updateChatBot
+                    )
+                }
             },
             confirmButtonText = "",
             dismissButtonText = ""
