@@ -1,7 +1,9 @@
 package com.funny.translation.network
 
+import androidx.annotation.Keep
 import okhttp3.Request
 
+@Keep
 interface ParamExtractor {
     fun getModelId(request: Request): Int?
     fun getBaseReadTimeout(request: Request): Int?
@@ -10,6 +12,7 @@ interface ParamExtractor {
 }
 
 // 默认从 Header 提取
+@Keep
 object DefaultModelExtractor : ParamExtractor {
     const val HEADER_MODEL_ID = "X-App-Model-Id"
     const val HEADER_TEXT_LENGTH = "X-App-Text-Length"
