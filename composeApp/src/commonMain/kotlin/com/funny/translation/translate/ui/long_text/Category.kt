@@ -1,6 +1,7 @@
 package com.funny.translation.translate.ui.long_text
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,58 +46,62 @@ internal fun Category(
     extraRowContent: @Composable() (RowScope.() -> Unit)? = null,
     content: @Composable (expanded: Boolean) -> Unit,
 ) {
-    var expand by rememberStateOf(value = defaultExpand)
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier
-                .padding(vertical = 8.dp),
-            color = MaterialTheme.colorScheme.primary
-        )
-        val tooltipState = rememberTooltipState(isPersistent = true)
-        TooltipBox(
-            positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
-            state = tooltipState,
-            tooltip = {
-                RichTooltip(
-                    text = {
-                        Text(text = helpText, style = MaterialTheme.typography.bodySmall)
-                    },
-                    action = {
-                        RichTooltipCloseButton(tooltipState)
-                    }
+    Column {
+        var expand by rememberStateOf(value = defaultExpand)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier
+                    .padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.primary
+            )
+            val tooltipState = rememberTooltipState(isPersistent = true)
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                state = tooltipState,
+                tooltip = {
+                    RichTooltip(
+                        text = {
+                            Text(text = helpText, style = MaterialTheme.typography.bodySmall)
+                        },
+                        action = {
+                            RichTooltipCloseButton(tooltipState)
+                        }
+                    )
+                }
+            ) {
+                FixedSizeIcon(
+                    Icons.Default.QuestionMark, "", tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(14.dp)
+                        .offset(4.dp, (-0).dp)
                 )
             }
-        ) {
-            FixedSizeIcon(
-                Icons.Default.QuestionMark, "", tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .size(14.dp)
-                    .offset(4.dp, (-0).dp)
-            )
-        }
 
-        Row(modifier = Modifier
-            .weight(1f)
-            .padding(start = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (extraRowContent != null) {
-                CompositionLocalProvider(
-                    LocalTextStyle provides MaterialTheme.typography.labelSmall
-                ) {
-                    extraRowContent()
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 6.dp), verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (extraRowContent != null) {
+                    CompositionLocalProvider(
+                        LocalTextStyle provides MaterialTheme.typography.labelSmall
+                    ) {
+                        extraRowContent()
+                    }
                 }
             }
+            if (expandable) {
+                ExpandMoreButton(modifier = Modifier, expand = expand, onClick = {
+                    expand = !expand
+                })
+            }
         }
-        if (expandable) {
-            ExpandMoreButton(modifier = Modifier,expand = expand, onClick = {
-                expand = !expand
-            })
-        }
+        content(expand)
     }
-    content(expand)
 }

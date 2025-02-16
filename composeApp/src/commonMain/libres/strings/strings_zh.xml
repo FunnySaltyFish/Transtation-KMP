@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="long_text_max_seg_length">最大分段长度</string>
+    <string name="long_text_max_seg_length_help">设置翻译时长文的最大分段长度，值越大，单次翻译的段落越长，这一长段翻译可能更准确，但翻译过程越慢。此值过大时应用可能在输出完毕前视为超时，模型也可能输出不完。建议极限不超过三千。</string>
+    <string name="long_text_max_seg_length_placeholder">默认使用服务器配置：${l}</string>
+
+
     <string name="thinking_in_progress">深度思考中……</string>
     <string name="thinking_completed">深度思考完成（用时 %.1f 秒）</string>
     <string name="expand_think_content">展开/收起深度思考内容</string>

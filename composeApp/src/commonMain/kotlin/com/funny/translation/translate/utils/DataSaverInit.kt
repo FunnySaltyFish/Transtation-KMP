@@ -102,6 +102,11 @@ fun initTypeConverters() {
         save = { it.name },
         restore = { AICostSortType.valueOf(it) }
     )
+
+    DataSaverConverter.registerTypeConverters<Int?>(
+        save = { it.toString() },
+        restore = { if (it == "null") null else it.toInt() }
+    )
 }
 
 private val OLD_VIP_START_TIME = """("vip_start_time"):(-?\d+)""".toRegex()

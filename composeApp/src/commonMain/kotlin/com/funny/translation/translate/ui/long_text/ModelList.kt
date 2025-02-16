@@ -55,8 +55,6 @@ fun ColumnScope.ModelListPart(
     onModelSelected: (model: Model) -> Unit,
     maxHeight: Dp = 400.dp,
 ) {
-
-
     Category(
         title = ResStrings.model_select,
         helpText = ResStrings.model_select_help,

@@ -11,9 +11,11 @@ import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.ChatMessageReq
 import com.funny.compose.ai.bean.SENDER_ME
 import com.funny.compose.ai.bean.StreamMessage
+import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.helper.CacheManager
 import com.funny.translation.helper.DataHolder
+import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.JsonX
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.TextSplitter
@@ -59,6 +61,7 @@ class LongTextTransViewModel: ModelViewModel() {
 
     private var totalLength = 0
     var translatedLength by mutableIntStateOf(0)
+    var maxSegmentLength: Int? by mutableDataSaverStateOf(DataSaverUtils, key = "long_text_max_segment_length", initialValue = null)
 
     val progress by derivedStateOf {  if (translatedLength == 0) 0f else (translatedLength.toFloat() / totalLength).coerceIn(0f, 1f) }
     val startedProgress by derivedStateOf {  if (translatedLength == 0) 0f else ((translatedLength + currentTransPartLength).toFloat() / totalLength).coerceIn(0f, 1f) }
@@ -222,7 +225,7 @@ class LongTextTransViewModel: ModelViewModel() {
 
         // 最大的输入长度： 模型最大长度 * 0.8
         // 由于模型的输出长度实际远小于上下文长度（gpt3.5、gpt4都只有4096），这里乘以 0.8 以尽量使得输出能输出完
-        val maxLength = (chatBot.model.maxOutputTokens * 0.8f).toInt()
+        val maxLength = maxSegmentLength ?: (chatBot.model.maxOutputTokens * 0.8f).toInt()
         val tokenCounter = chatBot.tokenCounter
 
         val messages = arrayListOf<ChatMessageReq>()

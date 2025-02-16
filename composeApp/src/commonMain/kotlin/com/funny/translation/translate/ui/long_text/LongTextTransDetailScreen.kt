@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,6 +54,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.token.TokenCounter
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.jetsetting.core.ui.SimpleDialog
@@ -74,10 +77,12 @@ import com.funny.translation.translate.ui.long_text.components.RemarkDialog
 import com.funny.translation.translate.ui.long_text.components.ResultTextPart
 import com.funny.translation.translate.ui.long_text.components.SourceTextPart
 import com.funny.translation.translate.ui.widget.TwoProgressIndicator
+import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.floatingActionBarModifier
+import com.funny.translation.ui.popDialogShape
 import moe.tlaster.precompose.navigation.BackHandler
 import java.util.UUID
 
@@ -113,6 +118,7 @@ fun LongTextTransDetailScreen(
     }
     
     CommonPage(
+        modifier = Modifier.imePadding(),
         title = null,
         actions = {
             AIPointText()
@@ -146,20 +152,18 @@ fun LongTextTransDetailScreen(
         )
 
         val modelSelectDialog = rememberStateOf(value = false)
-        SimpleDialog(
-            openDialogState = modelSelectDialog,
-            title = ResStrings.model_select,
-            content = {
-                Column {
+        if (modelSelectDialog.value) {
+            AnyPopDialog(
+                modifier = Modifier.popDialogShape().heightIn(max = 600.dp),
+                onDismissRequest = { modelSelectDialog.value = false } ,
+                content = {
                     ModelListPart(
                         onModelLoaded = vm::onModelListLoaded,
                         onModelSelected = vm::updateChatBot
                     )
-                }
-            },
-            confirmButtonText = "",
-            dismissButtonText = ""
-        )
+                },
+            )
+        }
 
         BackHandler(enabled =
             (vm.screenState == ScreenState.Translating && !vm.isPausing)
@@ -255,6 +259,7 @@ private fun ColumnScope.DetailContent(
                         tokenCounter = vm.chatBot.tokenCounter
                     )
                     PromptPart(vm.prompt, vm.chatBot.tokenCounter, vm::updatePrompt, vm::resetPrompt)
+                    MaxSegmentSettingsPart(vm.maxSegmentLength, vm.chatBot.model, { vm.maxSegmentLength = it})
                     Category(
                         title = ResStrings.all_corpus,
                         helpText = ResStrings.corpus_help,
@@ -340,9 +345,14 @@ private fun FunctionRow(
                 EditPromptButton(
                     initialPrompt = vm.prompt,
                     tokenCounter = vm.chatBot.tokenCounter,
+                    initialMaxSegLength = vm.maxSegmentLength,
+                    model = vm.chatBot.model,
                     onConfirmPrompt = {
                         vm.updatePrompt(it)
                         vm.savePrompt()
+                    },
+                    onConfirmMaxSegLength = {
+                        vm.maxSegmentLength = it
                     }
                 )
             }
@@ -364,10 +374,14 @@ private fun FunctionRow(
 private fun EditPromptButton(
     initialPrompt: EditablePrompt,
     tokenCounter: TokenCounter,
+    initialMaxSegLength: Int?,
+    model: Model,
     onConfirmPrompt: (String) -> Unit,
+    onConfirmMaxSegLength: (Int) -> Unit
 ) {
     val showEditPromptDialog = rememberStateOf(false)
     var prompt by rememberStateOf(initialPrompt)
+    var updatedMaxSegLength: Int? by rememberStateOf(null)
     SimpleDialog(
         openDialogState = showEditPromptDialog,
         content = {
@@ -380,10 +394,17 @@ private fun EditPromptButton(
                         prompt = initialPrompt
                     }
                 )
+
+                MaxSegmentSettingsPart(
+                    initialValue = initialMaxSegLength,
+                    model = model,
+                    onUpdate = { updatedMaxSegLength = it }
+                )
             }
         },
         confirmButtonAction = {
             onConfirmPrompt(prompt.prefix)
+            updatedMaxSegLength?.let { onConfirmMaxSegLength(it) }
         }
     )
 

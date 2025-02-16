@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 英文资源 values/strings.xml -->
+    <string name="long_text_max_seg_length">Maximum Segment Length</string>
+    <string name="long_text_max_seg_length_help">Set the maximum segment length for long text translation. The larger the value, the longer the paragraphs translated at one time, which may result in more accurate translations, but the translation process will be slower. If this value is too large, the application may time out before completing the output, and the model may not finish outputting. It is recommended not to exceed three thousand.</string>
+    <string name="long_text_max_seg_length_placeholder">Default server configuration: ${l}</string>
+
+
     <string name="thinking_in_progress">Deep thinking in progress...</string>
     <string name="thinking_completed">Deep thinking completed (%.1f seconds)</string>
     <string name="expand_think_content">Expand/Collapse deep thinking content</string>
