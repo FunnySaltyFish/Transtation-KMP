@@ -21,7 +21,7 @@ actual class InstallApkLauncher(
 ): Launcher<File, Boolean>() {
     override fun launch(input: File) {
         try {
-            Desktop.getDesktop().open(input)
+            Desktop.getDesktop().open(input.parentFile)
             onResult(true)
         } catch (e: Exception) {
             e.printStackTrace()

@@ -14,5 +14,5 @@ data class UpdateInfo(
     val update_log: String? = null,
     val version_code: Int? = null,
     val version_name: String? = null,
-    val file_suffix: String? = null,
+    val file_extension: String? = null,
 )

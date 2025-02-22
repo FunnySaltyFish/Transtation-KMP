@@ -7,7 +7,7 @@ import java.io.File
 actual fun getInstallApkFile(updateInfo: UpdateInfo): File? {
     val versionName = updateInfo.version_name ?: return null
     val versionCode = updateInfo.version_code ?: return null
-    val fileSuffix = updateInfo.file_suffix ?: "exe"
+    val fileSuffix = updateInfo.file_extension ?: "exe"
     return CacheManager.cacheDir.resolve("update/${versionName}_$versionCode.$fileSuffix")
 }
 
