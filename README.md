@@ -31,23 +31,21 @@ The application gradually adapts to Android13, including:
 - Supports setting the application language separately
 - Supports Monet icon
 
-You can get the latest version from the following ways:
+You can get the latest version from the following ways ( Android + Windows):
 
-- Android  
-  - [This repository - for Chinese Mainland](/composeApp/release/composeApp-release.apk)
-  - [Coolapk](https://www.coolapk.com/apk/com.funny.translation)
   - [Official website(Chinese)](https://www.funnysaltyfish.fun/trans)
-- Desktop(JVM)
-  - Desktop version is still in Alpha test, it can be packaged and installed successfully. Join [the QQ Group](https://qm.qq.com/q/64Ulp9Rjdm) to download the test version.
+  - [Release Page](https://github.com/FunnySaltyFish/Transtation-KMP/releases)
+  
+Join [the QQ Group](https://qm.qq.com/q/64Ulp9Rjdm) to download the latest test version.
 
-If you want to read the code, I recommend that you start from [the main Activity](/composeApp/src/androidMain/kotlin/com/funny/translation/translate/TransActivity.android.kt)
+If you want to read the code, I recommend that you start from [the main Activity](/composeApp/src/androidMain/kotlin/com/funny/translation/translate/TransActivity.android.kt) or [AppNavigation](/composeApp/src/commonMain/kotlin/com/funny/translation/translate/AppNavigation.kt)
 
 If you find it helpful, **welcome to star**!
 
 ### Screenshot
 
 #### Screen Recording
-v2.8.0 (2024/01/15)
+> v2.8.0 (2024/01/15)
 
 https://github.com/FunnySaltyFish/Transtation-KMP/assets/46063434/ded5d1c6-553c-4f45-96a4-74d870fcbcb8
 
