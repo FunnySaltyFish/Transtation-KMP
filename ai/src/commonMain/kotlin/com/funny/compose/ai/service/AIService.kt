@@ -12,10 +12,10 @@ import com.funny.translation.helper.getLanguageCode
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.network.CommonData
-import com.funny.translation.network.DefaultModelExtractor.HEADER_BASE_READ_TIMEOUT
-import com.funny.translation.network.DefaultModelExtractor.HEADER_MODEL_ID
-import com.funny.translation.network.DefaultModelExtractor.HEADER_PER_CHAR_TIMEOUT
-import com.funny.translation.network.DefaultModelExtractor.HEADER_TEXT_LENGTH
+import com.funny.translation.network.DefaultModelExtractor.Companion.HEADER_BASE_READ_TIMEOUT
+import com.funny.translation.network.DefaultModelExtractor.Companion.HEADER_MODEL_ID
+import com.funny.translation.network.DefaultModelExtractor.Companion.HEADER_PER_CHAR_TIMEOUT
+import com.funny.translation.network.DefaultModelExtractor.Companion.HEADER_TEXT_LENGTH
 import com.funny.translation.network.DynamicTimeout
 import com.funny.translation.network.ServiceCreator
 import kotlinx.coroutines.Dispatchers

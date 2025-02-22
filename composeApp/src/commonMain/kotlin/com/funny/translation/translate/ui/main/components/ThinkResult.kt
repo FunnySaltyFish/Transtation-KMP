@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +40,7 @@ fun ThinkResult(
         modifier = modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialColors.Grey200)
+        colors = CardDefaults.cardColors(containerColor = MaterialColors.Grey200, contentColor = LocalTextStyle.current.color.copy(alpha = 0.85f)),
     ) {
         var expandThink by rememberSaveableStateOf(true)
         Row(

@@ -25,6 +25,7 @@
         android:localeConfig="@xml/locales_config"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme"
+        android:resizeableActivity="true"
         tools:targetApi="33"
         tools:ignore="Instantiatable"> <!-- 由于 Activity 继承的 BaseActivity 只是在 Android 上间接继承 AppCompatActivity，Activity会报这个警告，忽略掉 -->
 
