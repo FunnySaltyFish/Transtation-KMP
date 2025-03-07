@@ -1,5 +1,8 @@
 package com.funny.translation.translate
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.funny.translation.kmp.base.strings.ResStrings
 import kotlinx.serialization.SerialName
 
@@ -35,20 +38,30 @@ data class ImageTranslationPart(
 
 }
 
-@kotlinx.serialization.Serializable
-data class ImageTranslationResult(
-    @SerialName("erased_img")
-    val erasedImgBase64: String? = null,
-    val source: String = "",
-    val target: String = "",
-    val content: List<ImageTranslationPart> = arrayListOf()
-)
+sealed interface ImageTranslationResult {
+    val source: String
+    val target: String
 
-abstract class ImageTranslationTask(
-    var sourceImg: ByteArray = byteArrayOf(),
-) : CoreTranslationTask() {
-    var result = ImageTranslationResult()
+    @kotlinx.serialization.Serializable
+    data class Normal(
+        @SerialName("erased_img")
+        val erasedImgBase64: String? = null,
+        override val source: String = "",
+        override val target: String = "",
+        val content: List<ImageTranslationPart> = arrayListOf()
+    ): ImageTranslationResult
 
+    class Model(): ImageTranslationResult {
+
+        override var source: String = ""
+        var streamingResult by mutableStateOf("")
+        var error by mutableStateOf("")
+
+        override val target: String get() = streamingResult.trim()
+    }
+}
+
+abstract class ImageTranslationTask: CoreTranslationTask() {
     @Throws(TranslationException::class)
     open suspend fun translate(){
         if (!supportLanguages.contains(sourceLanguage) || !supportLanguages.contains(targetLanguage)){
@@ -58,4 +71,12 @@ abstract class ImageTranslationTask(
     }
 
     abstract val isOffline: Boolean
+    abstract val result: ImageTranslationResult
+}
+
+abstract class NormalImageTranslationTask(
+    var sourceImg: ByteArray = byteArrayOf()
+) : ImageTranslationTask() {
+    override val isOffline: Boolean = false
+    override var result = ImageTranslationResult.Normal()
 }

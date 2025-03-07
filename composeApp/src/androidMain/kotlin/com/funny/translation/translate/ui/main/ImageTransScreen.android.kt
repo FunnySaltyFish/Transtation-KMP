@@ -76,6 +76,7 @@ import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
 import cn.qhplus.emo.photo.ui.GestureContent
 import cn.qhplus.emo.photo.ui.GestureContentState
 import com.funny.compose.loading.LoadingState
+import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.BitmapUtil
@@ -90,12 +91,18 @@ import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.ImageTranslationEngine
+import com.funny.translation.translate.engine.TextTranslationEngines
+import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.findLanguageById
+import com.funny.translation.translate.ui.main.components.EngineSelectDialog
+import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.CustomCoilProvider
 import com.funny.translation.translate.ui.widget.ExchangeButton
+import com.funny.translation.translate.utils.EngineManager
 import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.floatingActionBarModifier
@@ -388,7 +395,8 @@ private fun ImageTranslationPart(
             EngineSelect(
                 engine = vm.translateEngine,
                 updateEngine = vm::updateTranslateEngine,
-                allEngines = vm.allEngines
+                bindEngines = vm.bindEngines,
+                modelEngines = vm.modelEngines
             )
         }
         ResultPart(modifier = Modifier.fillMaxSize(), vm = vm)
@@ -445,17 +453,19 @@ private fun FloatButtonRow(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // 更改透明度
-            FloatingActionButton(
-                onClick = gotoResultListAction,
-                modifier = Modifier
-            ) {
-                // 解析结果
-                FixedSizeIcon(
-                    imageVector = Icons.Filled.ViewList,
-                    contentDescription = "Next",
-                    tint = Color.White
-                )
+            if (translateState.getAsNormal() != null) {
+                // 更改透明度
+                FloatingActionButton(
+                    onClick = gotoResultListAction,
+                    modifier = Modifier
+                ) {
+                    // 解析结果
+                    FixedSizeIcon(
+                        imageVector = Icons.Filled.ViewList,
+                        contentDescription = "Next",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
@@ -530,7 +540,6 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
                 )
             } else if (vm.translateState.isSuccess) {
                 val alpha by animateFloatAsState(targetValue = if (showResult) 1f else 0f)
-                val layoutInfo = gestureState.layoutInfo ?: return@GestureContent
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -538,42 +547,16 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
                         .background(Color.LightGray.copy(0.9f))
                         .clipToBounds()
                 ) {
-                    Box(
-                        Modifier
-                            .width(layoutInfo.contentWidth)
-                            .height(layoutInfo.contentHeight)
-                            .align(Alignment.Center)
-                            .border(2.dp, color = Color.White)
-                            .offset {
-                                IntOffset(
-                                    0,
-                                    (-(lazyListState.firstVisibleItemScrollOffset + lazyListState.firstVisibleItemIndex * layoutInfo.px.containerHeight)).toInt()
-                                )
-                            }
-                    ) {
-                        SelectionContainer {
-                            val data = (vm.translateState as LoadingState.Success).data
-                            data.content.forEach { part ->
-                                val w =
-                                    remember { (part.width * imageInitialScale / density.density).dp }
-                                val h =
-                                    remember { (part.height * imageInitialScale / density.density).dp }
-                                AutoResizedText(
-                                    modifier = Modifier
-                                        .requiredSize(w, h)
-                                        .offset {
-                                            IntOffset(
-                                                (part.x * imageInitialScale).toInt(),
-                                                (part.y * imageInitialScale).toInt()
-                                            )
-                                        },
-                                    text = part.target,
-                                    color = Color.White,
-                                )
-                            }
-                        }
+                    val result = vm.translateState.getOrNull() ?: return@GestureContent
+                    if (result is ImageTranslationResult.Normal) {
+                        NormalTransResult(
+                            result, gestureState, lazyListState, imageInitialScale
+                        )
+                    } else if (result is ImageTranslationResult.Model) {
+                        ModelTransResult(
+                            result
+                        )
                     }
-
                 }
             }
         }
@@ -585,24 +568,45 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
 private fun EngineSelect(
     engine: ImageTranslationEngine,
     updateEngine: (ImageTranslationEngine) -> Unit,
-    allEngines: List<ImageTranslationEngine>,
+    bindEngines: List<ImageTranslationEngine>,
+    modelEngines: List<ImageTranslationEngine>
 ) {
-    var expand by remember {
-        mutableStateOf(false)
+    val showDialog = rememberStateOf(false)
+    var selectEngine by rememberStateOf(engine)
+
+    val states = remember(bindEngines, modelEngines) {
+        Log.d("FloatWindowScreen", "remember states triggered")
+        hashMapOf<TranslationEngine, MutableState<Boolean>>().apply {
+            bindEngines.forEach { put(it, mutableStateOf(it == engine)) }
+            modelEngines.forEach { put(it, mutableStateOf(it == engine)) }
+        }
     }
-    TextButton(onClick = { expand = !expand }) {
-        Text(text = engine.name)
-        DropdownMenu(expanded = expand, onDismissRequest = { expand = false }) {
-            allEngines.forEach {
-                DropdownMenuItem(
-                    text = { Text(text = it.name) },
-                    onClick = {
-                        updateEngine(it)
-                        expand = false
-                    }
-                )
+
+    LaunchedEffect(selectEngine) {
+        states.forEach {
+            it.value.value = (it.key == selectEngine)
+        }
+        updateEngine(selectEngine)
+    }
+
+    EngineSelectDialog(
+        showDialog = showDialog,
+        bindEngines = bindEngines,
+        jsEngines = emptyList(),
+        modelEngines = modelEngines,
+        selectStateProvider = { states[it] ?: rememberStateOf(false) },
+        updateSelectedEngine = object : UpdateSelectedEngine {
+            override fun add(engine: TranslationEngine) {
+                selectEngine = engine as ImageTranslationEngine
+            }
+
+            override fun remove(engine: TranslationEngine) {
+                states[engine]?.value = false
             }
         }
+    )
+    TextButton(onClick = { showDialog.value = true }) {
+        Text(text = engine.name)
     }
 }
 

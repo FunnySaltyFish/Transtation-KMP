@@ -1,11 +1,18 @@
 package com.funny.translation.translate.engine
 
+import com.funny.compose.ai.bean.Model
+import com.funny.compose.ai.chat.ChatBots
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationTask
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.NormalImageTranslationTask
 import com.funny.translation.translate.TranslationEngine
+import com.funny.translation.translate.allLanguages
 import com.funny.translation.translate.task.ImageTranslationBaidu
 import com.funny.translation.translate.task.ImageTranslationTencent
+import com.funny.translation.translate.task.ModelImageTranslationTask
+import com.funny.translation.translate.task.modelLanguageMapping
+import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -13,18 +20,15 @@ import kotlin.reflect.full.createInstance
 interface ImageTranslationEngine: TranslationEngine {
     override val taskClass: KClass<out ImageTranslationTask>
     fun getPoint(): Float
-    fun createTask(
-        sourceImage: ByteArray,
-        sourceLanguage: Language = Language.AUTO,
-        targetLanguage: Language = Language.ENGLISH
-    ) : ImageTranslationTask
 }
 
-sealed class ImageTranslationEngines: ImageTranslationEngine {
+sealed class NormalImageTranslationEngines(
+    override val taskClass: KClass<out NormalImageTranslationTask>
+): ImageTranslationEngine {
     override val supportLanguages: List<Language>
         get() = languageMapping.map { it.key }
 
-    override fun createTask(
+    fun createTask(
         sourceImage: ByteArray,
         sourceLanguage: Language,
         targetLanguage: Language
@@ -36,18 +40,20 @@ sealed class ImageTranslationEngines: ImageTranslationEngine {
         return instance
     }
 
-    object Baidu: ImageTranslationEngines() {
+    object Baidu: NormalImageTranslationEngines(
+        ImageTranslationBaidu::class
+    ) {
         override val name: String = ResStrings.engine_baidu
         override val supportLanguages: List<Language> = TextTranslationEngines.BaiduNormal.supportLanguages
         override val languageMapping: Map<Language, String> = TextTranslationEngines.BaiduNormal.languageMapping
-
-        override val taskClass: KClass<out ImageTranslationTask> = ImageTranslationBaidu::class
 
         override fun getPoint() = 1.0f
     }
 
 
-    object Tencent: ImageTranslationEngines() {
+    object Tencent: NormalImageTranslationEngines(
+        ImageTranslationTencent::class
+    ) {
         override val name: String = ResStrings.engine_tencent
         override val languageMapping: Map<Language, String> = hashMapOf(
             Language.AUTO to "auto",
@@ -64,10 +70,38 @@ sealed class ImageTranslationEngines: ImageTranslationEngine {
             Language.ITALIAN to "it",
         )
         override val supportLanguages: List<Language> = languageMapping.keys.toList()
-        override val taskClass: KClass<out ImageTranslationTask> = ImageTranslationTencent::class
 
         override fun getPoint() = 1.0f
     }
+}
 
-    
+class ModelImageTranslationEngine(
+    val model: Model
+): ImageTranslationEngine {
+    override val name: String = model.name
+    override val taskClass: KClass<out ImageTranslationTask> = ModelImageTranslationTask::class
+    override val supportLanguages: List<Language> = allLanguages
+    override val languageMapping: Map<Language, String> = modelLanguageMapping
+
+    override fun getPoint() = 1.0f
+
+    fun createTask(
+        imageUri: String,
+        sourceLanguage: Language,
+        targetLanguage: Language,
+        coroutineScope: CoroutineScope,
+    ): ImageTranslationTask {
+        return ModelImageTranslationTask(
+            chatBot = ChatBots.findById(model.chatBotId),
+            fileUri = imageUri,
+            systemPrompt = PROMPT_TEMPLATE.format(targetLanguage.displayText),
+            coroutineScope = coroutineScope
+        )
+    }
+
+    companion object {
+        private val PROMPT_TEMPLATE = """
+            You're an excellent translator, translate the image to %s. Your output should be clear and concise, and in Markdown format. I'll display your output over the image to help people to read.
+        """.trimIndent()
+    }
 }

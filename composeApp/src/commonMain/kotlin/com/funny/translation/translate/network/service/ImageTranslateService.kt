@@ -10,5 +10,5 @@ interface ImageTranslateService {
     @POST("api/translate_image")
     suspend fun getTransResult(
         @Body body: RequestBody
-    ): CommonData<ImageTranslationResult>
+    ): CommonData<ImageTranslationResult.Normal>
 }

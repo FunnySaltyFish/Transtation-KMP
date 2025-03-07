@@ -83,7 +83,7 @@ internal fun ImageTransResultList(
     updateCurrentPage: (ImageTransPage) -> Unit
 ) {
     val vm = viewModel<ImageTransViewModel>()
-    val result = vm.translateState.getOrNull<ImageTranslationResult>() ?: return
+    val result = vm.translateState.getAsNormal() ?: return
 
     var displayText by rememberStateOf("")
     val selectedResultParts = vm.selectedResultParts

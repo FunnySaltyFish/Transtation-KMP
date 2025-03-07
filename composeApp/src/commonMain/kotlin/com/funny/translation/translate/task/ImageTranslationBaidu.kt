@@ -1,17 +1,17 @@
 package com.funny.translation.translate.task
 
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.ImageTranslationTask
+import com.funny.translation.translate.NormalImageTranslationTask
 import com.funny.translation.translate.TranslationException
 import com.funny.translation.translate.engine.ImageTranslationEngine
-import com.funny.translation.translate.engine.ImageTranslationEngines
+import com.funny.translation.translate.engine.NormalImageTranslationEngines
 import com.funny.translation.translate.network.TransNetwork
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class ImageTranslationBaidu(): ImageTranslationTask(), ImageTranslationEngine by ImageTranslationEngines.Baidu {
+class ImageTranslationBaidu(): NormalImageTranslationTask(), ImageTranslationEngine by NormalImageTranslationEngines.Baidu {
      override suspend fun translate() {
          super.translate()
          withContext(Dispatchers.IO){

@@ -5,7 +5,7 @@
     <string name="please_select">Please select</string>
     <!-- 从 v2.8.2开始，从上面排，不然每次都让鼠标滚半天到最下面  -->
     <string name="language_auto">Auto</string>
-    <string name="language_chinese">Chinese</string>
+    <string name="language_chinese">Simplified Chinese</string>
     <string name="language_english">English</string>
     <string name="language_japanese">Japanese</string>
     <string name="language_korean">Korean</string>

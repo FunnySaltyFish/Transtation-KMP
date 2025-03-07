@@ -9,9 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.funny.compose.ai.bean.ChatMessageReq
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.bean.StreamMessage
+import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.compose.ai.service.AskStreamRequest
 import com.funny.compose.ai.service.aiService
 import com.funny.compose.ai.service.askAndParseStream
+import com.funny.compose.ai.utils.ModelManager
 import com.funny.compose.loading.LoadingState
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.AppConfig
@@ -27,14 +29,17 @@ import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.database.DefaultData
 import com.funny.translation.translate.engine.ImageTranslationEngine
-import com.funny.translation.translate.engine.ImageTranslationEngines
+import com.funny.translation.translate.engine.ModelImageTranslationEngine
+import com.funny.translation.translate.engine.NormalImageTranslationEngines
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.ui.ai.ModelViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.util.LinkedList
 
@@ -48,8 +53,15 @@ typealias SingleIndexedImageTranslationPart = Pair<Int, ImageTranslationPart>
 
 class ImageTransViewModel : ModelViewModel() {
     var imageUri: Uri? by mutableStateOf(null)
-    var translateEngine: ImageTranslationEngine by mutableStateOf(ImageTranslationEngines.Baidu)
+    var translateEngine: ImageTranslationEngine by mutableStateOf(NormalImageTranslationEngines.Baidu)
     private var translateJob: Job? = null
+    private val translateExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        translateState = LoadingState.Failure(throwable)
+        showTranslateButton = true
+        appCtx.toastOnUi("翻译错误！原因是：${throwable.message}")
+    }
+
     var translateState: LoadingState<ImageTranslationResult> by mutableStateOf(LoadingState.Loading)
 
     var sourceLanguage by mutableDataSaverStateOf(DataSaverUtils, "key_img_source_lang", Language.ENGLISH)
@@ -58,7 +70,8 @@ class ImageTransViewModel : ModelViewModel() {
     var imgWidth = 0
     var imgHeight = 0
 
-    var allEngines = arrayListOf(ImageTranslationEngines.Baidu, ImageTranslationEngines.Tencent)
+    var bindEngines = arrayListOf(NormalImageTranslationEngines.Baidu, NormalImageTranslationEngines.Tencent)
+    var modelEngines by mutableStateOf(emptyList<ImageTranslationEngine>())
 
     var showResultState = mutableStateOf(true)
     var showTranslateButton by mutableStateOf(true)
@@ -68,23 +81,34 @@ class ImageTransViewModel : ModelViewModel() {
     var optimizeByAITask: OptimizeByAITask? by mutableStateOf(null)
 
     init {
-        translateEngine = DefaultData.bindImageEngines.firstOrNull {
+        DefaultData.bindImageEngines.firstOrNull {
             DataSaverUtils.readData(it.selectKey, false)
-        } ?: ImageTranslationEngines.Baidu
+        }?.let {
+            translateEngine = it
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            ModelManager.models.await().let {
+                withContext(Dispatchers.Main) {
+                    onModelListLoaded(0, it)
+                }
+            }
+        }
+    }
 
-        // mock data
-//        translateState = LoadingState.Success(
-//            ImageTranslationResult(
-//                source = "source",
-//                target = "target",
-//                content = listOf(
-//                    ImageTranslationPart("白日依山尽", "The white sun sets behind the mountains"),
-//                    ImageTranslationPart("黄河入海流", "The Yellow River flows into the sea"),
-//                    ImageTranslationPart("欲穷千里目", "If you want to see a thousand miles"),
-//                    ImageTranslationPart("更上一层楼", "Climb to a higher level")
-//                )
-//            )
-//        )
+    override fun onModelListLoaded(currentSelectBotId: Int, models: List<Model>) {
+        super.onModelListLoaded(currentSelectBotId, models)
+        modelEngines = models.filter { it.inputFileTypes.supportImage }.map {
+            ModelImageTranslationEngine(it)
+        }
+        // 如果模型加载成功，则尝试看看是否有模型被选中过
+        if (translateEngine == NormalImageTranslationEngines.Baidu) {
+            modelEngines.firstOrNull {
+                DataSaverUtils.readData(it.selectKey, false)
+            }?.let {
+                translateEngine = it
+                chatBot = ModelChatBot((it as ModelImageTranslationEngine).model)
+            }
+        }
     }
 
     // 翻译相关
@@ -93,42 +117,60 @@ class ImageTransViewModel : ModelViewModel() {
         translateJob?.cancel()
         Log.d(TAG, "translate: start")
         showTranslateButton = false
-        translateJob = viewModelScope.launch(Dispatchers.IO) {
+        translateJob = viewModelScope.launch(Dispatchers.IO + translateExceptionHandler) {
             translateState = LoadingState.Loading
-            kotlin.runCatching {
-                val bytes = BitmapUtil.getBitmapFromUri(
-                    appCtx,
-                    4096,
-                    4096,
-                    2 * 1024 * 1024,
-                    imageUri!!.toString()
-                )
-                bytes ?: return@launch
-                Log.d(TAG, "translate: imageSize: ${bytes.size}")
-                with(GlobalTranslationConfig) {
-                    this.sourceLanguage = this@ImageTransViewModel.sourceLanguage
-                    this.targetLanguage = this@ImageTransViewModel.targetLanguage
-                    this.sourceString = ""
+            with(GlobalTranslationConfig) {
+                this.sourceLanguage = this@ImageTransViewModel.sourceLanguage
+                this.targetLanguage = this@ImageTransViewModel.targetLanguage
+                this.sourceString = ""
+            }
+            when (val engine = translateEngine) {
+                is NormalImageTranslationEngines -> {
+                    translateNormalEngine(engine)
                 }
-                translateEngine.createTask(bytes, sourceLanguage, targetLanguage).apply {
-                    this.translate()
-                }.result
-            }.onSuccess {
-                val user = AppConfig.userInfo.value
-                if (user.img_remain_points > 0)
-                    AppConfig.userInfo.value =
-                        user.copy(img_remain_points = user.img_remain_points - translateEngine.getPoint())
-                translateState = LoadingState.Success(it)
-                showTranslateButton = false
-                // 翻译成功了，把结果展示出来
-                showResultState.value = true
-            }.onFailure {
-                it.printStackTrace()
-                translateState = LoadingState.Failure(it)
-                appCtx.toastOnUi("翻译错误！原因是：${it.message}")
-                showTranslateButton = true
+                is ModelImageTranslationEngine -> {
+                    translateModelEngine(engine)
+                }
+                else -> { }
             }
         }
+    }
+
+    private suspend fun translateNormalEngine(
+        translateEngine: NormalImageTranslationEngines
+    ) {
+        val bytes = BitmapUtil.getBitmapFromUri(
+            appCtx,
+            4096,
+            4096,
+            2 * 1024 * 1024,
+            imageUri!!.toString()
+        )
+        bytes ?: return
+        Log.d(TAG, "translateNormal: imageSize: ${bytes.size}")
+        val task = translateEngine.createTask(bytes, sourceLanguage, targetLanguage)
+        task.translate()
+        val user = AppConfig.userInfo.value
+        if (user.img_remain_points > 0)
+            AppConfig.userInfo.value =
+                user.copy(img_remain_points = user.img_remain_points - translateEngine.getPoint())
+        translateState = LoadingState.Success(task.result)
+        showTranslateButton = false
+        // 翻译成功了，把结果展示出来
+        showResultState.value = true
+    }
+
+    private suspend fun CoroutineScope.translateModelEngine(
+        translateEngine: ModelImageTranslationEngine
+    ) {
+        val imageUri = imageUri ?: return
+        Log.d(TAG, "translateModel: imageUri: $imageUri")
+        val task = translateEngine.createTask(imageUri.toString(), sourceLanguage, targetLanguage, this)
+        translateState = LoadingState.Success(task.result)
+        showTranslateButton = false
+        // 开始翻译就把结果展示出来
+        showResultState.value = true
+        task.translate()
     }
 
     fun cancelTranslateJob() {
@@ -149,11 +191,9 @@ class ImageTransViewModel : ModelViewModel() {
     }
 
     fun selectAllResultParts() {
+        val contents = (translateState.getOrNull() as? ImageTranslationResult.Normal)?.content ?: return
         selectedResultParts.clear()
-        selectedResultParts.addAll(
-            translateState.getOrNull<ImageTranslationResult>()?.content?.mapIndexed { i, v -> i to v }
-                ?: emptyList()
-        )
+        selectedResultParts.addAll(contents.mapIndexed { i, v -> i to v })
     }
 
     fun optimizeByAI() {
@@ -176,7 +216,7 @@ class ImageTransViewModel : ModelViewModel() {
      * @param newParts 新的部分，key 是原始的 id 数组，value 是新的 ImageTranslationPart
      */
     fun replaceSelectedParts(newParts: List<MultiIndexedImageTranslationPart>) {
-        val oldResult = translateState.getOrNull<ImageTranslationResult>() ?: return
+        val oldResult = translateState.getOrNull() as? ImageTranslationResult.Normal ?: return
         val oldResultList = oldResult.content.toMutableList()
         val result = LinkedList<ImageTranslationPart>()
         var newSource = ""
@@ -377,3 +417,9 @@ You output must be a valid JSON array.
 """
     }
 }
+
+internal fun LoadingState<ImageTranslationResult>.getAsNormal() =
+    (this.getOrNull() as? ImageTranslationResult.Normal)
+
+internal fun LoadingState<ImageTranslationResult>.getAsModel() =
+    (this.getOrNull() as? ImageTranslationResult.Model)

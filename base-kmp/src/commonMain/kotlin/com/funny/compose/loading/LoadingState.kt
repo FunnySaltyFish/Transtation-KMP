@@ -17,11 +17,11 @@ sealed class LoadingState<out R> {
     val isSuccess
         get() = this is Success<*>
 
-    fun <R> getOrNull(): R? {
+    fun getOrNull(): R? {
         return (this as? Success<R>)?.data
     }
 
-    fun <R> getOrDefault(default: R): R {
+    fun getOrDefault(default: @UnsafeVariance R): R {
         return (this as? Success<R>)?.data ?: default
     }
 }
