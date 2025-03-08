@@ -7,8 +7,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +18,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -52,8 +49,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -541,33 +536,18 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
                 onError = { context.toastOnUi(ResStrings.failed_to_load_image) }
             )
 
-            if (vm.translateState.isLoading) {
-                CircularProgressIndicator(
-                    Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(Alignment.Center)
+
+            val result = vm.translateState.getOrNull() ?: return@GestureContent
+            if (result is ImageTranslationResult.Normal) {
+                NormalTransResult(
+                    result, showResult, vm.translateState, gestureState, lazyListState, imageInitialScale
                 )
-            } else if (vm.translateState.isSuccess) {
-                val alpha by animateFloatAsState(targetValue = if (showResult) 1f else 0f)
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .alpha(alpha)
-                        .background(Color.LightGray.copy(0.9f))
-                        .clipToBounds()
-                ) {
-                    val result = vm.translateState.getOrNull() ?: return@GestureContent
-                    if (result is ImageTranslationResult.Normal) {
-                        NormalTransResult(
-                            result, gestureState, lazyListState, imageInitialScale
-                        )
-                    } else if (result is ImageTranslationResult.Model) {
-                        ModelTransResult(
-                            result, vm.translateStage
-                        )
-                    }
-                }
+            } else if (result is ImageTranslationResult.Model) {
+                ModelTransResult(
+                    result, showResult, vm.translateStage
+                )
             }
+
         }
     }
 
