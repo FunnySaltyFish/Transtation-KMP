@@ -540,7 +540,7 @@ private fun ResultItem(
                         output1 = cost.selectingPrompt.output_tokens.toString(),
                         input2 = cost.actualTrans.input_tokens.toString(),
                         output2 = cost.actualTrans.output_tokens.toString()
-                    )
+                    ),
                 )
             }
         }
@@ -629,12 +629,13 @@ private fun SmartTransIndicator(
 }
 
 @Composable
-private fun CostIndicator(
+fun CostIndicator(
     modifier: Modifier = Modifier,
     selectingPromptCost: String,
     actualCost: String,
     totalCost: String,
     supportingString: String,
+    color: Color = MaterialTheme.colorScheme.primary
 ) {
     TwoTextWithTooltip(
         modifier = modifier,
@@ -647,6 +648,7 @@ private fun CostIndicator(
             fontSize = 12.sp,
         ),
         supportingText = supportingString,
+        contentColor = color
     )
 }
 

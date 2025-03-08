@@ -1,5 +1,6 @@
 package com.funny.translation.translate.ui.long_text.components
 
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.funny.translation.AppConfig
@@ -24,6 +25,7 @@ fun AIPointText() {
         text2 = user.vip_free_ai_point.toString(),
         text2Desc = ResStrings.vip_give,
         supportingText = ResStrings.vip_free_point_tip,
+        contentColor = LocalContentColor.current,
         onClick = {
             navController.navigateSingleTop(
                 route = TranslateScreen.BuyAIPointScreen.route.formatBraceStyle(

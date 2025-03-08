@@ -9,28 +9,24 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -39,6 +35,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -61,11 +58,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -76,7 +71,6 @@ import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
 import cn.qhplus.emo.photo.ui.GestureContent
 import cn.qhplus.emo.photo.ui.GestureContentState
 import com.funny.compose.loading.LoadingState
-import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.BitmapUtil
@@ -95,15 +89,11 @@ import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.ImageTranslationEngine
-import com.funny.translation.translate.engine.TextTranslationEngines
-import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.findLanguageById
 import com.funny.translation.translate.ui.main.components.EngineSelectDialog
 import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.CustomCoilProvider
 import com.funny.translation.translate.ui.widget.ExchangeButton
-import com.funny.translation.translate.utils.EngineManager
-import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.floatingActionBarModifier
 import com.yalantis.ucrop.UCrop
@@ -369,10 +359,6 @@ private fun ImageTranslationPart(
 
     BackHandler(onBack = goBack)
 
-    LaunchedEffect(vm.sourceLanguage, vm.targetLanguage, vm.translateEngine) {
-        vm.updateShowTranslateButton(true)
-    }
-
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
         Row(
             Modifier
@@ -403,9 +389,10 @@ private fun ImageTranslationPart(
     }
 
     FloatButtonRow(
-        showTranslateButton = vm.showTranslateButton,
+        translateStage = vm.translateStage,
         translateState = vm.translateState,
         translateAction = vm::translate,
+        stopAction = vm::stopTranslate,
         showResultState = vm.showResultState,
         gotoResultListAction = { updateCurrentPage(ImageTransPage.ResultList) }
     )
@@ -413,31 +400,58 @@ private fun ImageTranslationPart(
 
 @Composable
 private fun FloatButtonRow(
-    showTranslateButton: Boolean,
+    translateStage: TranslateStage,
     translateState: LoadingState<ImageTranslationResult>,
     translateAction: SimpleAction,
+    stopAction: SimpleAction,
     showResultState: MutableState<Boolean>,
     gotoResultListAction: SimpleAction
 ) {
     Row(
-        modifier = Modifier.floatingActionBarModifier()
+        modifier = Modifier.floatingActionBarModifier(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (showTranslateButton) {
-            FloatingActionButton(
-                onClick = { translateAction() },
-                modifier = Modifier
-            ) {
-                // 开始翻译
-                FixedSizeIcon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Translate",
-                    tint = Color.White
-                )
+        when (translateStage) {
+            TranslateStage.IDLE, TranslateStage.Finished -> {
+                FloatingActionButton(
+                    onClick = { translateAction() },
+                    modifier = Modifier
+                ) {
+                    // 开始翻译
+                    FixedSizeIcon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Translate",
+                    )
+                }
+            }
+
+            TranslateStage.Translating, TranslateStage.Outputting -> {
+                // 翻译中
+                FloatingActionButton(
+                    onClick = stopAction,
+                    modifier = Modifier
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (translateStage == TranslateStage.Outputting) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(36.dp),
+                                color = LocalContentColor.current,
+                                strokeWidth = (1.5).dp
+                            )
+                        }
+                        // 停止翻译
+                        FixedSizeIcon(
+                            imageVector = Icons.Default.Stop,
+                            contentDescription = "Stop",
+                        )
+                    }
+                }
             }
         }
 
         if (translateState.isSuccess) {
-            if (showTranslateButton) Spacer(modifier = Modifier.width(8.dp))
             // 解析结果
             FloatingActionButton(
                 onClick = { showResultState.value = !showResultState.value },
@@ -447,11 +461,8 @@ private fun FloatButtonRow(
                 FixedSizeIcon(
                     imageVector = if (showResultState.value) Icons.Default.VisibilityOff else Icons.Filled.Visibility,
                     contentDescription = "Toggle Result",
-                    tint = Color.White
                 )
             }
-
-            Spacer(modifier = Modifier.width(8.dp))
 
             if (translateState.getAsNormal() != null) {
                 // 更改透明度
@@ -463,7 +474,6 @@ private fun FloatButtonRow(
                     FixedSizeIcon(
                         imageVector = Icons.Filled.ViewList,
                         contentDescription = "Next",
-                        tint = Color.White
                     )
                 }
             }
@@ -473,7 +483,6 @@ private fun FloatButtonRow(
 
 @Composable
 private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
-    val density = LocalDensity.current
     val showResult by vm.showResultState
     // 图片为了铺满屏幕进行的缩放
     var imageInitialScale by remember { mutableFloatStateOf(1f) }
@@ -554,7 +563,7 @@ private fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
                         )
                     } else if (result is ImageTranslationResult.Model) {
                         ModelTransResult(
-                            result
+                            result, vm.translateStage
                         )
                     }
                 }

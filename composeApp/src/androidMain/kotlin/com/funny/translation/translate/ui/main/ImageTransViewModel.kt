@@ -24,6 +24,7 @@ import com.funny.translation.helper.Log
 import com.funny.translation.helper.extractJSON
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationPart
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.Language
@@ -47,6 +48,10 @@ enum class ImageTransPage {
     Main, ResultList
 }
 
+enum class TranslateStage {
+    IDLE, Translating, Outputting, Finished
+}
+
 class MultiIndexedImageTranslationPart(val indexes: IntArray, val part: ImageTranslationPart)
 
 typealias SingleIndexedImageTranslationPart = Pair<Int, ImageTranslationPart>
@@ -58,7 +63,7 @@ class ImageTransViewModel : ModelViewModel() {
     private val translateExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         translateState = LoadingState.Failure(throwable)
-        showTranslateButton = true
+        translateStage = TranslateStage.Finished
         appCtx.toastOnUi("翻译错误！原因是：${throwable.message}")
     }
 
@@ -74,7 +79,7 @@ class ImageTransViewModel : ModelViewModel() {
     var modelEngines by mutableStateOf(emptyList<ImageTranslationEngine>())
 
     var showResultState = mutableStateOf(true)
-    var showTranslateButton by mutableStateOf(true)
+    var translateStage by mutableStateOf<TranslateStage>(TranslateStage.IDLE)
 
     // 下面是处理结果的相关
     var selectedResultParts = mutableStateListOf<SingleIndexedImageTranslationPart>()
@@ -116,7 +121,7 @@ class ImageTransViewModel : ModelViewModel() {
         imageUri ?: return
         translateJob?.cancel()
         Log.d(TAG, "translate: start")
-        showTranslateButton = false
+        translateStage = TranslateStage.Translating
         translateJob = viewModelScope.launch(Dispatchers.IO + translateExceptionHandler) {
             translateState = LoadingState.Loading
             with(GlobalTranslationConfig) {
@@ -134,6 +139,13 @@ class ImageTransViewModel : ModelViewModel() {
                 else -> { }
             }
         }
+    }
+
+    fun stopTranslate() {
+        translateJob?.cancel()
+        translateJob = null
+        translateStage = TranslateStage.Finished
+        appCtx.toastOnUi(ResStrings.stop_translate)
     }
 
     private suspend fun translateNormalEngine(
@@ -155,7 +167,7 @@ class ImageTransViewModel : ModelViewModel() {
             AppConfig.userInfo.value =
                 user.copy(img_remain_points = user.img_remain_points - translateEngine.getPoint())
         translateState = LoadingState.Success(task.result)
-        showTranslateButton = false
+        translateStage = TranslateStage.Finished
         // 翻译成功了，把结果展示出来
         showResultState.value = true
     }
@@ -165,9 +177,11 @@ class ImageTransViewModel : ModelViewModel() {
     ) {
         val imageUri = imageUri ?: return
         Log.d(TAG, "translateModel: imageUri: $imageUri")
-        val task = translateEngine.createTask(imageUri.toString(), sourceLanguage, targetLanguage, this)
+        val task = translateEngine.createTask(imageUri.toString(), sourceLanguage, targetLanguage, this, onFinish = {
+            translateStage = TranslateStage.Finished
+        })
         translateState = LoadingState.Success(task.result)
-        showTranslateButton = false
+        translateStage = TranslateStage.Outputting
         // 开始翻译就把结果展示出来
         showResultState.value = true
         task.translate()
@@ -257,25 +271,10 @@ class ImageTransViewModel : ModelViewModel() {
     fun isTranslating() = translateJob?.isActive == true
     fun isOptimizing() = optimizeByAITask?.job?.isActive == true
 
-    fun updateImageUri(uri: Uri?) {
-        imageUri = uri
-    }
-
-    fun updateSourceLanguage(language: Language) {
-        sourceLanguage = language
-    }
-
-    fun updateTargetLanguage(language: Language) {
-        targetLanguage = language
-    }
-
-    fun updateImgSize(w: Int, h: Int) {
-        imgWidth = w; imgHeight = h
-    }
-
-    fun updateShowTranslateButton(show: Boolean) {
-        showTranslateButton = show
-    }
+    fun updateImageUri(uri: Uri?) { imageUri = uri }
+    fun updateSourceLanguage(language: Language) { sourceLanguage = language }
+    fun updateTargetLanguage(language: Language) { targetLanguage = language }
+    fun updateImgSize(w: Int, h: Int) { imgWidth = w; imgHeight = h }
 
     fun updateTranslateEngine(new: ImageTranslationEngine) {
         if (translateEngine != new) {

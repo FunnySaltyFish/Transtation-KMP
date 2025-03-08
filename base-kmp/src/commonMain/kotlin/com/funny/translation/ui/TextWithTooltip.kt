@@ -25,6 +25,7 @@ import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +42,7 @@ fun TwoTextWithTooltip(
     text2: String,
     text2Desc: String,
     supportingText: String,
+    contentColor: Color,
     style: TextStyle = MaterialTheme.typography.labelMedium,
     onClick: SimpleAction? = null,
 ) {
@@ -94,14 +96,15 @@ fun TwoTextWithTooltip(
             Text(
                 modifier = Modifier,
                 text = text,
-                style = style
+                style = style,
+                color = contentColor
             )
             Spacer(modifier = Modifier.width(4.dp))
             FixedSizeIcon(
                 modifier = Modifier.size(20.dp),
                 imageVector = Icons.Outlined.Info,
                 contentDescription = "提示",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = contentColor,
             )
         }
     }

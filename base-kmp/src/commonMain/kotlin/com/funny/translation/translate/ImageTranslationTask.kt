@@ -56,6 +56,7 @@ sealed interface ImageTranslationResult {
         override var source: String = ""
         var streamingResult by mutableStateOf("")
         var error by mutableStateOf("")
+        var cost by mutableStateOf(Cost())
 
         override val target: String get() = streamingResult.trim()
     }

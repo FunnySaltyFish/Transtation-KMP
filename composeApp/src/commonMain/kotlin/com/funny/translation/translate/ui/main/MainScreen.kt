@@ -110,7 +110,12 @@ fun MainScreen(
 ) {
     TextTransScreen()
 //    TTSScreen()
-//    ImageTransScreen()
+//    ImageTransScreen(
+//        imageUri = Uri.parse("file:///storage/emulated/0/Android/data/com.funny.translation.debug/cache/temp_des_img.png"),
+//        sourceId = 0,
+//        targetId = Language.CHINESE.id,
+//        doClipFirst = true
+//    )
 //    ChatScreen()
     UpdateUtils.updateInfo?.let { AppUpdateDialog(modifier = Modifier.fillMaxWidth(), updateInfo = it) }
 }

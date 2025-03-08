@@ -1,7 +1,7 @@
 package com.funny.translation.translate.engine
 
 import com.funny.compose.ai.bean.Model
-import com.funny.compose.ai.chat.ChatBots
+import com.funny.translation.helper.SimpleAction
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationTask
 import com.funny.translation.translate.Language
@@ -90,18 +90,20 @@ class ModelImageTranslationEngine(
         sourceLanguage: Language,
         targetLanguage: Language,
         coroutineScope: CoroutineScope,
+        onFinish: SimpleAction
     ): ImageTranslationTask {
         return ModelImageTranslationTask(
-            chatBot = ChatBots.findById(model.chatBotId),
+            model = model,
             fileUri = imageUri,
             systemPrompt = PROMPT_TEMPLATE.format(targetLanguage.displayText),
-            coroutineScope = coroutineScope
+            coroutineScope = coroutineScope,
+            onFinish = onFinish
         )
     }
 
     companion object {
         private val PROMPT_TEMPLATE = """
-            You're an excellent translator, translate the image to %s. Your output should be clear and concise, and in Markdown format. I'll display your output over the image to help people to read.
-        """.trimIndent()
+            You're an excellent translator, translate the image to %s. Your output should be clear and concise, and in Markdown format. I'll display your output over the image to help people to read. Output only the result directly, do not wrap with ```markdown```
+        """.trim()
     }
 }

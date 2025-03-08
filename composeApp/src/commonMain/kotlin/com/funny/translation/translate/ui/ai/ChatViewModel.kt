@@ -130,7 +130,7 @@ class ChatViewModel: ModelViewModel() {
         val tasks = inputImageUriList.map {
             viewModelScope.async {
                 ModelImageChatTask(
-                    chatBot = chatBot,
+                    model = chatBot.model,
                     fileUri = it,
                     otherHistoryMessages = emptyList(),
                     systemPrompt = systemPrompt,

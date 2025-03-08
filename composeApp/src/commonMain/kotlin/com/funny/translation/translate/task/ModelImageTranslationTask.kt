@@ -5,16 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.ChatMessageTypes
+import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.bean.SENDER_ME
 import com.funny.compose.ai.bean.StreamMessage
+import com.funny.compose.ai.bean.toCost
 import com.funny.compose.ai.bean.toReq
-import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.compose.ai.service.AskStreamRequest
 import com.funny.compose.ai.service.EmptyJsonObject
 import com.funny.compose.ai.service.aiService
 import com.funny.compose.ai.service.askAndParseStream
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.BitmapUtil
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.extractSuffix
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.network.api
@@ -40,15 +42,19 @@ internal val modelLanguageMapping by lazy {
 }
 
 open class ModelImageTranslationTask(
-    protected val chatBot: ModelChatBot,
+    protected val model: Model,
     protected val fileUri: String,
     protected val otherHistoryMessages: List<ChatMessage> = emptyList(),
     protected val systemPrompt: String = "",
     protected val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     protected val args: Map<String, Any?> = emptyMap(),
-    private val onError: (Exception) -> Unit = { }
+    private val onFinish: () -> Unit = { }
 ): ImageTranslationTask() {
-    override val name: String = chatBot.model.name
+    companion object {
+        private const val TAG = "ModelImageTranslationTask"
+    }
+
+    override val name: String = model.name
     override val supportLanguages: List<Language> = allLanguages
     override val languageMapping: Map<Language, String> = modelLanguageMapping
     override val taskClass: KClass<out CoreTranslationTask> = this::class
@@ -57,7 +63,6 @@ open class ModelImageTranslationTask(
     private var job: Job? = null
 
     var compressedBase64Data: String? = null
-    var streamingText by mutableStateOf("")
     var generating by mutableStateOf(false)
 
     override val result = ImageTranslationResult.Model()
@@ -71,14 +76,14 @@ open class ModelImageTranslationTask(
                 val messages = otherHistoryMessages + asImageChatMessage()
                 aiService.askAndParseStream(
                     AskStreamRequest(
-                        modelId = chatBot.id,
+                        modelId = model.chatBotId,
                         messages = messages.map(ChatMessage::toReq),
                         prompt = systemPrompt.ifBlank {
                             AppConfig.sAIImageTransSystemPrompt.value.toPrompt()
                         },
                         args = JSONObject(args)
                     ),
-                    model = chatBot.model
+                    model = model
                 ).catch { e ->
                     onStreamError(StreamMessage.Error(e.message ?: "Unknown error"))
                 }.collect { part ->
@@ -90,6 +95,8 @@ open class ModelImageTranslationTask(
                         is StreamMessage.End -> {
                             onStreamEnd(part)
                             generating = false
+                            result.cost = part.toCost()
+                            Log.d(TAG, "cost: ${result.cost}, result: ${result.streamingResult}")
                         }
 
                         is StreamMessage.Error -> {
@@ -106,7 +113,8 @@ open class ModelImageTranslationTask(
                 e.printStackTrace()
                 onStreamError(StreamMessage.Error(e.message ?: "Unknown error"))
                 generating = false
-                onError(e)
+            } finally {
+                onFinish()
             }
         }
     }
@@ -119,7 +127,7 @@ open class ModelImageTranslationTask(
             processImage()
         }
         return ChatMessage(
-            botId = chatBot.id,
+            botId = model.chatBotId,
             conversationId = conversationId,
             sender = sender,
             content = compressedBase64Data ?: "",
@@ -128,18 +136,7 @@ open class ModelImageTranslationTask(
     }
 
     open fun onStreamEnd(end: StreamMessage.End) {
-        try {
-//            val json = streamingText.extractJSON()
-//            val obj = JsonX.fromJson<ImageTranslationPart>(json)
-//            result = result.copy(
-//                source = obj.source,
-//                target = obj.target,
-//                content = listOf(obj)
-//            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            onStreamError(StreamMessage.Error("Unable to parse text with exception = $e\ntext:$streamingText"))
-        }
+
     }
 
     open fun onStreamError(error: StreamMessage.Error) {
@@ -153,7 +150,7 @@ open class ModelImageTranslationTask(
     suspend fun processImage() = withContext(Dispatchers.IO) {
         val (width, height) = BitmapUtil.getImageSizeFromUri(appCtx, fileUri)
         val compressedSize =
-            api(aiService::getImageCompressedSize, chatBot.id, width, height, EmptyJsonObject, rethrowErr = true) { success {  } } ?: throw Exception("Failed to get compressed size")
+            api(aiService::getImageCompressedSize, model.chatBotId, width, height, EmptyJsonObject, rethrowErr = true) { success {  } } ?: throw Exception("Failed to get compressed size")
         val compressedWidth = compressedSize[0]
         val compressedHeight = compressedSize[1]
         val compressedBytes: ByteArray = if (compressedWidth < width || compressedHeight < height) {
@@ -161,7 +158,7 @@ open class ModelImageTranslationTask(
                 appCtx,
                 compressedWidth,
                 compressedHeight,
-                chatBot.model.inputFileTypes.maxSingleImageSize.toLong(),
+                model.inputFileTypes.maxSingleImageSize.toLong(),
                 fileUri,
             ) ?: throw Exception("Failed to compress image")
         } else {
