@@ -1,6 +1,7 @@
 package com.funny.translation.translate.ui.image
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -73,6 +74,8 @@ class ImageTransViewModel : ModelViewModel() {
 
     var imgWidth = 0
     var imgHeight = 0
+    // 图片为了铺满屏幕进行的缩放
+    var imageInitialScale by mutableFloatStateOf(1f)
 
     var bindEngines = arrayListOf(NormalImageTranslationEngines.Baidu, NormalImageTranslationEngines.Tencent)
     var modelEngines by mutableStateOf(emptyList<ImageTranslationEngine>())

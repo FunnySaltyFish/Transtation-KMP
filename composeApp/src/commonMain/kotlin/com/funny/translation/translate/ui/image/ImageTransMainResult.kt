@@ -13,14 +13,15 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -30,8 +31,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,31 +42,37 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.funny.cmaterialcolors.MaterialColors
 import com.funny.compose.loading.LoadingState
 import com.funny.translation.bean.show
+import com.funny.translation.helper.Log
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Cost
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.ui.main.CostIndicator
 import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.MarkdownText
+import com.github.panpf.zoomimage.compose.zoom.ZoomableState
+import com.github.panpf.zoomimage.compose.zoom.zooming
+import kotlinx.coroutines.delay
 import java.math.BigDecimal
+import kotlin.math.max
 
 @Composable
 internal fun NormalTransResult(
     data: ImageTranslationResult.Normal,
     showResult: Boolean,
     translateState: LoadingState<ImageTranslationResult>,
-    // gestureState: GestureContentState,
-    lazyListState: LazyListState,
+    contentSize: IntSize,
+    zoomableState: ZoomableState,
     imageInitialScale: Float,
 ) {
     if (translateState.isLoading) {
@@ -74,47 +83,54 @@ internal fun NormalTransResult(
         )
     } else if (translateState.isSuccess) {
         val alpha by animateFloatAsState(targetValue = if (showResult) 1f else 0f)
-        BoxWithConstraints (
-            modifier = Modifier
+        with(LocalDensity.current) {
+            var boxHeight by remember(contentSize) { mutableIntStateOf(contentSize.height) }
+            var maxY by rememberStateOf(0)
+
+            LaunchedEffect(maxY) {
+                delay(50) // 防抖
+                // 由于外部下采样的存在，这个 contentSize 可能实际上矮于实际内容，这时候需要修正一下
+                if (maxY > boxHeight) {
+                    boxHeight = maxY
+                    Log.d("NormalTransResult", "update boxHeight: $boxHeight")
+                }
+            }
+
+            Box(Modifier
                 .fillMaxSize()
-                .alpha(alpha)
-                .background(Color.LightGray.copy(0.9f))
-                .clipToBounds()
-        ) {
-            // val layoutInfo = gestureState.layoutInfo ?: return
-            val containerHeight = constraints.maxHeight
-            Box(
-                Modifier
-//                    .width(layoutInfo.contentWidth)
-//                    .height(layoutInfo.contentHeight)
-                    .align(Alignment.Center)
-                    .border(2.dp, color = Color.White)
-                    .offset {
-                        IntOffset(
-                            0,
-                            (-(lazyListState.firstVisibleItemScrollOffset + lazyListState.firstVisibleItemIndex * containerHeight))
-                        )
-                    }
-            ) {
-                SelectionContainer {
-                    val density = LocalDensity.current
-                    data.content.forEach { part ->
-                        val w =
-                            remember { (part.width * imageInitialScale / density.density).dp }
-                        val h =
-                            remember { (part.height * imageInitialScale / density.density).dp }
-                        AutoResizedText(
-                            modifier = Modifier
-                                .requiredSize(w, h)
-                                .offset {
-                                    IntOffset(
-                                        (part.x * imageInitialScale).toInt(),
-                                        (part.y * imageInitialScale).toInt()
-                                    )
-                                },
-                            text = part.target,
-                            color = Color.White,
-                        )
+                .zooming(zoomableState)) {
+                Box(
+                    Modifier
+                        .width(contentSize.width.toDp())
+                        .height(boxHeight.toDp())
+                        .alpha(alpha)
+                        .background(Color.LightGray.copy(0.9f))
+                        .border(2.dp, color = Color.White)
+                ) {
+                    SelectionContainer {
+                        val density = LocalDensity.current
+                        data.content.forEach { part ->
+                            val w =
+                                remember { (part.width * imageInitialScale / density.density).dp }
+                            val h =
+                                remember { (part.height * imageInitialScale / density.density).dp }
+                            AutoResizedText(
+                                modifier = Modifier
+                                    .requiredSize(w, h)
+                                    .offset {
+                                        IntOffset(
+                                            (part.x * imageInitialScale).toInt(),
+                                            (part.y * imageInitialScale).toInt().also { y ->
+                                                // 由于下采样的存在，更新一下 maxH
+                                                maxY = max(maxY, y)
+                                            }
+                                        )
+                                    }
+                                    .border(1.dp, color = Color.White),
+                                text = part.target,
+                                color = Color.White,
+                            )
+                        }
                     }
                 }
             }

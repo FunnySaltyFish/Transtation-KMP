@@ -367,4 +367,4 @@ internal fun LanguageSelect(
     }
 }
 
-internal val DESTINATION_IMAGE_URI = CacheManager.cacheDir.resolve("temp_des_img.png")
+internal val DESTINATION_IMAGE_FOLDER = CacheManager.cacheDir.resolve("cropped_image").also { it.mkdirs() }
