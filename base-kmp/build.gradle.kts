@@ -81,6 +81,19 @@ kotlin {
                 implementation("ca.gosyer:kotlin-multiplatform-appdirs:1.1.1")
 
                 api("com.materialkolor:material-kolor:2.0.1")
+
+                // Provides the SketchZoomAsyncImage component adapted to the Sketch v4+ image loader (recommended)
+                api("io.github.panpf.zoomimage:zoomimage-compose-sketch4:1.1.2")
+
+                val sketchVersion = "4.0.4"
+                // Provides the core functions of Sketch as well as singletons and extension
+                // functions that rely on singleton implementations
+                api("io.github.panpf.sketch4:sketch-compose:$sketchVersion")
+                // Provides the ability to load network images
+                api("io.github.panpf.sketch4:sketch-http:$sketchVersion")
+                // ok http support
+                api("io.github.panpf.sketch4:sketch-http-okhttp:$sketchVersion")
+
             }
         }
 

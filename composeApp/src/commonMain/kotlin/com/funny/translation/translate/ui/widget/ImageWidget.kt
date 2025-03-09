@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.funny.jetsetting.core.ui.FunnyIcon
 import com.funny.translation.kmp.painterDrawableRes
+import com.github.panpf.zoomimage.SketchZoomAsyncImage
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.ui.AutoSizeImage
 
@@ -72,6 +73,19 @@ fun ShadowedRoundImage(
         funnyIcon = funnyIcon,
         contentDescription = contentDescription,
         contentScale = ContentScale.FillBounds
+    )
+}
+
+@Composable
+fun ZoomableImage(
+    modifier: Modifier = Modifier,
+    uri: String,
+    contentDescription: String? = "image"
+) {
+    SketchZoomAsyncImage(
+        uri = uri,
+        contentDescription = contentDescription,
+        modifier = modifier
     )
 }
 

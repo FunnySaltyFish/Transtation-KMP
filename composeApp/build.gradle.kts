@@ -22,7 +22,6 @@ kotlin {
                 addProjectDependencies()
                 implementation("org.burnoutcrew.composereorderable:reorderable:0.7.4")
                 implementation(compose.components.resources)
-                implementation("me.saket.telephoto:zoomable:0.11.2")
             }
         }
 

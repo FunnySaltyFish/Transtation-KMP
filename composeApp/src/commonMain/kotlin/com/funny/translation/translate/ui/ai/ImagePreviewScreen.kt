@@ -19,9 +19,7 @@ import com.funny.translation.helper.ExperimentalSharedTransitionApi
 import com.funny.translation.helper.LocalSharedTransitionScope
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
-import com.funny.translation.translate.ui.widget.AsyncImage
-import me.saket.telephoto.zoomable.rememberZoomableState
-import me.saket.telephoto.zoomable.zoomable
+import com.funny.translation.translate.ui.widget.ZoomableImage
 import moe.tlaster.precompose.navigation.BackHandler
 
 const val KEY_SHARED_PREVIEW_IMAGE = "shared_preview_image"
@@ -30,7 +28,7 @@ private const val TAG = "ImagePreviewScreen"
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ImagePreviewScreen(
-    imageUri: Any,
+    imageUri: String,
     modifier: Modifier = Modifier,
     animatedContentScope: AnimatedVisibilityScope,
     goBackAction: SimpleAction
@@ -45,11 +43,10 @@ fun ImagePreviewScreen(
         }
 
         with(LocalSharedTransitionScope.current) {
-            AsyncImage(
-                model = imageUri,
-                modifier = Modifier.fillMaxSize().zoomable(
-                    rememberZoomableState()
-                )
+            ZoomableImage(
+                uri = imageUri,
+                contentDescription = "image",
+                modifier = Modifier.fillMaxSize()
             )
 
             IconButton(

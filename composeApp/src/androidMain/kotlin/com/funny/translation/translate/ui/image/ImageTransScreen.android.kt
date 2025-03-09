@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -22,9 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -32,25 +29,20 @@ import cn.qhplus.emo.photo.activity.PhotoPickResult
 import cn.qhplus.emo.photo.activity.PhotoPickerActivity
 import cn.qhplus.emo.photo.activity.getPhotoPickResult
 import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
-import cn.qhplus.emo.photo.ui.GestureContent
-import cn.qhplus.emo.photo.ui.GestureContentState
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.BitmapUtil
-import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.findLanguageById
-import com.funny.translation.translate.ui.widget.CustomCoilProvider
+import com.github.panpf.zoomimage.compose.zoom.rememberZoomableState
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlin.math.min
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -196,70 +188,72 @@ actual fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
     var scaleByWidth by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
-    val lazyListState = rememberLazyListState()
+    val zoomableState = rememberZoomableState()
 
-    val photoProvider = remember(vm.imageUri) {
-        vm.imageUri?.let {
-            val uri = it.toUri()
-            CustomCoilProvider(uri, uri, vm.imgWidth.toFloat() / vm.imgHeight, lazyListState)
-        }
-    }
-
-    photoProvider?.let {
-        val gestureState = remember(it) {
-            GestureContentState(
-                ratio = it.ratio,
-                isLongContent = it.isLongImage(),
-            )
-        }
-        LaunchedEffect(key1 = gestureState.layoutInfo) {
-            gestureState.layoutInfo?.let { layoutInfo ->
-                val sw = layoutInfo.px.contentWidth / vm.imgWidth
-                val sh = layoutInfo.px.contentHeight / vm.imgHeight
-                if (gestureState.isLongContent) {
-                    scaleByWidth = true
-                    imageInitialScale = sw
-                } else {
-                    scaleByWidth = sw < sh
-                    imageInitialScale = min(sw, sh)
-                    Log.d(
-                        TAG,
-                        "ResultPart: size: ${layoutInfo.contentWidth}, ${layoutInfo.contentHeight}, img: ${vm.imgWidth}, ${vm.imgHeight}"
-                    )
-                    Log.d(
-                        TAG,
-                        "ResultPart: sw: $sw, sh: $sh, imageInitialScale: $imageInitialScale, scaleByWidth: $scaleByWidth"
-                    )
-                }
-            }
-        }
-        GestureContent(
-            modifier = modifier
-                .fillMaxSize()
-                .drawBehind { drawRect(Color.Black) },
-            state = gestureState,
-        ) { _ ->
-            // imageGestureScale = gestureScale
-            // imageOffsetRect = rect
-            // Log.d(TAG, "ResultPart: gestureScale: $gestureScale, rect: $rect")
-            photoProvider.photo().Compose(
-                contentScale = ContentScale.Fit, //if (scaleByWidth) ContentScale.FillWidth else ContentScale.FillHeight,
-                isContainerDimenExactly = true,
-                onSuccess = {},
-                onError = { context.toastOnUi(ResStrings.failed_to_load_image) }
-            )
-
-
-            val result = vm.translateState.getOrNull() ?: return@GestureContent
-            if (result is ImageTranslationResult.Normal) {
-                NormalTransResult(
-                    result, showResult, vm.translateState, lazyListState, imageInitialScale
-                )
-            } else if (result is ImageTranslationResult.Model) {
-                ModelTransResult(
-                    result, showResult, vm.translateStage
-                )
-            }
-        }
-    }
+//    val lazyListState = rememberLazyListState()
+//
+//    val photoProvider = remember(vm.imageUri) {
+//        vm.imageUri?.let {
+//            val uri = it.toUri()
+//            CustomCoilProvider(uri, uri, vm.imgWidth.toFloat() / vm.imgHeight, lazyListState)
+//        }
+//    }
+//
+//    photoProvider?.let {
+//        val gestureState = remember(it) {
+//            GestureContentState(
+//                ratio = it.ratio,
+//                isLongContent = it.isLongImage(),
+//            )
+//        }
+//        LaunchedEffect(key1 = gestureState.layoutInfo) {
+//            gestureState.layoutInfo?.let { layoutInfo ->
+//                val sw = layoutInfo.px.contentWidth / vm.imgWidth
+//                val sh = layoutInfo.px.contentHeight / vm.imgHeight
+//                if (gestureState.isLongContent) {
+//                    scaleByWidth = true
+//                    imageInitialScale = sw
+//                } else {
+//                    scaleByWidth = sw < sh
+//                    imageInitialScale = min(sw, sh)
+//                    Log.d(
+//                        TAG,
+//                        "ResultPart: size: ${layoutInfo.contentWidth}, ${layoutInfo.contentHeight}, img: ${vm.imgWidth}, ${vm.imgHeight}"
+//                    )
+//                    Log.d(
+//                        TAG,
+//                        "ResultPart: sw: $sw, sh: $sh, imageInitialScale: $imageInitialScale, scaleByWidth: $scaleByWidth"
+//                    )
+//                }
+//            }
+//        }
+//        GestureContent(
+//            modifier = modifier
+//                .fillMaxSize()
+//                .drawBehind { drawRect(Color.Black) },
+//            state = gestureState,
+//        ) { _ ->
+//            // imageGestureScale = gestureScale
+//            // imageOffsetRect = rect
+//            // Log.d(TAG, "ResultPart: gestureScale: $gestureScale, rect: $rect")
+//            photoProvider.photo().Compose(
+//                contentScale = ContentScale.Fit, //if (scaleByWidth) ContentScale.FillWidth else ContentScale.FillHeight,
+//                isContainerDimenExactly = true,
+//                onSuccess = {},
+//                onError = { context.toastOnUi(ResStrings.failed_to_load_image) }
+//            )
+//
+//
+//            val result = vm.translateState.getOrNull() ?: return@GestureContent
+//            if (result is ImageTranslationResult.Normal) {
+//                NormalTransResult(
+//                    result, showResult, vm.translateState, lazyListState, imageInitialScale
+//                )
+//            } else if (result is ImageTranslationResult.Model) {
+//                ModelTransResult(
+//                    result, showResult, vm.translateStage
+//                )
+//            }
+//        }
+//    }
 }
