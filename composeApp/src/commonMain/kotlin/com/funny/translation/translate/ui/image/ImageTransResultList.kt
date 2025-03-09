@@ -1,6 +1,5 @@
-package com.funny.translation.translate.ui.main
+package com.funny.translation.translate.ui.image
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandIn
@@ -54,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import com.funny.compose.loading.LoadingState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.helper.ClipBoardUtil
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.rememberDerivedStateOf
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
@@ -64,6 +64,7 @@ import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationPart
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.ui.long_text.ModelListPart
+import com.funny.translation.translate.ui.main.CopyButton
 import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon

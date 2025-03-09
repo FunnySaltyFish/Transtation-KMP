@@ -1,4 +1,4 @@
-package com.funny.translation.translate.ui.main
+package com.funny.translation.translate.ui.image
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource

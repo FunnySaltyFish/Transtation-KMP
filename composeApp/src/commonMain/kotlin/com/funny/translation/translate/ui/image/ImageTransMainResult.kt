@@ -1,4 +1,4 @@
-package com.funny.translation.translate.ui.main
+package com.funny.translation.translate.ui.image
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -46,16 +44,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import cn.qhplus.emo.photo.ui.GestureContentState
 import com.funny.cmaterialcolors.MaterialColors
 import com.funny.compose.loading.LoadingState
 import com.funny.translation.bean.show
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Cost
 import com.funny.translation.translate.ImageTranslationResult
+import com.funny.translation.translate.ui.main.CostIndicator
 import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.MarkdownText
 import java.math.BigDecimal
@@ -65,7 +62,7 @@ internal fun NormalTransResult(
     data: ImageTranslationResult.Normal,
     showResult: Boolean,
     translateState: LoadingState<ImageTranslationResult>,
-    gestureState: GestureContentState,
+    // gestureState: GestureContentState,
     lazyListState: LazyListState,
     imageInitialScale: Float,
 ) {
@@ -77,24 +74,25 @@ internal fun NormalTransResult(
         )
     } else if (translateState.isSuccess) {
         val alpha by animateFloatAsState(targetValue = if (showResult) 1f else 0f)
-        Box(
+        BoxWithConstraints (
             modifier = Modifier
                 .fillMaxSize()
                 .alpha(alpha)
                 .background(Color.LightGray.copy(0.9f))
                 .clipToBounds()
         ) {
-            val layoutInfo = gestureState.layoutInfo ?: return
+            // val layoutInfo = gestureState.layoutInfo ?: return
+            val containerHeight = constraints.maxHeight
             Box(
                 Modifier
-                    .width(layoutInfo.contentWidth)
-                    .height(layoutInfo.contentHeight)
+//                    .width(layoutInfo.contentWidth)
+//                    .height(layoutInfo.contentHeight)
                     .align(Alignment.Center)
                     .border(2.dp, color = Color.White)
                     .offset {
                         IntOffset(
                             0,
-                            (-(lazyListState.firstVisibleItemScrollOffset + lazyListState.firstVisibleItemIndex * layoutInfo.px.containerHeight)).toInt()
+                            (-(lazyListState.firstVisibleItemScrollOffset + lazyListState.firstVisibleItemIndex * containerHeight))
                         )
                     }
             ) {
@@ -220,7 +218,6 @@ private fun DraggableBox(
     }
 }
 
-@Preview
 @Composable
 private fun PreviewModelTransResult() {
     Box(Modifier.fillMaxSize().background(MaterialColors.Amber100)) {
@@ -242,17 +239,6 @@ private fun PreviewModelTransResult() {
                     |  豆花+香肠+炸猪油渣 | 40 |
                     |  豆花+香肠+牛肉 | 45 |
                     |  豆花+香肠+鸡蛋 | 45 |
-                    |  豆花+香肠+濑尿虾 | 50 |
-                    |  全套 | 60 |
-                    |  全套+鸡蛋 | 70 |
-                    |  全套 | 60 |
-                    |  全套-香肠 | 55 |
-                    |  全套-牛肉 | 55 |
-                    |  全套-炸猪油渣 | 55 |
-                    |  全套-濑尿虾 | 55 |
-                    |  牛肉+炸猪油渣 | 50 |
-                    |  牛肉+鸡蛋 | 50 |
-                    |  牛肉+濑尿虾 | 50 |
                 """.trimIndent()
                 error = ""
                 cost = Cost(

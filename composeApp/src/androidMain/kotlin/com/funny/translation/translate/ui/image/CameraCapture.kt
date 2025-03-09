@@ -1,4 +1,4 @@
-package com.funny.translation.translate.ui.main
+package com.funny.translation.translate.ui.image
 
 import android.Manifest
 import android.content.Context
@@ -26,10 +26,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.IconToggleButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FlashlightOff
 import androidx.compose.material.icons.filled.FlashlightOn
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState

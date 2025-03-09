@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import com.eygraber.uri.Uri
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.AppConfig
 import com.funny.translation.Consts
@@ -53,6 +52,7 @@ import com.funny.translation.translate.ui.ai.ChatScreen
 import com.funny.translation.translate.ui.ai.VoiceChatScreen
 import com.funny.translation.translate.ui.buy.BuyAIPointScreen
 import com.funny.translation.translate.ui.buy.TransProScreen
+import com.funny.translation.translate.ui.image.ImageTransScreen
 import com.funny.translation.translate.ui.long_text.DraftScreen
 import com.funny.translation.translate.ui.long_text.LongTextTransDetailScreen
 import com.funny.translation.translate.ui.long_text.LongTextTransListScreen
@@ -60,7 +60,6 @@ import com.funny.translation.translate.ui.long_text.LongTextTransScreen
 import com.funny.translation.translate.ui.long_text.TextEditorAction
 import com.funny.translation.translate.ui.long_text.TextEditorScreen
 import com.funny.translation.translate.ui.main.FavoriteScreen
-import com.funny.translation.translate.ui.main.ImageTransScreen
 import com.funny.translation.translate.ui.main.MainScreen
 import com.funny.translation.translate.ui.main.ProvideWindowSizeState
 import com.funny.translation.translate.ui.plugin.PluginScreen
@@ -171,8 +170,7 @@ fun AppNavigation(
                             // 使用 Intent 跳转目前会导致 Activity 重建
                             // 不合理，相当不合理
                             ImageTransScreen(
-                                imageUri = backStackEntry.getQueryString("imageUri")
-                                    ?.let { Uri.parse(it) },
+                                imageUri = backStackEntry.getQueryString("imageUri"),
                                 sourceId = backStackEntry.getQueryInt("sourceId"),
                                 targetId = backStackEntry.getQueryInt("targetId"),
                                 doClipFirst = backStackEntry.getQueryBoolean("doClip", false)

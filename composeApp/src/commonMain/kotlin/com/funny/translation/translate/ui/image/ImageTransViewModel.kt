@@ -1,6 +1,5 @@
-package com.funny.translation.translate.ui.main
+package com.funny.translation.translate.ui.image
 
-import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,7 +56,7 @@ class MultiIndexedImageTranslationPart(val indexes: IntArray, val part: ImageTra
 typealias SingleIndexedImageTranslationPart = Pair<Int, ImageTranslationPart>
 
 class ImageTransViewModel : ModelViewModel() {
-    var imageUri: Uri? by mutableStateOf(null)
+    var imageUri: String? by mutableStateOf(null)
     var translateEngine: ImageTranslationEngine by mutableStateOf(NormalImageTranslationEngines.Baidu)
     private var translateJob: Job? = null
     private val translateExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -92,10 +91,15 @@ class ImageTransViewModel : ModelViewModel() {
             translateEngine = it
         }
         viewModelScope.launch(Dispatchers.IO) {
-            ModelManager.models.await().let {
-                withContext(Dispatchers.Main) {
-                    onModelListLoaded(0, it)
+            try {
+                ModelManager.models.await().let {
+                    withContext(Dispatchers.Main) {
+                        onModelListLoaded(0, it)
+                    }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                appCtx.toastOnUi("加载模型列表失败")
             }
         }
     }
@@ -271,7 +275,7 @@ class ImageTransViewModel : ModelViewModel() {
     fun isTranslating() = translateJob?.isActive == true
     fun isOptimizing() = optimizeByAITask?.job?.isActive == true
 
-    fun updateImageUri(uri: Uri?) { imageUri = uri }
+    fun updateImageUri(uri: String?) { imageUri = uri }
     fun updateSourceLanguage(language: Language) { sourceLanguage = language }
     fun updateTargetLanguage(language: Language) { targetLanguage = language }
     fun updateImgSize(w: Int, h: Int) { imgWidth = w; imgHeight = h }
