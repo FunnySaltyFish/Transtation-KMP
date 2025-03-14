@@ -3,14 +3,11 @@ package com.funny.translation.translate.ui.settings
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -21,7 +18,6 @@ import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,8 +25,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,7 +53,6 @@ import com.funny.translation.helper.DateUtils
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.LocaleUtils
-import com.funny.translation.helper.Log
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.Platform
 import com.funny.translation.kmp.appCtx
@@ -73,7 +66,6 @@ import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transHistoryDao
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.ui.TranslateScreen
-import com.funny.translation.translate.utils.SortResultUtils
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.theme.LightDarkMode
@@ -82,11 +74,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.draggedItem
-import org.burnoutcrew.reorderable.move
-import org.burnoutcrew.reorderable.rememberReorderState
-import org.burnoutcrew.reorderable.reorderable
 
 private const val TAG = "SettingScreen"
 private val languages = AppLanguage.entries.toImmutableList()
@@ -329,60 +316,6 @@ private fun ProJetSettingCheckbox(
     )
 }
 
-
-@Composable
-fun SortResultScreen(
-    modifier: Modifier = Modifier
-) {
-    CommonPage(title = ResStrings.sort_result) {
-        val state = rememberReorderState()
-        val localEngines by SortResultUtils.localEngines.collectAsState()
-        val data by remember {
-            derivedStateOf {
-                localEngines.toMutableStateList()
-            }
-        }
-        LazyColumn(
-            state = state.listState,
-            modifier = modifier
-                .then(
-                    Modifier.reorderable(
-                        state,
-                        onMove = { from, to -> data.move(from.index, to.index) })
-                )
-        ) {
-            itemsIndexed(data, { i, _ -> i }) { i, item ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .draggedItem(state.offsetByIndex(i))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .detectReorderAfterLongPress(state)
-                ) {
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(modifier = Modifier.width(24.dp))
-                        FixedSizeIcon(painterDrawableRes("ic_drag"), "Drag to sort")
-                        Text(
-                            text = item,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
-
-                    Divider()
-                }
-            }
-        }
-
-        DisposableEffect(key1 = null) {
-            onDispose {
-                if (!SortResultUtils.checkEquals(data)) {
-                    Log.d(TAG, "SortResult: 不相等")
-                    SortResultUtils.resetMappingAndSave(data)
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun SelectLanguageScreen(modifier: Modifier) {

@@ -2,7 +2,6 @@ package com.funny.compose.ai.utils
 
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.service.aiService
-import com.funny.translation.helper.lazyPromise
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -18,4 +17,6 @@ object ModelManager {
             _models = it
         }
     }
+
+    suspend fun safeGetModels() = kotlin.runCatching { models.await() }.getOrDefault(emptyList())
 }
