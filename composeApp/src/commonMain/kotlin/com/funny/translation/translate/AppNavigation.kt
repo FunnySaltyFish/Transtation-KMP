@@ -65,6 +65,7 @@ import com.funny.translation.translate.ui.main.ProvideWindowSizeState
 import com.funny.translation.translate.ui.plugin.PluginScreen
 import com.funny.translation.translate.ui.settings.AboutScreen
 import com.funny.translation.translate.ui.settings.FloatWindowScreen
+import com.funny.translation.translate.ui.settings.ModelManagerScreen
 import com.funny.translation.translate.ui.settings.OpenSourceLibScreen
 import com.funny.translation.translate.ui.settings.SelectLanguageScreen
 import com.funny.translation.translate.ui.settings.SettingsScreen
@@ -341,6 +342,11 @@ private fun NavGraphBuilder.addSettingsNavigation() {
             TranslateScreen.ThemeScreen.route,
         ) {
             ThemeScreen()
+        }
+        animateComposable(
+            TranslateScreen.ModelManageScreen.route,
+        ) {
+            ModelManagerScreen()
         }
         animateComposable(
             TranslateScreen.SortResultScreen.route,

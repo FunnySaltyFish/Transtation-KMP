@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="expand_text">... 展开</string>
+    <string name="collapse_text"> 收起</string>
+    <string name="text">文本</string>
+    <string name="model_manager">模型管理</string>
+    <string name="help">帮助</string>
+    <string name="sort_models">模型排序</string>
+    <string name="sort_by_default">默认排序</string>
+    <string name="sort_by_name_asc">按名称排序（A-Z）</string>
+    <string name="sort_by_name_desc">按名称排序（Z-A）</string>
+    <string name="sort_by_context_size_asc">按上下文大小排序（从小到大）</string>
+    <string name="sort_by_context_size_desc">按上下文大小排序（从大到小）</string>
+    <string name="sort_by_cost_asc">按成本排序（从低到高）</string>
+    <string name="sort_by_cost_desc">按成本排序（从高到低）</string>
+    <string name="confirm">确认</string>
+    <string name="tokens">令牌</string>
+    <string name="free">免费</string>
+    <string name="show_more">显示更多</string>
+    <string name="show_less">显示更少</string>
+    <string name="max_output">最大输出</string>
+
     <string name="long_text_max_seg_length">最大分段长度</string>
     <string name="long_text_max_seg_length_help">设置翻译时长文的最大分段长度，值越大，单次翻译的段落越长，这一长段翻译可能更准确，但翻译过程越慢。此值过大时应用可能在输出完毕前视为超时，模型也可能输出不完。建议极限不超过三千。</string>
     <string name="long_text_max_seg_length_placeholder">默认使用服务器配置：${l}</string>
-
 
     <string name="thinking_in_progress">深度思考中……</string>
     <string name="thinking_completed">深度思考完成（用时 %.1f 秒）</string>

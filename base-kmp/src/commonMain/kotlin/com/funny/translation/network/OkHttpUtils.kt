@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 object OkHttpUtils {
     private const val SET_COOKIE_KEY = "set-cookie"
     private const val COOKIE_NAME = "Cookie"
-    private const val CONNECT_TIMEOUT = 15L
+    private const val CONNECT_TIMEOUT = 10L
     private const val READ_TIMEOUT = 20L
     private const val TAG = "OkHttpUtils"
 

@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="expand_text">... Expand</string>
+    <string name="collapse_text"> Collapse</string>
+    <string name="text">Text</string>
+    <string name="model_manager">Model Manager</string>
+    <string name="help">Help</string>
+    <string name="sort_models">Sort Models</string>
+    <string name="sort_by_default">Sort by default</string>
+    <string name="sort_by_name_asc">Sort by name (A-Z)</string>
+    <string name="sort_by_name_desc">Sort by name (Z-A)</string>
+    <string name="sort_by_context_size_asc">Sort by context size (Smallest first)</string>
+    <string name="sort_by_context_size_desc">Sort by context size (Largest first)</string>
+    <string name="sort_by_cost_asc">Sort by cost (Lowest first)</string>
+    <string name="sort_by_cost_desc">Sort by cost (Highest first)</string>
+    <string name="confirm">Confirm</string>
+    <string name="tokens">tokens</string>
+    <string name="free">Free</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
+    <string name="max_output">Max output</string>
+
     <string name="long_text_max_seg_length">Maximum Segment Length</string>
     <string name="long_text_max_seg_length_help">Set the maximum segment length for long text translation. The larger the value, the longer the paragraphs translated at one time, which may result in more accurate translations, but the translation process will be slower. If this value is too large, the application may time out before completing the output, and the model may not finish outputting. It is recommended not to exceed three thousand.</string>
     <string name="long_text_max_seg_length_placeholder">Default server configuration: ${l}</string>
-
 
     <string name="thinking_in_progress">Deep thinking in progress...</string>
     <string name="thinking_completed">Deep thinking completed (%.1f seconds)</string>

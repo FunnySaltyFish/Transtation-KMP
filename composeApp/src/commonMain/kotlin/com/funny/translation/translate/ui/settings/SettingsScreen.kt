@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.Checkbox
@@ -172,6 +173,13 @@ fun SettingsScreen() {
                 description = ResStrings.ai_trans_explain_desc
             ) {
 
+            }
+            // 模型管理
+            JetSettingTile(
+                imageVector = Icons.Default.Settings,
+                text = ResStrings.model_manager
+            ) {
+                navController.navigate(TranslateScreen.ModelManageScreen.route)
             }
             JetSettingTile(
                 imageVector = Icons.Default.Sort,

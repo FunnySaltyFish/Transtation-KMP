@@ -151,11 +151,12 @@ fun <T, K> rememberRetryableLoadingState(
     val loadingState: MutableState<LoadingState<T>> = remember {
         mutableStateOf(initialValue)
     }
+    val currentLoader by rememberUpdatedState(loader)
     LaunchedEffect(retryKey) {
         if (!initialValue.isSuccess) {
             loadingState.value = LoadingState.Loading
             loadingState.value = try {
-                LoadingState.Success(loader())
+                LoadingState.Success(currentLoader())
             } catch (e: Exception) {
                 e.printStackTrace()
                 LoadingState.Failure(e)

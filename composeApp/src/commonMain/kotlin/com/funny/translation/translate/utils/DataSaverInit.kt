@@ -3,6 +3,7 @@ package com.funny.translation.translate.utils
 import androidx.compose.ui.geometry.Offset
 import com.eygraber.uri.Uri
 import com.funny.compose.ai.bean.ChatMemory
+import com.funny.compose.ai.utils.ModelSortType
 import com.funny.data_saver.core.DataSaverConverter
 import com.funny.trans.login.ui.AICostSortType
 import com.funny.translation.bean.AppLanguage
@@ -106,6 +107,11 @@ fun initTypeConverters() {
     DataSaverConverter.registerTypeConverters<Int?>(
         save = { it.toString() },
         restore = { if (it == "null") null else it.toInt() }
+    )
+    // ModelSortType
+    DataSaverConverter.registerTypeConverters<ModelSortType>(
+        save = { it.name },
+        restore = { ModelSortType.valueOf(it) }
     )
 }
 

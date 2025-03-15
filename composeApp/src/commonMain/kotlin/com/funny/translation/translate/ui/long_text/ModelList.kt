@@ -40,9 +40,11 @@ import com.funny.compose.ai.utils.ModelManager
 import com.funny.compose.loading.loadingList
 import com.funny.compose.loading.rememberRetryableLoadingState
 import com.funny.data_saver.core.rememberDataSaverState
+import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.buildSearchAnnotatedString
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.ui.settings.enableKey
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.delay
 
@@ -67,10 +69,11 @@ fun ColumnScope.ModelListPart(
         var searchQuery by rememberStateOf("")
         val data by produceState(emptyList(), key1 = searchQuery) {
             value = state.value.getOrDefault(emptyList()).run {
+                val enabledModels = filter { DataSaverUtils.readData(it.enableKey, true) }
                 if (searchQuery.isNotEmpty()) {
                     delay(300)
-                    this.filter { it.name.contains(searchQuery, ignoreCase = true) }
-                } else this
+                    enabledModels.filter { it.name.contains(searchQuery, ignoreCase = true) }
+                } else enabledModels
             }
         }
         var currentSelectBotId by rememberDataSaverState("selected_chat_model_id", initialValue = 0)
