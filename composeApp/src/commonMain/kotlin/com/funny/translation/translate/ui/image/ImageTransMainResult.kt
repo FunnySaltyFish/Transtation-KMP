@@ -8,9 +8,11 @@ import androidx.compose.foundation.gestures.draggable2D
 import androidx.compose.foundation.gestures.rememberDraggable2DState
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,7 +23,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -49,21 +50,21 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.funny.cmaterialcolors.MaterialColors
 import com.funny.compose.loading.LoadingState
 import com.funny.translation.bean.show
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.Cost
 import com.funny.translation.translate.ImageTranslationResult
+import com.funny.translation.translate.Language
+import com.funny.translation.translate.ui.main.CopyButton
 import com.funny.translation.translate.ui.main.CostIndicator
+import com.funny.translation.translate.ui.main.SpeakButton
 import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.MarkdownText
 import com.github.panpf.zoomimage.compose.zoom.ZoomableState
 import com.github.panpf.zoomimage.compose.zoom.zooming
 import kotlinx.coroutines.delay
-import java.math.BigDecimal
 import kotlin.math.max
 
 @Composable
@@ -143,6 +144,7 @@ internal fun ModelTransResult(
     data: ImageTranslationResult.Model,
     showResult: Boolean,
     stage: TranslateStage,
+    targetLanguage: Language
 ) {
     val density = LocalDensity.current
     BoxWithConstraints {
@@ -173,24 +175,56 @@ internal fun ModelTransResult(
                     }
                     if (stage == TranslateStage.Finished) {
                         HorizontalDivider(color = Color.White)
-                        val cost = data.cost
-                        CostIndicator(
-                            modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End),
-                            selectingPromptCost = INVALID_TEXT,
-                            actualCost = cost.consumption.show(6),
-                            totalCost = cost.consumption.show(6),
-                            supportingString = ResStrings.llm_trans_template.format(
-                                input1 = INVALID_TEXT,
-                                output1 = INVALID_TEXT,
-                                input2 = cost.input_tokens.toString(),
-                                output2 = cost.output_tokens.toString()
-                            ),
-                            color = Color.White
-                        )
+                        ModelResultRow(data, targetLanguage)
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ModelResultRow(
+    data: ImageTranslationResult.Model,
+    targetLanguage: Language
+) {
+    Row(
+        Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy((-4).dp)
+        ) {
+            val boxSize = 36.dp
+            val tint = Color.White
+            SpeakButton(
+                modifier = Modifier,
+                text = data.streamingResult,
+                language = targetLanguage,
+                tint = tint,
+                boxSize = boxSize,
+            )
+            CopyButton(
+                text = data.streamingResult,
+                tint = tint,
+                boxSize = boxSize
+            )
+        }
+        val cost = data.cost
+        CostIndicator(
+            modifier = Modifier,
+            selectingPromptCost = INVALID_TEXT,
+            actualCost = cost.consumption.show(6),
+            totalCost = cost.consumption.show(6),
+            supportingString = ResStrings.llm_trans_template.format(
+                input1 = INVALID_TEXT,
+                output1 = INVALID_TEXT,
+                input2 = cost.input_tokens.toString(),
+                output2 = cost.output_tokens.toString()
+            ),
+            color = Color.White
+        )
     }
 }
 
@@ -231,41 +265,6 @@ private fun DraggableBox(
         contentAlignment = Alignment.Center
     ) {
         content()
-    }
-}
-
-@Composable
-private fun PreviewModelTransResult() {
-    Box(Modifier.fillMaxSize().background(MaterialColors.Amber100)) {
-        ModelTransResult(
-            data = ImageTranslationResult.Model().apply {
-                streamingResult = """
-                    ### Hello, World!
-                    nice to meet **you**
-                    
-                    | 菜名 | 价格(k) |
-                    |---|---|
-                    |  螺蛳粉 | 25 |
-                    |  豆花 | 30 |
-                    |  豆花+香肠 | 35 |
-                    |  豆花+炸猪油渣 | 35 |
-                    |  豆花+鸡蛋 | 40 |
-                    |  豆花+牛肉 | 40 |
-                    |  豆花+濑尿虾 | 45 |
-                    |  豆花+香肠+炸猪油渣 | 40 |
-                    |  豆花+香肠+牛肉 | 45 |
-                    |  豆花+香肠+鸡蛋 | 45 |
-                """.trimIndent()
-                error = ""
-                cost = Cost(
-                    consumption = BigDecimal.ONE,
-                    input_tokens = 23,
-                    output_tokens = 1234
-                )
-            },
-            showResult = true,
-            stage = TranslateStage.Finished
-        )
     }
 }
 

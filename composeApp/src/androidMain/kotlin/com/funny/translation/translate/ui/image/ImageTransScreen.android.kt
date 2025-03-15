@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -30,15 +31,18 @@ import cn.qhplus.emo.photo.activity.PhotoPickResult
 import cn.qhplus.emo.photo.activity.PhotoPickerActivity
 import cn.qhplus.emo.photo.activity.getPhotoPickResult
 import cn.qhplus.emo.photo.coil.CoilMediaPhotoProviderFactory
+import com.funny.cmaterialcolors.MaterialColors
 import com.funny.compose.loading.LoadingState
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.BitmapUtil
 import com.funny.translation.helper.Log
+import com.funny.translation.helper.ProvidePreviewCompositionLocals
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
+import com.funny.translation.translate.Cost
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.activity.CustomPhotoPickerActivity
@@ -49,6 +53,7 @@ import com.github.panpf.zoomimage.rememberSketchZoomState
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.math.BigDecimal
 import kotlin.math.min
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -227,7 +232,7 @@ actual fun ResultPart(modifier: Modifier, vm: ImageTransViewModel) {
             )
         } else if (result is ImageTranslationResult.Model) {
             ModelTransResult(
-                result, showResult, vm.translateStage
+                result, showResult, vm.translateStage, vm.targetLanguage
             )
         }
     }
@@ -259,4 +264,43 @@ fun PreviewResultPart() {
     }
 
     ResultPart(Modifier, vm)
+}
+
+@Preview
+@Composable
+private fun PreviewModelTransResult() {
+    ProvidePreviewCompositionLocals {
+        Box(Modifier.fillMaxSize().background(MaterialColors.Amber100)) {
+            ModelTransResult(
+                data = ImageTranslationResult.Model().apply {
+                    streamingResult = """
+                    ### Hello, World!
+                    nice to meet **you**
+                    
+                    | 菜名 | 价格(k) |
+                    |---|---|
+                    |  螺蛳粉 | 25 |
+                    |  豆花 | 30 |
+                    |  豆花+香肠 | 35 |
+                    |  豆花+炸猪油渣 | 35 |
+                    |  豆花+鸡蛋 | 40 |
+                    |  豆花+牛肉 | 40 |
+                    |  豆花+濑尿虾 | 45 |
+                    |  豆花+香肠+炸猪油渣 | 40 |
+                    |  豆花+香肠+牛肉 | 45 |
+                    |  豆花+香肠+鸡蛋 | 45 |
+                """.trimIndent()
+                    error = ""
+                    cost = Cost(
+                        consumption = BigDecimal.ONE,
+                        input_tokens = 23,
+                        output_tokens = 1234
+                    )
+                },
+                showResult = true,
+                stage = TranslateStage.Finished,
+                targetLanguage = Language.CHINESE
+            )
+        }
+    }
 }

@@ -351,20 +351,22 @@ internal fun SpeakButton(
 internal fun CopyButton(
     modifier: Modifier = Modifier,
     text: String,
-    tint: Color
+    tint: Color,
+    boxSize: Dp = 48.dp,
+    iconSize: Dp = boxSize / 2,
 ) {
     IconButton(
         onClick = {
-            ClipBoardUtil.copy(text)
+            ClipBoardUtil.copy(text.trim())
             appCtx.toastOnUi(ResStrings.snack_finish_copy)
         },
-        modifier = modifier.size(48.dp)
+        modifier = modifier.size(boxSize)
     ) {
         FixedSizeIcon(
             Icons.Default.CopyAll,
             contentDescription = ResStrings.copy_content,
             tint = tint,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(iconSize)
         )
     }
 }

@@ -1,6 +1,7 @@
 package com.funny.translation.translate.ui.ai
 
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.funny.translation.helper.ExperimentalSharedTransitionApi
 import com.funny.translation.helper.LocalSharedTransitionScope
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction

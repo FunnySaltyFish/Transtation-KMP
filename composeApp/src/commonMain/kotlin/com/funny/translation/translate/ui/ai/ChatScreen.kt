@@ -2,6 +2,8 @@ package com.funny.translation.translate.ui.ai
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
@@ -78,11 +80,9 @@ import com.funny.compose.ai.bean.ChatMessage
 import com.funny.compose.ai.bean.sendByMe
 import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.translation.helper.ClipBoardUtil
-import com.funny.translation.helper.ExperimentalSharedTransitionApi
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.LocalNavAnimatedVisibilityScope
 import com.funny.translation.helper.LocalSharedTransitionScope
-import com.funny.translation.helper.SharedTransitionScope
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
