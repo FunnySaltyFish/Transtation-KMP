@@ -145,7 +145,7 @@ private fun ColumnScope.ConfListPager(
     }
 
     ScrollableTabRow(
-        selectedTabIndex = pagerState.currentPage,
+        selectedTabIndex = pagerState.currentPage.coerceIn(0, providers.size - 1),
 //        containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.primary,
         edgePadding = 0.dp
