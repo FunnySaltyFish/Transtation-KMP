@@ -42,7 +42,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
@@ -86,7 +85,6 @@ import com.funny.translation.helper.LocalSharedTransitionScope
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
-import com.funny.translation.kmp.currentPlatform
 import com.funny.translation.kmp.rememberTakePhotoLauncher
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
@@ -100,7 +98,6 @@ import com.funny.translation.translate.ui.main.LocalWindowSizeState
 import com.funny.translation.translate.ui.widget.AsyncImage
 import com.funny.translation.translate.ui.widget.TaskButton
 import com.funny.translation.translate.utils.rememberSelectImageLauncher
-import com.funny.translation.ui.CommonNavBackIcon
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.floatingActionBarModifier
@@ -141,7 +138,7 @@ fun ChatScreen() {
                 inputText = inputText,
                 onInputTextChanged = vm::updateInputText,
                 pickedItems = pickedItems,
-                expandDrawerAction = { scope.launch { drawerState.open() } },
+                openDrawerAction = { scope.launch { drawerState.open() } },
                 sendAction = {
                     // 选择图片时，不直接发送消息，而是等待图片选择完成后再发送
                     if (pickedItems.isNotEmpty()) isPreProcessing = true
@@ -232,7 +229,7 @@ private fun ChatContent(
     inputText: String,
     onInputTextChanged: (String) -> Unit,
     pickedItems: SnapshotStateList<String>,
-    expandDrawerAction: () -> Unit,
+    openDrawerAction: () -> Unit,
     sendAction: () -> Unit,
     clearAction: () -> Unit,
     removeMessageAction: (ChatMessage) -> Unit,
@@ -244,16 +241,6 @@ private fun ChatContent(
         title = chatBot.name,
         actions = {
             AIPointText()
-        },
-        navigationIcon = {
-            Row {
-                if (currentPlatform.isDesktop) {
-                    CommonNavBackIcon()
-                }
-                IconButton(onClick = expandDrawerAction) {
-                    FixedSizeIcon(Icons.Filled.Menu, contentDescription = "Menu")
-                }
-            }
         }
     ) {
         val lazyListState = rememberLazyListState()
@@ -281,7 +268,8 @@ private fun ChatContent(
             clearAction = clearAction,
             chatBot = chatBot,
             pickedItems = pickedItems,
-            previewImageAction = previewImageAction
+            previewImageAction = previewImageAction,
+            openDrawerAction = openDrawerAction
         )
     }
 
@@ -299,7 +287,7 @@ private fun ColumnScope.ChatBottomBar(
     chatBot: ModelChatBot,
     pickedItems: SnapshotStateList<String>,
     previewImageAction: (String) -> Unit,
-//    onImagesSelected: (List<String>) -> Unit
+    openDrawerAction: SimpleAction
 ) {
     var showAddFilePanel by rememberStateOf(false)
 
@@ -363,7 +351,8 @@ private fun ColumnScope.ChatBottomBar(
         chatBot = chatBot,
         pickedItems = pickedItems,
         showAddFilePanel = showAddFilePanel,
-        updateShowAddFilePanel = { showAddFilePanel = it }
+        updateShowAddFilePanel = { showAddFilePanel = it },
+        openDrawerAction = openDrawerAction
     )
 
     AnimatedVisibility(

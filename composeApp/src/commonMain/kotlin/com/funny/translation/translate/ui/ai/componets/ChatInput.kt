@@ -8,6 +8,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuOpen
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Clear
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
@@ -42,7 +44,8 @@ fun ChatInputTextField(
     chatBot: ModelChatBot,
     pickedItems: List<String>,
     showAddFilePanel: Boolean,
-    updateShowAddFilePanel: (Boolean) -> Unit
+    updateShowAddFilePanel: (Boolean) -> Unit,
+    openDrawerAction: SimpleAction
 ) {
     val color = MaterialTheme.colorScheme.surface
     TextField(
@@ -57,6 +60,16 @@ fun ChatInputTextField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
         ),
+        leadingIcon = {
+            // 打开侧边 drawer
+            IconButton(onClick = openDrawerAction) {
+                FixedSizeIcon(
+                    modifier = Modifier.size(24.dp),
+                    imageVector = Icons.AutoMirrored.Filled.MenuOpen,
+                    contentDescription = "Open Drawer"
+                )
+            }
+        },
         trailingIcon = {
             val clearBtnVisible by remember(input) {
                 derivedStateOf {
