@@ -43,7 +43,7 @@ class ChatViewModel: ModelViewModel() {
     var currentMessage: ChatMessage? by mutableStateOf(null)
     val convId: MutableState<String?> = mutableStateOf(null)
     var systemPrompt by mutableDataSaverStateOf(DataSaverUtils, "key_chat_base_prompt", ResStrings.chat_system_prompt)
-    var maxHistoryMsgNum by mutableDataSaverStateOf(DataSaverUtils, "key_chat_max_history_msg_num", 3)
+    var maxHistoryMsgNum by mutableDataSaverStateOf(DataSaverUtils, "key_chat_max_history_msg_num", 5)
     private val memory get() = ChatMemoryFixedMsgLength(maxHistoryMsgNum)
 
     var checkingPrompt by mutableStateOf(false)

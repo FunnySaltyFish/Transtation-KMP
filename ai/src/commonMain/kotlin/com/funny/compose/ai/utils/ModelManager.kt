@@ -1,6 +1,8 @@
 package com.funny.compose.ai.utils
 
+import androidx.compose.runtime.mutableStateOf
 import com.funny.compose.ai.bean.Model
+import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.compose.ai.service.aiService
 import com.funny.compose.loading.LoadingState
 import com.funny.data_saver.core.mutableDataSaverStateOf
@@ -58,6 +60,27 @@ object ModelManager {
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
+
+    var chatBot = mutableStateOf<ModelChatBot>(ModelChatBot.Empty)
+
+    var currentSelectBotId: Int = -1
+        get() {
+            var value: Int = field
+            // 初始化
+            if (field < 0) {
+                value = DataSaverUtils.readData("selected_chat_model_id", default = 0)
+            }
+            if (chatBot.value.id != value) {
+                chatBot.value = findChatBotById(value)
+            }
+            return value
+        }
+        set(value) {
+            field = value
+            DataSaverUtils.saveData("selected_chat_model_id", value)
+            chatBot.value = findChatBotById(value)
+        }
+
 
     // 加载函数
     fun loadModels() {
@@ -125,6 +148,10 @@ object ModelManager {
 
     // 模型启用键
     val Model.enableKey get() = "llm_model_${name}_enabled"
+
+    private fun findChatBotById(id: Int) = _modelState.value.getList().find { it.chatBotId == id }?.let {
+        ModelChatBot(it)
+    } ?: ModelChatBot.Empty
 
     // 初始化
     init {

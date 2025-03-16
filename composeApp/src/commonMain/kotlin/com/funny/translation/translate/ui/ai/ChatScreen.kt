@@ -562,9 +562,7 @@ private fun Settings(
         }
 
         ModelListPart(
-            maxHeight = 600.dp,
-            onModelLoaded = vm::onModelListLoaded,
-            onModelSelected = vm::updateChatBot
+            maxHeight = 600.dp
         )
     }
 }

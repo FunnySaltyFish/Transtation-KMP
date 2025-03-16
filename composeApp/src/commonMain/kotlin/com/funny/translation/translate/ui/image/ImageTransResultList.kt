@@ -208,7 +208,7 @@ private fun AIOptimizationSheet(
     ) {
         Column {
             if (loadingStateState == null) {
-                ModelListPart(vm::onModelListLoaded, vm::updateChatBot)
+                ModelListPart()
                 // Confirm
                 Spacer(modifier = Modifier.height(16.dp))
                 TextButton(

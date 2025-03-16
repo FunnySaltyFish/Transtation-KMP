@@ -81,7 +81,7 @@ fun CommonTopBar(
         modifier = modifier,
         title = {
             if (title != null) {
-                Text(text = title, Modifier.padding(start = 12.dp))
+                Text(text = title)
             }
         },
         navigationIcon = navigationIcon,

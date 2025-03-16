@@ -96,16 +96,15 @@ class ImageTransViewModel : ModelViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             ModelManager.enabledModels.collect { models ->
                 withContext(Dispatchers.Main) {
-                    onModelListLoaded(-1, models)
+                    onModelListLoaded(models)
                 }
             }
         }
     }
 
-    override fun onModelListLoaded(currentSelectBotId: Int, models: List<Model>) {
+    private fun onModelListLoaded(models: List<Model>) {
         Log.d(TAG, "onModelListLoaded: ${models.size}")
         if (models.isEmpty()) return
-        super.onModelListLoaded(currentSelectBotId, models)
         modelEngines = models.filter { it.inputFileTypes.supportImage }.map {
             ModelImageTranslationEngine(it)
         }

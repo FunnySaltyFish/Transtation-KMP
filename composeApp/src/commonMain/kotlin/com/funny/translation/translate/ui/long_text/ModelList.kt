@@ -1,11 +1,9 @@
 package com.funny.translation.translate.ui.long_text
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,14 +18,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.TextFields
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -41,8 +37,8 @@ import com.funny.cmaterialcolors.MaterialColors
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.utils.ModelList
 import com.funny.compose.ai.utils.ModelManager
+import com.funny.compose.ai.utils.ModelManager.currentSelectBotId
 import com.funny.compose.loading.DefaultFailure
-import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.helper.buildSearchAnnotatedString
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
@@ -50,13 +46,8 @@ import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.HintText
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
-    ExperimentalFoundationApi::class
-)
 @Composable
 fun ModelListPart(
-    onModelLoaded: (currentSelectBotId: Int, models: List<Model>) -> Unit,
-    onModelSelected: (model: Model) -> Unit,
     maxHeight: Dp = 400.dp,
 ) {
     Category(
@@ -75,11 +66,9 @@ fun ModelListPart(
                 } else this
             }
         }
-        var currentSelectBotId by rememberDataSaverState("selected_chat_model_id", initialValue = 0)
         val height by animateDpAsState(targetValue = if (expanded) maxHeight else 200.dp, label = "height")
         val onClick = { model: Model ->
-            currentSelectBotId = model.chatBotId
-            onModelSelected(model)
+            ModelManager.currentSelectBotId = model.chatBotId
         }
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -111,9 +100,6 @@ fun ModelListPart(
                     retry = ModelManager::retry
                 )
             } else {
-                LaunchedEffect(Unit) {
-                    onModelLoaded(currentSelectBotId, data)
-                }
                 ModelList(
                     data = data,
                     height = height,

@@ -157,10 +157,7 @@ fun LongTextTransDetailScreen(
                 modifier = Modifier.popDialogShape().heightIn(480.dp, 600.dp),
                 onDismissRequest = { modelSelectDialog.value = false } ,
                 content = {
-                    ModelListPart(
-                        onModelLoaded = vm::onModelListLoaded,
-                        onModelSelected = vm::updateChatBot
-                    )
+                    ModelListPart()
                 },
             )
         }
@@ -267,10 +264,7 @@ private fun ColumnScope.DetailContent(
                     ) { expanded ->
                         AllCorpusList(vm = vm, expanded = expanded)
                     }
-                    ModelListPart(
-                        onModelLoaded = vm::onModelListLoaded,
-                        onModelSelected = vm::updateChatBot
-                    )
+                    ModelListPart()
                 }
                 ScreenState.Translating -> {
                     SourceTextPart(
