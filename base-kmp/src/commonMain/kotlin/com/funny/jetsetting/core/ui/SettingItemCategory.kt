@@ -32,5 +32,5 @@ fun SettingItemCategory(
 }
 
 internal object SettingItemCategoryTokens {
-    val TitlePadding = PaddingValues(start = 20.dp, end = 16.dp, top = 24.dp, bottom = 8.dp)
+    val TitlePadding = PaddingValues(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 4.dp)
 }
