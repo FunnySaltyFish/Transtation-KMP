@@ -18,8 +18,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.CalendarViewDay
+import androidx.compose.material.icons.filled.CardTravel
 import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.ReadMore
+import androidx.compose.material.icons.filled.Token
 import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.filled.ViewColumn
 import androidx.compose.material3.ListItem
@@ -64,6 +67,7 @@ import com.funny.translation.translate.ui.widget.NoticeBar
 import com.funny.translation.translate.ui.widget.TextFlashCanvas
 import com.funny.translation.translate.ui.widget.TextFlashCanvasState
 import com.funny.translation.translate.ui.widget.noticeBarModifier
+import com.funny.translation.ui.CenterListItem
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
@@ -86,6 +90,9 @@ private data class VipFeature(
 //- 主题
 private val vipFeatures by lazy {
     arrayOf(
+        VipFeature(Icons.Default.Token, ResStrings.free_models, ResStrings.free_model_desc),
+        VipFeature(Icons.Default.CardTravel, ResStrings.free_ai_point, ResStrings.free_ai_point_desc),
+        VipFeature(Icons.Default.MoneyOff, ResStrings.vip_discount, ResStrings.vip_discount_desc),
         VipFeature(Icons.Default.AddPhotoAlternate, ResStrings.more_image_point, ResStrings.more_image_point_desc),
         VipFeature(Icons.Default.CalendarViewDay, ResStrings.more_engine, ResStrings.more_engine_desc),
         VipFeature(Icons.Default.ReadMore, ResStrings.more_engine_detail, ResStrings.more_engine_detail_desc),
@@ -128,8 +135,6 @@ fun TransProScreen(){
 @Composable
 fun TransProContent() {
     CommonPage(
-        Modifier
-            .padding(horizontal = 8.dp),
         title = ResStrings.trans_pro
     ) {
         val activityVM = LocalActivityVM.current
@@ -171,7 +176,7 @@ fun TransProContent() {
                     )
                 }
                 items(vipFeatures) {
-                    ListItem(
+                    CenterListItem(
                         headlineContent = {
                             Text(text = it.title)
                         },
@@ -179,7 +184,7 @@ fun TransProContent() {
                             Text(text = it.desc)
                         },
                         leadingContent = {
-                            FixedSizeIcon(it.icon, contentDescription = null)
+                            FixedSizeIcon(it.icon, contentDescription = null, modifier = Modifier.size(24.dp))
                         }
                     )
                 }

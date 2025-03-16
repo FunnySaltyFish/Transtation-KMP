@@ -183,10 +183,10 @@ private fun PayMethodTile(
         Modifier
             .fillMaxWidth()
             .clickable { updatePayMethod(payMethod) }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically) {
         FixedSizeIcon(
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(36.dp),
             painter = painterDrawableRes(payMethod.iconName),
             contentDescription = payMethod.title,
             tint = Color.Unspecified

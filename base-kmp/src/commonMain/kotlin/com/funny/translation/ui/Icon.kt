@@ -36,7 +36,13 @@ fun FixedSizeIcon(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current
-) = Icon(imageVector, contentDescription, modifier, tint)
+) {
+    val sizedModifier =
+        if (modifier.all { it.javaClass.simpleName != "SizeElement" }) {
+            modifier.size(24.dp)
+        } else modifier
+    Icon(imageVector, contentDescription, sizedModifier, tint)
+}
 
 private fun Modifier.defaultSizeFor(painter: Painter) =
     this.then(

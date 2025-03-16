@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--    根据下面注释翻译成英文l-->
+    <string name="free_models">Free access to large models</string>
+    <string name="free_model_desc">Members can enjoy free access to certain large models, and the models will be rotated over time</string>
+    <string name="free_ai_point">Monthly AI points bonus</string>
+    <string name="free_ai_point_desc">Members receive AI points on the first of each month, and the gifted points are consumed first during deductions</string>
+    <string name="vip_discount">Exclusive discounts</string>
+    <string name="vip_discount_desc">Members enjoy exclusive discounted prices when purchasing AI points, and can also benefit from additional discounts during promotions</string>
     <string name="no_satisfied_result">No result matches query</string>
     <string name="expand_text">... Expand</string>
     <string name="collapse_text"> Collapse</string>

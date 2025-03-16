@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--    根据下面注释生成xml-->
+    <string name="free_models">免费使用大模型</string>
+    <string name="free_model_desc">会员可专享部分大模型免费使用，且模型将随时间持续轮换</string>
+    <string name="free_ai_point">每月赠送AI点数</string>
+    <string name="free_ai_point_desc">会员每月一号赠送AI点数，扣费时优先消耗赠送点数</string>
+    <string name="vip_discount">专享折扣</string>
+    <string name="vip_discount_desc">会员购买AI点数专享折扣价，遇到活动时还可享受折上折</string>
     <string name="no_satisfied_result">没有符合查询的结果</string>
     <string name="expand_text">... 展开</string>
     <string name="collapse_text"> 收起</string>
