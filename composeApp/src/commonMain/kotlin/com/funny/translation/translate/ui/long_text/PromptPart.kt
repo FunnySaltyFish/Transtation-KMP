@@ -46,6 +46,7 @@ internal fun ColumnScope.PromptPart(
     Category(
         title = ResStrings.task_prompt,
         helpText = ResStrings.task_prompt_help,
+        expandable = true,
         extraRowContent = {
             FixedSizeIcon(Icons.Filled.Replay, contentDescription = "reset", modifier = Modifier
                 .size(16.dp)

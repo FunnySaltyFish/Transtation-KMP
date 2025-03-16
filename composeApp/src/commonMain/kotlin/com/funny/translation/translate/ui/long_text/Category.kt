@@ -39,14 +39,15 @@ import com.funny.translation.ui.RichTooltipCloseButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Category(
+    modifier: Modifier = Modifier,
     title: String,
     helpText: String = "helpText",
-    expandable: Boolean = true,
+    expandable: Boolean = false,
     defaultExpand: Boolean = false,
     extraRowContent: @Composable() (RowScope.() -> Unit)? = null,
     content: @Composable (expanded: Boolean) -> Unit,
 ) {
-    Column {
+    Column(modifier) {
         var expand by rememberStateOf(value = defaultExpand)
         Row(
             modifier = Modifier.fillMaxWidth(),

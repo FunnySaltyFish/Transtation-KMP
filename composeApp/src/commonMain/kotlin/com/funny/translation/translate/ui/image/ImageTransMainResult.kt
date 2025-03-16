@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -108,30 +107,28 @@ internal fun NormalTransResult(
                         .background(Color.LightGray.copy(0.9f))
                         .border(2.dp, color = Color.White)
                 ) {
-                    SelectionContainer {
-                        val density = LocalDensity.current
-                        data.content.forEach { part ->
-                            val w =
-                                remember { (part.width * imageInitialScale / density.density).dp }
-                            val h =
-                                remember { (part.height * imageInitialScale / density.density).dp }
-                            AutoResizedText(
-                                modifier = Modifier
-                                    .requiredSize(w, h)
-                                    .offset {
-                                        IntOffset(
-                                            (part.x * imageInitialScale).toInt(),
-                                            (part.y * imageInitialScale).toInt().also { y ->
-                                                // 由于下采样的存在，更新一下 maxH
-                                                maxY = max(maxY, y)
-                                            }
-                                        )
-                                    }
-                                    .border(1.dp, color = Color.White),
-                                text = part.target,
-                                color = Color.White,
-                            )
-                        }
+                    val density = LocalDensity.current
+                    data.content.forEach { part ->
+                        val w =
+                            remember { (part.width * imageInitialScale / density.density).dp }
+                        val h =
+                            remember { (part.height * imageInitialScale / density.density).dp }
+                        AutoResizedText(
+                            modifier = Modifier
+                                .requiredSize(w, h)
+                                .offset {
+                                    IntOffset(
+                                        (part.x * imageInitialScale).toInt(),
+                                        (part.y * imageInitialScale).toInt().also { y ->
+                                            // 由于下采样的存在，更新一下 maxH
+                                            maxY = max(maxY, y)
+                                        }
+                                    )
+                                }
+                                .border(1.dp, color = Color.White),
+                            text = part.target,
+                            color = Color.White,
+                        )
                     }
                 }
             }

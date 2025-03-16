@@ -154,7 +154,7 @@ fun LongTextTransDetailScreen(
         val modelSelectDialog = rememberStateOf(value = false)
         if (modelSelectDialog.value) {
             AnyPopDialog(
-                modifier = Modifier.popDialogShape().heightIn(max = 600.dp),
+                modifier = Modifier.popDialogShape().heightIn(480.dp, 600.dp),
                 onDismissRequest = { modelSelectDialog.value = false } ,
                 content = {
                     ModelListPart(
@@ -263,6 +263,7 @@ private fun ColumnScope.DetailContent(
                     Category(
                         title = ResStrings.all_corpus,
                         helpText = ResStrings.corpus_help,
+                        expandable = true
                     ) { expanded ->
                         AllCorpusList(vm = vm, expanded = expanded)
                     }
@@ -377,13 +378,14 @@ private fun EditPromptButton(
     initialMaxSegLength: Int?,
     model: Model,
     onConfirmPrompt: (String) -> Unit,
-    onConfirmMaxSegLength: (Int) -> Unit
+    onConfirmMaxSegLength: (Int?) -> Unit
 ) {
     val showEditPromptDialog = rememberStateOf(false)
     var prompt by rememberStateOf(initialPrompt)
-    var updatedMaxSegLength: Int? by rememberStateOf(null)
+    var updatedMaxSegLength: Int? by rememberStateOf(initialMaxSegLength)
     SimpleDialog(
         openDialogState = showEditPromptDialog,
+        closeable = false,
         content = {
             Column {
                 PromptPart(
@@ -396,7 +398,7 @@ private fun EditPromptButton(
                 )
 
                 MaxSegmentSettingsPart(
-                    initialValue = initialMaxSegLength,
+                    value = updatedMaxSegLength,
                     model = model,
                     onUpdate = { updatedMaxSegLength = it }
                 )
@@ -404,7 +406,11 @@ private fun EditPromptButton(
         },
         confirmButtonAction = {
             onConfirmPrompt(prompt.prefix)
-            updatedMaxSegLength?.let { onConfirmMaxSegLength(it) }
+            onConfirmMaxSegLength(updatedMaxSegLength)
+        },
+        dismissButtonAction = {
+            prompt = initialPrompt
+            updatedMaxSegLength = initialMaxSegLength
         }
     )
 

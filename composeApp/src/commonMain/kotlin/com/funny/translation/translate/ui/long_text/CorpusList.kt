@@ -58,6 +58,7 @@ internal fun ColumnScope.CorpusListPart(
     Category(
         title = ResStrings.corpus,
         helpText = ResStrings.corpus_help,
+        expandable = true
     ) { expanded ->
         val pagerState = rememberPagerState(pageCount = { 2 })
         val scope = rememberCoroutineScope()

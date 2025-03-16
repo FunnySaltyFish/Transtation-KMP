@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="no_satisfied_result">没有符合查询的结果</string>
     <string name="expand_text">... 展开</string>
     <string name="collapse_text"> 收起</string>
     <string name="text">文本</string>

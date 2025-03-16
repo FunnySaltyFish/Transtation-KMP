@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,13 +47,14 @@ import com.funny.translation.helper.buildSearchAnnotatedString
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
+import com.funny.translation.ui.HintText
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable
-fun ColumnScope.ModelListPart(
+fun ModelListPart(
     onModelLoaded: (currentSelectBotId: Int, models: List<Model>) -> Unit,
     onModelSelected: (model: Model) -> Unit,
     maxHeight: Dp = 400.dp,
@@ -68,7 +68,7 @@ fun ColumnScope.ModelListPart(
         val enableModels by ModelManager.enabledModels.collectAsState()
         var searchQuery by rememberStateOf("")
         val data by produceState(emptyList(), key1 = searchQuery, key2 = enableModels) {
-            value = enableModels.run {
+            this.value = enableModels.run {
                 if (searchQuery.isNotEmpty()) {
                     delay(300)
                     filter { it.name.contains(searchQuery, ignoreCase = true) }
@@ -105,7 +105,7 @@ fun ColumnScope.ModelListPart(
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            if (data.isEmpty()) {
+            if (enableModels.isEmpty()) {
                 DefaultFailure(
                     modifier = Modifier.fillMaxSize(),
                     retry = ModelManager::retry
@@ -139,6 +139,12 @@ private fun ModelList(
             .fillMaxWidth()
             .heightIn(0.dp, height)
     ) {
+        val search = searchQueryProvider()
+        if (search.isNotEmpty() && data.isEmpty()) {
+            item {
+                HintText(ResStrings.no_satisfied_result)
+            }
+        }
         items(
             data,
             key = { it.chatBotId },
@@ -148,7 +154,7 @@ private fun ModelList(
                 headlineContent = {
                     // 根据 searchQuery 高亮显示
                     Text(
-                        text = buildSearchAnnotatedString(content = it.name, search = searchQueryProvider())
+                        text = buildSearchAnnotatedString(content = it.name, search = search)
                     )
                 },
                 supportingContent = {

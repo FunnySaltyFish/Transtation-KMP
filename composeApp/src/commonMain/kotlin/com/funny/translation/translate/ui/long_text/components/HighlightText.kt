@@ -60,6 +60,7 @@ internal fun ColumnScope.SourceTextPart(
     Category(
         title = ResStrings.source_text,
         helpText = ResStrings.source_text_help,
+        expandable = true,
         extraRowContent = {
             if (screenState == ScreenState.Init) {
                 // TODO change it to navigateWithResult
@@ -147,6 +148,7 @@ internal fun ColumnScope.ResultTextPart(
     Category(
         title = ResStrings.translate_result,
         helpText = ResStrings.translate_result_help,
+        expandable = true,
         extraRowContent = {
             if (screenState != ScreenState.Translating) {
                 TokenNum(
