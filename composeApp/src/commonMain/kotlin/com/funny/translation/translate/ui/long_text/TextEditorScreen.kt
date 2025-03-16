@@ -211,7 +211,7 @@ fun TextEditorScreen(
             delay(500)
             focusRequester.requestFocus()
         }
-        val textStyle = MaterialTheme.typography.bodyLarge
+        val textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground)
         Box(modifier = Modifier.kmpImeNestedScroll()) {
             BasicTextField(
                 modifier = Modifier
