@@ -131,7 +131,7 @@ fun TextTransScreen() {
     val bindEngines by EngineManager.bindEnginesStateFlow.collectAsState(emptyList())
     // 插件
     val jsEngines by EngineManager.jsEnginesStateFlow.collectAsState(emptyList())
-    val modelEngines by EngineManager.modelEnginesState
+    val modelEngines by EngineManager.modelEnginesState.collectAsState(emptyList())
 
     val scope = rememberCoroutineScope()
     // 使用 staticCompositionLocal 传递主页面 scaffold 的 snackbarHostState

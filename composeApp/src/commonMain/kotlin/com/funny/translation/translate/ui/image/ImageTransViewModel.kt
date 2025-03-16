@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.funny.compose.ai.bean.ChatMessageReq
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.bean.StreamMessage
-import com.funny.compose.ai.chat.ModelChatBot
 import com.funny.compose.ai.service.AskStreamRequest
 import com.funny.compose.ai.service.aiService
 import com.funny.compose.ai.service.askAndParseStream
@@ -58,7 +57,7 @@ typealias SingleIndexedImageTranslationPart = Pair<Int, ImageTranslationPart>
 
 class ImageTransViewModel : ModelViewModel() {
     var imageUri: String? by mutableStateOf(null)
-    var translateEngine: ImageTranslationEngine by mutableStateOf(NormalImageTranslationEngines.Baidu)
+    var translateEngine: ImageTranslationEngine? by mutableStateOf(null)
     private var translateJob: Job? = null
     private val translateExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
@@ -94,32 +93,23 @@ class ImageTransViewModel : ModelViewModel() {
             translateEngine = it
         }
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                ModelManager.models.await().let {
-                    withContext(Dispatchers.Main) {
-                        onModelListLoaded(0, it)
-                    }
+            ModelManager.enabledModels.collect { models ->
+                withContext(Dispatchers.Main) {
+                    onModelListLoaded(-1, models)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                appCtx.toastOnUi("加载模型列表失败")
             }
         }
     }
 
     override fun onModelListLoaded(currentSelectBotId: Int, models: List<Model>) {
+        Log.d(TAG, "onModelListLoaded: ${models.size}")
+        if (models.isEmpty()) return
         super.onModelListLoaded(currentSelectBotId, models)
         modelEngines = models.filter { it.inputFileTypes.supportImage }.map {
             ModelImageTranslationEngine(it)
         }
-        // 如果模型加载成功，则尝试看看是否有模型被选中过
-        if (translateEngine == NormalImageTranslationEngines.Baidu) {
-            modelEngines.firstOrNull {
-                DataSaverUtils.readData(it.selectKey, false)
-            }?.let {
-                translateEngine = it
-                chatBot = ModelChatBot((it as ModelImageTranslationEngine).model)
-            }
+        if (translateEngine == null) {
+            translateEngine = modelEngines.firstOrNull { DataSaverUtils.readData(it.selectKey, false) }
         }
     }
 
@@ -184,7 +174,7 @@ class ImageTransViewModel : ModelViewModel() {
     ) {
         val imageUri = imageUri ?: return
         Log.d(TAG, "translateModel: imageUri: $imageUri")
-        val task = translateEngine.createTask(imageUri.toString(), sourceLanguage, targetLanguage, this, onFinish = {
+        val task = translateEngine.createTask(imageUri, sourceLanguage, targetLanguage, this, onFinish = {
             translateStage = TranslateStage.Finished
         })
         translateState = LoadingState.Success(task.result)
@@ -284,8 +274,9 @@ class ImageTransViewModel : ModelViewModel() {
     fun updateImgSize(w: Int, h: Int) { imgWidth = w; imgHeight = h }
 
     fun updateTranslateEngine(new: ImageTranslationEngine) {
-        if (translateEngine != new) {
-            DataSaverUtils.saveData(translateEngine.selectKey, false)
+        val cur = translateEngine
+        if (cur != new) {
+            if (cur != null) DataSaverUtils.saveData(cur.selectKey, false)
             translateEngine = new
             DataSaverUtils.saveData(new.selectKey, true)
         }

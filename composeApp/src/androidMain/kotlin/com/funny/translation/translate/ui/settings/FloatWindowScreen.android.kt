@@ -98,7 +98,7 @@ private fun SelectEngineTile() {
 
     val jsEngines by EngineManager.jsEnginesStateFlow.collectAsState(emptyList())
     val bindEngines by EngineManager.bindEnginesStateFlow.collectAsState(emptyList())
-    val modelEngines by EngineManager.modelEnginesState
+    val modelEngines by EngineManager.modelEnginesState.collectAsState(emptyList())
     val states = remember(jsEngines, bindEngines, modelEngines) {
         Log.d("FloatWindowScreen", "remember states triggered")
         hashMapOf<TranslationEngine, MutableState<Boolean>>().apply {

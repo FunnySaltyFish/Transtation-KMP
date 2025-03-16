@@ -34,13 +34,32 @@ fun <T, K> LoadingContent(
         loader = loader,
         retryKey = retryKey
     )
+    LoadingContent(
+        modifier = modifier,
+        state = state,
+        retry = { updateRetryKey(retryKey) },
+        loading = loading,
+        failure = failure,
+        success = success
+    )
+}
+
+@Composable
+fun <T> LoadingContent(
+    modifier: Modifier = Modifier,
+    state: LoadingState<T>,
+    retry: () -> Unit,
+    loading: @Composable BoxScope.() -> Unit = { DefaultLoading() },
+    failure: @Composable BoxScope.(error: Throwable, retry: () -> Unit) -> Unit = { error, _ ->
+        DefaultFailure(retry = retry)
+    },
+    success: @Composable BoxScope.(data: T) -> Unit
+) {
     Box(modifier = modifier) {
         when (state) {
             is LoadingState.Loading -> loading()
-            is LoadingState.Success<T> -> success((state as LoadingState.Success<T>).data)
-            is LoadingState.Failure -> failure((state as LoadingState.Failure).error) {
-                updateRetryKey(retryKey)
-            }
+            is LoadingState.Success<T> -> success(state.data)
+            is LoadingState.Failure -> failure(state.error, retry)
         }
     }
 }

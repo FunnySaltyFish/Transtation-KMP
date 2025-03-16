@@ -41,7 +41,7 @@ fun SortResultScreen(
 ) {
     CommonPage(title = ResStrings.sort_result) {
         val state = rememberReorderState()
-        val localEngines by SortResultUtils.localEngines.collectAsState()
+        val localEngines by SortResultUtils.sortedEngines.collectAsState()
         val data by remember {
             derivedStateOf {
                 localEngines.toMutableStateList()

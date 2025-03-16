@@ -1,17 +1,12 @@
 package com.funny.translation.translate.utils
 
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.mutableStateOf
 import com.funny.compose.ai.utils.ModelManager
 import com.funny.translation.Consts
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
-import com.funny.translation.helper.displayMsg
-import com.funny.translation.helper.toastOnUi
 import com.funny.translation.js.JsEngine
 import com.funny.translation.js.core.JsTranslateTaskText
-import com.funny.translation.kmp.appCtx
-import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.database.DefaultData
 import com.funny.translation.translate.database.appDB
@@ -25,6 +20,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
@@ -71,7 +67,11 @@ object EngineManager {
     // 下面是一些需要计算的变量，比如流和列表
     val jsEnginesStateFlow: MutableStateFlow<List<JsTranslateTaskText>> = MutableStateFlow(emptyList())
     val bindEnginesStateFlow: MutableStateFlow<List<TranslationEngine>> = MutableStateFlow(emptyList())
-    val modelEnginesState = mutableStateOf(listOf<TranslationEngine>())
+    val modelEnginesState = ModelManager.enabledModels.mapLatest { list ->
+        list.map {
+            ModelTranslationTask(it).also(::updateLoadedModelsAndNotify)
+        }
+    }
 
     var floatWindowTranslateEngineStateFlow: MutableStateFlow<TranslationEngine> = MutableStateFlow(TextTranslationEngines.BaiduNormal)
 
@@ -100,17 +100,12 @@ object EngineManager {
         }
 
         loadOneType(EngineType.MODEL) {
-            val models = kotlin.runCatching { ModelManager.models.await() }.onFailure {
-                Log.e(TAG, "Failed to load models", it)
-                appCtx.toastOnUi(it.displayMsg(ResStrings.load_llm_models))
-            }.getOrDefault(emptyList())
-
-            models.map { model ->
-                ModelTranslationTask(model).also(::updateLoadedModelsAndNotify)
-            }.also {
-                modelEnginesState.value = it
-                finishLoad()
+            val modelList = ModelManager.firstLoadChannel.receive()
+            Log.d(TAG, "modelEnginesState was re-triggered, received ${modelList.size} models")
+            modelList.map {
+                ModelTranslationTask(it).also(::updateLoadedModelsAndNotify)
             }
+            finishLoad()
         }
     }
 

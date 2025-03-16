@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,10 +13,13 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
@@ -29,16 +33,21 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.funny.translation.helper.LocalNavController
+import com.funny.translation.helper.SimpleAction
 import com.funny.translation.js.core.JsTranslateTaskText
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.task.ModelTranslationTask
+import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.long_text.description
 import com.funny.translation.translate.ui.plugin.markdown
 import com.funny.translation.ui.AnyPopDialog
+import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.HintText
 import com.funny.translation.ui.MarkdownText
 import com.funny.translation.ui.RichTooltipCloseButton
@@ -73,7 +82,8 @@ internal fun EngineSelectDialog(
                 jsEngines,
                 modelEngines,
                 selectStateProvider,
-                updateSelectedEngine
+                updateSelectedEngine,
+                dismissDialogAction = { showEngineSelect = false }
             )
         }
     }
@@ -87,7 +97,8 @@ private fun EngineSelect(
     jsEngines: List<TranslationEngine> = arrayListOf(),
     modelEngines: List<TranslationEngine> = arrayListOf(),
     selectStateProvider: @Composable (TranslationEngine) -> MutableState<Boolean>,
-    updateSelectEngine: UpdateSelectedEngine
+    updateSelectEngine: UpdateSelectedEngine,
+    dismissDialogAction: SimpleAction
 ) {
     Column(
         modifier = modifier,
@@ -104,6 +115,15 @@ private fun EngineSelect(
             Spacer(modifier = Modifier.height(4.dp))
             EnginePart(
                 title = ResStrings.plugin_engine,
+                extra = {
+                    val navController = LocalNavController.current
+                    IconButton(
+                        modifier = Modifier.scale(0.8f),
+                        onClick = { dismissDialogAction(); navController.navigate(TranslateScreen.PluginScreen.route) }
+                    ) {
+                        FixedSizeIcon(Icons.Default.Settings, contentDescription = ResStrings.manage_plugins)
+                    }
+                },
                 engines = jsEngines,
                 selectStateProvider = selectStateProvider,
                 updateSelectEngine = updateSelectEngine
@@ -114,6 +134,15 @@ private fun EngineSelect(
             Spacer(modifier = Modifier.height(4.dp))
             EnginePart(
                 title = ResStrings.model_engine,
+                extra = {
+                    val navController = LocalNavController.current
+                    IconButton(
+                        modifier = Modifier.scale(0.8f),
+                        onClick = { dismissDialogAction(); navController.navigate(TranslateScreen.ModelManageScreen.route) }
+                    ) {
+                        FixedSizeIcon(Icons.Default.Settings, contentDescription = ResStrings.model_manager)
+                    }
+                },
                 engines = modelEngines,
                 selectStateProvider = selectStateProvider,
                 updateSelectEngine = updateSelectEngine
@@ -127,14 +156,22 @@ private fun EngineSelect(
 @Composable
 private fun EnginePart(
     title: String,
+    extra: @Composable () -> Unit = {},
     engines: List<TranslationEngine>,
     selectStateProvider: @Composable (TranslationEngine) -> MutableState<Boolean>,
     updateSelectEngine: UpdateSelectedEngine
 ) {
-    Text(
-        text = title,
-        fontWeight = W600
-    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            fontWeight = W600
+        )
+        if (extra != {}) {
+            extra()
+        }
+    }
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()

@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
@@ -26,6 +28,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -36,15 +40,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.cmaterialcolors.MaterialColors
 import com.funny.compose.ai.bean.Model
+import com.funny.compose.ai.utils.ModelList
 import com.funny.compose.ai.utils.ModelManager
-import com.funny.compose.loading.loadingList
-import com.funny.compose.loading.rememberRetryableLoadingState
+import com.funny.compose.loading.DefaultFailure
 import com.funny.data_saver.core.rememberDataSaverState
-import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.buildSearchAnnotatedString
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.ui.settings.enableKey
 import com.funny.translation.ui.FixedSizeIcon
 import kotlinx.coroutines.delay
 
@@ -63,17 +65,14 @@ fun ColumnScope.ModelListPart(
         extraRowContent = {},
         defaultExpand = true,
     ) { expanded ->
-        val (state, retry) = rememberRetryableLoadingState(loader = {
-            ModelManager.models.await()
-        })
+        val enableModels by ModelManager.enabledModels.collectAsState()
         var searchQuery by rememberStateOf("")
-        val data by produceState(emptyList(), key1 = searchQuery) {
-            value = state.value.getOrDefault(emptyList()).run {
-                val enabledModels = filter { DataSaverUtils.readData(it.enableKey, true) }
+        val data by produceState(emptyList(), key1 = searchQuery, key2 = enableModels) {
+            value = enableModels.run {
                 if (searchQuery.isNotEmpty()) {
                     delay(300)
-                    enabledModels.filter { it.name.contains(searchQuery, ignoreCase = true) }
-                } else enabledModels
+                    filter { it.name.contains(searchQuery, ignoreCase = true) }
+                } else this
             }
         }
         var currentSelectBotId by rememberDataSaverState("selected_chat_model_id", initialValue = 0)
@@ -106,65 +105,85 @@ fun ColumnScope.ModelListPart(
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(0.dp, height)
-            ) {
-                loadingList(
-                    state,
-                    retry = retry,
-                    key = { it.chatBotId },
-                    successDataProvider = {
-                        data
-                    },
-                    onSuccess = {
-                        onModelLoaded(currentSelectBotId, it)
-                    },
-                ) {
-                    ListItem(
-                        modifier = Modifier.clickable { onClick(it) }.animateItemPlacement(),
-                        headlineContent = {
-                            // 根据 searchQuery 高亮显示
-                            Text(
-                                text = buildSearchAnnotatedString(content = it.name, search = searchQuery)
-                            )
-                        },
-                        supportingContent = {
-                            val description = remember { it.description() }
-                            Text(text = description, fontSize = 12.sp)
-                        },
-                        trailingContent = {
-                            RadioButton(selected = currentSelectBotId == it.chatBotId, onClick = {
-                                onClick(it)
-                            })
-                        },
-                        overlineContent = {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                val inputFileTypes = it.inputFileTypes
-                                if (inputFileTypes.text) {
-                                    FixedSizeIcon(
-                                        imageVector = Icons.Default.TextFields,
-                                        contentDescription = "Text",
-                                        tint = MaterialColors.BlueA400,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                                if (inputFileTypes.supportImage) {
-                                    FixedSizeIcon(
-                                        imageVector = Icons.Default.Image,
-                                        contentDescription = "Image",
-                                        tint = MaterialColors.BlueA400,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                            }
-                        }
-                    )
+            if (data.isEmpty()) {
+                DefaultFailure(
+                    modifier = Modifier.fillMaxSize(),
+                    retry = ModelManager::retry
+                )
+            } else {
+                LaunchedEffect(Unit) {
+                    onModelLoaded(currentSelectBotId, data)
                 }
+                ModelList(
+                    data = data,
+                    height = height,
+                    onClick = onClick,
+                    searchQueryProvider = { searchQuery },
+                    currentSelectBotId = currentSelectBotId
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun ModelList(
+    data: ModelList,
+    height: Dp,
+    onClick: (model: Model) -> Unit,
+    searchQueryProvider: () -> String,
+    currentSelectBotId: Int
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(0.dp, height)
+    ) {
+        items(
+            data,
+            key = { it.chatBotId },
+        ) {
+            ListItem(
+                modifier = Modifier.clickable { onClick(it) }.animateItem(),
+                headlineContent = {
+                    // 根据 searchQuery 高亮显示
+                    Text(
+                        text = buildSearchAnnotatedString(content = it.name, search = searchQueryProvider())
+                    )
+                },
+                supportingContent = {
+                    val description = remember { it.description() }
+                    Text(text = description, fontSize = 12.sp)
+                },
+                trailingContent = {
+                    RadioButton(selected = currentSelectBotId == it.chatBotId, onClick = {
+                        onClick(it)
+                    })
+                },
+                overlineContent = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        val inputFileTypes = it.inputFileTypes
+                        if (inputFileTypes.text) {
+                            FixedSizeIcon(
+                                imageVector = Icons.Default.TextFields,
+                                contentDescription = "Text",
+                                tint = MaterialColors.BlueA400,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                        if (inputFileTypes.supportImage) {
+                            FixedSizeIcon(
+                                imageVector = Icons.Default.Image,
+                                contentDescription = "Image",
+                                tint = MaterialColors.BlueA400,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                }
+            )
         }
     }
 }

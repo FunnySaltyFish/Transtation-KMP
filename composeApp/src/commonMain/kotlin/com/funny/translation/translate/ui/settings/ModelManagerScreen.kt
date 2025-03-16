@@ -34,6 +34,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -46,13 +48,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.utils.ModelManager
-import com.funny.compose.ai.utils.ModelManager.sort
+import com.funny.compose.ai.utils.ModelManager.enableKey
 import com.funny.compose.ai.utils.ModelSortType
 import com.funny.compose.loading.LoadingContent
 import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.helper.assetsStringLocalized
-import com.funny.translation.helper.rememberDerivedStateOf
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.ExpandableText
@@ -86,6 +87,11 @@ fun ModelManagerScreen() {
         }
     )
 
+    fun updateSort(newSortType: ModelSortType) {
+        sortType = newSortType
+        ModelManager.updateSort(newSortType)
+    }
+
     // Sort dialog
     if (showSortDialog) {
         AlertDialog(
@@ -106,13 +112,13 @@ fun ModelManagerScreen() {
                         key(it.second) {
                             ListItem(
                                 modifier = Modifier.clickable {
-                                    sortType = it.first
+                                    updateSort(it.first)
                                 },
                                 headlineContent = { Text(it.second) },
                                 leadingContent = {
                                     RadioButton(
                                         selected = it.first == sortType,
-                                        onClick = { sortType = it.first }
+                                        onClick = { updateSort(it.first) }
                                     )
                                 },
                                 colors = ListItemDefaults.colors(containerColor = Color.Transparent)
@@ -129,6 +135,7 @@ fun ModelManagerScreen() {
         )
     }
 
+
     CommonPage(
         title = ResStrings.model_manager,
         actions = {
@@ -140,19 +147,26 @@ fun ModelManagerScreen() {
             }
         }
     ) {
+        val state by ModelManager.modelState.collectAsState()
+
+        DisposableEffect(Unit) {
+            // 更新模型列表
+            onDispose {
+                ModelManager.refresh()
+            }
+        }
+
         LoadingContent(
             modifier = Modifier.fillMaxSize(),
-            loader = { ModelManager.models.await() }
+            state = state,
+            retry = ModelManager::retry
         ) { models ->
-            val sortedModels by rememberDerivedStateOf {
-                models.sort(sortType).also { ModelManager.updateModels(it) }
-            }
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(sortedModels, key = { it.name }) { model ->
+                items(models.second, key = { it.name }) { model ->
                     ModelCard(modifier = Modifier.animateItem(), model = model)
                 }
             }
@@ -253,6 +267,3 @@ fun ModelCard(modifier: Modifier, model: Model) {
         }
     }
 }
-
-val Model.enableKey
-    get() = "llm_model_${name}_enabled"

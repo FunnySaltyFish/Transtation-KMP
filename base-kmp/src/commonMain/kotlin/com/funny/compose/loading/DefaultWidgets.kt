@@ -7,11 +7,13 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -83,17 +85,27 @@ fun CustomLoading(
 
 @Composable
 fun DefaultFailure(modifier: Modifier = Modifier, retry: () -> Unit) {
-    Text(
-        text = ResStrings.loading_error,
-        modifier = modifier
-            .clickable(onClick = retry)
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-            .padding(8.dp),
-        color = Color.Gray,
-        fontWeight = FontWeight.Light,
-        fontSize = 16.sp
-    )
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = ResStrings.loading_error,
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .padding(8.dp),
+            color = Color.Gray,
+            fontWeight = FontWeight.Light,
+            fontSize = 16.sp
+        )
+        Button(
+            modifier = Modifier,
+            onClick = { retry() }) {
+            Text(text = ResStrings.retry)
+        }
+    }
 }
 
 @Composable

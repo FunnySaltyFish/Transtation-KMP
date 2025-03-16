@@ -24,8 +24,10 @@ abstract class ModelViewModel: BaseViewModel() {
         Log.d(TAG, "onModelListLoaded: size = ${models.size}")
 
         modelList = models.toImmutableList()
-        chatBot = (modelList.find { it.chatBotId == currentSelectBotId } ?: modelList[0]).let {
-            ModelChatBot(it)
+        if (currentSelectBotId >= 0) {
+            chatBot = (modelList.find { it.chatBotId == currentSelectBotId } ?: modelList[0]).let {
+                ModelChatBot(it)
+            }
         }
     }
 

@@ -62,7 +62,7 @@ fun MainPartInputting(
     fun startTranslate() {
         val selectedEngines = vm.selectedEngines
         if (selectedEngines.isEmpty()) {
-            showSnackbar(ResStrings.snack_no_engine_selected)
+            context.toastOnUi(ResStrings.snack_no_engine_selected)
             return
         }
         val selectedSize = selectedEngines.size

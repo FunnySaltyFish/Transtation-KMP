@@ -56,6 +56,7 @@ import com.funny.translation.translate.Language
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.ImageTranslationEngine
+import com.funny.translation.translate.engine.NormalImageTranslationEngines
 import com.funny.translation.translate.ui.main.components.EngineSelectDialog
 import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.ExchangeButton
@@ -137,7 +138,7 @@ internal fun ImageTranslationPart(
                 textColor = MaterialTheme.colorScheme.onBackground
             )
             EngineSelect(
-                engine = vm.translateEngine,
+                engine = vm.translateEngine ?: NormalImageTranslationEngines.Baidu,
                 updateEngine = vm::updateTranslateEngine,
                 bindEngines = vm.bindEngines,
                 modelEngines = vm.modelEngines

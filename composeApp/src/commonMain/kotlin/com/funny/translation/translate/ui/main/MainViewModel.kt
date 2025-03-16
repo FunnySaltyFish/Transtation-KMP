@@ -12,6 +12,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import app.cash.sqldelight.paging3.QueryPagingSource
+import com.funny.compose.ai.utils.ModelManager
+import com.funny.compose.ai.utils.ModelManager.enableKey
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.AppConfig
 import com.funny.translation.Consts
@@ -76,8 +78,6 @@ class MainViewModel : BaseViewModel() {
     private val evalJsMutex by lazy(LazyThreadSafetyMode.PUBLICATION) { Mutex() }
     private val totalProgress: Int get() = selectedEngines.size
 
-    var modelEngines by mutableStateOf(listOf<TranslationEngine>())
-
     // 下面是一些需要计算的变量，比如流和列表
 
     val transHistories by lazy {
@@ -98,6 +98,20 @@ class MainViewModel : BaseViewModel() {
             appDB.jsDao.getAllJs().forEach { jsBean ->
                 if(DefaultData.isPluginBound(jsBean)) {
                     appDB.jsDao.deleteJsByName(jsBean.fileName)
+                }
+            }
+
+            launch {
+                ModelManager.modelState.collect {
+                    it.getOrNull()?.second?.forEach { model ->
+                        val enabled = DataSaverUtils.readData(model.enableKey, true)
+                        if (!enabled) {
+                            val current = selectedEngines.firstOrNull { it is ModelTranslationTask && it.model.name == model.name } ?: return@forEach
+                            selectedEngines.remove(current)
+                            DataSaverUtils.saveData(current.selectKey, false)
+                            Log.d(TAG, "remove model: ${model.name} cause it is not enabled")
+                        }
+                    }
                 }
             }
 
@@ -260,7 +274,7 @@ class MainViewModel : BaseViewModel() {
     private suspend fun translateInParallel() {
         val tasks: ArrayList<Deferred<*>> = arrayListOf()
         createTasks(true).also { newTasks ->
-            resultList.addAll(newTasks.map { it.result }.sortedBy(SortResultUtils.defaultResultSort))
+            resultList.addAll(newTasks.map { it.result })
             startedProgress = 1.0f
         }.forEach { task ->
             tasks.add(viewModelScope.async {
@@ -292,7 +306,7 @@ class MainViewModel : BaseViewModel() {
 
     private suspend fun createTasks(withMutex: Boolean = false): List<CoreTextTranslationTask> {
         val res = LinkedList<CoreTextTranslationTask>()
-        selectedEngines.forEach {
+        selectedEngines.sortedBy(SortResultUtils.defaultEngineSort).forEach {
             if (support(it.supportLanguages)) {
                 val task = when (it) {
                     is TextTranslationEngines -> {
@@ -341,7 +355,6 @@ class MainViewModel : BaseViewModel() {
                 // 但是线上的报错显示有时候会有，所以判断一下吧
                 if (currentKey != null) it.remove(currentKey)
                 it.add(result)
-                it.sortBy(SortResultUtils.defaultResultSort)
                 Log.d(TAG, "addTranslateResultItem: ${result.engineName}, now size: ${it.size}")
             }
         }
