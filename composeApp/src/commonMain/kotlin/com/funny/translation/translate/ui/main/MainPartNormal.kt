@@ -68,11 +68,9 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
-import com.funny.compose.loading.LoadingContent
 import com.funny.trans.login.LoginActivity
 import com.funny.translation.AppConfig
 import com.funny.translation.WebViewActivity
-import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
@@ -502,29 +500,17 @@ private fun LanguageSelect(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun UserInfoPanel(navHostController: NavHostController) {
     val TAG = "UserInfoPanel"
     val activityVM = LocalActivityVM.current
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = activityVM.uid) {
         Log.d(TAG, "UserInfoPanel: uid is: ${activityVM.uid}, token is: ${activityVM.token}")
     }
 
-//    val startLoginLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.StartActivityForResult(),
-//    ) {
-//        Log.d(TAG, "UserInfoPanel: resultData: ${it.data}")
-//    }
-
-    LoadingContent(
-        retryKey = activityVM.uid,
-        updateRetryKey = { 
-            ActivityManager.start(LoginActivity::class.java)
-        },
-        modifier = Modifier
+    Box(
+        Modifier
             .touchToScale {
                 if (activityVM.uid <= 0) { // 未登录
                     ActivityManager.start(LoginActivity::class.java)
@@ -539,8 +525,8 @@ fun UserInfoPanel(navHostController: NavHostController) {
             .padding(horizontal = 8.dp)
             .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
             .padding(vertical = 12.dp),
-        loader = { activityVM.userInfo }
-    ) { userBean ->
+    ) {
+        val userBean by AppConfig.userInfo
         if (userBean.isValid()) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Box {
