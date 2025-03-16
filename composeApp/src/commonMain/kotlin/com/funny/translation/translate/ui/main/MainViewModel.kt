@@ -74,7 +74,6 @@ class MainViewModel : BaseViewModel() {
     private var translateJob: Job? = null
     private var engineInitialized = false
     private var initialSelected = 0
-    private val updateProgressMutex by lazy(LazyThreadSafetyMode.PUBLICATION) { Mutex() }
     private val evalJsMutex by lazy(LazyThreadSafetyMode.PUBLICATION) { Mutex() }
     private val totalProgress: Int get() = selectedEngines.size
 

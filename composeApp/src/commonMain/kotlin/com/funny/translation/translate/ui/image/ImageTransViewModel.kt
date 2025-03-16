@@ -16,6 +16,7 @@ import com.funny.compose.ai.utils.ModelManager
 import com.funny.compose.loading.LoadingState
 import com.funny.data_saver.core.mutableDataSaverStateOf
 import com.funny.translation.AppConfig
+import com.funny.translation.Consts
 import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.helper.BitmapUtil
 import com.funny.translation.helper.DataSaverUtils
@@ -68,8 +69,8 @@ class ImageTransViewModel : ModelViewModel() {
 
     var translateState: LoadingState<ImageTranslationResult> by mutableStateOf(LoadingState.Loading)
 
-    var sourceLanguage by mutableDataSaverStateOf(DataSaverUtils, "key_img_source_lang", Language.ENGLISH)
-    var targetLanguage by mutableDataSaverStateOf(DataSaverUtils, "key_img_target_lang", Language.CHINESE)
+    var sourceLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_SOURCE_LANGUAGE, Language.ENGLISH)
+    var targetLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_TARGET_LANGUAGE, Language.CHINESE)
 
     var imgWidth = 0
     var imgHeight = 0
