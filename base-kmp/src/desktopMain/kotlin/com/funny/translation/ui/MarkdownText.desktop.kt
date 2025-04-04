@@ -2,6 +2,7 @@ package com.funny.translation.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,25 +42,39 @@ actual fun MarkdownText(
     onLinkClicked: ((Context, String) -> Unit)?,
     onTextLayout: ((numLines: Int) -> Unit)?
 )  {
-    Markdown(
-        modifier = modifier.padding(8.dp),
-        content = markdown,
-        colors = markdownColor(
-            text = color
-        ),
-        typography = markdownTypography(
-            h1 = h1Style,
-            h2 = h2Style,
-            h3 = h3Style,
-            h4 = h4Style,
-            h5 = h5Style
-        ),
-        padding = markdownPadding(
-            list = 1.dp,
-            indentList = 4.dp,
-            block = 1.dp
+    SelectableWrapper(selectable) {
+        Markdown(
+            modifier = modifier.padding(8.dp),
+            content = markdown,
+            colors = markdownColor(
+                text = color
+            ),
+            typography = markdownTypography(
+                h1 = h1Style,
+                h2 = h2Style,
+                h3 = h3Style,
+                h4 = h4Style,
+                h5 = h5Style
+            ),
+            padding = markdownPadding(
+                list = 1.dp,
+                indentList = 4.dp,
+                block = 1.dp
+            )
         )
-    )
+    }
+}
+
+@Composable
+private fun SelectableWrapper(
+    selectable: Boolean,
+    content: @Composable () -> Unit
+) {
+    if (selectable) {
+        SelectionContainer(content = content)
+    } else {
+        content()
+    }
 }
 
 
