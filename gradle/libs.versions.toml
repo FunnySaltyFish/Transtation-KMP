@@ -76,6 +76,8 @@ compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material = { module = "androidx.compose.material:material3" }
 compose-ui-android = { module = "androidx.compose.ui:ui-android" }
+# https://mvnrepository.com/artifact/org.jetbrains.compose.material3/material3-window-size-class
+compose-material3-windowsizeclass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref="compose"  }
 
 # SQLDelight
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqlDelight" }

@@ -8,6 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.funny.data_saver.core.LocalDataSaver
 import com.funny.translation.helper.DataSaverUtils
+import com.funny.translation.helper.LocalNavController
+import com.funny.translation.kmp.NavHostController
 import com.funny.translation.ui.theme.TransTheme
 import com.funny.translation.ui.theme.calcDark
 import com.funny.translation.ui.toast.Toast
@@ -24,14 +26,18 @@ import moe.tlaster.precompose.PreComposeApp
  * @param content [@androidx.compose.runtime.Composable] [@kotlin.ExtensionFunctionType] Function1<BoxWithConstraintsScope, Unit>
  */
 @Composable
-fun App(content: @Composable () -> Unit = {}) {
+fun App(
+    boxModifier: Modifier = Modifier.fillMaxSize(),
+    content: @Composable () -> Unit = {}
+) {
     CompositionLocalProvider(
         LocalDataSaver provides DataSaverUtils,
         LocalImageLoader provides remember { generateImageLoader() },
+        LocalNavController provides NavHostController(),
     ) {
         PreComposeApp {
             TransTheme(dark = calcDark()) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = boxModifier) {
                     content()
                     Toast(
                         modifier = Modifier.align(Alignment.BottomEnd)

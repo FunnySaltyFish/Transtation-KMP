@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="single_speak_text">读</string>
 <!--    根据下面注释生成xml-->
     <string name="free_models">免费使用大模型</string>
     <string name="free_model_desc">会员可专享部分大模型免费使用，且模型将随时间持续轮换</string>

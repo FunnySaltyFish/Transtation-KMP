@@ -56,14 +56,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.SubcomposeLayout
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,6 +80,7 @@ import com.funny.translation.translate.LocalActivityVM
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.ui.main.components.ChildrenFixedSizeRow
 import com.funny.translation.translate.ui.widget.ExchangeButton
 import com.funny.translation.translate.ui.widget.NoticeBar
 import com.funny.translation.translate.ui.widget.ShadowedAsyncRoundImage
@@ -98,7 +95,6 @@ import com.funny.translation.ui.touchToScale
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import kotlin.math.roundToInt
 
 // 主页面，在未输入状态下展示的页面，默认
 @ExperimentalResourceApi
@@ -390,42 +386,6 @@ internal fun LanguageSelectRow(
     )
 }
 
-@Composable
-private fun ChildrenFixedSizeRow(
-    modifier: Modifier = Modifier,
-    elementsPadding: Dp = 40.dp,
-    left: @Composable () -> Unit,
-    center: @Composable () -> Unit,
-    right: @Composable () -> Unit,
-) {
-    val density = LocalDensity.current
-    val ep = remember(elementsPadding) {
-        density.run {
-            elementsPadding.toPx().roundToInt()
-        }
-    }
-    SubcomposeLayout(modifier) { constraints: Constraints ->
-        val allWidth = constraints.maxWidth
-        val centerPlaceable = subcompose("center", center).first().measure(
-            constraints.copy(minWidth = 0)
-        )
-        val centerWidth = centerPlaceable.width
-        val w = ((allWidth - centerWidth - 2 * ep) / 2).coerceAtLeast(0)
-        val leftPlaceable = subcompose("left", left).first().measure(
-            constraints.copy(minWidth = w, maxWidth = w)
-        )
-        val rightPlaceable = subcompose("right", right).first().measure(
-            constraints.copy(minWidth = w, maxWidth = w)
-        )
-        val h = maxOf(centerPlaceable.height, leftPlaceable.height, rightPlaceable.height)
-        layout(constraints.maxWidth, h) {
-            leftPlaceable.placeRelative(0, (h - leftPlaceable.height) / 2)
-            centerPlaceable.placeRelative(w + ep, (h - centerPlaceable.height) / 2)
-            rightPlaceable.placeRelative(allWidth - w, (h - rightPlaceable.height) / 2)
-        }
-    }
-}
-
 @ExperimentalResourceApi
 @Composable
 private fun MainTopBarNormal(
@@ -499,6 +459,8 @@ private fun LanguageSelect(
         }
     }
 }
+
+
 
 @Composable
 fun UserInfoPanel(navHostController: NavHostController) {

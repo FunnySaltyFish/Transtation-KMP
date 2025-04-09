@@ -186,8 +186,7 @@ actual fun ImageTransMain(
                 sourceLanguage = vm.sourceLanguage,
                 updateSourceLanguage = vm::updateSourceLanguage,
                 targetLanguage = vm.targetLanguage,
-                updateTargetLanguage = vm::updateTargetLanguage,
-                enabledLanguages = currentEnabledLanguages
+                updateTargetLanguage = vm::updateTargetLanguage
             )
         }
     }

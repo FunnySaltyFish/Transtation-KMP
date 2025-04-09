@@ -31,6 +31,7 @@ kotlin {
                 @OptIn(ExperimentalComposeLibrary::class)
                 api(compose.components.resources)
                 api(compose.materialIconsExtended)
+                api(libs.compose.material3.windowsizeclass)
 
                 api("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
 

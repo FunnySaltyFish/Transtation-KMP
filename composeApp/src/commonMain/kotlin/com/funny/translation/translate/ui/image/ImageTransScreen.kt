@@ -19,8 +19,6 @@ import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -58,6 +56,7 @@ import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.ImageTranslationEngine
 import com.funny.translation.translate.engine.NormalImageTranslationEngines
 import com.funny.translation.translate.ui.main.components.EngineSelectDialog
+import com.funny.translation.translate.ui.main.components.LanguageListMenu
 import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.ExchangeButton
 import com.funny.translation.ui.FixedSizeIcon
@@ -134,7 +133,6 @@ internal fun ImageTranslationPart(
                 updateSourceLanguage = vm::updateSourceLanguage,
                 targetLanguage = vm.targetLanguage,
                 updateTargetLanguage = vm::updateTargetLanguage,
-                enabledLanguages = currentEnabledLanguages,
                 textColor = MaterialTheme.colorScheme.onBackground
             )
             EngineSelect(
@@ -300,7 +298,6 @@ internal fun LanguageSelectRow(
     updateSourceLanguage: (Language) -> Unit,
     targetLanguage: Language,
     updateTargetLanguage: (Language) -> Unit,
-    enabledLanguages: List<Language>,
     textColor: Color = Color.White
 ) {
     Row(modifier.horizontalScroll(rememberScrollState())) {
@@ -309,7 +306,6 @@ internal fun LanguageSelectRow(
                 contentDescription = ResStrings.des_current_source_lang
             },
             language = sourceLanguage,
-            languages = enabledLanguages,
             updateLanguage = updateSourceLanguage,
             textColor = textColor
         )
@@ -323,7 +319,6 @@ internal fun LanguageSelectRow(
                 contentDescription = ResStrings.des_current_target_lang
             },
             language = targetLanguage,
-            languages = enabledLanguages,
             updateLanguage = updateTargetLanguage,
             textColor = textColor
         )
@@ -334,7 +329,6 @@ internal fun LanguageSelectRow(
 internal fun LanguageSelect(
     modifier: Modifier = Modifier,
     language: Language,
-    languages: List<Language>,
     updateLanguage: (Language) -> Unit,
     textColor: Color = Color.White
 ) {
@@ -352,19 +346,11 @@ internal fun LanguageSelect(
             fontWeight = FontWeight.W600,
             color = textColor
         )
-        DropdownMenu(
+        LanguageListMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            languages.forEach {
-                DropdownMenuItem(onClick = {
-                    updateLanguage(it)
-                    expanded = false
-                }, text = {
-                    Text(it.displayText)
-                })
-            }
-        }
+            onDismissRequest = { expanded = false },
+            updateLanguage = updateLanguage
+        )
     }
 }
 

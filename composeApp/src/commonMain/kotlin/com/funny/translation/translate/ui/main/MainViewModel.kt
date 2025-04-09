@@ -61,7 +61,7 @@ class MainViewModel : BaseViewModel() {
 
     var translateText by mutableStateOf("")
     val actualTransText: String
-        get() = translateText.trim().replace("#","").replace("&", "")
+        get() = translateText.trim()
 
     var sourceLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_SOURCE_LANGUAGE, Language.ENGLISH)
     var targetLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_TARGET_LANGUAGE, Language.CHINESE)
@@ -114,6 +114,7 @@ class MainViewModel : BaseViewModel() {
                 }
             }
 
+            if (init) return@launch
             // 等待所有引擎加载完毕
             EngineManager.addObserver { action ->
                 Log.d(TAG, "EngineManager action: $action")
@@ -135,6 +136,7 @@ class MainViewModel : BaseViewModel() {
                     }
                 }
             }
+            init = true
         }
     }
 
@@ -365,5 +367,6 @@ class MainViewModel : BaseViewModel() {
 
     companion object {
         private const val TAG = "MainVM"
+        private var init: Boolean = false
     }
 }

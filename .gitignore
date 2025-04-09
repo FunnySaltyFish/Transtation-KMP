@@ -37,3 +37,5 @@ composeApp/google/release/composeApp-google-release.aab
 /package-lock.json
 /package.json
 /composeApp/common/release/output-metadata.json
+
+.history/

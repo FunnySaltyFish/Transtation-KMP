@@ -41,19 +41,21 @@ actual fun TransTheme(
 
     val mContent = @Composable {
         // SystemBarSettings(hideStatusBar)
-        val context = LocalContext.current as ComponentActivity
-        val c = MaterialTheme.colorScheme.primaryContainer.toArgb()
-        DisposableEffect(dark) {
-            context.enableEdgeToEdge(
-                statusBarStyle = SystemBarStyle.auto(
-                    Color.TRANSPARENT,
-                    Color.TRANSPARENT,
-                ) { dark },
-                navigationBarStyle =
-                if (dark) SystemBarStyle.dark(transparent)
-                else SystemBarStyle.light(transparent, c),
-            )
-            onDispose {}
+        val context = LocalContext.current as? ComponentActivity
+        if (context != null) {
+            val c = MaterialTheme.colorScheme.primaryContainer.toArgb()
+            DisposableEffect(dark) {
+                context.enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT,
+                    ) { dark },
+                    navigationBarStyle =
+                    if (dark) SystemBarStyle.dark(transparent)
+                    else SystemBarStyle.light(transparent, c),
+                )
+                onDispose {}
+            }
         }
         content()
     }

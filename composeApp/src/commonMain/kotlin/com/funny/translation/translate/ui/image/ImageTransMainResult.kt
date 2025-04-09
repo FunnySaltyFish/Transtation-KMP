@@ -57,8 +57,8 @@ import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.ui.main.CopyButton
-import com.funny.translation.translate.ui.main.CostIndicator
 import com.funny.translation.translate.ui.main.SpeakButton
+import com.funny.translation.translate.ui.main.components.CostIndicator
 import com.funny.translation.ui.AutoResizedText
 import com.funny.translation.ui.MarkdownText
 import com.github.panpf.zoomimage.compose.zoom.ZoomableState
