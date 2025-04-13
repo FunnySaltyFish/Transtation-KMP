@@ -95,7 +95,7 @@ fun MainPartTranslating(vm: MainViewModel) {
 
     val goBack = remember {
         {
-            if (vm.isTranslating()) {
+            if (vm.translating) {
                 quitAlertDialog.value = true
             } else {
                 vm.cancel()
@@ -134,7 +134,7 @@ fun MainPartTranslating(vm: MainViewModel) {
                 sourceLanguage = vm.sourceLanguage,
                 clearAndGoBackAction = {
                     goBack()
-                    if (!vm.isTranslating()) {
+                    if (!vm.translating) {
                         vm.translateText = ""
                     }
                 }
@@ -363,7 +363,8 @@ private fun ResultList(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .padding(start = 16.dp, end = 8.dp, bottom = 8.dp, top = 0.dp),
+                    .padding(start = 16.dp, end = 8.dp, bottom = 8.dp, top = 0.dp)
+                    .animateItem(),
                 result = result,
                 doFavorite = doFavorite,
                 smartTransEnabled = smartTransEnabled

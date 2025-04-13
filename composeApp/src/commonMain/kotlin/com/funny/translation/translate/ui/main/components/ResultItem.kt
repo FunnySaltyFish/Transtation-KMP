@@ -1,8 +1,6 @@
 package com.funny.translation.translate.ui.main.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +39,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.translation.AppConfig
@@ -63,7 +60,6 @@ import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.math.roundToInt
 
 
 @Composable
@@ -73,14 +69,8 @@ internal fun TextTransResultItem(
     doFavorite: (Boolean, TranslationResult) -> Unit,
     smartTransEnabled : Boolean = false
 ) {
-    val offsetAnim = remember { Animatable(100f) }
-    LaunchedEffect(Unit) {
-        offsetAnim.animateTo(0f)
-    }
     Column(
         modifier = modifier
-            .offset { IntOffset(offsetAnim.value.roundToInt(), 0) }
-            .animateContentSize()
     ) {
         var expandDetail by rememberSaveable {
             mutableStateOf(!result.detailText.isNullOrEmpty() && AppConfig.sExpandDetailByDefault.value)

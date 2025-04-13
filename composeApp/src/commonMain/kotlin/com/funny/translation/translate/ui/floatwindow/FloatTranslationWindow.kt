@@ -10,14 +10,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -28,6 +34,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,8 +51,10 @@ import androidx.compose.ui.unit.sp
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.helper.rememberDerivedStateOf
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.ui.main.MainViewModel
 import com.funny.translation.translate.ui.main.SpeakButton
 import com.funny.translation.translate.ui.main.components.ChildrenFixedSizeRow
@@ -59,16 +68,11 @@ import com.funny.translation.ui.SpacerHeight
 fun FloatingTranslationWindow(
     viewModel: MainViewModel,
     onClose: () -> Unit,
-    onOpenApp: () -> Unit,
+    onOpenApp: (vm: MainViewModel) -> Unit,
     modifier: Modifier = Modifier,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onTapInput: SimpleAction = {}
 ) {
-    val isTranslating = viewModel.isTranslating()
-    val translateText = viewModel.translateText
-    val sourceLanguage = viewModel.sourceLanguage
-    val targetLanguage = viewModel.targetLanguage
-
     Surface(
         modifier = modifier
             .fillMaxWidth(),
@@ -80,8 +84,8 @@ fun FloatingTranslationWindow(
         ) {
             // Top bar with language selectors and close button
             FloatingWindowTopBar(
-                sourceLanguage = sourceLanguage,
-                targetLanguage = targetLanguage,
+                sourceLanguage = viewModel.sourceLanguage,
+                targetLanguage = viewModel.targetLanguage,
                 updateSourceLanguage = viewModel::updateSourceLanguage,
                 updateTargetLanguage = viewModel::updateTargetLanguage,
                 onClose = onClose
@@ -91,31 +95,56 @@ fun FloatingTranslationWindow(
 
             // Input field and action buttons
             FloatingWindowInputField(
-                value = translateText,
+                value = viewModel.translateText,
                 onValueChange = viewModel::updateTranslateText,
                 onClear = { viewModel.updateTranslateText("") },
-                sourceLanguage = sourceLanguage,
+                sourceLanguage = viewModel.sourceLanguage,
                 onTranslate = viewModel::translate,
                 onStopTranslate = viewModel::cancel,
-                isTranslating = isTranslating,
+                translating = viewModel.translating,
                 interactionSource = interactionSource,
-                onTapInput = onTapInput
+                onTapInput = onTapInput,
+                onEngineSelected = { new ->
+                    viewModel.selectedEngines.clear()
+                    viewModel.addSelectedEngines(new)
+                }
             )
 
-            val result = viewModel.resultList.firstOrNull()
+            val result by rememberDerivedStateOf {
+                viewModel.resultList.firstOrNull()
+            }
             if (result != null) {
-                SpacerHeight(4.dp)
+                SpacerHeight(8.dp)
                 TextTransResultItem(
                     modifier = Modifier.fillMaxWidth()
+                        .heightIn(max = 480.dp)
                         .background(
                             color = MaterialTheme.colorScheme.primaryContainer,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .padding(start = 8.dp, end = 0.dp, bottom = 4.dp, top = 4.dp),
-                    result = result,
+                        .padding(start = 8.dp, end = 0.dp, bottom = 4.dp, top = 4.dp)
+                        .verticalScroll(rememberScrollState()),
+                    result = result!!,
                     doFavorite = viewModel::doFavorite,
                     smartTransEnabled = AppConfig.sAITransExplain.value,
                 )
+                SpacerHeight(8.dp)
+                HorizontalDivider()
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy((-8).dp),
+                ) {
+                    FloatWindowShowEngineSelectButton()
+                    IconButton(onClick = {
+                        onOpenApp(viewModel)
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                            contentDescription = "Open App",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         }
     }
@@ -211,11 +240,16 @@ private fun FloatingWindowInputField(
     sourceLanguage: Language,
     onTranslate: () -> Unit,
     onStopTranslate: () -> Unit,
-    isTranslating: Boolean,
+    translating: Boolean,
     interactionSource: MutableInteractionSource,
-    onTapInput: SimpleAction
+    onTapInput: SimpleAction,
+    onEngineSelected: (new: TranslationEngine) -> Unit,
 ) {
     val selectEngine by EngineManager.floatWindowTranslateEngineStateFlow.collectAsState()
+
+    LaunchedEffect(selectEngine) {
+        onEngineSelected(selectEngine)
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -260,12 +294,12 @@ private fun FloatingWindowInputField(
                         )
                         IconButton(
                             onClick = {
-                                if (isTranslating) onStopTranslate() else onTranslate()
+                                if (translating) onStopTranslate() else onTranslate()
                             },
                         ) {
-                            if (!isTranslating) {
+                            if (!translating) {
                                 Icon(
-                                    imageVector = Icons.Default.Translate,
+                                    imageVector = Icons.Default.PlayArrow,
                                     contentDescription = "Translate",
                                     tint = tint
                                 )
@@ -287,6 +321,8 @@ private fun FloatingWindowInputField(
                             )
                         }
                     }
+                } else {
+                    FloatWindowShowEngineSelectButton()
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -299,3 +335,38 @@ private fun FloatingWindowInputField(
     }
 }
 
+@Composable
+expect fun EngineSelectDialog(
+    show: Boolean,
+    onDismiss: () -> Unit,
+    onSelect: (TranslationEngine) -> Unit
+)
+
+@Composable
+internal fun FloatWindowShowEngineSelectButton() {
+    var showEngineSelect by remember { mutableStateOf(false) }
+    IconButton(
+        onClick = { showEngineSelect = true },
+        modifier = Modifier.minimumInteractiveComponentSize()
+            .semantics { contentDescription = ResStrings.engine_select }
+    ) {
+        Icon(
+            imageVector = Icons.Default.Translate,
+            contentDescription = "Select Engine",
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+    EngineSelectDialog(
+        show = showEngineSelect,
+        onDismiss = { showEngineSelect = false },
+        onSelect = {
+            val old = EngineManager.floatWindowTranslateEngineStateFlow.value
+            if (old == it) {
+                return@EngineSelectDialog
+            }
+            EngineManager.floatWindowTranslateEngineStateFlow.value = it
+            Log.d("FloatingWindowInputField", "Selected engine: $it")
+            showEngineSelect = false
+        }
+    )
+}

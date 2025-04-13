@@ -3,23 +3,18 @@ package com.funny.translation.translate.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
 import android.view.WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,25 +27,17 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.funny.translation.AppConfig
-import com.funny.translation.Consts
-import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.R
-import com.funny.translation.bean.TranslationConfig
-import com.funny.translation.helper.ClipBoardUtil
-import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.VibratorUtils
 import com.funny.translation.helper.rememberDerivedStateOf
 import com.funny.translation.helper.rememberStateOf
-import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.FunnyApplication
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.TransActivityIntent
 import com.funny.translation.translate.activity.StartCaptureScreenActivity
-import com.funny.translation.translate.enabledLanguages
-import com.funny.translation.translate.findLanguageById
 import com.funny.translation.translate.service.CaptureScreenService
 import com.funny.translation.translate.ui.floatwindow.FloatingTranslationWindow
 import com.funny.translation.translate.ui.main.MainViewModel
@@ -66,12 +53,7 @@ import com.lzf.easyfloat.permission.PermissionUtils
 import com.lzf.easyfloat.utils.DragUtils
 import com.lzf.easyfloat.widget.BaseSwitchView
 import com.tomlonghurst.roundimageview.RoundImageView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 
@@ -82,9 +64,7 @@ object EasyFloatUtils {
 
     private const val TAG = "EasyFloat"
     private var vibrating = false
-    private var initTransWindow = false
     var initFloatBall = false
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     private val floatTransWindow by lazy {
@@ -124,6 +104,8 @@ object EasyFloatUtils {
                             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
 //                            Log.d("ComposeFloatingWindow", "Insets received by decorView: ime=$imeVisible, bottom=${insets.getInsets(
 //                                WindowInsetsCompat.Type.ime()).bottom}")
+                            // 防止遮挡输入框
+
                             if (!imeVisible && isFocused && window.windowParams.flags and FLAG_NOT_FOCUSABLE == 0) {
                                 Log.d(TAG, "IME closed, restoring FLAG_NOT_FOCUSABLE")
                                 window.windowParams.flags =
@@ -149,8 +131,18 @@ object EasyFloatUtils {
                     FloatingTranslationWindow(
                         MainViewModel(),
                         onClose = { this.hide() },
-                        onOpenApp = { },
-                        modifier = Modifier.dragFloatingWindow(),
+                        onOpenApp = { vm ->
+                            TransActivityIntent.TranslateText(
+                                text = vm.actualTransText,
+                                sourceLanguage = vm.sourceLanguage,
+                                targetLanguage = vm.targetLanguage,
+                                byFloatWindow = false
+                            ).asIntent().let {
+                                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                appCtx.startActivity(it)
+                            }
+                        },
+                        modifier = Modifier.dragFloatingWindow().imePadding(),
                         interactionSource = interactionSource,
                         onTapInput = {
                             Log.d(TAG, "onTapd")
@@ -167,287 +159,14 @@ object EasyFloatUtils {
     // 主ViewModel引用
     private var mainViewModel: MainViewModel? = null
 
-    // 翻译配置相关
-    private var translateConfigFlow =
-        MutableStateFlow(TranslationConfig("", readLanguage(Consts.KEY_SOURCE_LANGUAGE, Language.AUTO), readLanguage(Consts.KEY_TARGET_LANGUAGE, Language.CHINESE)))
-
-    private val translateEngineFlow = EngineManager.floatWindowTranslateEngineStateFlow
-
     fun initScreenSize() {
         AppConfig.SCREEN_WIDTH = ScreenUtils.getScreenWidth()
         AppConfig.SCREEN_HEIGHT = ScreenUtils.getScreenHeight()
     }
 
-    private fun readLanguage(key: String, default: Language): Language {
-        val language = DataSaverUtils.readData(key, default.name)
-        return Language.valueOf(language)
-    }
-
-    private var inputTextFlow = MutableStateFlow("")
-
-    private fun initTransWindow(view: View){
-        view.layoutParams.width = (min(AppConfig.SCREEN_WIDTH, AppConfig.SCREEN_HEIGHT) * 0.9).toInt()
-
-        val edittext = view.findViewById<EditText>(R.id.float_window_input)
-
-        coroutineScope.launch {
-            inputTextFlow.collect {
-                withContext(Dispatchers.Main){
-                    edittext.setText(it)
-                    edittext.setSelection(it.length)
-                }
-            }
-        }
-
-        coroutineScope.launch {
-            translateEngineFlow.collect {
-                withContext(Dispatchers.Main){
-                    edittext.setHint(ResStrings.translate_engine_hint.format(it.name))
-                }
-            }
-        }
-
-        val spinnerSource: Spinner =
-            view.findViewById<Spinner?>(R.id.float_window_spinner_source).apply {
-                adapter = ArrayAdapter<String>(FunnyApplication.ctx, R.layout.view_spinner_text_item).apply {
-                    addAll(enabledLanguages.value.map { it.displayText })
-                    setDropDownViewResource(R.layout.view_spinner_dropdown_item)
-                }
-                setSelection(enabledLanguages.value.indexOf(translateConfigFlow.value.sourceLanguage ?: Language.AUTO))
-                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        mainViewModel?.let {
-                            it.updateSourceLanguage(enabledLanguages.value[position])
-                        } ?: run {
-                            translateConfigFlow.value = translateConfigFlow.value.copy(
-                                sourceString = edittext.text.trim().toString(),
-                                sourceLanguage = enabledLanguages.value[position]
-                            )
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                    }
-                }
-            }
-
-        val spinnerTarget: Spinner =
-            view.findViewById<Spinner?>(R.id.float_window_spinner_target).apply {
-                adapter = ArrayAdapter<String>(FunnyApplication.ctx, R.layout.view_spinner_text_item).apply {
-                    addAll(enabledLanguages.value.map { it.displayText })
-                    setDropDownViewResource(R.layout.view_spinner_dropdown_item)
-                }
-                setSelection(enabledLanguages.value.indexOf(translateConfigFlow.value.targetLanguage ?: Language.CHINESE))
-                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        mainViewModel?.let {
-                            it.updateTargetLanguage(enabledLanguages.value[position])
-                        } ?: run {
-                            translateConfigFlow.value = translateConfigFlow.value.copy(
-                                sourceString = edittext.text.trim().toString(),
-                                targetLanguage = enabledLanguages.value[position]
-                            )
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                    }
-                }
-            }
-
-        coroutineScope.launch {
-            enabledLanguages.collect {
-                withContext(Dispatchers.Main){
-                    spinnerSource.adapter = ArrayAdapter<String>(FunnyApplication.ctx, R.layout.view_spinner_text_item).apply {
-                        addAll(enabledLanguages.value.map { it.displayText })
-                        setDropDownViewResource(R.layout.view_spinner_dropdown_item)
-                    }
-                    spinnerSource.setSelection(enabledLanguages.value.indexOf(translateConfigFlow.value.sourceLanguage ?: Language.AUTO))
-
-                    spinnerTarget.adapter = ArrayAdapter<String>(FunnyApplication.ctx, R.layout.view_spinner_text_item).apply {
-                        addAll(enabledLanguages.value.map { it.displayText })
-                        setDropDownViewResource(R.layout.view_spinner_dropdown_item)
-                    }
-                    spinnerTarget.setSelection(enabledLanguages.value.indexOf(translateConfigFlow.value.targetLanguage ?: Language.CHINESE))
-                }
-            }
-        }
-
-        val rotateAnimation = RotateAnimation(
-            0f, 360f,
-            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-        ).apply {
-            duration = 300
-        }
-
-        view.findViewById<ImageButton?>(R.id.float_window_exchange_button).apply {
-            setOnClickListener {
-                val temp = spinnerSource.selectedItemPosition
-                spinnerSource.setSelection(spinnerTarget.selectedItemPosition, true)
-                spinnerTarget.setSelection(temp, true)
-                startAnimation(rotateAnimation)
-            }
-        }
-
-        val resultText: TextView = view.findViewById(R.id.float_window_text)
-        val speakBtn = view.findViewById<ImageButton>(R.id.float_window_speak_btn).apply {
-            setOnClickListener {
-                val txt = resultText.text
-                if (txt.isNotEmpty()){
-                    val language = findLanguageById(spinnerTarget.selectedItemPosition)
-                    AudioPlayer.playOrPause(txt.toString(), TTSConfManager.findByLanguage(language)){
-                        context.toastOnUi(ResStrings.err_speaking)
-                    }
-                }
-            }
-        }
-        val speakSourceBtn = view.findViewById<TextView>(R.id.float_window_speak_source_btn).apply {
-            setOnClickListener {
-                val txt = edittext.text
-                if (txt.isNotEmpty()){
-                    val language = findLanguageById(spinnerSource.selectedItemPosition)
-                    AudioPlayer.playOrPause(txt.toString(), TTSConfManager.findByLanguage(language)){
-                        context.toastOnUi(ResStrings.err_speaking)
-                    }
-                }
-            }
-        }
-        val copyBtn = view.findViewById<ImageButton>(R.id.float_window_copy_btn).apply {
-            setOnClickListener {
-                val txt = resultText.text
-                if (txt.isNotEmpty()){
-                    ClipBoardUtil.copy(txt)
-                    context.toastOnUi(ResStrings.copied_to_clipboard)
-                }
-            }
-        }
-
-        view.findViewById<ImageButton?>(R.id.float_window_close).apply {
-            setOnClickListener {
-                EasyFloat.hide(TAG_TRANS_WINDOW)
-            }
-        }
-
-        mainViewModel?.let { vm ->
-            // 使用MainViewModel进行翻译
-            coroutineScope.launch {
-                vm.resultList.forEach { result ->
-                    resultText.text = result.basic
-                    if (speakBtn.visibility != View.VISIBLE){
-                        speakBtn.visibility = View.VISIBLE
-                    }
-                    if (copyBtn.visibility != View.VISIBLE){
-                        copyBtn.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            view.findViewById<TextView?>(R.id.float_window_translate).apply {
-                setOnClickListener {
-                    val inputText = edittext.text.trim()
-                    if (inputText.isNotEmpty()) {
-                        vm.updateTranslateText(inputText.toString())
-                        vm.translate()
-                    }
-                }
-            }
-        } ?: run {
-            // 如果没有绑定MainViewModel，使用原来的逻辑
-            var translateJob: Job? = null
-            translateJob = coroutineScope.launch(Dispatchers.IO) {
-                translateConfigFlow.collect {
-                    kotlin.runCatching {
-                        if (it.sourceString!=null && it.sourceString!="") {
-                            val sourceLanguage = enabledLanguages.value[spinnerSource.selectedItemPosition]
-                            val targetLanguage = enabledLanguages.value[spinnerTarget.selectedItemPosition]
-                            val task = TranslateUtils.createTask(
-                                translateEngineFlow.value,
-                                it.sourceString!!,
-                                sourceLanguage,
-                                targetLanguage
-                            )
-
-                            // 设置全局的翻译参数
-                            with(GlobalTranslationConfig){
-                                this.sourceLanguage = task.sourceLanguage
-                                this.targetLanguage = task.targetLanguage
-                                this.sourceString   = task.sourceString
-                            }
-
-                            withContext(Dispatchers.Main) {
-                                resultText.text = ResStrings.translating
-                            }
-                            task.translate()
-                            withContext(Dispatchers.Main) {
-                                resultText.text = task.result.basic
-                                if (speakBtn.visibility != View.VISIBLE){
-                                    speakBtn.visibility = View.VISIBLE
-                                }
-                                if (copyBtn.visibility != View.VISIBLE){
-                                    copyBtn.visibility = View.VISIBLE
-                                }
-                            }
-                        }
-                    }.onFailure {
-                        withContext(Dispatchers.Main) {
-                            it.printStackTrace()
-                            resultText.text = ResStrings.trans_error.format(it.toString())
-                        }
-                    }
-                }
-            }
-
-            view.findViewById<TextView?>(R.id.float_window_translate).apply {
-                setOnClickListener {
-                    val inputText = edittext.text.trim()
-                    if (inputText.isNotEmpty()) {
-                        translateConfigFlow.value =
-                            translateConfigFlow.value.copy(sourceString = inputText.toString())
-                    }
-                }
-            }
-        }
-
-        view.findViewById<ImageButton>(R.id.float_window_open_app_btn).apply {
-            setOnClickListener {
-                val config = translateConfigFlow.value
-                TransActivityIntent.TranslateText(text = edittext.text.trim().toString(), sourceLanguage = config.sourceLanguage!!, targetLanguage = config.targetLanguage!!, byFloatWindow = false).asIntent().let {
-                    context.startActivity(it)
-                }
-            }
-        }
-    }
-
     fun showTransWindow(){
         floatTransWindow.windowParams.width = (min(AppConfig.SCREEN_WIDTH, AppConfig.SCREEN_HEIGHT) * 0.9).toInt()
         floatTransWindow.show()
-//        if(!initTransWindow){
-            EasyFloat.with(FunnyApplication.ctx)
-                .setTag(TAG_TRANS_WINDOW)
-                .setLayout(R.layout.layout_float_window){ view ->
-                    initTransWindow(view)
-                }
-                .hasEditText(true)
-//                .setShowPattern(ShowPattern.ALL_TIME)
-//                .setSidePattern(SidePattern.DEFAULT)
-//                .setImmersionStatusBar(true)
-//                .setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, 100)
-//                .show()
-//            bindMainViewModel(MainViewModel())
-//            initTransWindow = true
-//        }else{
-//            EasyFloat.show(TAG_TRANS_WINDOW)
-//        }
     }
 
     fun resetFloatBallPlace(){
@@ -456,16 +175,13 @@ object EasyFloatUtils {
     }
 
     fun startTranslate(sourceString: String, sourceLanguage: Language, targetLanguage: Language){
+        showTransWindow()
         mainViewModel?.let {
             it.updateTranslateText(sourceString)
             it.updateSourceLanguage(sourceLanguage)
             it.updateTargetLanguage(targetLanguage)
             it.translate()
-        } ?: run {
-            inputTextFlow.value = sourceString
-            translateConfigFlow.value = translateConfigFlow.value.copy(sourceString, sourceLanguage, targetLanguage)
         }
-        showTransWindow()
     }
 
     @SuppressLint("MissingPermission")

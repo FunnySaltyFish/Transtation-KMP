@@ -78,7 +78,7 @@ fun MainPartInputting(
             showSnackbar(tip)
             return
         }
-        if (!vm.isTranslating()) {
+        if (!vm.translating) {
             vm.translate()
 //            shouldRequestFocus = false
         } else {

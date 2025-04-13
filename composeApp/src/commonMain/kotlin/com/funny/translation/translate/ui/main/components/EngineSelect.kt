@@ -54,7 +54,7 @@ import com.funny.translation.ui.RichTooltipCloseButton
 import com.funny.translation.ui.popDialogShape
 
 // 用于选择引擎时的回调
-internal interface UpdateSelectedEngine {
+interface UpdateSelectedEngine {
     fun add(engine: TranslationEngine)
     fun remove(engine: TranslationEngine)
 }
@@ -77,7 +77,7 @@ internal fun EngineSelectDialog(
             isActiveClose = false
         ) {
             EngineSelect(
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth(),
                 bindEngines,
                 jsEngines,
                 modelEngines,
@@ -91,7 +91,7 @@ internal fun EngineSelectDialog(
 
 @ExperimentalAnimationApi
 @Composable
-private fun EngineSelect(
+internal fun EngineSelect(
     modifier: Modifier = Modifier,
     bindEngines: List<TranslationEngine> = arrayListOf(),
     jsEngines: List<TranslationEngine> = arrayListOf(),
@@ -101,7 +101,7 @@ private fun EngineSelect(
     dismissDialogAction: SimpleAction
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.Start,
     ) {
         EnginePart(

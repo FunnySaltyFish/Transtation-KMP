@@ -96,6 +96,45 @@ private fun SelectEngineTile() {
         showDialogState.value = true
     }
 
+    if (showDialogState.value) {
+        FloatWindowEngineSelect(
+            modifier = Modifier,
+            wrapper = { modifier, bindEngines, jsEngines, modelEngines, selectStateProvider, updateSelectedEngine ->
+                EngineSelectDialog(
+                    showDialog = showDialogState,
+                    bindEngines = bindEngines,
+                    jsEngines = jsEngines,
+                    modelEngines = modelEngines,
+                    selectStateProvider = selectStateProvider,
+                    updateSelectedEngine = object : UpdateSelectedEngine by updateSelectedEngine {
+                        override fun add(engine: TranslationEngine) {
+                            updateSelectedEngine.add(engine)
+                            selectEngineName = engine.name
+                        }
+                    }
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun FloatWindowEngineSelect(
+    modifier: Modifier = Modifier,
+    wrapper: @Composable (
+        modifier: Modifier,
+        bindEngines: List<TranslationEngine>,
+        jsEngines: List<TranslationEngine>,
+        modelEngines: List<TranslationEngine>,
+        selectStateProvider: @Composable (TranslationEngine) -> MutableState<Boolean>,
+        updateSelectedEngine: UpdateSelectedEngine,
+    ) -> Unit
+) {
+    var selectEngineName by rememberDataSaverState<String>(
+        key = Consts.KEY_FLOAT_WINDOW_ENGINE,
+        initialValue = TextTranslationEngines.BaiduNormal.name
+    )
+
     val jsEngines by EngineManager.jsEnginesStateFlow.collectAsState(emptyList())
     val bindEngines by EngineManager.bindEnginesStateFlow.collectAsState(emptyList())
     val modelEngines by EngineManager.modelEnginesState.collectAsState(emptyList())
@@ -115,13 +154,13 @@ private fun SelectEngineTile() {
         EngineManager.updateFloatWindowTranslateEngine(selectEngineName)
     }
 
-    EngineSelectDialog(
-        showDialog = showDialogState,
-        bindEngines = bindEngines,
-        jsEngines = jsEngines,
-        modelEngines = modelEngines,
-        selectStateProvider = { engine -> states[engine] ?: rememberStateOf(false) },
-        updateSelectedEngine = object : UpdateSelectedEngine {
+    wrapper(
+        modifier,
+        bindEngines,
+        jsEngines,
+        modelEngines,
+        { engine -> states[engine] ?: rememberStateOf(false) },
+        object : UpdateSelectedEngine {
             override fun add(engine: TranslationEngine) {
                 selectEngineName = engine.name
             }

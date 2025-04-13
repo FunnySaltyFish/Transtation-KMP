@@ -69,6 +69,7 @@ class MainViewModel : BaseViewModel() {
     var startedProgress by mutableFloatStateOf(1f)
     var finishedProgress by mutableFloatStateOf(1f)
     var selectedEngines: HashSet<TranslationEngine> = hashSetOf()
+    var translating by mutableStateOf(false)
 
     // 一些私有变量
     private var translateJob: Job? = null
@@ -93,6 +94,11 @@ class MainViewModel : BaseViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            if (init) {
+                engineInitialized = true
+                return@launch
+            }
+
             // 随应用升级，有一些插件可能后续转化为内置引擎，旧的插件需要删除
             appDB.jsDao.getAllJs().forEach { jsBean ->
                 if(DefaultData.isPluginBound(jsBean)) {
@@ -114,7 +120,6 @@ class MainViewModel : BaseViewModel() {
                 }
             }
 
-            if (init) return@launch
             // 等待所有引擎加载完毕
             EngineManager.addObserver { action ->
                 Log.d(TAG, "EngineManager action: $action")
@@ -200,9 +205,8 @@ class MainViewModel : BaseViewModel() {
         translateJob?.cancel()
         finishedProgress = 1f
         startedProgress = 1f
+        translating = false
     }
-
-    fun isTranslating(): Boolean = translateJob?.isActive ?: false
 
     fun translate() {
         if (translateJob?.isActive == true) return
@@ -213,6 +217,7 @@ class MainViewModel : BaseViewModel() {
         startedProgress = 0f
         addTransHistory(actualTransText, sourceLanguage, targetLanguage)
         updateMainScreenState(MainScreenState.Translating)
+        translating = true
         translateJob = viewModelScope.launch {
             // 延时，等待插件加载完
             while (!engineInitialized) {
@@ -228,6 +233,7 @@ class MainViewModel : BaseViewModel() {
             } else {
                 translateInSequence()
             }
+            translating = false
         }
     }
 
