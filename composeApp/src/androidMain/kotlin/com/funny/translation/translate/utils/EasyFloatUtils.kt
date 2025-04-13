@@ -59,8 +59,6 @@ import kotlin.math.min
 
 object EasyFloatUtils {
     internal const val TAG_FLOAT_BALL = "ball"
-    private const val TAG_TRANS_WINDOW = "window"
-    private const val TAG_CLIPBOARD_HINT = "clipboard_hint"
 
     private const val TAG = "EasyFloat"
     private var vibrating = false
@@ -129,7 +127,7 @@ object EasyFloatUtils {
                     }
 
                     FloatingTranslationWindow(
-                        MainViewModel(),
+                        MainViewModel().also { mainViewModel = it },
                         onClose = { this.hide() },
                         onOpenApp = { vm ->
                             TransActivityIntent.TranslateText(
@@ -278,15 +276,13 @@ object EasyFloatUtils {
     }
 
     fun hideAllFloatWindow(){
-        EasyFloat.hide(TAG_TRANS_WINDOW)
+        floatTransWindow.hide()
         EasyFloat.hide(TAG_FLOAT_BALL)
-        EasyFloat.hide(TAG_CLIPBOARD_HINT)
     }
 
     fun dismissAll(){
-        EasyFloat.dismiss(TAG_TRANS_WINDOW)
+        floatTransWindow.hide()
         EasyFloat.dismiss(TAG_FLOAT_BALL)
-        EasyFloat.dismiss(TAG_CLIPBOARD_HINT)
         FloatScreenCaptureUtils.dismiss()
         mainViewModel = null
         CaptureScreenService.stop()
