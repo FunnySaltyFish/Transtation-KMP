@@ -33,7 +33,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -65,10 +64,12 @@ import com.funny.translation.translate.ImageTranslationPart
 import com.funny.translation.translate.ImageTranslationResult
 import com.funny.translation.translate.ui.long_text.ModelListPart
 import com.funny.translation.translate.ui.main.CopyButton
-import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.HintText
+import com.funny.translation.ui.dialog.AnyPopDialog
+import com.funny.translation.ui.dialog.AnyPopDialogState
+import com.funny.translation.ui.dialog.rememberAnyPopDialogState
 import com.funny.translation.ui.popDialogShape
 import kotlinx.collections.immutable.toImmutableList
 import moe.tlaster.precompose.navigation.BackHandler
@@ -92,7 +93,7 @@ internal fun ImageTransResultList(
 
     val selectedNotEmpty by rememberDerivedStateOf { selectedResultParts.isNotEmpty() }
 
-    var showAIOptimizationSheet by rememberStateOf(false)
+    val aiOptimizationSheetState = rememberAnyPopDialogState()
 
     val showDisplayTextDialogState = rememberStateOf(false)
     SimpleDialog(openDialogState = showDisplayTextDialogState, content = {
@@ -142,7 +143,7 @@ internal fun ImageTransResultList(
             exit = fadeOut() + shrinkOut(shrinkTowards = Alignment.Center)
         ) {
             IconButton(onClick = {
-                showAIOptimizationSheet = true
+                aiOptimizationSheetState.animateShow()
             }) {
                 FixedSizeIcon(
                     painter = painterDrawableRes("ic_magic"),
@@ -186,17 +187,14 @@ internal fun ImageTransResultList(
         }
     }
 
-    if (showAIOptimizationSheet) {
-        AIOptimizationSheet(vm = vm, onDismissRequest = {
-            showAIOptimizationSheet = false
-        })
-    }
+    AIOptimizationSheet(vm = vm, state = aiOptimizationSheetState)
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AIOptimizationSheet(
-    vm: ImageTransViewModel, onDismissRequest: () -> Unit
+    vm: ImageTransViewModel,
+    state: AnyPopDialogState
 ) {
     val loadingStateState = vm.optimizeByAITask?.loadingState
     AnyPopDialog(
@@ -204,8 +202,9 @@ private fun AIOptimizationSheet(
             .heightIn(min = 200.dp, max = 600.dp)
             .popDialogShape()
             .navigationBarsPadding(),
-        onDismissRequest = onDismissRequest
+        state = state
     ) {
+        val onDismissRequest = state::animateHide
         Column {
             if (loadingStateState == null) {
                 ModelListPart()

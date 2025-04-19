@@ -77,10 +77,11 @@ import com.funny.translation.translate.ui.long_text.components.RemarkDialog
 import com.funny.translation.translate.ui.long_text.components.ResultTextPart
 import com.funny.translation.translate.ui.long_text.components.SourceTextPart
 import com.funny.translation.translate.ui.widget.TwoProgressIndicator
-import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
+import com.funny.translation.ui.dialog.AnyPopDialog
+import com.funny.translation.ui.dialog.rememberAnyPopDialogState
 import com.funny.translation.ui.floatingActionBarModifier
 import com.funny.translation.ui.popDialogShape
 import moe.tlaster.precompose.navigation.BackHandler
@@ -151,16 +152,14 @@ fun LongTextTransDetailScreen(
             updateRemarkAction = vm::updateRemark
         )
 
-        val modelSelectDialog = rememberStateOf(value = false)
-        if (modelSelectDialog.value) {
-            AnyPopDialog(
-                modifier = Modifier.popDialogShape().heightIn(480.dp, 600.dp),
-                onDismissRequest = { modelSelectDialog.value = false } ,
-                content = {
-                    ModelListPart()
-                },
-            )
-        }
+        val dialogState = rememberAnyPopDialogState()
+        AnyPopDialog(
+            modifier = Modifier.popDialogShape().heightIn(480.dp, 600.dp),
+            state = dialogState,
+            content = {
+                ModelListPart()
+            },
+        )
 
         BackHandler(enabled =
             (vm.screenState == ScreenState.Translating && !vm.isPausing)
@@ -191,7 +190,7 @@ fun LongTextTransDetailScreen(
             modifier = Modifier.fillMaxWidth(),
             vm = vm,
             screenState = vm.screenState,
-            showModelAction = { modelSelectDialog.value = true },
+            showModelAction = { dialogState.animateShow() },
             remark = vm.task?.remark ?: "",
             startTranslateAction = vm::startTranslate,
             showUpdateRemarkDialog = { remarkDialogState.value = true },

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="force_update_tip">您当前版本太老了，请下载最新版本继续使用</string>
     <string name="single_speak_text">读</string>
 <!--    根据下面注释生成xml-->
     <string name="free_models">免费使用大模型</string>

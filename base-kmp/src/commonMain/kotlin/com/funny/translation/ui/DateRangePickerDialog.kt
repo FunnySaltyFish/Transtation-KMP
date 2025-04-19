@@ -25,21 +25,26 @@ import androidx.compose.ui.unit.sp
 import com.funny.translation.helper.LocaleUtils
 import com.funny.translation.helper.getLocale
 import com.funny.translation.kmp.base.strings.ResStrings
+import com.funny.translation.ui.dialog.AnyPopDialog
+import com.funny.translation.ui.dialog.AnyPopDialogState
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun DateRangePickerDialog(
     state: DateRangePickerState = rememberDateRangePickerState(),
-    onDismissRequest: () -> Unit,
+    dialogState: AnyPopDialogState,
     onDateSelected: (startDate: Long?, endDate: Long?) -> Unit
 ) {
+    val onDismissRequest = dialogState::animateHide
     AnyPopDialog(
+        onDismissRequest = dialogState::animateHide,
         modifier = Modifier.fillMaxWidth().background(
             MaterialTheme.colorScheme.surfaceContainerHigh,
             RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
         ).padding(12.dp),
-        onDismissRequest = onDismissRequest,
+        state = dialogState,
+        onConfirm = onDismissRequest,
         confirmButton = {
             TextButton(onClick = {
                 onDateSelected(state.selectedStartDateMillis, state.selectedEndDateMillis)

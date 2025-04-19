@@ -2,6 +2,7 @@ package com.funny.translation.helper
 
 import com.funny.translation.kmp.KMPContext
 import com.funny.translation.kmp.LocalKMPContext
+import com.funny.translation.kmp.appCtx
 import com.funny.translation.ui.toast.ToastUIState
 import java.io.File
 
@@ -24,3 +25,5 @@ expect fun KMPContext.openUrl(url: String)
 
 val Context.externalCache: File
     get() = CacheManager.cacheDir
+
+inline fun toast(message: CharSequence?, length: Int = 0) = appCtx.toastOnUi(message, length)

@@ -96,26 +96,25 @@ private fun SelectEngineTile() {
         showDialogState.value = true
     }
 
-    if (showDialogState.value) {
-        FloatWindowEngineSelect(
-            modifier = Modifier,
-            wrapper = { modifier, bindEngines, jsEngines, modelEngines, selectStateProvider, updateSelectedEngine ->
-                EngineSelectDialog(
-                    showDialog = showDialogState,
-                    bindEngines = bindEngines,
-                    jsEngines = jsEngines,
-                    modelEngines = modelEngines,
-                    selectStateProvider = selectStateProvider,
-                    updateSelectedEngine = object : UpdateSelectedEngine by updateSelectedEngine {
-                        override fun add(engine: TranslationEngine) {
-                            updateSelectedEngine.add(engine)
-                            selectEngineName = engine.name
-                        }
+    FloatWindowEngineSelect(
+        modifier = Modifier,
+        wrapper = { modifier, bindEngines, jsEngines, modelEngines, selectStateProvider, updateSelectedEngine ->
+            EngineSelectDialog(
+                showDialog = showDialogState,
+                bindEngines = bindEngines,
+                jsEngines = jsEngines,
+                modelEngines = modelEngines,
+                selectStateProvider = selectStateProvider,
+                updateSelectedEngine = object : UpdateSelectedEngine by updateSelectedEngine {
+                    override fun add(engine: TranslationEngine) {
+                        updateSelectedEngine.add(engine)
+                        selectEngineName = engine.name
                     }
-                )
-            }
-        )
-    }
+                }
+            )
+        }
+    )
+
 }
 
 @Composable

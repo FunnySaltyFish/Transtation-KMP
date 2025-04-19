@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,12 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.translation.AppConfig
 import com.funny.translation.helper.LocalContext
+import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.createFileIfNotExist
 import com.funny.translation.helper.displayMsg
 import com.funny.translation.helper.fileMD5
 import com.funny.translation.helper.openUrl
 import com.funny.translation.helper.rememberSaveableStateOf
+import com.funny.translation.helper.toast
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.BuildConfig
@@ -51,15 +54,18 @@ import com.funny.translation.translate.utils.InstallApkLauncher
 import com.funny.translation.translate.utils.UpdateUtils
 import com.funny.translation.translate.utils.getInstallApkFile
 import com.funny.translation.translate.utils.rememberInstallApkLauncher
-import com.funny.translation.ui.AnyPopDialog
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
+import com.funny.translation.ui.dialog.AnyPopDialog
+import com.funny.translation.ui.dialog.AnyPopDialogProperties
+import com.funny.translation.ui.dialog.rememberAnyPopDialogState
 import com.funny.translation.ui.floatingActionBarModifier
 import com.funny.translation.ui.popDialogShape
 import java.io.File
 import kotlin.math.roundToInt
 
 private var appDialogDisplayed = false
+private const val TAG = "AppUpdateDialog"
 
 @Composable
 fun AppUpdateDialog(
@@ -75,14 +81,20 @@ fun AppUpdateDialog(
 
     var progress: Float by rememberSaveableStateOf(if (apkSize == 0) 0f else file.length().toFloat() / apkSize)
 
+    SideEffect {
+        Log.d(TAG, "initial apk size: $apkSize, fileSize: ${file.length()}, progress = $progress")
+        if (progress > 1f) {
+            file.delete()
+            progress = 0f
+        }
+    }
+
     var showDialog by rememberSaveableStateOf(updateInfo.should_update)
+
     // 缩小显示为小的悬浮球
     var showFloatBall by rememberSaveableStateOf(false)
 
-    val closeDialogAction = lambda@ {
-        showDialog = false
-        appDialogDisplayed = true
-    }
+    val state = rememberAnyPopDialogState(updateInfo.should_update)
 
     val forceUpdate = updateInfo.force_update == true
     val installLauncher = rememberInstallApkLauncher {
@@ -93,45 +105,48 @@ fun AppUpdateDialog(
 //            appCtx.toastOnUi(ResStrings.install_failed)
 //        }
     }
-
-    if (showDialog) {
-        AnyPopDialog(
-            modifier = modifier.popDialogShape(),
-            onDismissRequest = {
-                if (!forceUpdate) {
-                    if (progress > 0f) { // 如果下载已经开始了，则显示一个悬浮球
-                        showFloatBall = true
-                        showDialog = false
-                    } else {
-                        closeDialogAction()
-                    }
-                }
-            },
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
-            ) {
-                Text(text = ResStrings.new_version_detected, style = MaterialTheme.typography.headlineSmall)
-                Text(text = "v${updateInfo.version_name}(${updateInfo.version_code}) | ${updateInfo.apk_size?.bytes()}", style = MaterialTheme.typography.bodyMedium)
-                Spacer(Modifier.height(4.dp))
-                MarkdownText(
-                    markdown = updateInfo.update_log ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.heightIn(max = 520.dp).verticalScroll(rememberScrollState())
-                )
-                ButtonLine(
-                    modifier = Modifier.fillMaxWidth(),
-                    installLauncher = installLauncher,
-                    file = file,
-                    forceUpdate = forceUpdate,
-                    progressProvider = { progress },
-                    updateProgress = { progress = it },
-                    updateInfo = updateInfo,
-                    closeDialogAction = closeDialogAction
-                )
+    val onDismissRequest = remember {
+        {
+            if (!forceUpdate) {
+                state.animateHide()
+                appDialogDisplayed = true
+            } else {
+                toast(ResStrings.force_update_tip)
             }
         }
-    } else if (showFloatBall) {
+    }
+
+    AnyPopDialog(
+        modifier = modifier.popDialogShape(),
+        state = state,
+        onDismissRequest = onDismissRequest,
+        properties = AnyPopDialogProperties(),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+        ) {
+            Text(text = ResStrings.new_version_detected, style = MaterialTheme.typography.headlineSmall)
+            Text(text = "v${updateInfo.version_name}(${updateInfo.version_code}) | ${updateInfo.apk_size?.bytes()}", style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(4.dp))
+            MarkdownText(
+                markdown = updateInfo.update_log ?: "",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.heightIn(max = 520.dp).verticalScroll(rememberScrollState())
+            )
+            ButtonLine(
+                modifier = Modifier.fillMaxWidth(),
+                installLauncher = installLauncher,
+                file = file,
+                forceUpdate = forceUpdate,
+                progressProvider = { progress },
+                updateProgress = { progress = it },
+                updateInfo = updateInfo,
+                closeDialogAction = onDismissRequest
+            )
+        }
+    }
+
+    if (showFloatBall) {
         FloatBall(
             modifier = modifier.floatingActionBarModifier(),
             installLauncher = installLauncher,

@@ -57,6 +57,7 @@ import com.funny.translation.network.service.AIPointCost
 import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.DateRangePickerDialog
 import com.funny.translation.ui.HintText
+import com.funny.translation.ui.dialog.rememberAnyPopDialogState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -77,8 +78,8 @@ fun AIPointCostPage() {
 
     var sortType by rememberDataSaverState(key = "ai_cost_page_sort_type", initialValue = AICostSortType.Date)
     var sortOrder by rememberDataSaverState(key = "ai_cost_page_sort_order", initialValue = 1)
-    var showDatePicker by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val dialogState = rememberAnyPopDialogState()
 
     val now = remember { Date().also {
         Log.d(TAG, "year: ${it.year}, ${it.year + 1900}")
@@ -122,7 +123,7 @@ fun AIPointCostPage() {
     CommonPage(
         title = ResStrings.ai_cost_title,
         actions = {
-            IconButton(onClick = { showDatePicker = true }) {
+            IconButton(onClick = { dialogState.animateShow() }) {
                 Icon(Icons.Default.DateRange, ResStrings.select_date)
             }
             SortMenu(
@@ -145,18 +146,16 @@ fun AIPointCostPage() {
             leadingIcon = { Icon(Icons.Default.Search, ResStrings.search) }
         )
 
-        if (showDatePicker) {
-            DateRangePickerDialog(
-                state = dateRangePickerState,
-                onDismissRequest = { showDatePicker = false },
-                onDateSelected = { start, end ->
-                    showDatePicker = false
-                    startDate = start ?: defaultStartTime
-                    endDate = end ?: now.time
-                    // dateRangePickerState.setSelection(start, end)
-                }
-            )
-        }
+        DateRangePickerDialog(
+            state = dateRangePickerState,
+            dialogState = dialogState,
+            onDateSelected = { start, end ->
+                dialogState.animateShow()
+                startDate = start ?: defaultStartTime
+                endDate = end ?: now.time
+                // dateRangePickerState.setSelection(start, end)
+            }
+        )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
