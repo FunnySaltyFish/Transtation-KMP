@@ -217,7 +217,9 @@ fun TextTransScreen() {
                             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
                     )
                 },
-                drawerState = drawerState
+                drawerState = drawerState,
+                // 输入状态下不允许打开侧边栏，避免影响输入
+                gesturesEnabled = vm.currentState != MainScreenState.Inputting
             ) {
                 MainPart(
                     isScreenHorizontal = false,
