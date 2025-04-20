@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PictureInPicture
-import androidx.compose.material.icons.filled.Redeem
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -397,13 +396,13 @@ private fun Drawer(
             drawerItem(Icons.Default.Favorite, TranslateScreen.ThanksScreen)
             divider()
             drawerItem(Icons.Default.Apps, TranslateScreen.AppRecommendationScreen)
-            drawerItem(Icons.Default.Redeem, TranslateScreen.AnnualReportScreen) {
-                Badge(
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    Text(text = "2024")
-                }
-            }
+//            drawerItem(Icons.Default.Redeem, TranslateScreen.AnnualReportScreen) {
+//                Badge(
+//                    contentColor = MaterialTheme.colorScheme.onPrimary
+//                ) {
+//                    Text(text = "2024")
+//                }
+//            }
 
             Spacer(modifier = Modifier.height(16.dp))
             Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeMain))
