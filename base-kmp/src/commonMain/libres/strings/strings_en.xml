@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="click_clipboard_hint_action_input_text">Input Text</string>
+    <string name="click_clipboard_hint_action_translate">Translate Directly</string>
     <string name="close">Close</string>
     <string name="please_select">Please select</string>
     <!-- 从 v2.8.2开始，从上面排，不然每次都让鼠标滚半天到最下面  -->

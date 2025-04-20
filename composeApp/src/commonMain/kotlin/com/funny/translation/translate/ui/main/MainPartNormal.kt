@@ -67,6 +67,7 @@ import androidx.lifecycle.Lifecycle
 import com.funny.trans.login.LoginActivity
 import com.funny.translation.AppConfig
 import com.funny.translation.WebViewActivity
+import com.funny.translation.bean.ClickClipboardHintAction
 import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
@@ -81,6 +82,7 @@ import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.main.components.ChildrenFixedSizeRow
+import com.funny.translation.translate.ui.main.components.ClipboardHint
 import com.funny.translation.translate.ui.widget.ExchangeButton
 import com.funny.translation.translate.ui.widget.NoticeBar
 import com.funny.translation.translate.ui.widget.ShadowedAsyncRoundImage
@@ -183,7 +185,20 @@ internal fun MainPartNormal(
                     Spacer(modifier = Modifier.height(8.dp))
                     HintText(
                         onClick = { vm.updateMainScreenState(MainScreenState.Inputting) },
-                        onLongClick = vm::tryToPasteAndTranslate
+                        onLongClick = vm::tryToPasteAndTranslate,
+                        translateByClipboardText = {
+                            val clickClipboardHintAction by AppConfig.sClickClipboardHintAction
+                            when (clickClipboardHintAction) {
+                                ClickClipboardHintAction.Translate -> {
+                                    vm.updateTranslateText(it.trim())
+                                    vm.translate()
+                                }
+                                ClickClipboardHintAction.InputText -> {
+                                    vm.updateTranslateText(it.trim())
+                                    vm.updateMainScreenState(MainScreenState.Inputting)
+                                }
+                            }
+                        }
                     )
                 }
             }
@@ -244,25 +259,31 @@ internal fun MainPartNormal(
 private fun HintText(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    translateByClipboardText: (String) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    Text(
-        text = ResStrings.trans_text_input_hint,
-        fontSize = 28.sp,
-        fontWeight = FontWeight.W600,
-        color = Color.LightGray,
-        textAlign = TextAlign.Start,
-        lineHeight = 32.sp,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 28.dp)
-            .combinedClickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick,
-                onLongClick = onLongClick
-            )
-    )
+    Column(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp).combinedClickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick,
+            onLongClick = onLongClick
+        )
+    ) {
+        Text(
+            text = ResStrings.trans_text_input_hint,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.W600,
+            color = Color.LightGray,
+            textAlign = TextAlign.Start,
+            lineHeight = 32.sp,
+            modifier = Modifier.weight(1f)
+        )
+        ClipboardHint(
+            modifier = Modifier.fillMaxWidth(),
+            translateByClipboardText = translateByClipboardText
+        )
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

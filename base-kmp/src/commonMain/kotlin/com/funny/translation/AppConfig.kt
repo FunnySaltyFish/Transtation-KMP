@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.funny.data_saver.core.mutableDataSaverStateOf
+import com.funny.translation.bean.ClickClipboardHintAction
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.bean.TranslationConfig
 import com.funny.translation.bean.UserInfoBean
@@ -53,6 +54,8 @@ object AppConfig {
             suffix = "\n\nYour output must be a valid JSON with two keys: `source` indicates the source text and `target` indicates the translated result.\nExample output: {\"source\":\"Hello World\",\"target\":\"你好，世界\"}"
         )
     )
+    val sClickClipboardHintAction = mutableDataSaverStateOf(DataSaverUtils, "KEY_CLICK_CLIPBOARD_HINT_ACTION", ClickClipboardHintAction.InputText)
+
 
     // 以下为Pro专享
     val sParallelTrans = mutableDataSaverStateOf(DataSaverUtils, "KEY_PARALLEL_TRANS", false)

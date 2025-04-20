@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--    text = ResStrings.click_clipboard_hint_action,-->
+<!--    description = ResStrings.click_clipboard_hint_action_desc,-->
+    <string name="click_clipboard_hint_action_input_text">输入文本</string>
+    <string name="click_clipboard_hint_action_translate">直接翻译</string>
     <string name="close">关闭</string>
     <string name="please_select">请选择</string>
     <string name="language_auto">自动选择</string>

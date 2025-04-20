@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="click_clipboard_hint_action">点击剪贴板提示框</string>
+    <string name="click_clipboard_hint_action_desc">点击剪贴板提示框的行为，可以选择作为文本输入到翻译框，或者直接开始翻译</string>
     <string name="pause_download">下载已暂停，再次点击以恢复下载</string>
     <string name="force_update_tip">您当前版本太老了，请下载最新版本继续使用</string>
     <string name="single_speak_text">读</string>

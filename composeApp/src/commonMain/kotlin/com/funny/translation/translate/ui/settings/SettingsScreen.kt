@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.Settings
@@ -48,6 +49,7 @@ import com.funny.jetsetting.core.ui.SettingItemCategory
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
 import com.funny.translation.bean.AppLanguage
+import com.funny.translation.bean.ClickClipboardHintAction
 import com.funny.translation.helper.ApplicationUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.DateUtils
@@ -71,6 +73,7 @@ import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.theme.LightDarkMode
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -174,6 +177,17 @@ fun SettingsScreen() {
             ) {
 
             }
+            var clickClipboardHintAction by AppConfig.sClickClipboardHintAction
+            JetSettingListDialog(
+                list = ClickClipboardHintAction.entries.toPersistentList(),
+                text = ResStrings.click_clipboard_hint_action,
+                description = ResStrings.click_clipboard_hint_action_desc,
+                imageVector = Icons.Default.ContentPaste,
+                selected = clickClipboardHintAction,
+                updateSelected = {
+                    clickClipboardHintAction = it
+                },
+            )
             // 模型管理
             JetSettingTile(
                 imageVector = Icons.Default.Settings,

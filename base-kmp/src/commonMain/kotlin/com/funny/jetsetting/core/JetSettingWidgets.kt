@@ -146,7 +146,7 @@ fun JetSettingDialog(
     confirmButtonAction: (() -> Unit)? = EmptyAction,
     confirmButtonText: String = ResStrings.confirm,
     dismissButtonAction: (() -> Unit)? = EmptyAction,
-    dismissButtonText: String = ResStrings.cancel,
+    dismissButtonText: String = ResStrings.close,
     dialogContent: @Composable () -> Unit
 ) {
     var openDialogState by remember {
@@ -207,7 +207,7 @@ fun <E> JetSettingListDialog(
     confirmButtonAction: (() -> Unit)? = EmptyAction,
     confirmButtonText: String = ResStrings.confirm,
     dismissButtonAction: (() -> Unit)? = EmptyAction,
-    dismissButtonText: String = ResStrings.cancel,
+    dismissButtonText: String = ResStrings.close,
 ) {
     JetSettingDialog(
         modifier = modifier,

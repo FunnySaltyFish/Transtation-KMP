@@ -7,6 +7,7 @@ import com.funny.compose.ai.utils.ModelSortType
 import com.funny.data_saver.core.DataSaverConverter
 import com.funny.trans.login.ui.AICostSortType
 import com.funny.translation.bean.AppLanguage
+import com.funny.translation.bean.ClickClipboardHintAction
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.bean.UserInfoBean
 import com.funny.translation.helper.JsonX
@@ -113,6 +114,12 @@ fun initTypeConverters() {
         save = { it.name },
         restore = { ModelSortType.valueOf(it) }
     )
+
+    DataSaverConverter.registerTypeConverters<ClickClipboardHintAction>(
+        save = { it.name },
+        restore = { ClickClipboardHintAction.valueOf(it) }
+    )
+
 }
 
 private val OLD_VIP_START_TIME = """("vip_start_time"):(-?\d+)""".toRegex()
