@@ -236,11 +236,11 @@ object OkHttpUtils {
         headersMap: HashMap<String, String>? = null,
         timeout: IntArray? = null,
         progressCallback: ((downloadedBytes: Long, totalBytes: Long) -> Unit)? = null
-    ) {
+    ): Call? {
         val existingFileLength = if (file.exists()) file.length() else 0L
         if (existingFileLength >= expectedLength) {
             progressCallback?.invoke(existingFileLength, existingFileLength)
-            return
+            return null
         }
         // Create request with Range header if the file already exists
         val requestBuilder = Request.Builder().url(url)
@@ -254,7 +254,8 @@ object OkHttpUtils {
         val request = requestBuilder.build()
         val client = getClient(timeout)
 
-        client.newCall(request).enqueue(object : Callback {
+        val call = client.newCall(request)
+        call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
             }
@@ -273,10 +274,15 @@ object OkHttpUtils {
                         var downloadedBytes = existingFileLength
 
                         while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            if (call.isCanceled()) {
+                                // Handle cancellation during download
+                                outputStream.close()
+                                return
+                            }
                             outputStream.write(buffer, 0, bytesRead)
                             downloadedBytes += bytesRead
                             progressCallback?.invoke(downloadedBytes, totalBytes)
-                            Log.d(TAG, "downloadWithResume: $downloadedBytes / $totalBytes")
+                            // Log.d(TAG, "downloadWithResume: $downloadedBytes / $totalBytes")
                         }
                     }
                     outputStream.flush()
@@ -284,6 +290,7 @@ object OkHttpUtils {
                 }
             }
         })
+        return call
     }
 
 

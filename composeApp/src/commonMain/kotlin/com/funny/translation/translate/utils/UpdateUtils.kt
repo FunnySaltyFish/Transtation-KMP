@@ -12,6 +12,7 @@ import com.funny.translation.translate.bean.UpdateInfo
 import com.funny.translation.translate.network.TransNetwork
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Call
 import java.io.File
 
 object UpdateUtils {
@@ -43,10 +44,10 @@ object UpdateUtils {
         onProgressChanged: (Float) -> Unit,
         onDownloadFinished: () -> Unit,
         onError: (Exception) -> Unit
-    ) {
+    ): Call? {
         try {
-            val apkUrl = updateInfo.apk_url ?: return
-            OkHttpUtils.downloadWithResume(
+            val apkUrl = updateInfo.apk_url ?: return null
+            return OkHttpUtils.downloadWithResume(
                 url = apkUrl,
                 file = file,
                 expectedLength = updateInfo.apk_size?.toLong() ?: 0L,
@@ -64,6 +65,7 @@ object UpdateUtils {
             e.printStackTrace()
             onError(e)
         }
+        return null
     }
 }
 

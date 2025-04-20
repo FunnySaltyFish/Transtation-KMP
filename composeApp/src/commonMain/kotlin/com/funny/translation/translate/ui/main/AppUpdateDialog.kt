@@ -61,6 +61,7 @@ import com.funny.translation.ui.dialog.AnyPopDialogProperties
 import com.funny.translation.ui.dialog.rememberAnyPopDialogState
 import com.funny.translation.ui.floatingActionBarModifier
 import com.funny.translation.ui.popDialogShape
+import okhttp3.Call
 import java.io.File
 import kotlin.math.roundToInt
 
@@ -215,24 +216,32 @@ private fun ButtonLine(
                 Text(text = ResStrings.download_from_browser)
             }
             Spacer(Modifier.width(4.dp))
+            
+            var call: Call? = remember { null }
             TextButton(onClick = {
-                UpdateUtils.downloadUpdate(
-                    updateInfo = updateInfo,
-                    file = file,
-                    onProgressChanged = updateProgress,
-                    onDownloadFinished = {
-                        if (file.fileMD5() != updateInfo.apk_md5) {
-                            onError(Exception("MD5 is incorrect"))
-                        } else {
-                            try {
-                                installLauncher.launch(file)
-                            } catch (e: Exception) {
-                                onError(e)
+                if (call == null) {
+                    call = UpdateUtils.downloadUpdate(
+                        updateInfo = updateInfo,
+                        file = file,
+                        onProgressChanged = updateProgress,
+                        onDownloadFinished = {
+                            if (file.fileMD5() != updateInfo.apk_md5) {
+                                onError(Exception("MD5 is incorrect"))
+                            } else {
+                                try {
+                                    installLauncher.launch(file)
+                                } catch (e: Exception) {
+                                    onError(e)
+                                }
                             }
-                        }
-                    },
-                    onError = onError
-                )
+                        },
+                        onError = onError
+                    )
+                } else {
+                    call?.cancel()
+                    call = null
+                    toast(ResStrings.pause_download)
+                }
             }) {
                 ProgressText(progress, color)
             }

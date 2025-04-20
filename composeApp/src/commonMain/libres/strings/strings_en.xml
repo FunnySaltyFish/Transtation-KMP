@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pause_download">The download has been paused. Click again to resume the download.</string>
     <string name="force_update_tip">Your local version is too old, please download the latest version to continue to use</string>
     <string name="single_speak_text">S</string>
     <!--    根据下面注释翻译成英文l-->
