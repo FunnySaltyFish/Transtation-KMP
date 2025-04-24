@@ -364,7 +364,7 @@ private fun ResultList(
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(start = 16.dp, end = 8.dp, bottom = 8.dp, top = 0.dp)
-                    .animateItem(),
+                    .animateContentSize(),
                 result = result,
                 doFavorite = doFavorite,
                 smartTransEnabled = smartTransEnabled
