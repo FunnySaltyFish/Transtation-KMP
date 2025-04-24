@@ -74,7 +74,6 @@ class MainViewModel : BaseViewModel() {
     // 一些私有变量
     private var translateJob: Job? = null
     private var engineInitialized = false
-    private var initialSelected = 0
     private val evalJsMutex by lazy(LazyThreadSafetyMode.PUBLICATION) { Mutex() }
     private val totalProgress: Int get() = selectedEngines.size
 
@@ -101,7 +100,7 @@ class MainViewModel : BaseViewModel() {
 
             // 随应用升级，有一些插件可能后续转化为内置引擎，旧的插件需要删除
             appDB.jsDao.getAllJs().forEach { jsBean ->
-                if(DefaultData.isPluginBound(jsBean)) {
+                if (DefaultData.isPluginBound(jsBean)) {
                     appDB.jsDao.deleteJsByName(jsBean.fileName)
                 }
             }
@@ -111,31 +110,38 @@ class MainViewModel : BaseViewModel() {
                     it.getOrNull()?.second?.forEach { model ->
                         val enabled = DataSaverUtils.readData(model.enableKey, true)
                         if (!enabled) {
-                            val current = selectedEngines.firstOrNull { it is ModelTranslationTask && it.model.name == model.name } ?: return@forEach
+                            val current = selectedEngines.firstOrNull { engine ->
+                                engine is ModelTranslationTask && engine.model.name == model.name
+                            } ?: return@forEach
                             selectedEngines.remove(current)
                             DataSaverUtils.saveData(current.selectKey, false)
-                            Log.d(TAG, "remove model: ${model.name} cause it is not enabled")
+                            Log.d(TAG, "remove model: ${model.name} because it is not enabled")
                         }
                     }
                 }
             }
 
-            // 等待所有引擎加载完毕
             EngineManager.addObserver { action ->
                 Log.d(TAG, "EngineManager action: $action")
                 when (action) {
                     is ModelManagerAction.OneEngineInitialized -> {
+                        // 读取持久数据，如果为 true 则保留选中状态
                         if (DataSaverUtils.readData(action.engine.selectKey, false)) {
                             addSelectedEngines(action.engine)
-                            initialSelected++
                         }
                     }
 
                     is ModelManagerAction.AllEnginesInitialized -> {
-                        Log.d(TAG, "initial selected: $initialSelected")
-                        if(initialSelected == 0) {
-                            // 默认选两个
-                            addDefaultEngines(TextTranslationEngines.BaiduNormal, TextTranslationEngines.Tencent)
+                        Log.d(
+                            TAG,
+                            "All engines initialized. Current selectedEngines size: ${selectedEngines.size}"
+                        )
+                        // 只有当持久化中没有任何选中引擎时，才添加默认引擎
+                        if (selectedEngines.isEmpty()) {
+                            addDefaultEngines(
+                                TextTranslationEngines.BaiduNormal,
+                                TextTranslationEngines.Tencent
+                            )
                         }
                         engineInitialized = true
                     }
