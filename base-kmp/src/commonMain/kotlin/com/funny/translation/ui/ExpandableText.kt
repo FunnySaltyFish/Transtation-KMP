@@ -20,6 +20,7 @@ import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import com.funny.translation.helper.rememberSaveableStateOf
+import com.funny.translation.helper.toRealDp
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -42,9 +43,7 @@ fun ExpandableText(
     val toggleTextStyle = expandTextStyle.toSpanStyle()
     val density = LocalDensity.current
     val textHeight = remember(textStyle, collapsedMaxLine) {
-        with(density) {
-            textStyle.lineHeight.times(collapsedMaxLine).toDp()
-        }
+        textStyle.lineHeight.toRealDp(density) * collapsedMaxLine
     }
 
     val annotatedText = buildAnnotatedString {
