@@ -3,6 +3,7 @@ package com.funny.translation.translate.ui.settings
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -305,7 +307,28 @@ private fun DevSetBaseUrl() {
         confirmButtonAction = {
             ServiceCreator.BASE_URL = text
         }) {
-        TextField(value = text, onValueChange = { text = it })
+        Column {
+            TextField(value = text, onValueChange = { text = it })
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                // 默认
+                Button(
+                    onClick = { ServiceCreator.BASE_URL = ServiceCreator.DEFAULT_BASE_URL }
+                ) {
+                    Text(text = "默认")
+                }
+
+                // 本地
+                Button(
+                    onClick = {
+                        text = "http://192.168.0.118:5001/trans/v1/"
+                    }
+                ) {
+                    Text(text = "本地")
+                }
+            }
+        }
     }
 }
 
