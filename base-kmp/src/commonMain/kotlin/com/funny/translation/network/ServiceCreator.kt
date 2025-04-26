@@ -27,7 +27,7 @@ import java.lang.reflect.Type
 
 object ServiceCreator {
     const val TRANS_PATH = "/trans/v1/"
-    private val DEFAULT_BASE_URL = if (BuildConfig.FLAVOR == "google")
+    val DEFAULT_BASE_URL = if (BuildConfig.FLAVOR == "google")
         "https://api.funnysaltyfish.top/trans/v1/" else "https://api.funnysaltyfish.fun/trans/v1/"
 
     var BASE_URL = readBaseURL()
