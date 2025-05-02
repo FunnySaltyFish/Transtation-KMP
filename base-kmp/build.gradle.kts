@@ -1,7 +1,6 @@
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import java.io.ByteArrayOutputStream
-import java.util.Locale
 
 
 plugins {
@@ -182,16 +181,9 @@ buildkonfig {
     packageName = "com.funny.translation"
 }
 
-// 定义函数，用于输出 Hello, Transtation-OpenSource
-fun printHello(exec: Exec) {
-    if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")) {
-        exec.commandLine("cmd", "/c", "echo", "Hello Transtation-OpenSource")
-    } else {
-        exec.commandLine("sh", "-c", "echo", "Hello Transtation-OpenSource")
-    }
-}
-
 tasks.register<Exec>("encryptFunnyJs") {
+    notCompatibleWithConfigurationCache("Task 还未完全适配配置缓存")
+
     // 如果 funny_sign_v1_release 存在，则用它
     val release = File(rootDir, "funny_sign_v1_release_template.js")
     println("release.exists() = " + release.exists())
@@ -202,7 +194,7 @@ tasks.register<Exec>("encryptFunnyJs") {
         val versionCode = libs.versions.project.versionCode.get()
         commandLine("node", rootProject.file("encrypt_funny_js.js"), filePath, targetFilePath, versionCode)
     } else {
-        printHello(this)
+        logger.lifecycle("Hello from Open-Source")
     }
 
     standardOutput = ByteArrayOutputStream()
@@ -212,12 +204,14 @@ tasks.register<Exec>("encryptFunnyJs") {
 }
 
 tasks.register<Exec>("signApk") {
+    notCompatibleWithConfigurationCache("Task 还未完全适配配置缓存")
+
     // 执行根目录下的 sign_new_key.py
     val signNewKey = rootProject.file("sign_new_key.py")
 
     if (signNewKey.exists()) {
         commandLine("python", signNewKey.path, rootDir.path)
     } else {
-        printHello(this)
+        logger.lifecycle("Hello from Open-Source")
     }
 }
