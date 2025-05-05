@@ -35,8 +35,8 @@ import com.funny.translation.helper.toastOnUi
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.engine.TextTranslationEngines
-import com.funny.translation.translate.ui.main.components.EngineSelectDialog
-import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
+import com.funny.translation.translate.ui.engineselect.EngineSelectDialog
+import com.funny.translation.translate.ui.engineselect.UpdateSelectedEngine
 import com.funny.translation.translate.utils.EasyFloatUtils
 import com.funny.translation.translate.utils.EngineManager
 import com.funny.translation.ui.CommonPage
@@ -125,7 +125,7 @@ fun FloatWindowEngineSelect(
         bindEngines: List<TranslationEngine>,
         jsEngines: List<TranslationEngine>,
         modelEngines: List<TranslationEngine>,
-        selectStateProvider: @Composable (TranslationEngine) -> MutableState<Boolean>,
+        selectStateProvider: (TranslationEngine) -> Boolean,
         updateSelectedEngine: UpdateSelectedEngine,
     ) -> Unit
 ) {
@@ -158,7 +158,7 @@ fun FloatWindowEngineSelect(
         bindEngines,
         jsEngines,
         modelEngines,
-        { engine -> states[engine] ?: rememberStateOf(false) },
+        { engine -> states[engine]?.value ?: false },
         object : UpdateSelectedEngine {
             override fun add(engine: TranslationEngine) {
                 selectEngineName = engine.name

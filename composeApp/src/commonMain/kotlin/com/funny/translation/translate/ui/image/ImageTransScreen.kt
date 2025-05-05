@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import com.funny.compose.loading.LoadingState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.helper.CacheManager
-import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.BackHandler
@@ -55,9 +53,9 @@ import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.ImageTranslationEngine
 import com.funny.translation.translate.engine.NormalImageTranslationEngines
-import com.funny.translation.translate.ui.main.components.EngineSelectDialog
+import com.funny.translation.translate.ui.engineselect.EngineSelectDialog
+import com.funny.translation.translate.ui.engineselect.UpdateSelectedEngine
 import com.funny.translation.translate.ui.main.components.LanguageListMenu
-import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.ExchangeButton
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.floatingActionBarModifier
@@ -252,36 +250,20 @@ internal fun EngineSelect(
     modelEngines: List<ImageTranslationEngine>
 ) {
     val showDialog = rememberStateOf(false)
-    var selectEngine by rememberStateOf(engine)
-
-    val states = remember(bindEngines, modelEngines) {
-        Log.d("FloatWindowScreen", "remember states triggered")
-        hashMapOf<TranslationEngine, MutableState<Boolean>>().apply {
-            bindEngines.forEach { put(it, mutableStateOf(it == engine)) }
-            modelEngines.forEach { put(it, mutableStateOf(it == engine)) }
-        }
-    }
-
-    LaunchedEffect(selectEngine) {
-        states.forEach {
-            it.value.value = (it.key == selectEngine)
-        }
-        updateEngine(selectEngine)
-    }
 
     EngineSelectDialog(
         showDialog = showDialog,
         bindEngines = bindEngines,
         jsEngines = emptyList(),
         modelEngines = modelEngines,
-        selectStateProvider = { states[it] ?: rememberStateOf(false) },
+        selectStateProvider = { bindEngines.contains(it) || modelEngines.contains(it) },
         updateSelectedEngine = object : UpdateSelectedEngine {
             override fun add(engine: TranslationEngine) {
-                selectEngine = engine as ImageTranslationEngine
+                updateEngine(engine as ImageTranslationEngine)
             }
 
             override fun remove(engine: TranslationEngine) {
-                states[engine]?.value = false
+
             }
         }
     )

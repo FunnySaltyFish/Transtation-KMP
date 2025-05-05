@@ -61,7 +61,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import com.funny.data_saver.core.rememberDataSaverState
 import com.funny.translation.AppConfig
 import com.funny.translation.NeedToTransConfig
 import com.funny.translation.helper.LocalNavController
@@ -73,11 +72,10 @@ import com.funny.translation.network.api
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LocalSnackbarState
 import com.funny.translation.translate.TranslationEngine
-import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
-import com.funny.translation.translate.ui.main.components.EngineSelectDialog
-import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
+import com.funny.translation.translate.ui.engineselect.EngineSelectDialog
+import com.funny.translation.translate.ui.engineselect.UpdateSelectedEngine
 import com.funny.translation.translate.ui.widget.SimpleNavigation
 import com.funny.translation.translate.utils.EngineManager
 import com.funny.translation.translate.utils.UpdateUtils
@@ -185,10 +183,10 @@ fun TextTransScreen() {
         bindEngines,
         jsEngines,
         modelEngines,
-        selectStateProvider = { engine ->
-            rememberDataSaverState<Boolean>(key = engine.selectKey, initialValue = false)
-        },
-        updateSelectedEngine
+        selectStateProvider = { engine -> vm.selectedEngines.contains(engine) },
+        updateSelectedEngine,
+        showPreset = true,
+        onPresetClicked = vm::updateEngineByPreset
     )
 
     val showEngineSelectAction = remember {

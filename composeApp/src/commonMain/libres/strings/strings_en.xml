@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- English strings -->
+    <string name="new_preset">New Preset</string>
+    <string name="edit_preset">Edit Preset</string>
+    <string name="preset_name">Preset Name</string>
+    <string name="preset_name_hint">e.g. Words Query, Complex Text</string>
+    <string name="select_engines">Select Engines</string>
+    <string name="select_engines_description">Add multiple engines to preset for quick switching</string>
+    <string name="selected_engines">Selected Engines</string>
+    <string name="available_engines">Available Engines</string>
+    <string name="preset_hint">A preset is a collection of engines that can be used to quickly switch between different translation engines.</string>
+
     <string name="click_clipboard_hint_action">Click Clipboard Hint Action</string>
     <string name="click_clipboard_hint_action_desc">The behavior of the click clipboard hint box, which can be selected as text input into the translation box or directly start translation</string>
     <string name="pause_download">The download has been paused. Click again to resume the download.</string>

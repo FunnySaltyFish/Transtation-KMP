@@ -42,14 +42,14 @@ internal val modelLanguageMapping by lazy {
 }
 
 open class ModelImageTranslationTask(
-    protected val model: Model,
+    final override val model: Model,
     protected val fileUri: String,
     protected val otherHistoryMessages: List<ChatMessage> = emptyList(),
     protected val systemPrompt: String = "",
     protected val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     protected val args: Map<String, Any?> = emptyMap(),
     private val onFinish: () -> Unit = { }
-): ImageTranslationTask() {
+): ImageTranslationTask(), ModelTask {
     companion object {
         private const val TAG = "ModelImageTranslationTask"
     }

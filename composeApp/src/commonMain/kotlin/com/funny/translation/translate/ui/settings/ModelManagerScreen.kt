@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.bean.Model
 import com.funny.compose.ai.utils.ModelManager
 import com.funny.compose.ai.utils.ModelManager.enableKey
+import com.funny.compose.ai.utils.ModelManager.updateSort
 import com.funny.compose.ai.utils.ModelSortType
 import com.funny.compose.loading.LoadingContent
 import com.funny.data_saver.core.rememberDataSaverState
@@ -62,10 +63,7 @@ import com.funny.translation.ui.MarkdownText
 
 @Composable
 fun ModelManagerScreen() {
-    var sortType by rememberDataSaverState(
-        key = "model_sort_type",
-        initialValue = ModelSortType.DEFAULT
-    )
+
 
     // Help dialog state
     var showHelpDialog by rememberDataSaverState(
@@ -87,52 +85,9 @@ fun ModelManagerScreen() {
         }
     )
 
-    fun updateSort(newSortType: ModelSortType) {
-        sortType = newSortType
-        ModelManager.updateSort(newSortType)
-    }
-
     // Sort dialog
     if (showSortDialog) {
-        AlertDialog(
-            onDismissRequest = { showSortDialog = false },
-            title = { Text(ResStrings.sort_models) },
-            text = {
-                Column {
-                    val pairs = remember {
-                        listOf(
-                            ModelSortType.DEFAULT to ResStrings.sort_by_default,
-                            ModelSortType.NAME_ASC to ResStrings.sort_by_name_asc,
-                            ModelSortType.NAME_DESC to ResStrings.sort_by_name_desc,
-                            ModelSortType.COST_ASC to ResStrings.sort_by_cost_asc,
-                            ModelSortType.COST_DESC to ResStrings.sort_by_cost_desc
-                        )
-                    }
-                    pairs.forEach {
-                        key(it.second) {
-                            ListItem(
-                                modifier = Modifier.clickable {
-                                    updateSort(it.first)
-                                },
-                                headlineContent = { Text(it.second) },
-                                leadingContent = {
-                                    RadioButton(
-                                        selected = it.first == sortType,
-                                        onClick = { updateSort(it.first) }
-                                    )
-                                },
-                                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-                            )
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { showSortDialog = false }) {
-                    Text(ResStrings.confirm)
-                }
-            }
-        )
+        SortModelDialog(onDismissRequest = { showSortDialog = false })
     }
 
 
@@ -266,4 +221,54 @@ fun ModelCard(modifier: Modifier, model: Model) {
             }
         }
     }
+}
+
+@Composable
+internal fun SortModelDialog(
+    onDismissRequest: () -> Unit,
+) {
+    var sortType by rememberDataSaverState(
+        key = "model_sort_type",
+        initialValue = ModelSortType.DEFAULT
+    )
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = { Text(ResStrings.sort_models) },
+        text = {
+            Column {
+                val pairs = remember {
+                    listOf(
+                        ModelSortType.DEFAULT to ResStrings.sort_by_default,
+                        ModelSortType.NAME_ASC to ResStrings.sort_by_name_asc,
+                        ModelSortType.NAME_DESC to ResStrings.sort_by_name_desc,
+                        ModelSortType.COST_ASC to ResStrings.sort_by_cost_asc,
+                        ModelSortType.COST_DESC to ResStrings.sort_by_cost_desc
+                    )
+                }
+                pairs.forEach {
+                    key(it.second) {
+                        ListItem(
+                            modifier = Modifier.clickable {
+                                sortType = it.first
+                                updateSort(it.first)
+                            },
+                            headlineContent = { Text(it.second) },
+                            leadingContent = {
+                                RadioButton(
+                                    selected = it.first == sortType,
+                                    onClick = { updateSort(it.first) }
+                                )
+                            },
+                            colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(ResStrings.confirm)
+            }
+        }
+    )
 }

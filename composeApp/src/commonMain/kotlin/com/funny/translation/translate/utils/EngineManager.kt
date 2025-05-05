@@ -19,8 +19,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
@@ -71,7 +73,7 @@ object EngineManager {
         list.map {
             ModelTranslationTask(it).also(::updateLoadedModelsAndNotify)
         }
-    }
+    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     var floatWindowTranslateEngineStateFlow: MutableStateFlow<TranslationEngine> = MutableStateFlow(TextTranslationEngines.BaiduNormal)
 

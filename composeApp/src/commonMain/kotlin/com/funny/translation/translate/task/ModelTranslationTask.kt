@@ -26,7 +26,7 @@ import kotlin.time.measureTime
 
 const val MODEL_NAME_PREFIX = "model_"
 
-class ModelTranslationTask(val model: Model): ServerTextTranslationTask() {
+class ModelTranslationTask(override val model: Model): ServerTextTranslationTask(), ModelTask {
     override val engineCodeName: String
         get() = MODEL_NAME_PREFIX + model.chatBotId
 

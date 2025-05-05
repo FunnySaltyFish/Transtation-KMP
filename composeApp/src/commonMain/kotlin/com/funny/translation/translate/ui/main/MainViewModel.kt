@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package com.funny.translation.translate.ui.main
 
 import androidx.compose.runtime.getValue
@@ -40,12 +38,12 @@ import com.funny.translation.translate.database.transHistoryDao
 import com.funny.translation.translate.engine.TextTranslationEngines
 import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.task.ModelTranslationTask
+import com.funny.translation.translate.ui.engineselect.EnginePreset
 import com.funny.translation.translate.utils.EngineManager
 import com.funny.translation.translate.utils.ModelManagerAction
 import com.funny.translation.translate.utils.SortResultUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -68,7 +66,7 @@ class MainViewModel : BaseViewModel() {
     val resultList = mutableStateListOf<TranslationResult>()
     var startedProgress by mutableFloatStateOf(1f)
     var finishedProgress by mutableFloatStateOf(1f)
-    var selectedEngines: HashSet<TranslationEngine> = hashSetOf()
+    var selectedEngines: MutableList<TranslationEngine> = mutableStateListOf()
     var translating by mutableStateOf(false)
 
     // 一些私有变量
@@ -205,6 +203,16 @@ class MainViewModel : BaseViewModel() {
 
     fun removeSelectedEngine(engine: TranslationEngine) {
         selectedEngines.remove(engine)
+    }
+
+    fun updateEngineByPreset(previousSelect: EnginePreset?, currentSelected: EnginePreset?) {
+//        if (previousSelect != null) {
+//            selectedEngines.removeAll(previousSelect.engines.toSet())
+//        }
+        selectedEngines.clear()
+        if (currentSelected != null) {
+            selectedEngines.addAll(currentSelected.engines.toSet())
+        }
     }
 
     fun cancel() {

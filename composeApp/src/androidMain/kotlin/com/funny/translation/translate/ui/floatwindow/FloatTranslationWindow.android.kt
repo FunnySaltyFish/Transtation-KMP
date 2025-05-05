@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.SystemDialogProperties
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.TranslationEngine
-import com.funny.translation.translate.ui.main.components.EngineSelect
-import com.funny.translation.translate.ui.main.components.UpdateSelectedEngine
+import com.funny.translation.translate.ui.engineselect.EngineSelect
+import com.funny.translation.translate.ui.engineselect.UpdateSelectedEngine
 import com.funny.translation.translate.ui.settings.FloatWindowEngineSelect
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -38,7 +38,6 @@ actual fun EngineSelectDialog(
                                     onSelect(engine)
                                 }
                             },
-                            dismissDialogAction = onDismiss
                         )
                     },
                     confirmButton = {

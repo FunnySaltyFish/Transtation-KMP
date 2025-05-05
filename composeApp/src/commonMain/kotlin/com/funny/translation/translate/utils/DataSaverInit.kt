@@ -14,6 +14,7 @@ import com.funny.translation.helper.JsonX
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.tts.TTSExtraConf
 import com.funny.translation.translate.ui.TranslateScreen
+import com.funny.translation.translate.ui.engineselect.PresetPair
 import com.funny.translation.translate.ui.thanks.SponsorSortType
 import com.funny.translation.ui.theme.LightDarkMode
 import com.funny.translation.ui.theme.ThemeType
@@ -120,6 +121,15 @@ fun initTypeConverters() {
         restore = { ClickClipboardHintAction.valueOf(it) }
     )
 
+    DataSaverConverter.registerTypeConverters<List<PresetPair>>(
+        save = { JsonX.toJson(it) },
+        restore = { JsonX.fromJson(it) }
+    )
+
+    DataSaverConverter.registerTypeConverters<String?>(
+        save = { it ?: "_null_" },
+        restore = { if (it == "_null_") null else it }
+    )
 }
 
 private val OLD_VIP_START_TIME = """("vip_start_time"):(-?\d+)""".toRegex()
