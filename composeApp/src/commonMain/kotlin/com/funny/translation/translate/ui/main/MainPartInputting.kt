@@ -20,9 +20,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,9 +39,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.funny.cmaterialcolors.MaterialColors
 import com.funny.translation.AppConfig
 import com.funny.translation.Consts
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.helper.toast
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.LocalKMPContext
 import com.funny.translation.kmp.painterDrawableRes
@@ -191,6 +195,19 @@ private fun MainTopBarInputting(
             }
         },
         actions = {
+            // 开关智能翻译
+            var smartTransEnabled by AppConfig.sAITransExplain
+            IconToggleButton(
+                checked = smartTransEnabled,
+                onCheckedChange = {
+                    smartTransEnabled = it
+                    if (it) toast(ResStrings.ai_trans_explain_enabled)
+                }
+            ) {
+                val icon = Icons.Default.Insights
+                val tint = if (smartTransEnabled) MaterialTheme.colorScheme.primary else MaterialColors.Grey400
+                FixedSizeIcon(icon, contentDescription = ResStrings.ai_trans_explain, tint = tint)
+            }
             IconButton(onClick = showEngineSelectAction) {
                 FixedSizeIcon(
                     painterDrawableRes("ic_translate"),

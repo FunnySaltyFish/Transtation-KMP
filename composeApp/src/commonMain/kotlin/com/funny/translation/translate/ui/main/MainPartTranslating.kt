@@ -60,7 +60,6 @@ import com.funny.translation.helper.lerp
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.appCtx
 import com.funny.translation.strings.ResStrings
-import com.funny.translation.translate.LLMTranslationResult
 import com.funny.translation.translate.Language
 import com.funny.translation.translate.TranslationResult
 import com.funny.translation.translate.ui.TranslateScreen
@@ -349,13 +348,6 @@ private fun ResultList(
         contentPadding = PaddingValues(start = 16.dp, top = 4.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        if (!smartTransEnabled && resultList.any { it is LLMTranslationResult }) {
-            item {
-                SmartTransEnableTip(
-                    modifier = Modifier.fillParentMaxWidth()
-                )
-            }
-        }
         itemsIndexed(resultList, key = { _, r -> r.engineName }) { _, result ->
             TextTransResultItem(
                 modifier = Modifier.fillMaxWidth()
