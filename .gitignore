@@ -27,6 +27,7 @@ sign_new_key.py
 .env
 
 composeApp/release/
+composeApp/common/release/
 
 /get_recent_commit.py
 *.psd
