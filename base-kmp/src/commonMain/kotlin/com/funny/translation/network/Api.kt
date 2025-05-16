@@ -123,6 +123,17 @@ suspend inline fun <reified T : Any?> api(
     block: Api<T>.() -> Unit = {},
 ) = apiNoCall(func, *args, dispatcher = dispatcher, block = block).call(rethrowErr)
 
+/**
+ * 不弹出“请求成功”提示的api调用
+ */
+suspend inline fun <reified T : Any?> apiSilent(
+    func: KFunction<CommonData<T>?>,
+    vararg args: Any?,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    rethrowErr: Boolean = false,
+    noinline block: Api<T>.() -> Unit = {},
+) = apiNoCall(func, *args, dispatcher = dispatcher, block = block).apply { success {  } }.call(rethrowErr)
+
 
 //suspend inline fun <reified T> api(
 //    noinline func: (args: Array<out Any>) -> CommonData<T>?,

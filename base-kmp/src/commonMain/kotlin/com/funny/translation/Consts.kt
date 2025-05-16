@@ -56,5 +56,5 @@ object Consts {
     const val KEY_FLOAT_WINDOW_ENGINE = "float_window_engine"
 
 
-    val MAX_SELECT_ENGINES get() = if (AppConfig.isMembership()) 8 else 5
+    val MAX_SELECT_ENGINES get() = if (AppConfig.isMembership()) appSettings.vipMaxSelectTextEnginesNum else appSettings.maxSelectTextEnginesNum
 }

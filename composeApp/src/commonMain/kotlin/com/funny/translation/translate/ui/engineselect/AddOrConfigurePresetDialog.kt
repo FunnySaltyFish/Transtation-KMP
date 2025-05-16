@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.funny.translation.appSettings
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.task.ModelTranslationTask
@@ -93,7 +94,17 @@ internal fun AddOrConfigurePresetDialog(
                 TwoSectionList(
                     selectedItems = selectedEngines,
                     availableItems = availableEngines,
-                    onItemSelected = { selectedEngines.add(it) },
+                    maxSelectedNum = maxPresetEngineNum,
+                    onItemSelected = {
+                        guardSelectEngine(
+                            selectedNum = selectedEngines.size,
+                            maxSelectNum = appSettings.maxEngineNumEachPreset,
+                            vipMaxSelectNum = appSettings.vipMaxEngineNumEachPreset,
+                            toastTextFormatter = { ResStrings.tip_max_preset_engine_num_vip.format(it) },
+                        ) {
+                            selectedEngines.add(it)
+                        }
+                    },
                     onItemUnselected = { selectedEngines.remove(it) },
                     modifier = Modifier.fillMaxWidth()
                 ) { engine, selected ->
@@ -171,3 +182,6 @@ private fun EngineItem(
         }
     }
 }
+
+private val maxPresetEngineNum
+    get() = appSettings.vipAware(appSettings::maxEngineNumEachPreset, appSettings::vipMaxEngineNumEachPreset)

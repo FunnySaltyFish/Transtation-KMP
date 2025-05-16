@@ -1,13 +1,18 @@
 package com.funny.translation.translate.utils
 
+import com.funny.translation.AppConfig
+import com.funny.translation.appSettings
 import com.funny.translation.debug.Debug
 import com.funny.translation.debug.DefaultDebugTarget
+import com.funny.translation.network.apiSilent
 import com.funny.translation.sign.SignUtils
 import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.initLanguageDisplay
+import com.funny.translation.translate.network.TransNetwork.apiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 expect object InitUtil {
@@ -24,9 +29,9 @@ internal suspend fun InitUtil.initCommon() {
     }
 
     CoroutineScope(Dispatchers.IO).launch {
+        initAppSettings()
         SignUtils.loadJs()
         SortResultUtils.init()
-
         EngineManager.loadEngines()
     }
 
@@ -44,6 +49,14 @@ private fun addJobs() {
                     TTSConfManager.createDefaultConf(it)
                 )
             }
+        }
+    }
+}
+
+private suspend fun initAppSettings() = coroutineScope {
+    launch {
+        apiSilent(apiService::getAppSettings, AppConfig.uid)?.let {
+            appSettings = it
         }
     }
 }

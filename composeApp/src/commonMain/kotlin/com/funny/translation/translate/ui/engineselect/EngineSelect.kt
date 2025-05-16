@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.funny.data_saver.core.rememberDataSaverState
+import com.funny.translation.appSettings
 import com.funny.translation.bean.rememberRef
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.rememberSaveableStateOf
@@ -137,9 +138,19 @@ internal fun EngineSelect(
         if (showPreset) {
             // 预设区域标题
             TitleRow(modifier = Modifier.padding(top = 4.dp), title = "我的预设") {
-                IconButton(onClick = { 
-                    editPreset = null
-                    showAddPresetDialog = true
+                IconButton(onClick = {
+                    guardSelectEngine(
+                        selectedNum = presets.size,
+                        maxSelectNum = appSettings.maxPresetNum,
+                        vipMaxSelectNum = appSettings.vipMaxPresetNum,
+                        toastTextFormatter = {
+                            "您最多只能有${it}组预设"
+                        }
+                    ) {
+
+                        editPreset = null
+                        showAddPresetDialog = true
+                    }
                 }) {
                     Icon(
                         Icons.Default.AddCircleOutline,
@@ -157,7 +168,7 @@ internal fun EngineSelect(
                         HintText(ResStrings.preset_hint, modifier = Modifier.fillParentMaxWidth())
                     }
                 } else {
-                    items(presets) { (presetName, _) ->
+                    itemsIndexed(presets) { i, (presetName, _) ->
                         // 预设卡片
                         PresetChip(
                             presetName = presetName,
@@ -165,8 +176,17 @@ internal fun EngineSelect(
                             updateSelectedPresetName = { selectedPresetName = it },
                             onPresetClicked = onPresetClicked,
                             showEditDialogAction = {
-                                editPreset = it
-                                showAddPresetDialog = true
+                                guardSelectEngine(
+                                    selectedNum = i,
+                                    maxSelectNum = appSettings.maxPresetNum,
+                                    vipMaxSelectNum = appSettings.vipMaxPresetNum,
+                                    toastTextFormatter = {
+                                        "您最多只能有${it}组预设，当前预设无法编辑"
+                                    }
+                                ) {
+                                    editPreset = it
+                                    showAddPresetDialog = true
+                                }
                             }
                         )
                     }
@@ -224,6 +244,15 @@ internal fun EngineSelect(
                 if (selectedPresetName == presetName) {
                     // 如果正好编辑选中的，则立刻生效
                     onPresetClicked(editPreset, PresetManager.getPresetEngine(presetName))
+                }
+            },
+            onDelete = {
+                // 删除预设逻辑
+                showAddPresetDialog = false
+                PresetManager.deletePreset(editPreset?.name)
+                if (selectedPresetName == editPreset?.name) {
+                    // 如果正好编辑选中的，则立刻生效
+                    onPresetClicked(editPreset, null)
                 }
             }
         )

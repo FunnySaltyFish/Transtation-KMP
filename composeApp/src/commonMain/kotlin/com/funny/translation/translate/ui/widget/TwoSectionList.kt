@@ -36,13 +36,14 @@ fun <T> TwoSectionList(
     onItemSelected: (T) -> Unit,
     onItemUnselected: (T) -> Unit,
     modifier: Modifier = Modifier,
+    maxSelectedNum: Int = Int.MAX_VALUE,
     itemContent: @Composable (T, Boolean) -> Unit
 ) {
     Column(modifier = modifier) {
         // Selected items section
         if (selectedItems.isNotEmpty()) {
             Text(
-                text = ResStrings.selected_engines,
+                text = ResStrings.selected_engines + "(${selectedItems.size}/$maxSelectedNum)",
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.padding(vertical = 4.dp)
             )

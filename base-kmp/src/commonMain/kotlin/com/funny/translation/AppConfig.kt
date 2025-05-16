@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.funny.data_saver.core.mutableDataSaverStateOf
+import com.funny.translation.bean.AppSettings
 import com.funny.translation.bean.ClickClipboardHintAction
 import com.funny.translation.bean.EditablePrompt
 import com.funny.translation.bean.TranslationConfig
@@ -132,6 +133,8 @@ val GlobalTranslationConfig = TranslationConfig()
 // 外部 intent 导致，表示待会儿需要做翻译
 // 不用 DeepLink
 var NeedToTransConfig by mutableStateOf(TranslationConfig())
+
+var appSettings = AppSettings()
 
 val isGooglePlayBuild by lazy {
     BuildConfig.FLAVOR == "google"

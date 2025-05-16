@@ -63,6 +63,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.funny.translation.AppConfig
 import com.funny.translation.NeedToTransConfig
+import com.funny.translation.appSettings
 import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.UserUtils
@@ -76,6 +77,7 @@ import com.funny.translation.translate.navigateSingleTop
 import com.funny.translation.translate.ui.TranslateScreen
 import com.funny.translation.translate.ui.engineselect.EngineSelectDialog
 import com.funny.translation.translate.ui.engineselect.UpdateSelectedEngine
+import com.funny.translation.translate.ui.engineselect.guardSelectEngine
 import com.funny.translation.translate.ui.widget.SimpleNavigation
 import com.funny.translation.translate.utils.EngineManager
 import com.funny.translation.translate.utils.UpdateUtils
@@ -160,7 +162,16 @@ fun TextTransScreen() {
     val updateSelectedEngine = remember {
         object : UpdateSelectedEngine {
             override fun add(engine: TranslationEngine) {
-                vm.addSelectedEngines(engine)
+                guardSelectEngine(
+                    selectedNum = vm.selectedEngines.size,
+                    maxSelectNum = appSettings.maxSelectTextEnginesNum,
+                    vipMaxSelectNum = appSettings.vipMaxSelectTextEnginesNum,
+                    toastTextFormatter = {
+                        "您最多只能同时选择${it}个引擎哦"
+                    }
+                ) {
+                    vm.addSelectedEngines(engine)
+                }
             }
 
             override fun remove(engine: TranslationEngine) {

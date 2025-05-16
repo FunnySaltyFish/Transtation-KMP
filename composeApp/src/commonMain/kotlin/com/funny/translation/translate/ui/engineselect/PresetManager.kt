@@ -87,6 +87,14 @@ object PresetManager {
 
         presets.value = newPresets.toList()
     }
+
+    fun deletePreset(presetName: String?) {
+        val presetToDelete = presets.value.find { it.first == presetName }
+        if (presetToDelete != null) {
+            Log.d("PresetManager", "deletePreset: remove $presetToDelete")
+            presets.value -= presetToDelete
+        }
+    }
 }
 
 val TranslationEngine.presetKey: String

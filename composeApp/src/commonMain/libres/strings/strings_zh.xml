@@ -10,6 +10,8 @@
     <string name="selected_engines">已选引擎</string>
     <string name="available_engines">可用引擎</string>
     <string name="preset_hint">预设由多个引擎组合而成，方便在不同场景快速切换</string>
+    <string name="tip_max_preset_engine_num_vip">每个预设最多可添加${max}个引擎</string>
+    <string name="out_of_max_engine_limit_non_vip_suffix">(VIP用户可享${vipMax}个)</string>
 
     <string name="click_clipboard_hint_action">点击剪贴板提示框</string>
     <string name="click_clipboard_hint_action_desc">点击剪贴板提示框的行为，可以选择作为文本输入到翻译框，或者直接开始翻译</string>
