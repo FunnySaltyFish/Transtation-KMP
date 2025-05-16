@@ -229,6 +229,16 @@ internal fun EngineSelect(
             selectStateProvider = selectStateProvider,
             updateSelectEngine = updateSelectEngine
         )
+
+        // 插件
+        if (jsEngines.isNotEmpty()) {
+            TitleRow(modifier = Modifier.padding(vertical = 4.dp), title = ResStrings.plugin_engine)
+            ModelsFlowGrid(
+                engines = jsEngines,
+                selectStateProvider = selectStateProvider,
+                updateSelectEngine = updateSelectEngine
+            )
+        }
     }
 
     // 添加预设对话框

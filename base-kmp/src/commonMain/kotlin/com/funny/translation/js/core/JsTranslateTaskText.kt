@@ -58,8 +58,7 @@ class JsTranslateTaskText(
 
     override suspend fun translate() {
         fun String.emptyString() = this.ifEmpty { " [空字符串]" }
-        result.engineName = name
-        result.sourceString = sourceString
+        result.reset(sourceString, name)
 
         try {
             doWithMutex { eval() }
