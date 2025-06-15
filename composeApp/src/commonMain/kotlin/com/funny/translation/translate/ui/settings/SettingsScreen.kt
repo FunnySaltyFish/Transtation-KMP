@@ -322,7 +322,7 @@ private fun DevSetBaseUrl() {
                 // 本地
                 Button(
                     onClick = {
-                        text = "http://192.168.0.118:5001/trans/v1/"
+                        text = "http://192.168.1.118:5001/trans/v1/"
                     }
                 ) {
                     Text(text = "本地")
