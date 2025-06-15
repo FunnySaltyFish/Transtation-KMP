@@ -47,6 +47,7 @@ import com.funny.translation.helper.ClipBoardUtil
 import com.funny.translation.helper.LocalContext
 import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.helper.VibratorUtils
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
 import com.funny.translation.kmp.paging.items
@@ -290,6 +291,7 @@ fun SwipeToDismissItem(
             // 按指定方向触发删除后的回调，在此处变更具体数据
             if (it == SwipeToDismissBoxValue.StartToEnd) {
                 onDismissed()
+                VibratorUtils.vibrate()
                 true
             } else {
                 false
@@ -310,10 +312,8 @@ fun SwipeToDismissItem(
                 SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
             }
             val icon = Icons.Default.Delete
-            val scale by animateFloatAsState(
-                if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f,
-                label = ""
-            )
+            val settled = dismissState.targetValue == SwipeToDismissBoxValue.Settled
+            val scale by animateFloatAsState(if (settled) 1f else 1.5f, label = "")
 
             Box(
                 Modifier
@@ -324,7 +324,8 @@ fun SwipeToDismissItem(
                 FixedSizeIcon(
                     icon,
                     contentDescription = "Localized description",
-                    modifier = Modifier.scale(scale)
+                    modifier = Modifier.scale(scale),
+                    tint = if (!settled) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f)
                 )
             }
         },

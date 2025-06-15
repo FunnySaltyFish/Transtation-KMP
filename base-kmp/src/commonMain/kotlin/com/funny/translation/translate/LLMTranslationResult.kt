@@ -30,7 +30,9 @@ enum class TranslationStage {
     @SerialName("error")
     ERROR,
     @SerialName("clear")
-    CLEAR
+    CLEAR;
+
+    fun isEnd() = this >= FINAL_EXTRA
 }
 
 /**

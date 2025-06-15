@@ -1,13 +1,13 @@
 package com.funny.translation.translate.ui.main.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
@@ -67,6 +68,7 @@ internal fun TextTransResultItem(
     modifier: Modifier,
     result: TranslationResult,
     doFavorite: (Boolean, TranslationResult) -> Unit,
+    stopTranslateAction: (result: TranslationResult) -> Unit,
     smartTransEnabled : Boolean = false
 ) {
     Column(
@@ -84,46 +86,34 @@ internal fun TextTransResultItem(
                 fontWeight = FontWeight.W500
             )
 
-            // 如果有详细释义，则显示展开按钮
-            if (!result.detailText.isNullOrEmpty()) {
-                Box(
-                    modifier = Modifier.offset(24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ExpandMoreButton(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy((-8).dp),
+            ) {
+                // 如果有详细释义，则显示展开按钮
+                if (!result.detailText.isNullOrEmpty()) {
+                    Box(
                         modifier = Modifier,
-                        expand = expandDetail,
-                        tint = MaterialTheme.colorScheme.primary
+                        contentAlignment = Alignment.Center
                     ) {
-                        expandDetail = it
-                    }
-                    if (result.stage == TranslationStage.PARTIAL_TRANSLATION) {
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        ExpandMoreButton(
+                            modifier = Modifier,
+                            expand = expandDetail,
+                            tint = MaterialTheme.colorScheme.primary
+                        ) {
+                            expandDetail = it
+                        }
+                        if (result.stage == TranslationStage.PARTIAL_TRANSLATION) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        }
                     }
                 }
+                if (result.stage.isEnd()) {
+                    FunctionRowFinished(result, doFavorite)
+                } else {
+                    FunctionRowTranslating(result, stopTranslateAction)
+                }
             }
-            // 收藏、朗读、复制三个图标
-            var favorite by rememberFavoriteState(result = result)
-            IconButton(onClick = {
-                doFavorite(favorite, result)
-                favorite = !favorite
-            }, modifier = Modifier.offset(x = 16.dp)) {
-                FixedSizeIcon(
-                    imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = ResStrings.favorite,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            SpeakButton(
-                modifier = Modifier.offset(8.dp),
-                text = result.basic,
-                language = result.targetLanguage!!
-            )
-            CopyButton(
-                text = result.basic,
-                tint = MaterialTheme.colorScheme.primary
-            )
         }
 
         SelectionContainer {
@@ -192,6 +182,53 @@ internal fun TextTransResultItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun FunctionRowFinished(
+    result: TranslationResult,
+    doFavorite: (Boolean, TranslationResult) -> Unit
+) {
+    // 收藏、朗读、复制三个图标
+    var favorite by rememberFavoriteState(result = result)
+    IconButton(onClick = {
+        doFavorite(favorite, result)
+        favorite = !favorite
+    }, modifier = Modifier) {
+        FixedSizeIcon(
+            imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            contentDescription = ResStrings.favorite,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+    SpeakButton(
+        modifier = Modifier,
+        text = result.basic,
+        language = result.targetLanguage!!
+    )
+    CopyButton(
+        text = result.basic,
+        tint = MaterialTheme.colorScheme.primary
+    )
+}
+
+@Composable
+private fun FunctionRowTranslating(
+    result: TranslationResult,
+    stopTranslateAction: (result: TranslationResult) -> Unit,
+) {
+    // 暂停
+    IconButton(
+        onClick = { stopTranslateAction(result) },
+        modifier = Modifier
+    ) {
+        FixedSizeIcon(
+            Icons.Rounded.Pause,
+            contentDescription = "Stop Translating This",
+            tint = MaterialTheme.colorScheme.primary,
+        )
     }
 }
 

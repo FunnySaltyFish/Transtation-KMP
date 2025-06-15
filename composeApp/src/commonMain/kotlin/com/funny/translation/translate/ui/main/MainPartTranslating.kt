@@ -143,7 +143,9 @@ fun MainPartTranslating(vm: MainViewModel) {
                 modifier = Modifier
                     .fillMaxSize(),
                 resultList = vm.resultList,
-                doFavorite = vm::doFavorite
+                doFavorite = vm::doFavorite,
+                stopTransAction = vm::stopOneJob,
+                onDismissResult = vm::removeOneResult
             )
         }
     }
@@ -341,6 +343,8 @@ private fun ResultList(
     modifier: Modifier,
     resultList: SnapshotStateList<TranslationResult>,
     doFavorite: (Boolean, TranslationResult) -> Unit,
+    stopTransAction: (TranslationResult) -> Unit,
+    onDismissResult: (TranslationResult) -> Unit,
 ) {
     val smartTransEnabled by AppConfig.sAITransExplain
     LazyColumn(
@@ -349,18 +353,26 @@ private fun ResultList(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         itemsIndexed(resultList, key = { _, r -> r.engineName }) { _, result ->
-            TextTransResultItem(
-                modifier = Modifier.fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(start = 16.dp, end = 8.dp, bottom = 8.dp, top = 0.dp)
-                    .animateContentSize(),
-                result = result,
-                doFavorite = doFavorite,
-                smartTransEnabled = smartTransEnabled
-            )
+            SwipeToDismissItem(
+                modifier = Modifier.fillParentMaxWidth(),
+                onDismissed = {
+                    onDismissResult(result)
+                }
+            ) {
+                TextTransResultItem(
+                    modifier = Modifier.fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(start = 16.dp, end = 8.dp, bottom = 8.dp, top = 0.dp)
+                        .animateContentSize(),
+                    result = result,
+                    doFavorite = doFavorite,
+                    stopTranslateAction = stopTransAction,
+                    smartTransEnabled = smartTransEnabled,
+                )
+            }
         }
         item {
             NavPaddingItem()

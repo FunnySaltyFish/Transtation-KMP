@@ -126,6 +126,7 @@ fun FloatingTranslationWindow(
                         .verticalScroll(rememberScrollState()),
                     result = result!!,
                     doFavorite = viewModel::doFavorite,
+                    stopTranslateAction = viewModel::stopOneJob,
                     smartTransEnabled = AppConfig.sAITransExplain.value,
                 )
                 SpacerHeight(8.dp)

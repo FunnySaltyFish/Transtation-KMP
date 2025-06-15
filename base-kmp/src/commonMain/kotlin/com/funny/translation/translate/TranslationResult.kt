@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 enum class ThinkingStage {
-    IDLE, THINKING, FINISH
+    IDLE, THINKING, FINISH, CANCELED
 }
 
 /**

@@ -1,7 +1,8 @@
 package com.funny.translation.translate.ui.main
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,9 +26,11 @@ import com.funny.translation.js.core.JsTranslateTaskText
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.CoreTextTranslationTask
 import com.funny.translation.translate.Language
+import com.funny.translation.translate.ThinkingStage
 import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.TranslationException
 import com.funny.translation.translate.TranslationResult
+import com.funny.translation.translate.TranslationStage
 import com.funny.translation.translate.database.DefaultData
 import com.funny.translation.translate.database.TransHistoryBean
 import com.funny.translation.translate.database.appDB
@@ -42,12 +45,13 @@ import com.funny.translation.translate.ui.engineselect.EnginePreset
 import com.funny.translation.translate.utils.EngineManager
 import com.funny.translation.translate.utils.ModelManagerAction
 import com.funny.translation.translate.utils.SortResultUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
@@ -64,16 +68,21 @@ class MainViewModel : BaseViewModel() {
     var sourceLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_SOURCE_LANGUAGE, Language.ENGLISH)
     var targetLanguage by mutableDataSaverStateOf(DataSaverUtils, Consts.KEY_TARGET_LANGUAGE, Language.CHINESE)
     val resultList = mutableStateListOf<TranslationResult>()
-    var startedProgress by mutableFloatStateOf(1f)
-    var finishedProgress by mutableFloatStateOf(1f)
+
+    private var totalTaskNum: Int by mutableIntStateOf(1)
+    private var startedTaskNum by mutableIntStateOf(0)
+    val startedProgress by derivedStateOf { if (totalTaskNum == 0) 1f else startedTaskNum.toFloat() / totalTaskNum }
+    private var finishedTaskNum by mutableIntStateOf(0)
+    val finishedProgress by derivedStateOf { if (totalTaskNum == 0) 1f else finishedTaskNum.toFloat() / totalTaskNum }
+
     var selectedEngines: MutableList<TranslationEngine> = mutableStateListOf()
     var translating by mutableStateOf(false)
 
     // 一些私有变量
     private var translateJob: Job? = null
+    private val eachTranslateJobs = mutableListOf<Pair<Job, CoreTextTranslationTask>>()
     private var engineInitialized = false
     private val evalJsMutex by lazy(LazyThreadSafetyMode.PUBLICATION) { Mutex() }
-    private val totalProgress: Int get() = selectedEngines.size
 
     // 下面是一些需要计算的变量，比如流和列表
 
@@ -125,7 +134,9 @@ class MainViewModel : BaseViewModel() {
                     is ModelManagerAction.OneEngineInitialized -> {
                         // 读取持久数据，如果为 true 则保留选中状态
                         if (DataSaverUtils.readData(action.engine.selectKey, false)) {
-                            addSelectedEngines(action.engine)
+                            withContext(Dispatchers.Main) {
+                                addSelectedEngines(action.engine)
+                            }
                         }
                     }
 
@@ -175,13 +186,6 @@ class MainViewModel : BaseViewModel() {
         engines.forEach {
             DataSaverUtils.saveData(it.selectKey, true)
         }
-//        viewModelScope.launch {
-//            val oldBindEngines = bindEnginesFlow.last()
-//            val newBindEngines = oldBindEngines.map {
-//                engines.find { engine -> engine.name == it.name } ?: it
-//            }
-//            bindEnginesFlow.emit(newBindEngines)
-//        }
     }
 
     // 收藏与取消收藏，参数 favourited 为 false 时收藏，为 true 时取消收藏
@@ -196,29 +200,53 @@ class MainViewModel : BaseViewModel() {
         }
     }
 
+    fun removeOneResult(result: TranslationResult) {
+        eachTranslateJobs.find { it.second.result == result }?.let {
+            if (it.first.isActive) it.first.cancel()
+            eachTranslateJobs.remove(it)
+        }
+        resultList.remove(result)
+        totalTaskNum -= 1
+        startedTaskNum -= 1
+        finishedTaskNum -= 1
+        if (totalTaskNum == 0 || totalTaskNum == finishedTaskNum) translating = false
+        Log.d(TAG, "removeResult: ${result.engineName}, startedNum: $startedTaskNum, finishedTaskNum: $finishedTaskNum, totalTaskNum: $totalTaskNum")
+    }
+
+    fun stopOneJob(result: TranslationResult) {
+        eachTranslateJobs.find { it.second.result == result }?.let {
+            if (it.first.isActive) it.first.cancel()
+        }
+//        if (finishedTaskNum == totalTaskNum) translating = false
+        Log.d(TAG, "stopOneJob: ${result.engineName}, startedNum: $startedTaskNum, finishedTaskNum: $finishedTaskNum, totalTaskNum: $totalTaskNum")
+    }
+
     fun addSelectedEngines(vararg engines: TranslationEngine) {
         Log.d(TAG, "addSelectedEngines: ${engines.joinToString{it.name}}")
         selectedEngines.addAll(engines)
+        engines.forEach { DataSaverUtils.saveData(it.selectKey, true) }
     }
 
     fun removeSelectedEngine(engine: TranslationEngine) {
         selectedEngines.remove(engine)
+        DataSaverUtils.saveData(engine.selectKey, false)
     }
 
     fun updateEngineByPreset(previousSelect: EnginePreset?, currentSelected: EnginePreset?) {
 //        if (previousSelect != null) {
 //            selectedEngines.removeAll(previousSelect.engines.toSet())
 //        }
+        selectedEngines.forEach { DataSaverUtils.saveData(it.selectKey, false) }
         selectedEngines.clear()
         if (currentSelected != null) {
-            selectedEngines.addAll(currentSelected.engines.toSet())
+            addSelectedEngines(*currentSelected.engines.toSet().toTypedArray())
         }
     }
 
     fun cancel() {
         translateJob?.cancel()
-        finishedProgress = 1f
-        startedProgress = 1f
+        startedTaskNum = totalTaskNum
+        finishedTaskNum = totalTaskNum
         translating = false
     }
 
@@ -227,8 +255,10 @@ class MainViewModel : BaseViewModel() {
         if (actualTransText.isEmpty()) return
 
         resultList.clear()
-        finishedProgress = 0f
-        startedProgress = 0f
+        eachTranslateJobs.clear()
+        startedTaskNum = 0
+        finishedTaskNum = 0
+        totalTaskNum = selectedEngines.size
         addTransHistory(actualTransText, sourceLanguage, targetLanguage)
         updateMainScreenState(MainScreenState.Translating)
         translating = true
@@ -267,28 +297,15 @@ class MainViewModel : BaseViewModel() {
 
     private suspend fun translateInSequence(){
         createTasks().forEach { task ->
-            try {
-                task.result.targetLanguage = targetLanguage
-                startedProgress += 1f / totalProgress
+            val job = viewModelScope.launch {
+                startedTaskNum += 1
                 addTranslateResultItem(task.result)
-                withContext(Dispatchers.IO) {
-                    task.translate()
-                }
-                Log.d(TAG, "translate : $finishedProgress ${task.result}")
-            } catch (e: TranslationException) {
-                e.printStackTrace()
-                with(task.result) {
-                    setBasicResult(
-                        "${ResStrings.error_result}\n${e.message}"
-                    )
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                with(task.result) {
-                    setBasicResult(ResStrings.error_result)
-                }
+                actualTranslateTask(task)
+                finishedTaskNum += 1
             }
-            finishedProgress += 1f / totalProgress
+            eachTranslateJobs.add(job to task)
+            job.join()
+            eachTranslateJobs.remove(job to task)
         }
     }
 
@@ -296,33 +313,45 @@ class MainViewModel : BaseViewModel() {
         val tasks: ArrayList<Deferred<*>> = arrayListOf()
         createTasks(true).also { newTasks ->
             resultList.addAll(newTasks.map { it.result })
-            startedProgress = 1.0f
+            totalTaskNum = newTasks.size
+            startedTaskNum = totalTaskNum
         }.forEach { task ->
             tasks.add(viewModelScope.async {
-                try {
-                    task.result.targetLanguage = targetLanguage
-                    withContext(Dispatchers.IO) {
-                        task.translate()
-                    }
-                    Log.d(TAG, "translate : $finishedProgress ${task.result}")
-                } catch (e: TranslationException) {
-                    e.printStackTrace()
-                    with(task.result) {
-                        setBasicResult(
-                            "${ResStrings.error_result}\n${e.message}"
-                        )
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    with(task.result) {
-                        setBasicResult(ResStrings.error_result)
-                    }
-                }
-                finishedProgress += 1f / totalProgress
+                actualTranslateTask(task)
+                finishedTaskNum += 1
+                Log.d(TAG, "translateInParallel: task ${task.result.engineName} finished, total: $finishedTaskNum/$totalTaskNum")
             })
+            eachTranslateJobs.add(tasks.last() to task)
         }
         // 等待所有任务完成再返回，使对翻译状态的判断正常
-        tasks.awaitAll()
+        tasks.joinAll()
+    }
+
+    private suspend fun actualTranslateTask(task: CoreTextTranslationTask) {
+        try {
+            task.result.targetLanguage = targetLanguage
+            withContext(Dispatchers.IO) {
+                task.translate()
+            }
+            Log.d(TAG, "translate : $finishedProgress ${task.result}")
+        } catch (e: TranslationException) {
+            e.printStackTrace()
+            task.result.error = "${ResStrings.error_result}\n${e.message}"
+        } catch (e: CancellationException) {
+            task.result.error = ResStrings.cancel_current_translation
+            if (task.result.thinkStage == ThinkingStage.THINKING) {
+                task.result.thinkStage = ThinkingStage.CANCELED
+            }
+            Log.d(TAG, "cancel translate ${task.result.engineName}")
+            return
+        } catch (e: Exception) {
+            e.printStackTrace()
+            task.result.error = "${ResStrings.error_result}\n${e.message}"
+        } finally {
+            if (task.result.stage != TranslationStage.ERROR) {
+                task.result.stage = TranslationStage.FINAL_EXTRA
+            }
+        }
     }
 
     private suspend fun createTasks(withMutex: Boolean = false): List<CoreTextTranslationTask> {

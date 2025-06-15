@@ -80,6 +80,19 @@ fun ThinkResult(
                         )
                     }
 
+                    ThinkingStage.CANCELED -> {
+                        Icon(
+                            imageVector = Icons.Rounded.Psychology,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp).padding(start = 2.dp),
+                        )
+                        Text(
+                            text = ResStrings.cancel_current_translation,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+
                     else -> {}
                 }
             }

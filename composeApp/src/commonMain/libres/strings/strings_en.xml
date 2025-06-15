@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- English strings -->
+    <string name="cancel_current_translation">Current translation has been cancelled</string>
     <string name="ai_trans_explain_enabled">LLM intelligent translation enabled</string>
     <string name="new_preset">New Preset</string>
     <string name="edit_preset">Edit Preset</string>
