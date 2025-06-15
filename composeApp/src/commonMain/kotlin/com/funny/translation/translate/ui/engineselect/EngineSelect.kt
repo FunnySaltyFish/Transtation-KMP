@@ -57,6 +57,7 @@ interface UpdateSelectedEngine {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun EngineSelectDialog(
+    modifier: Modifier = Modifier,
     showDialog: MutableState<Boolean>,
     bindEngines: List<TranslationEngine>,
     jsEngines: List<TranslationEngine>,
@@ -79,7 +80,7 @@ internal fun EngineSelectDialog(
     }
 
     AnyPopDialog(
-        modifier = Modifier
+        modifier = modifier
             .popDialogShape()
             .heightIn(max = 640.dp)
             .padding(top = 8.dp, bottom = 8.dp),
