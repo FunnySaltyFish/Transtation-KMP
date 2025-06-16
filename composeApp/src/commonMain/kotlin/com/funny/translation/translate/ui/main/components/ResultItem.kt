@@ -49,6 +49,7 @@ import com.funny.translation.bean.show
 import com.funny.translation.helper.Log
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberDerivedStateOf
+import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.strings.ResStrings
 import com.funny.translation.translate.LLMTranslationResult
@@ -79,13 +80,14 @@ internal fun TextTransResultItem(
         modifier = modifier
     ) {
         val expandBasicResultThreshold = 4
-        val canExpandBasic by rememberDerivedStateOf {
-            result.basic.split("\n").size > expandBasicResultThreshold
-        }
         val hasDetailText by rememberDerivedStateOf {
             !result.detailText.isNullOrEmpty()
         }
         val alwaysExpand = AppConfig.sExpandDetailByDefault.value
+        var textLayoutLine by rememberStateOf(0)
+        val canExpandBasic by rememberDerivedStateOf {
+            result.stage.isEnd() && textLayoutLine > expandBasicResultThreshold
+        }
         var expandState by rememberSaveable(hasDetailText) {
             val value = when {
                 hasDetailText  -> {
@@ -94,7 +96,7 @@ internal fun TextTransResultItem(
                     else if (alwaysExpand) ExpandState.FULL              // 不能二次展开，但默认展开
                     else ExpandState.COLLAPSED                           // 不能二次展开，也不默认展开，收起
                 }
-                else -> if (canExpandBasic) ExpandState.PARTIAL else ExpandState.COLLAPSED
+                else -> ExpandState.FULL
             }
             mutableStateOf(value)
         }
@@ -155,8 +157,12 @@ internal fun TextTransResultItem(
                         },
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 16.sp,
-                        maxLines = if (expandState == ExpandState.COLLAPSED) expandBasicResultThreshold else Int.MAX_VALUE,
-                        overflow = TextOverflow.Ellipsis
+                        maxLines = if (canExpandBasic && expandState == ExpandState.COLLAPSED) expandBasicResultThreshold else Int.MAX_VALUE,
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = {
+                            // 如果 canExpandBasic 已经算好了，就别更新了
+                            if (!canExpandBasic) textLayoutLine = it.lineCount
+                        }
                     )
                 }
             }
