@@ -2,7 +2,6 @@
 
 package com.funny.translation.translate.ui.plugin
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -306,7 +305,7 @@ internal fun PluginItem(
         .clip(RoundedCornerShape(28.dp))
         .background(MaterialTheme.colorScheme.primaryContainer)
         .padding(horizontal = 20.dp, vertical = 8.dp)
-        .animateContentSize()
+        // .animateContentSize()
     ) {
         Row(
             modifier = Modifier
@@ -325,7 +324,7 @@ internal fun PluginItem(
             markdown = plugin.markdown,
             fontSize = 13.sp,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(0.9f),
-            maxLines = if (expand) Int.MAX_VALUE else 1,
+            maxLines = if (expand) 999 else 1,
             onLinkClicked = { context, url ->
                 WebViewActivity.start(context, url)
             }
