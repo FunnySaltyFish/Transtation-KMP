@@ -11,6 +11,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.IconButton
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.translation.kmp.painterDrawableRes
@@ -104,6 +106,108 @@ fun ExchangeButton(
     }
 }
 
+/**
+ * 展开状态枚举
+ */
+enum class ExpandState {
+    COLLAPSED,      // 完全收折
+    PARTIAL,        // 部分展开
+    FULL           // 完全展开
+}
+
+/**
+ * 支持两次收折的展开按钮
+ *
+ * @param modifier 修饰符
+ * @param expandState 当前展开状态
+ * @param supportTwoLevel 是否支持两级展开，false时退化为普通的单级展开
+ * @param tint 图标颜色
+ * @param onExpandChange 状态变化回调
+ */
+@Composable
+fun ExpandButton(
+    modifier: Modifier = Modifier,
+    expandState: ExpandState,
+    supportTwoLevel: Boolean = true,
+    tint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+    onExpandChange: (ExpandState) -> Unit
+) {
+    // 计算旋转角度
+    val rotationValue by animateFloatAsState(
+        targetValue = when {
+            !supportTwoLevel -> if (expandState != ExpandState.COLLAPSED) -180f else 0f
+            else -> if (expandState != ExpandState.FULL) 0f else 180f
+        },
+        animationSpec = tween(700),
+        label = "expand_rotation"
+    )
+
+    // 选择合适的图标
+    val icon: ImageVector = when {
+        !supportTwoLevel -> Icons.Default.ArrowDropDown
+        expandState == ExpandState.COLLAPSED -> Icons.Default.KeyboardDoubleArrowDown
+        else -> Icons.Default.ArrowDropDown
+    }
+
+    IconButton(
+        onClick = {
+            val nextState = getNextExpandState(expandState, supportTwoLevel)
+            onExpandChange(nextState)
+        },
+        modifier = modifier
+    ) {
+        FixedSizeIcon(
+            imageVector = icon,
+            contentDescription = getContentDescription(expandState, supportTwoLevel),
+            modifier = Modifier.graphicsLayer {
+                rotationX = rotationValue
+            },
+            tint = tint
+        )
+    }
+}
+
+/**
+ * 获取下一个展开状态
+ */
+private fun getNextExpandState(currentState: ExpandState, supportTwoLevel: Boolean): ExpandState {
+    return if (!supportTwoLevel) {
+        // 单级模式：只在 COLLAPSED 和 FULL 之间切换
+        when (currentState) {
+            ExpandState.COLLAPSED -> ExpandState.FULL
+            else -> ExpandState.COLLAPSED
+        }
+    } else {
+        // 双级模式：按循环顺序切换
+        when (currentState) {
+            ExpandState.COLLAPSED -> ExpandState.PARTIAL
+            ExpandState.PARTIAL -> ExpandState.FULL
+            ExpandState.FULL -> ExpandState.COLLAPSED
+        }
+    }
+}
+
+/**
+ * 获取内容描述文本
+ */
+private fun getContentDescription(expandState: ExpandState, supportTwoLevel: Boolean): String {
+    return if (!supportTwoLevel) {
+        when (expandState) {
+            ExpandState.COLLAPSED -> "展开"
+            else -> "收折"
+        }
+    } else {
+        when (expandState) {
+            ExpandState.COLLAPSED -> "展开"
+            ExpandState.PARTIAL -> "完全展开"
+            ExpandState.FULL -> "收折"
+        }
+    }
+}
+
+/**
+ * 兼容现有 ExpandMoreButton 的扩展函数
+ */
 @Composable
 fun ExpandMoreButton(
     modifier: Modifier = Modifier,
@@ -111,20 +215,15 @@ fun ExpandMoreButton(
     tint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     onClick: (Boolean) -> Unit
 ) {
-    val rotationValue by animateFloatAsState(
-        targetValue = if (expand) -180f else 0f,
-        animationSpec = tween(700)
+    val expandState = if (expand) ExpandState.PARTIAL else ExpandState.COLLAPSED
+
+    ExpandButton(
+        modifier = modifier,
+        expandState = expandState,
+        supportTwoLevel = false,
+        tint = tint,
+        onExpandChange = { newState ->
+            onClick(newState != ExpandState.COLLAPSED)
+        }
     )
-    IconButton(onClick = {
-        onClick(!expand)
-    }, modifier = modifier) {
-        FixedSizeIcon(
-            Icons.Default.ArrowDropDown,
-            ResStrings.expand,
-            modifier = Modifier.graphicsLayer {
-                rotationX = rotationValue
-            },
-            tint = tint
-        )
-    }
 }

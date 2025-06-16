@@ -39,12 +39,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funny.translation.AppConfig
 import com.funny.translation.GlobalTranslationConfig
 import com.funny.translation.bean.show
+import com.funny.translation.helper.Log
+import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberDerivedStateOf
 import com.funny.translation.kmp.painterDrawableRes
 import com.funny.translation.strings.ResStrings
@@ -56,7 +59,8 @@ import com.funny.translation.translate.database.appDB
 import com.funny.translation.translate.database.transFavoriteDao
 import com.funny.translation.translate.ui.main.CopyButton
 import com.funny.translation.translate.ui.main.SpeakButton
-import com.funny.translation.translate.ui.widget.ExpandMoreButton
+import com.funny.translation.translate.ui.widget.ExpandButton
+import com.funny.translation.translate.ui.widget.ExpandState
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.MarkdownText
 import kotlinx.coroutines.Dispatchers
@@ -74,9 +78,27 @@ internal fun TextTransResultItem(
     Column(
         modifier = modifier
     ) {
-        var expandDetail by rememberSaveable {
-            mutableStateOf(!result.detailText.isNullOrEmpty() && AppConfig.sExpandDetailByDefault.value)
+        val expandBasicResultThreshold = 4
+        val canExpandBasic by rememberDerivedStateOf {
+            result.basic.split("\n").size > expandBasicResultThreshold
         }
+        val hasDetailText by rememberDerivedStateOf {
+            !result.detailText.isNullOrEmpty()
+        }
+        val alwaysExpand = AppConfig.sExpandDetailByDefault.value
+        var expandState by rememberSaveable(hasDetailText) {
+            val value = when {
+                hasDetailText  -> {
+                    if (canExpandBasic && alwaysExpand) ExpandState.FULL // 既可以二次展开，又默认展开
+                    else if (canExpandBasic) ExpandState.PARTIAL         // 仅能二次展开，默认收起
+                    else if (alwaysExpand) ExpandState.FULL              // 不能二次展开，但默认展开
+                    else ExpandState.COLLAPSED                           // 不能二次展开，也不默认展开，收起
+                }
+                else -> if (canExpandBasic) ExpandState.PARTIAL else ExpandState.COLLAPSED
+            }
+            mutableStateOf(value)
+        }
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = result.engineName,
@@ -91,25 +113,23 @@ internal fun TextTransResultItem(
                 horizontalArrangement = Arrangement.spacedBy((-8).dp),
             ) {
                 // 如果有详细释义，则显示展开按钮
-                if (!result.detailText.isNullOrEmpty()) {
-                    Box(
-                        modifier = Modifier,
-                        contentAlignment = Alignment.Center
-                    ) {
-                        ExpandMoreButton(
-                            modifier = Modifier,
-                            expand = expandDetail,
-                            tint = MaterialTheme.colorScheme.primary
-                        ) {
-                            expandDetail = it
+                if (hasDetailText || canExpandBasic) {
+                    ExpandResultButton(
+                        result = result,
+                        supportTwoLevel = hasDetailText && canExpandBasic,
+                        expandState = expandState,
+                        onExpandStateChange = {
+                            Log.d("TextTransResultItem", "Expand state changed from $expandState to $it")
+                            expandState = it
                         }
-                        if (result.stage == TranslationStage.PARTIAL_TRANSLATION) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                        }
-                    }
+                    )
                 }
                 if (result.stage.isEnd()) {
-                    FunctionRowFinished(result, doFavorite)
+                    FunctionRowFinished(result, doFavorite, onStartPlay = {
+                        if (expandState == ExpandState.COLLAPSED && canExpandBasic) {
+                            expandState = ExpandState.PARTIAL
+                        }
+                    })
                 } else {
                     FunctionRowTranslating(result, stopTranslateAction)
                 }
@@ -135,11 +155,13 @@ internal fun TextTransResultItem(
                         },
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 16.sp,
+                        maxLines = if (expandState == ExpandState.COLLAPSED) expandBasicResultThreshold else Int.MAX_VALUE,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
         }
-        if (expandDetail && result.detailText != null) {
+        if (expandState == ExpandState.FULL && hasDetailText) {
             HorizontalDivider(modifier = Modifier.padding(top = 4.dp))
             MarkdownText(
                 markdown = result.detailText!!,
@@ -186,9 +208,34 @@ internal fun TextTransResultItem(
 }
 
 @Composable
+private fun ExpandResultButton(
+    result: TranslationResult,
+    supportTwoLevel: Boolean,
+    expandState: ExpandState,
+    onExpandStateChange: (ExpandState) -> Unit
+) {
+    Box(
+        modifier = Modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        ExpandButton(
+            modifier = Modifier,
+            expandState = expandState,
+            supportTwoLevel = supportTwoLevel,
+            tint = MaterialTheme.colorScheme.primary,
+            onExpandChange = onExpandStateChange
+        )
+        if (result.stage == TranslationStage.PARTIAL_TRANSLATION) {
+            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+        }
+    }
+}
+
+@Composable
 private fun FunctionRowFinished(
     result: TranslationResult,
-    doFavorite: (Boolean, TranslationResult) -> Unit
+    doFavorite: (Boolean, TranslationResult) -> Unit,
+    onStartPlay: SimpleAction
 ) {
     // 收藏、朗读、复制三个图标
     var favorite by rememberFavoriteState(result = result)
@@ -206,7 +253,8 @@ private fun FunctionRowFinished(
     SpeakButton(
         modifier = Modifier,
         text = result.basic,
-        language = result.targetLanguage!!
+        language = result.targetLanguage!!,
+        onStartPlay = onStartPlay
     )
     CopyButton(
         text = result.basic,
