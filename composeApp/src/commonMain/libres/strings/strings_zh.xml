@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Chinese strings -->
+    <string name="the_notice_is_read">此公告已读且不再出现~</string>
     <string name="cancel_current_translation">当前翻译已取消</string>
     <string name="ai_trans_explain_enabled">已开启智能翻译，使用大模型翻译时生效</string>
     <string name="new_preset">新建预设</string>

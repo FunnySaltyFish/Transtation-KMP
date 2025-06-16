@@ -2,6 +2,8 @@ package com.funny.translation.bean
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -20,4 +22,13 @@ fun <T> rememberRef(
     initialValue: T
 ): Ref<T> {
     return remember { Ref(initialValue) }
+}
+
+@Composable
+fun <T : Any> rememberSaveableRef(
+    initialValue: T
+): Ref<T> {
+    return rememberSaveable(
+        saver = Saver(save = { it.value }, restore = { Ref(it) })
+    ) { Ref(initialValue) }
 }

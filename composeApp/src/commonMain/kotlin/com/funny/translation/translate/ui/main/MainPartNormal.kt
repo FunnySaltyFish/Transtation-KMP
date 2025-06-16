@@ -303,6 +303,7 @@ private fun Notice(modifier: Modifier) {
             text = it.message,
             singleLine = singleLine,
             showClose = true,
+            dismissForeverKey = if (it.allowDismissForever) "main_notice" else null,
         )
     }
 }

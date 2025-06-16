@@ -1,7 +1,6 @@
 package com.funny.translation.translate.ui.widget
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,13 +32,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.funny.data_saver.core.getLocalDataSaverInterface
+import com.funny.translation.bean.rememberSaveableRef
 import com.funny.translation.helper.SimpleAction
+import com.funny.translation.helper.now
+import com.funny.translation.helper.toast
 import com.funny.translation.kmp.ifThen
+import com.funny.translation.strings.ResStrings
 import com.funny.translation.ui.FixedSizeIcon
 
 // 改自 https://github.com/yangqi1024/jetpack-compose-ui/
 
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * 通知条
+ *
+ * @param dismissForeverKey 本地持久化的 key，如果非空，则会在关闭时认为相同 text 的通知条不需要再次显示
+ */
 @Composable
 fun NoticeBar(
     modifier: Modifier,
@@ -47,16 +56,26 @@ fun NoticeBar(
     singleLine: Boolean = false,
     showClose: Boolean = false,
     scrollable: Boolean = singleLine,
+    dismissForeverKey: String? = null,
     iconSize: Dp = 16.dp,
     prefixIcon: ImageVector? = null,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     overflow: TextOverflow = TextOverflow.Clip
 ) {
+    val localKey = dismissForeverKey?.let { "__notice_read__$it" }
+    val dataSaver = getLocalDataSaverInterface()
+    val hasRead = (localKey != null && dataSaver.readData(localKey, "") == text)
+    if (hasRead) return
+
     var show by rememberSaveable {
-        mutableStateOf(true)
+        mutableStateOf(!hasRead)
     }
 
     if (show) {
+        var showTime by rememberSaveableRef(now())
+        LaunchedEffect(singleLine) {
+            if (!singleLine) showTime = now()
+        }
         Row(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically
@@ -92,6 +111,11 @@ fun NoticeBar(
                         .size(iconSize)
                         .align(Alignment.Top)
                         .clickable {
+                            // 如果是多行通知条，展开了5秒以上，则以后不再弹出相同内容
+                            if (!singleLine && localKey != null && now() - showTime >= 5000L) {
+                                dataSaver.saveData(localKey, text)
+                                toast(ResStrings.the_notice_is_read)
+                            }
                             show = false
                         },
                 )
