@@ -36,7 +36,7 @@ suspend fun getRecommendApp(): List<RecommendApp> = withContext(Dispatchers.IO) 
 @Composable
 fun AppRecommendationScreen() {
     val context = LocalContext.current
-    CommonPage(title = ResStrings.recommendation_app) {
+    CommonPage(title = ResStrings.recommendation_app, enableOverScroll = false) {
         val (recommendAppListState, retry) = rememberRetryableLoadingState(loader = ::getRecommendApp)
         LazyColumn {
             loadingList(recommendAppListState, retry, key = { it.name }) { app ->

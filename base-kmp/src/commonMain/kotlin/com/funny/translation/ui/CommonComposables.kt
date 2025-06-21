@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +33,8 @@ import com.funny.translation.kmp.NavHostController
 import com.funny.translation.kmp.Platform
 import com.funny.translation.kmp.base.strings.ResStrings
 import com.funny.translation.kmp.currentPlatform
+import com.funny.translation.ui.OverScroll.overScrollVertical
+import com.funny.translation.ui.OverScroll.rememberOverscrollFlingBehavior
 
 /**
  * CommonPage，有一个 TopBar 以及剩余内容，被 Column 包裹
@@ -46,6 +50,7 @@ fun CommonPage(
     modifier: Modifier = Modifier,
     title: String? = null,
     addNavPadding: Boolean = true,
+    enableOverScroll: Boolean = true,
     navController: NavHostController = LocalNavController.current,
     navigationIcon: @Composable () -> Unit = { CommonNavBackIcon(navController) },
     actions: @Composable RowScope.() -> Unit = { },
@@ -57,7 +62,14 @@ fun CommonPage(
     Column(
         modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
+            .windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top))
+            .run {
+                if (enableOverScroll) {
+                    val scrollState = rememberScrollState()
+                    val overscrollFling = rememberOverscrollFlingBehavior { scrollState }
+                    overScrollVertical().verticalScroll(scrollState, flingBehavior = overscrollFling)
+                } else this
+             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         topBar()

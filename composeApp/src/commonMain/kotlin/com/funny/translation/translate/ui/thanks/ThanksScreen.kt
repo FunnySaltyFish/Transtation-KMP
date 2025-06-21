@@ -91,7 +91,7 @@ fun ThanksScreen() {
         sponsors.refresh()
     }
 
-    CommonPage(title = ResStrings.thanks) {
+    CommonPage(title = ResStrings.thanks, enableOverScroll = false) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),

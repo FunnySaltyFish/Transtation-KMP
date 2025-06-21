@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -61,8 +59,8 @@ fun AboutScreen() {
     val context = LocalContext.current
     val navController = LocalNavController.current
     CommonPage(
-        modifier = Modifier.verticalScroll(rememberScrollState()),
-        title = ResStrings.about
+        modifier = Modifier,
+        title = ResStrings.about,
     ) {
         LargeImageTile(
             funnyIcon = FunnyIcon(resourceName = "ic_launcher_icon"),
@@ -183,14 +181,14 @@ private fun LargeImageTile(
 fun OpenSourceLibScreen() {
     val vm : SettingsScreenViewModel = viewModel()
     val (state, retry) = rememberRetryableLoadingState(loader = vm::loadOpenSourceLibInfo)
-    CommonPage(title = ResStrings.open_source_library) {
+    CommonPage(title = ResStrings.open_source_library, enableOverScroll = false) {
         LazyColumn(
             Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            loadingList<OpenSourceLibraryInfo>(state, retry, key = { it.name }) { info ->
+            loadingList(state, retry, key = { it.name }) { info ->
                 val color =
                     if (info.author == "FunnySaltyFish" && MaterialTheme.colorScheme.isLight) MaterialColors.Orange200 else MaterialTheme.colorScheme.primaryContainer
                 OpenSourceLibItem(

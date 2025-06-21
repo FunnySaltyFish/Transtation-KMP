@@ -66,7 +66,7 @@ fun LongTextTransListScreen() {
         }
     }
     val vm: LongTextTransListViewModel = viewModel()
-    CommonPage(title = ResStrings.long_text_trans) {
+    CommonPage(title = ResStrings.long_text_trans, enableOverScroll = false) {
         val list by vm.taskList.collectAsState(initial = emptyList())
 
         LazyColumn {

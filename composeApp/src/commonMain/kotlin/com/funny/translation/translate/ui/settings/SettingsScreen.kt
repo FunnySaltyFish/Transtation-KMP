@@ -3,7 +3,6 @@ package com.funny.translation.translate.ui.settings
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,16 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Insights
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +45,6 @@ import com.funny.jetsetting.core.ui.SettingItemCategory
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.AppConfig
 import com.funny.translation.bean.AppLanguage
-import com.funny.translation.bean.ClickClipboardHintAction
 import com.funny.translation.helper.ApplicationUtil
 import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.DateUtils
@@ -75,7 +68,6 @@ import com.funny.translation.ui.CommonPage
 import com.funny.translation.ui.FixedSizeIcon
 import com.funny.translation.ui.theme.LightDarkMode
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -85,20 +77,16 @@ private const val TAG = "SettingScreen"
 private val languages = AppLanguage.entries.toImmutableList()
 private val lightDarkModes = LightDarkMode.entries.toImmutableList()
 
-
 @Composable
 fun SettingsScreen() {
     val navController = LocalNavController.current
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
-
     CommonPage(
         title = ResStrings.nav_settings,
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .verticalScroll(scrollState),
     ) {
         if (AppConfig.developerMode.value) {
             SettingItemCategory(title = { ItemHeading(text = ResStrings.developer_mode) }) {
@@ -179,24 +167,6 @@ fun SettingsScreen() {
             ) {
 
             }
-            var clickClipboardHintAction by AppConfig.sClickClipboardHintAction
-            JetSettingListDialog(
-                list = ClickClipboardHintAction.entries.toPersistentList(),
-                text = ResStrings.click_clipboard_hint_action,
-                description = ResStrings.click_clipboard_hint_action_desc,
-                imageVector = Icons.Default.ContentPaste,
-                selected = clickClipboardHintAction,
-                updateSelected = {
-                    clickClipboardHintAction = it
-                },
-            )
-            // 模型管理
-            JetSettingTile(
-                imageVector = Icons.Default.Settings,
-                text = ResStrings.model_manager
-            ) {
-                navController.navigate(TranslateScreen.ModelManageScreen.route)
-            }
             JetSettingTile(
                 imageVector = Icons.Default.Sort,
                 text = ResStrings.sort_result,
@@ -265,6 +235,8 @@ fun SettingsScreen() {
             )
         }
     }
+
+
 }
 
 @Composable
@@ -296,7 +268,6 @@ private fun SelectAppLanguage() {
     )
 }
 
-
 @Composable
 private fun DevSetBaseUrl() {
     var text by remember {
@@ -307,28 +278,7 @@ private fun DevSetBaseUrl() {
         confirmButtonAction = {
             ServiceCreator.BASE_URL = text
         }) {
-        Column {
-            TextField(value = text, onValueChange = { text = it })
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                // 默认
-                Button(
-                    onClick = { ServiceCreator.BASE_URL = ServiceCreator.DEFAULT_BASE_URL }
-                ) {
-                    Text(text = "默认")
-                }
-
-                // 本地
-                Button(
-                    onClick = {
-                        text = "http://192.168.1.118:5001/trans/v1/"
-                    }
-                ) {
-                    Text(text = "本地")
-                }
-            }
-        }
+        TextField(value = text, onValueChange = { text = it })
     }
 }
 
@@ -361,12 +311,12 @@ private fun ProJetSettingCheckbox(
     )
 }
 
-
 @Composable
 fun SelectLanguageScreen(modifier: Modifier) {
     val data = remember {
         allLanguages.map { DataSaverUtils.readData(it.selectedKey, true) }.toMutableStateList()
     }
+
 
     fun setEnabledState(language: Language, enabled: Boolean) {
         DataSaverUtils.saveData(language.selectedKey, enabled)

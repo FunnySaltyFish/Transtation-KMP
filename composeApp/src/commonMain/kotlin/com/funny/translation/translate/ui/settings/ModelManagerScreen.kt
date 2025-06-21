@@ -100,7 +100,8 @@ fun ModelManagerScreen() {
             IconButton(onClick = { showHelpDialog = true }) {
                 FixedSizeIcon(Icons.Default.Help, contentDescription = ResStrings.help)
             }
-        }
+        },
+        enableOverScroll = false
     ) {
         val state by ModelManager.modelState.collectAsState()
 

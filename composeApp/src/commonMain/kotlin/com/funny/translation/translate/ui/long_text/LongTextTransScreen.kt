@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Drafts
@@ -72,7 +70,7 @@ private const val TAG = "LongTextTransScreen"
 @Composable
 fun LongTextTransScreen() {
     CommonPage(
-        modifier = Modifier.verticalScroll(rememberScrollState()),
+        modifier = Modifier,
         title = ResStrings.long_text_trans,
     ) {
         val navController = LocalNavController.current

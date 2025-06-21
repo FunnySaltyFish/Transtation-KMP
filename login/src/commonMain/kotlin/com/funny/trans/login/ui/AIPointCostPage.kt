@@ -121,7 +121,7 @@ fun AIPointCostPage() {
     }
 
     CommonPage(
-        title = ResStrings.ai_cost_title,
+        title = ResStrings.ai_cost_title, enableOverScroll = false,
         actions = {
             IconButton(onClick = { dialogState.animateShow() }) {
                 Icon(Icons.Default.DateRange, ResStrings.select_date)

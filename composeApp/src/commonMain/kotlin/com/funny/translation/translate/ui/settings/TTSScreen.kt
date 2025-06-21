@@ -51,6 +51,7 @@ import kotlinx.collections.immutable.toImmutableList
 fun TTSScreen() {
     CommonPage(
         title = ResStrings.speak_settings,
+        enableOverScroll = false
     ) {
         val navController = LocalNavController.current
         val vm: TTSScreenViewModel = viewModel()

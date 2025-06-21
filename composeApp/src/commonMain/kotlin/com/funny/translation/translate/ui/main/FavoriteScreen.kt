@@ -67,7 +67,8 @@ fun FavoriteScreen(
 ) {
     CommonPage(
         modifier = modifier,
-        title = ResStrings.favorite
+        title = ResStrings.favorite,
+        enableOverScroll = false
     ) {
         val navController = LocalNavController.current
         val vm: FavoriteViewModel = viewModel()

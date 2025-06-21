@@ -206,7 +206,8 @@ fun PluginScreen() {
                 }
             }
         },
-        addNavPadding = false
+        addNavPadding = false,
+        enableOverScroll = false
     ) {
         when (windowSizeState) {
             WindowSizeState.VERTICAL -> {

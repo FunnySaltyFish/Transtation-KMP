@@ -39,7 +39,7 @@ import org.burnoutcrew.reorderable.reorderable
 fun SortResultScreen(
     modifier: Modifier = Modifier
 ) {
-    CommonPage(title = ResStrings.sort_result) {
+    CommonPage(title = ResStrings.sort_result, enableOverScroll = false) {
         val state = rememberReorderState()
         val localEngines by SortResultUtils.sortedEngines.collectAsState()
         val data by remember {
