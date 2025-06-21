@@ -73,6 +73,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.funny.compose.ai.bean.ChatMessage
@@ -85,6 +86,7 @@ import com.funny.translation.helper.LocalSharedTransitionScope
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.helper.toastOnUi
+import com.funny.translation.kmp.blurWithDrawer
 import com.funny.translation.kmp.rememberTakePhotoLauncher
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.strings.ResStrings
@@ -124,6 +126,8 @@ fun ChatScreen() {
         scope.launch { drawerState.close() }
     }
 
+    val drawerWidth = 360.dp
+    val drawerWidthPx = with(LocalDensity.current) { drawerWidth.toPx() }
     ModalNavigationDrawer(
         modifier = Modifier.fillMaxSize(),
         drawerState = drawerState,
@@ -131,7 +135,8 @@ fun ChatScreen() {
             ChatContent(
                 modifier = Modifier
                     .fillMaxSize()
-                    .imePadding(),
+                    .imePadding()
+                    .blurWithDrawer(drawerState, drawerWidthPx),
                 chatBot = chatBot,
                 currentMessageProvider = { vm.currentMessage },
                 chatMessages = chatMessages,
@@ -168,8 +173,7 @@ fun ChatScreen() {
 //            )
             Settings(
                 modifier = Modifier
-                    // .width(if (LocalWindowSizeState.current.isVertical) 360.dp else 600.dp)
-                    .width(360.dp)
+                    .width(drawerWidth)
                     .fillMaxHeight()
                     .background(
                         MaterialTheme.colorScheme.primaryContainer,

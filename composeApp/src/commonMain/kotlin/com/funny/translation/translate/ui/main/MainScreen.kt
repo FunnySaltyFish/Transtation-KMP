@@ -61,6 +61,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.funny.translation.AppConfig
@@ -70,6 +71,7 @@ import com.funny.translation.helper.LocalNavController
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.UserUtils
 import com.funny.translation.helper.rememberStateOf
+import com.funny.translation.kmp.blurWithDrawer
 import com.funny.translation.kmp.viewModel
 import com.funny.translation.network.api
 import com.funny.translation.strings.ResStrings
@@ -217,14 +219,16 @@ fun TextTransScreen() {
                     drawerState.close()
                 }
             }
-
+            val drawerWidth = 280.dp
+            val drawerWidthPx = with(LocalDensity.current) { drawerWidth.toPx() }
+            val maxBlurSize = 20.dp
             ModalNavigationDrawer(
                 drawerContent = {
                     Drawer(
                         modifier = Modifier
                             .windowInsetsPadding(WindowInsets.safeMain.only(WindowInsetsSides.Start))
                             .fillMaxHeight()
-                            .width(280.dp)
+                            .width(drawerWidth)
                             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
                     )
                 },
@@ -233,6 +237,7 @@ fun TextTransScreen() {
                 gesturesEnabled = vm.currentState != MainScreenState.Inputting
             ) {
                 MainPart(
+                    modifier = Modifier.blurWithDrawer(drawerState, drawerWidthPx),
                     isScreenHorizontal = false,
                     showEngineSelectAction = showEngineSelectAction,
                     showSnackbar = showSnackbar,
