@@ -81,7 +81,7 @@ class ImageTransViewModel : ModelViewModel() {
     var modelEngines by mutableStateOf(emptyList<ImageTranslationEngine>())
 
     var showResultState = mutableStateOf(true)
-    var translateStage by mutableStateOf<TranslateStage>(TranslateStage.IDLE)
+    var translateStage by mutableStateOf(TranslateStage.IDLE)
 
     // 下面是处理结果的相关
     var selectedResultParts = mutableStateListOf<SingleIndexedImageTranslationPart>()
@@ -110,6 +110,11 @@ class ImageTransViewModel : ModelViewModel() {
         }
         if (translateEngine == null) {
             translateEngine = modelEngines.firstOrNull { DataSaverUtils.readData(it.selectKey, false) }
+        }
+        if (translateEngine == null) {
+            // 如果没有选中的引擎，则默认使用第一个
+            translateEngine = NormalImageTranslationEngines.Baidu
+            DataSaverUtils.saveData(NormalImageTranslationEngines.Baidu.selectKey, true)
         }
     }
 

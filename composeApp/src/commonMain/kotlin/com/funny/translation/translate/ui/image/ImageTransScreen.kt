@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.funny.compose.loading.LoadingState
 import com.funny.jetsetting.core.ui.SimpleDialog
 import com.funny.translation.helper.CacheManager
+import com.funny.translation.helper.DataSaverUtils
 import com.funny.translation.helper.SimpleAction
 import com.funny.translation.helper.rememberStateOf
 import com.funny.translation.kmp.BackHandler
@@ -53,6 +54,7 @@ import com.funny.translation.translate.TranslationEngine
 import com.funny.translation.translate.enabledLanguages
 import com.funny.translation.translate.engine.ImageTranslationEngine
 import com.funny.translation.translate.engine.NormalImageTranslationEngines
+import com.funny.translation.translate.engine.selectKey
 import com.funny.translation.translate.ui.engineselect.EngineSelectDialog
 import com.funny.translation.translate.ui.engineselect.UpdateSelectedEngine
 import com.funny.translation.translate.ui.main.components.LanguageListMenu
@@ -256,7 +258,7 @@ internal fun EngineSelect(
         bindEngines = bindEngines,
         jsEngines = emptyList(),
         modelEngines = modelEngines,
-        selectStateProvider = { bindEngines.contains(it) || modelEngines.contains(it) },
+        selectStateProvider = { DataSaverUtils.readData(it.selectKey, false) },
         updateSelectedEngine = object : UpdateSelectedEngine {
             override fun add(engine: TranslationEngine) {
                 updateEngine(engine as ImageTranslationEngine)
