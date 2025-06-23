@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -31,12 +32,14 @@ actual fun InputText(
     updateText: (String) -> Unit,
     shouldRequest: Boolean,
     updateFocusRequest: (Boolean) -> Unit,
-    translateAction: (() -> Unit)?,
+    translateAction: (() -> Unit)?
 ) {
     val enterToTranslate by AppConfig.sEnterToTranslate
     // 因为 Compose 的 BasicTextField 下某些输入法的部分功能不能用，所以临时改回 EditText
     val textColor = MaterialTheme.colorScheme.onPrimaryContainer.toArgb()
-    val inputMethodManager = appCtx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val inputMethodManager = appCtx.getSystemService(
+        Context.INPUT_METHOD_SERVICE
+    ) as InputMethodManager
     val density = LocalDensity.current.density
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
@@ -47,8 +50,12 @@ actual fun InputText(
     }
 
     AndroidView(
-        factory = {
-            AlwaysActionDoneEditText(it).apply {
+        factory = { context ->
+            if (enterToTranslate) {
+                AlwaysActionDoneEditText(context)
+            } else {
+                EditText(context)
+            }.apply {
                 // maxLines = 6
                 hint = ResStrings.trans_text_input_hint
                 background = null
@@ -97,12 +104,12 @@ actual fun InputText(
                 it.clearFocus().also { Log.d(TAG, "InputText: clearFocus") }
                 inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
             }
-        },
+        }
     )
 }
 
 private class AlwaysActionDoneEditText(
-    context: Context,
+    context: Context
 ) : androidx.appcompat.widget.AppCompatEditText(context) {
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
         val onCreateInputConnection = super.onCreateInputConnection(outAttrs)
